@@ -104,5 +104,20 @@
   "pnl_usd": -13.11,
   "r_resultado": -1.31,
   "motivo": "SL"
+ },
+ {
+  "id": 1787927209127,
+  "ts_apertura": "2026-08-28 16:26",
+  "bot": "demo",
+  "moneda": "HYPE",
+  "direccion": "LONG",
+  "entrada": 90.0,
+  "contratos": 41,
+  "riesgo_usd": 10.0,
+  "score": 3.2166089070222865,
+  "atr": 1.6439971192811027,
+  "stop_dist_pct": 2.74,
+  "apalancamiento": 7,
+  "estado": "abierta"
  }
 ]
