@@ -1,0 +1,33 @@
+{
+  "revisar_el": "2026-08-23 (por la tarde)",
+  "actual": "motor_v2_ev_escalones_tope10",
+  "motores": [
+    {
+      "nombre": "motor_v1_martingala_fijo",
+      "descripcion": "Motor original: martingala fijo (48h 3.30×1.5 · semanal 3.00×1.40 · mensual 2.00×1.35), entrada a cualquier hora de la ventana y conteo t0 incompleto en 48h (saltaba los reposts).",
+      "fecha_inicio": "2026-08-15",
+      "fecha_fin": "2026-08-19",
+      "stats": {
+        "nota": "realizado entre 15/08 y 19/08",
+        "cerradas": 6,
+        "ganadas": 1,
+        "perdidas": 5,
+        "pnl": 6.41,
+        "detalle": "+12.99 (Elon 15-17 ago) · cierres anticipados 18/08: +3.62 (140-159), -3.23 (<40), -5.41 (100-119), -0.95 (740-759), -0.61 (660-679)"
+      }
+    },
+    {
+      "nombre": "motor_v2_ev_escalones_tope10",
+      "descripcion": "Conteo t0 corregido (posts+reposts+quotes) · entrada solo al inicio (48h≤12h, semanal≤24h, mensual≤72h) · guarda de bin decidido · tamaño por EV (1.8-2.5 ×1 · 2.5-4.0 ×1.5 · >4.0 ×2 · tope 10€) sobre el martingala base.",
+      "fecha_inicio": "2026-08-19",
+      "fecha_fin": null,
+      "stats": null
+    }
+  ],
+  "v2_pausados": {
+    "fecha": "2026-08-19",
+    "motivo": "los 6 bots corrían el mismo motor (v2) y duplicaban riesgo (p.ej. -3,30 x2 en <40 el 18/08).",
+    "estado": "poly-elon-v2, poly-semanal-v2, poly-mensual-v2 parados y deshabilitados (no borrados).",
+    "uso_futuro": "laboratorio para probar el próximo motor en modo papel."
+  }
+}

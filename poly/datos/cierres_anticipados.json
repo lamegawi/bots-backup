@@ -1,0 +1,76 @@
+{
+ "cierres": [
+  {
+   "fecha": "2026-08-18",
+   "titulo": "Elon 140-159 (14-21 ago)",
+   "bin": "140-159",
+   "lado": "Yes",
+   "invertido": 6.38,
+   "valor": 10.0,
+   "pnl": 3.62
+  },
+  {
+   "fecha": "2026-08-18",
+   "titulo": "Elon <40 (17-19 ago)",
+   "bin": "0-39",
+   "lado": "Yes",
+   "invertido": 5.97,
+   "valor": 2.74,
+   "pnl": -3.23
+  },
+  {
+   "fecha": "2026-08-18",
+   "titulo": "Elon 100-119 (14-21 ago)",
+   "bin": "100-119",
+   "lado": "Yes",
+   "invertido": 6.26,
+   "valor": 0.85,
+   "pnl": -5.41
+  },
+  {
+   "fecha": "2026-08-18",
+   "titulo": "Elon 740-759 (agosto)",
+   "bin": "740-759",
+   "lado": "Yes",
+   "invertido": 2.0,
+   "valor": 1.05,
+   "pnl": -0.95
+  },
+  {
+   "fecha": "2026-08-18",
+   "titulo": "Elon 660-679 (agosto)",
+   "bin": "660-679",
+   "lado": "Yes",
+   "invertido": 2.47,
+   "valor": 1.86,
+   "pnl": -0.61
+  },
+  {
+   "fecha": "2026-08-21",
+   "titulo": "Will Elon Musk post 90-114 tweets from August 20 to August 22, 2026",
+   "bin": "90-114",
+   "lado": "Yes",
+   "invertido": 7.43,
+   "valor": 10.13,
+   "pnl": 2.7
+  },
+  {
+   "fecha": "2026-08-26",
+   "titulo": "Will Elon Musk post 220-239 tweets from August 25 to September 1, 2026",
+   "bin": "220-239",
+   "lado": "Yes",
+   "invertido": 8.0,
+   "valor": 8.25,
+   "pnl": 0.25
+  },
+  {
+   "fecha": "2026-08-26",
+   "titulo": "Will Elon Musk post 220-239 tweets from August 25 to September 1, 2026",
+   "bin": "220-239",
+   "lado": "Yes",
+   "invertido": 1.7,
+   "valor": 1.64,
+   "pnl": -0.05
+  }
+ ]
+}
