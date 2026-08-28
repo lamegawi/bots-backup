@@ -1,0 +1,178 @@
+{
+  "ADAUSDT:LONG": {
+    "symbol": "ADAUSDT",
+    "direction": "LONG",
+    "entry": 0.2342,
+    "qty": "671",
+    "sl_order_id": "1474926263807209472",
+    "state": "opened",
+    "risk_usd": 10.0,
+    "opened_at": 1787375749.016726,
+    "dist": 0.06367934,
+    "initial_sl": 0.2192862988,
+    "tp_levels": [
+      {
+        "precio": 0.2376927888,
+        "size": "134",
+        "nivel": "1.0R",
+        "orderId": "1474926270417461253"
+      },
+      {
+        "precio": 0.2394391832,
+        "size": "134",
+        "nivel": "1.5R",
+        "orderId": "1474926273064038402"
+      },
+      {
+        "precio": 0.2411855777,
+        "size": "134",
+        "nivel": "2.0R",
+        "orderId": "1474926275744227328"
+      },
+      {
+        "precio": 0.2429319721,
+        "size": "134",
+        "nivel": "2.5R",
+        "orderId": "1474926278319501314"
+      },
+      {
+        "precio": 0.2446783665,
+        "size": "134",
+        "nivel": "3.0R",
+        "orderId": "1474926280974524416"
+      }
+    ]
+  },
+  "DOGEUSDT:LONG": {
+    "symbol": "DOGEUSDT",
+    "direction": "LONG",
+    "entry": 0.09019,
+    "qty": "1892",
+    "sl_order_id": "1474926806506659843",
+    "state": "opened",
+    "risk_usd": 10.0,
+    "opened_at": 1787375878.555258,
+    "dist": 0.05859193,
+    "initial_sl": 0.0849055934,
+    "tp_levels": [
+      {
+        "precio": 0.0906666006,
+        "size": "378",
+        "nivel": "1.0R",
+        "orderId": "1474926813412028416"
+      },
+      {
+        "precio": 0.0909049009,
+        "size": "378",
+        "nivel": "1.5R",
+        "orderId": "1474926816142520320"
+      },
+      {
+        "precio": 0.0911432013,
+        "size": "378",
+        "nivel": "2.0R",
+        "orderId": "1474926818743017472"
+      },
+      {
+        "precio": 0.0913815016,
+        "size": "378",
+        "nivel": "2.5R",
+        "orderId": "1474926821515423744"
+      },
+      {
+        "precio": 0.0916198019,
+        "size": "378",
+        "nivel": "3.0R",
+        "orderId": "1474926824307286016"
+      }
+    ]
+  },
+  "LINKUSDT:LONG": {
+    "symbol": "LINKUSDT",
+    "direction": "LONG",
+    "entry": 11.845,
+    "qty": "20",
+    "sl_order_id": "1474929366894370817",
+    "state": "opened",
+    "risk_usd": 10.0,
+    "opened_at": 1787376488.8260665,
+    "dist": 0.04325728,
+    "initial_sl": 11.3326175074,
+    "tp_levels": [
+      {
+        "precio": 12.3573824926,
+        "size": "4",
+        "nivel": "1.0R",
+        "orderId": "1474929373535526914"
+      },
+      {
+        "precio": 12.6135737389,
+        "size": "4",
+        "nivel": "1.5R",
+        "orderId": "1474929376119189504"
+      },
+      {
+        "precio": 12.8697649852,
+        "size": "4",
+        "nivel": "2.0R",
+        "orderId": "1474929378757435392"
+      },
+      {
+        "precio": 13.1259562315,
+        "size": "4",
+        "nivel": "2.5R",
+        "orderId": "1474929381374652416"
+      },
+      {
+        "precio": 13.3821474778,
+        "size": "4",
+        "nivel": "3.0R",
+        "orderId": "1474929384012869632"
+      }
+    ]
+  },
+  "HUSDT:SHORT": {
+    "symbol": "HUSDT",
+    "direction": "SHORT",
+    "entry": 0.074460542167,
+    "qty": "1328",
+    "sl_order_id": "1474952742817488896",
+    "state": "opened",
+    "risk_usd": 10.0,
+    "opened_at": 1787382062.0914803,
+    "dist": 0.10112658,
+    "initial_sl": 0.0819904825,
+    "tp_levels": [
+      {
+        "precio": 0.0669306019,
+        "size": "266",
+        "nivel": "1.0R",
+        "orderId": "1474952749289271296"
+      },
+      {
+        "precio": 0.0631656317,
+        "size": "266",
+        "nivel": "1.5R",
+        "orderId": "1474952751805882368"
+      },
+      {
+        "precio": 0.0594006615,
+        "size": "266",
+        "nivel": "2.0R",
+        "orderId": "1474952754564161536"
+      },
+      {
+        "precio": 0.0556356914,
+        "size": "266",
+        "nivel": "2.5R",
+        "orderId": "1474952757325586433"
+      },
+      {
+        "precio": 0.0518707212,
+        "size": "266",
+        "nivel": "3.0R",
+        "orderId": "1474952759970619392"
+      }
+    ]
+  }
+}

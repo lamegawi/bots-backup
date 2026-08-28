@@ -1,0 +1,18 @@
+{
+  "ETHUSDT": {
+    "added_at": 1787244202.528617,
+    "reason": "winrate=100% trades=3 pnl=+31.62 maxLoss=+0.00"
+  },
+  "LINKUSDT": {
+    "added_at": 1787294001.6214669,
+    "reason": "winrate=100% trades=3 pnl=+48.09 maxLoss=+0.00"
+  },
+  "DOGEUSDT": {
+    "added_at": 1787346833.1642747,
+    "reason": "winrate=100% trades=3 pnl=+34.80 maxLoss=+0.00"
+  },
+  "ADAUSDT": {
+    "added_at": 1787352787.530715,
+    "reason": "winrate=67% trades=3 pnl=+15.22 maxLoss=-8.39"
+  }
+}

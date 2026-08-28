@@ -1,0 +1,78 @@
+{
+  "DOTUSDT": {
+    "trades": 2,
+    "wins": 0,
+    "losses": 2,
+    "total_pnl": -74.484,
+    "max_loss": -61.776,
+    "promoted": false
+  },
+  "SOLUSDT": {
+    "trades": 4,
+    "wins": 1,
+    "losses": 3,
+    "total_pnl": 0.5262,
+    "max_loss": -3.9066,
+    "promoted": false
+  },
+  "PEPEUSDT": {
+    "trades": 1,
+    "wins": 0,
+    "losses": 1,
+    "total_pnl": -10.0442,
+    "max_loss": -10.0442,
+    "promoted": false
+  },
+  "LINKUSDT": {
+    "trades": 4,
+    "wins": 3,
+    "losses": 1,
+    "total_pnl": 35.939,
+    "max_loss": -12.15,
+    "promoted": true,
+    "promoted_at": 1787294001.6206958
+  },
+  "ETHUSDT": {
+    "trades": 6,
+    "wins": 4,
+    "losses": 2,
+    "total_pnl": 25.0461,
+    "max_loss": -10.2925,
+    "promoted": true,
+    "promoted_at": 1787244202.5279937
+  },
+  "ADAUSDT": {
+    "trades": 5,
+    "wins": 3,
+    "losses": 2,
+    "total_pnl": 24.1859,
+    "max_loss": -8.393,
+    "promoted": true,
+    "promoted_at": 1787352787.5300248
+  },
+  "XRPUSDT": {
+    "trades": 3,
+    "wins": 1,
+    "losses": 2,
+    "total_pnl": -59.0608,
+    "max_loss": -47.4743,
+    "promoted": false
+  },
+  "BTCUSDT": {
+    "trades": 2,
+    "wins": 2,
+    "losses": 0,
+    "total_pnl": 23.2194,
+    "max_loss": 0.0,
+    "promoted": false
+  },
+  "DOGEUSDT": {
+    "trades": 5,
+    "wins": 4,
+    "losses": 1,
+    "total_pnl": 45.3483,
+    "max_loss": -2.0753,
+    "promoted": true,
+    "promoted_at": 1787346833.1637156
+  }
+}

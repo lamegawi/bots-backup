@@ -1,0 +1,30 @@
+{
+  "umbral_pct": 3.0,
+  "tickers": [
+    {
+      "simbolo": "ACX",
+      "nombre": "bet-at-home.com AG            I",
+      "yahoo": "ACX.F"
+    },
+    {
+      "simbolo": "REP",
+      "nombre": "Repsol S.A.                   A",
+      "yahoo": "REP.F"
+    },
+    {
+      "simbolo": "SAN.MC",
+      "nombre": "BANCO SANTANDER S.A.",
+      "yahoo": "SAN.MC"
+    },
+    {
+      "simbolo": "BBVA.MC",
+      "nombre": "BANCO BILBAO VIZCAYA ARGENTARIA",
+      "yahoo": "BBVA.MC"
+    },
+    {
+      "simbolo": "MTS.MC",
+      "nombre": "ARCELORMITTAL SA",
+      "yahoo": "MTS.MC"
+    }
+  ]
+}

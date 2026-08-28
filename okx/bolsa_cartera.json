@@ -1,0 +1,68 @@
+{
+  "posiciones": [
+    {
+      "simbolo": "SPX",
+      "nombre": "Space Exploration Techs. Corp.R",
+      "yahoo": "SPX.F",
+      "moneda": "EUR",
+      "precio_compra": 132.29,
+      "cantidad": 43.0
+    },
+    {
+      "simbolo": "C9F",
+      "nombre": "Chipotle Mexican Grill Inc.   R",
+      "yahoo": "C9F.F",
+      "moneda": "EUR",
+      "precio_compra": 34.0,
+      "cantidad": 58.849492
+    },
+    {
+      "simbolo": "HVE",
+      "nombre": "Innoviva Inc.                 R",
+      "yahoo": "HVE.F",
+      "moneda": "EUR",
+      "precio_compra": 20.81,
+      "cantidad": 100.0
+    },
+    {
+      "simbolo": "I1V",
+      "nombre": "CoreWeave Inc.                R",
+      "yahoo": "I1V.F",
+      "moneda": "EUR",
+      "precio_compra": 121.05,
+      "cantidad": 20.0
+    },
+    {
+      "simbolo": "E6Z",
+      "nombre": "AECOM                         R",
+      "yahoo": "E6Z.F",
+      "moneda": "EUR",
+      "precio_compra": 82.54,
+      "cantidad": 24.0
+    },
+    {
+      "simbolo": "2ON",
+      "nombre": "Peloton Interactive Inc.      R",
+      "yahoo": "2ON.F",
+      "moneda": "EUR",
+      "precio_compra": 7.59,
+      "cantidad": 250.0
+    },
+    {
+      "simbolo": "MIGA",
+      "nombre": "Strategy Inc.                 R",
+      "yahoo": "MIGA.F",
+      "moneda": "EUR",
+      "precio_compra": 359.56,
+      "cantidad": 2.783964
+    },
+    {
+      "simbolo": "02M",
+      "nombre": "Mosaic Co., The               R",
+      "yahoo": "02M.F",
+      "moneda": "EUR",
+      "precio_compra": 29.47,
+      "cantidad": 70.0
+    }
+  ]
+}

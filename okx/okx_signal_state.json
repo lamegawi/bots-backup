@@ -1,0 +1,326 @@
+{
+  "signals": {
+    "1787640359": {
+      "symbol": "PROM",
+      "direction": "LONG"
+    },
+    "1787641844": {
+      "symbol": "PORTAL",
+      "direction": "LONG"
+    },
+    "1787644865": {
+      "symbol": "LINK",
+      "direction": "LONG"
+    },
+    "1787647477": {
+      "symbol": "PROM",
+      "direction": "LONG"
+    },
+    "1787648454": {
+      "symbol": "1000RATS",
+      "direction": "SHORT"
+    },
+    "1787649904": {
+      "symbol": "LINK",
+      "direction": "LONG"
+    },
+    "1787650474": {
+      "symbol": "TRX",
+      "direction": "SHORT"
+    },
+    "1787653399": {
+      "symbol": "BTC",
+      "direction": "LONG"
+    },
+    "1787653519": {
+      "symbol": "BTC",
+      "direction": "LONG"
+    },
+    "1787656502": {
+      "symbol": "ZEN",
+      "direction": "SHORT"
+    },
+    "1787656505": {
+      "symbol": "ZEN",
+      "direction": "SHORT"
+    },
+    "1787657527": {
+      "symbol": "PUNDIX",
+      "direction": "LONG"
+    },
+    "1787657874": {
+      "symbol": "ONG",
+      "direction": "LONG"
+    },
+    "1787661141": {
+      "symbol": "ONG",
+      "direction": "LONG"
+    },
+    "1787661414": {
+      "symbol": "ONG",
+      "direction": "LONG"
+    },
+    "1787666390": {
+      "symbol": "ZRO",
+      "direction": "LONG"
+    },
+    "1787672815": {
+      "symbol": "ZRO",
+      "direction": "LONG"
+    },
+    "1787674220": {
+      "symbol": "BTC",
+      "direction": "LONG"
+    },
+    "1787675601": {
+      "symbol": "ONG",
+      "direction": "SHORT"
+    },
+    "1787675908": {
+      "symbol": "BTC",
+      "direction": "LONG"
+    },
+    "1787679085": {
+      "symbol": "ZIL",
+      "direction": "LONG"
+    },
+    "1787680271": {
+      "symbol": "ZIL",
+      "direction": "LONG"
+    },
+    "1787683024": {
+      "symbol": "TRX",
+      "direction": "SHORT"
+    },
+    "1787701263": {
+      "symbol": "STORJ",
+      "direction": "LONG"
+    },
+    "1787701266": {
+      "symbol": "STORJ",
+      "direction": "SHORT"
+    },
+    "1787702618": {
+      "symbol": "ONG",
+      "direction": "LONG"
+    },
+    "1787702718": {
+      "symbol": "ZRO",
+      "direction": "LONG"
+    },
+    "1787703232": {
+      "symbol": "BMT",
+      "direction": "LONG"
+    },
+    "1787704290": {
+      "symbol": "BMT",
+      "direction": "LONG"
+    },
+    "1787706380": {
+      "symbol": "BMT",
+      "direction": "LONG"
+    },
+    "1787708696": {
+      "symbol": "Z4HF",
+      "direction": "LONG"
+    },
+    "1787710529": {
+      "symbol": "BMT",
+      "direction": "LONG"
+    },
+    "1787711345": {
+      "symbol": "ZIL",
+      "direction": "LONG"
+    },
+    "1787711809": {
+      "symbol": "BMT",
+      "direction": "LONG"
+    },
+    "1787712054": {
+      "symbol": "BMT",
+      "direction": "LONG"
+    },
+    "1787713360": {
+      "symbol": "BMT",
+      "direction": "LONG"
+    },
+    "1787716163": {
+      "symbol": "BMT",
+      "direction": "SHORT"
+    },
+    "1787716412": {
+      "symbol": "BMT",
+      "direction": "LONG"
+    },
+    "1787716473": {
+      "symbol": "BMT",
+      "direction": "LONG"
+    },
+    "1787716703": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787716994": {
+      "symbol": "BMT",
+      "direction": "SHORT"
+    },
+    "1787717486": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787719405": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787719862": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787721313": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787722591": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787722765": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787723044": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787723413": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787724223": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787725689": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787726520": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787727718": {
+      "symbol": "CTK",
+      "direction": "LONG"
+    },
+    "1787731720": {
+      "symbol": "BMT",
+      "direction": "LONG"
+    },
+    "1787732156": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787732266": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787732348": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787732388": {
+      "symbol": "TAC",
+      "direction": "LONG"
+    },
+    "1787733489": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787733518": {
+      "symbol": "ETH",
+      "direction": "SHORT"
+    },
+    "1787734086": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787734465": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787734500": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787735003": {
+      "symbol": "PORTAL",
+      "direction": "LONG"
+    },
+    "1787735006": {
+      "symbol": "TAC",
+      "direction": "LONG"
+    },
+    "1787735091": {
+      "symbol": "BTR",
+      "direction": "LONG"
+    },
+    "1787735459": {
+      "symbol": "ZRX",
+      "direction": "SHORT"
+    },
+    "1787736014": {
+      "symbol": "ZRX",
+      "direction": "SHORT"
+    },
+    "1787736662": {
+      "symbol": "ZRX",
+      "direction": "SHORT"
+    },
+    "1787741099": {
+      "symbol": "SOL",
+      "direction": "LONG"
+    },
+    "1787742191": {
+      "symbol": "BTC",
+      "direction": "LONG"
+    },
+    "1787742622": {
+      "symbol": "SOL",
+      "direction": "LONG"
+    },
+    "1787747046": {
+      "symbol": "TRX",
+      "direction": "SHORT"
+    },
+    "1787749755": {
+      "symbol": "ONG",
+      "direction": "LONG"
+    },
+    "1787749758": {
+      "symbol": "ONG",
+      "direction": "LONG"
+    },
+    "1787754656": {
+      "symbol": "QTUM",
+      "direction": "SHORT"
+    },
+    "1787755320": {
+      "symbol": "QTUM",
+      "direction": "SHORT"
+    },
+    "1787755801": {
+      "symbol": "QTUM",
+      "direction": "SHORT"
+    },
+    "1787764755": {
+      "symbol": "BCH",
+      "direction": "SHORT"
+    },
+    "1787772548": {
+      "symbol": "BCH",
+      "direction": "SHORT"
+    }
+  },
+  "executed": [],
+  "esperando_canal": false
+}

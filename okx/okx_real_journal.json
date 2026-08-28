@@ -1,0 +1,40 @@
+[
+ {
+  "id": 1787711204381,
+  "ts_apertura": "2026-08-26 04:26",
+  "bot": "real",
+  "moneda": "BTC",
+  "direccion": "LONG",
+  "entrada": 79127.0,
+  "contratos": 108,
+  "riesgo_usd": 10.0,
+  "score": 10.568550001716726,
+  "atr": 616.0630227531775,
+  "stop_dist_pct": 1.168,
+  "apalancamiento": 10,
+  "estado": "cerrada",
+  "ts_cierre": "2026-08-26 11:47",
+  "pnl_usd": -10.43,
+  "r_resultado": -1.04,
+  "motivo": "SL"
+ },
+ {
+  "id": 1787753004626,
+  "ts_apertura": "2026-08-26 16:03",
+  "bot": "real",
+  "moneda": "BNB",
+  "direccion": "LONG",
+  "entrada": 701.6,
+  "contratos": 138,
+  "riesgo_usd": 10.0,
+  "score": 6.641883449298607,
+  "atr": 4.835148594950508,
+  "stop_dist_pct": 1.034,
+  "apalancamiento": 10,
+  "estado": "cerrada",
+  "ts_cierre": "2026-08-26 16:54",
+  "pnl_usd": -11.18,
+  "r_resultado": -1.12,
+  "motivo": "SL"
+ }
+]
