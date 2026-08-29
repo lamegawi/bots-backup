@@ -119,5 +119,20 @@
   "stop_dist_pct": 2.74,
   "apalancamiento": 7,
   "estado": "abierta"
+ },
+ {
+  "id": 1787947224826,
+  "ts_apertura": "2026-08-28 22:00",
+  "bot": "demo",
+  "moneda": "ETC",
+  "direccion": "SHORT",
+  "entrada": 7.484,
+  "contratos": 8,
+  "riesgo_usd": 10.0,
+  "score": 3.0504656129927,
+  "atr": 0.07886009040122458,
+  "stop_dist_pct": 1.581,
+  "apalancamiento": 10,
+  "estado": "abierta"
  }
 ]

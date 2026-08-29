@@ -374,7 +374,8 @@ def manage_positions():
     positions = get_all_positions()
     pos_map = {}
     for p in positions:
-        pos_map[f"{p['base']}:{p['direction']}"] = p
+        # FIXK_ARENA: clave CON espacio (igual que open_position y el panel)
+        pos_map[f"{p['base']}: {p['direction']}"] = p
 
     managed = load_managed()
     changed = False

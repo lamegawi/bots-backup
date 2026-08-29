@@ -1,1 +1,53 @@
-{}
+{
+ "ETC: SHORT": {
+  "symbol": "ETC",
+  "direction": "SHORT",
+  "entry": 7.484,
+  "contratos": 8,
+  "sl_algo_id": "3873685495658098688",
+  "state": "opened",
+  "risk_usd": 10.0,
+  "opened_at": 1787947224.825466,
+  "dist": 0.01580574,
+  "initial_sl": 7.60229014,
+  "tp_levels": [
+   {
+    "nivel": "1.0R",
+    "precio": 7.40513991,
+    "sz": 2,
+    "algoId": "3873685502201212928"
+   },
+   {
+    "nivel": "1.5R",
+    "precio": 7.36570986,
+    "sz": 2,
+    "algoId": "3873685508576555008"
+   },
+   {
+    "nivel": "2.0R",
+    "precio": 7.32627982,
+    "sz": 2,
+    "algoId": "3873685515052560384"
+   },
+   {
+    "nivel": "2.5R",
+    "precio": 7.28684977,
+    "sz": 2,
+    "algoId": "3873685521629229056"
+   }
+  ]
+ },
+ "HYPE: LONG": {
+  "symbol": "HYPE",
+  "direction": "LONG",
+  "entry": 93.94255135135136,
+  "contratos": 37,
+  "sl_algo_id": "3873865953809313792",
+  "state": "adopted",
+  "risk_usd": 10.0,
+  "opened_at": 1787952602.119982,
+  "dist": 0.04,
+  "initial_sl": 100.6381324,
+  "tp_levels": []
+ }
+}

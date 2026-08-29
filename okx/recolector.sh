@@ -107,6 +107,7 @@ cat -n /root/okx_real_bot.py
 
 echo ""
 echo "===== 8. MAPA okx_demo_bot.py ====="
+cat -n /root/okx_demo_bot.py
 grep -n "def \|_ARENA" /root/okx_demo_bot.py | head -60
 
 echo ""
