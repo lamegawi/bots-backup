@@ -370,6 +370,12 @@ def close_position(base, direction):
 
 
 # ------------------------------------------------------------------ GESTIÓN
+# === FIXTS_ARENA: trailing stop automatico ===
+TRAILING_ACTIVAR = True      # False = comportamiento clasico (BE fijo)
+TRAILING_CALLBACK = 0.03     # porcentaje de persecucion (3%)
+TRAILING_DESDE_R = 1.5       # activacion con +1.5R de ganancia flotante
+TRAILING_CANCELAR_TPS = True # al activarse: SL y TPs fuera, manda el trailing
+
 def manage_positions():
     positions = get_all_positions()
     pos_map = {}
@@ -432,6 +438,61 @@ def manage_positions():
             m["ausente"] = 0
             changed = True
         qty = p["qty"]; unreal = p["pnl"]
+        # === FIXTS_ARENA: a +TRAILING_DESDE_R el BE fijo se convierte en TRAILING ===
+        try:
+            if (TRAILING_ACTIVAR and m and not m.get("trail_algo_id")
+                    and m.get("state") != "trailing"):
+                _riesgo = float(m.get("risk_usd", 0) or 0)
+                _rr = (float(unreal or 0) / _riesgo) if _riesgo > 0 else 0.0
+                if _rr >= TRAILING_DESDE_R:
+                    _iid = client.inst_id(p.get("base", ""))
+                    if _iid:
+                        _ya = client.trailing_pendientes(_iid)
+                        if _ya:
+                            m["trail_algo_id"] = _ya[0].get("algoId")
+                            m["state"] = "trailing"
+                            try:
+                                client.cancelar_algo(_iid, m.get("sl_algo_id"))
+                            except Exception:
+                                pass
+                            if TRAILING_CANCELAR_TPS:
+                                for _tp in (m.get("tp_levels") or []):
+                                    try:
+                                        client.cancelar_algo(_iid, _tp.get("algoId"))
+                                    except Exception:
+                                        pass
+                            changed = True
+                            print("  [TRAILING] " + p.get("base", "?") + ": trailing ya existente -> registrado")
+                        else:
+                            _pz = next((abs(int(float(_pp.get("pos", 0) or 0)))
+                                        for _pp in (client.posiciones() or [])
+                                        if _pp.get("instId") == _iid), 0)
+                            if _pz > 0:
+                                _lado = "sell" if p.get("direction") == "LONG" else "buy"
+                                _aid = client.orden_trailing(_iid, _lado,
+                                                             TRAILING_CALLBACK, _pz)
+                                if _aid:
+                                    m["trail_algo_id"] = _aid
+                                    m["state"] = "trailing"
+                                    try:
+                                        client.cancelar_algo(_iid, m.get("sl_algo_id"))
+                                    except Exception:
+                                        pass
+                                    if TRAILING_CANCELAR_TPS:
+                                        for _tp in (m.get("tp_levels") or []):
+                                            try:
+                                                client.cancelar_algo(_iid, _tp.get("algoId"))
+                                            except Exception:
+                                                pass
+                                    changed = True
+                                    print("  [TRAILING] " + p.get("base", "?") + ": colocado #" + str(_aid)
+                                          + " (cb " + str(int(TRAILING_CALLBACK * 100)) + "%, "
+                                          + str(_pz) + " ct) | SL y TPs retirados")
+                                else:
+                                    print("  [TRAILING] " + p.get("base", "?") + ": fallo al colocar (reintenta)")
+        except Exception as _et:
+            print("  [TRAILING] error: " + str(_et)[:80])
+
         entry = float(p.get("entry", 0) or 0)
         dist = float(m.get("dist", 0) or 0)
         risk_actual = float(m.get("risk_usd", RISK_USD) or RISK_USD)
@@ -514,6 +575,36 @@ def boton_estado():
             if _slp and ((d == "LONG" and _slp >= p["entry"]) or (d == "SHORT" and _slp <= p["entry"])):
                 if "BE" not in linea:
                     linea += " | 🔒 BE"
+        except Exception:
+            pass
+        # FIXBET_ARENA: indicador de TRAILING (cajon move_order_stop, invisible para FIXBE)
+        try:
+            _g = globals()
+            if _g.get("_FIXT_TS") is None or time.time() - _g["_FIXT_TS"] > 60:
+                _trm = {}
+                for _a in client.trailing_pendientes() or []:
+                    _mp = _a.get("moveTriggerPx")
+                    if _mp:
+                        _trm[_a.get("instId", "")] = _mp
+                _g["_FIXT_M"] = _trm
+                _g["_FIXT_TS"] = time.time()
+            _trp = (_g.get("_FIXT_M") or {}).get(sym)
+            if _trp:
+                _stop = float(_trp or 0)
+                _pxv = 0.0
+                try:
+                    _pxv = float((client.ticker(sym) or {}).get("last", 0) or 0)
+                except Exception:
+                    pass
+                _ent = float(p.get("entry", 0) or 0)
+                _upl = float(p.get("pnl") or p.get("upl") or 0)
+                _lock = None
+                if _stop > 0 and _ent > 0 and _pxv > 0 and _pxv != _ent:
+                    _lock = _upl * (_stop - _ent) / (_pxv - _ent)
+                if _lock is not None and _lock > 0:
+                    linea += " | \U0001F397 asegura +$%.2f" % _lock
+                else:
+                    linea += " | \U0001F397 Trail@%s" % _trp
         except Exception:
             pass
         lineas.append(linea)

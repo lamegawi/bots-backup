@@ -275,6 +275,25 @@ class Cliente:
                 "sz": str(int(sz_contratos)), "reduceOnly": "true"}
         return self._check(self._post("/api/v5/trade/order", body), "close")
 
+    # === FIXTS_ARENA: trailing stop (move_order_stop) ===
+    def orden_trailing(self, inst_id, side_cierre, callback, sz_contratos):
+        """Trailing stop: persigue al precio (callback 0.03 = 3%).
+        side_cierre = lado de CIERRE (long->sell, short->buy). reduceOnly SIEMPRE."""
+        body = {"instId": inst_id, "tdMode": "cross", "posSide": "net",
+                "side": side_cierre, "ordType": "move_order_stop",
+                "sz": str(int(sz_contratos)),
+                "callbackRatio": str(callback), "reduceOnly": "true"}
+        r = self._check(self._post("/api/v5/trade/order-algo", body), "order-algo-trailing")
+        return (r.get("data") or [{}])[0].get("algoId")
+
+    def trailing_pendientes(self, inst_id=None):
+        """Trailing stops vivos (cajon move_order_stop), opcional por instId."""
+        path = "/api/v5/trade/orders-algo-pending?ordType=move_order_stop"
+        if inst_id:
+            path += f"&instId={inst_id}"
+        r = self._check(self._get(path), "algo-pending-move")
+        return r.get("data") or []
+
     def contratos(self, inst_id, notional_usd):
         """Nº de contratos (entero) para un nocional en USD dado."""
         info = self.info_instr(inst_id)
