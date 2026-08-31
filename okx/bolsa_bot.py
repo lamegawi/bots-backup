@@ -198,6 +198,13 @@ def flecha(pct):
     return "🟢" if pct > 0 else ("🔴" if pct < 0 else "⚪")
 
 
+def circulo_dia(valor):
+    """Indicador visual de la variación de la sesión actual."""
+    if valor is None:
+        return "⚪"
+    return "🟢" if valor > 0 else ("🔴" if valor < 0 else "⚪")
+
+
 def fmt_precio(q):
     if q["moneda"] == "USD":
         return f"${q['precio']:,.2f}"
@@ -218,7 +225,7 @@ def texto_precios(cfg, titulo="📊 *PRECIOS EN VIVO*"):
         nombre = t.get("nombre", "") or ""
         nombre = re.sub(r"(?i)\b[\w-]+\.(?:com|net|org|es|de|fr|it)\b", "", nombre).strip()
         lineas.append(f"{flecha(q['pct'])} *{t['simbolo']}*" + (f" {nombre}" if nombre else ""))
-        lineas.append(f"    {fmt_precio(q)} · {fmt_pct(q['pct'])}")
+        lineas.append(f"    {fmt_precio(q)} · Hoy {circulo_dia(q.get('cambio'))} {fmt_pct(q['pct'])}")
     return "\n".join(lineas)
 
 
@@ -254,7 +261,7 @@ def texto_saldo():
             # Variación de la cotización durante la sesión actual.
             cambio_hoy = q.get("cambio")
             if cambio_hoy is not None:
-                lineas.append(f"    Hoy: {fmt_cant(cambio_hoy, q['moneda'])} · {fmt_pct(q.get('pct'))}")
+                lineas.append(f"    Hoy: {circulo_dia(cambio_hoy)} {fmt_cant(cambio_hoy, q['moneda'])} · {fmt_pct(q.get('pct'))}")
             else:
                 lineas.append("    Hoy: —")
             lineas.append(f"    {ic} {fmt_cant(pnl, q['moneda'])} ({pnl_pct:+.2f}%)")
@@ -396,7 +403,10 @@ def cmd_seguimiento():
               "Pulsa el botón de cada acción para ver posibles entradas y stop loss:"]
     botones = []
     for t in tickers:
-        nombre = re.sub(r"(?i)\b[\w-]+\.(?:com|net|org|es|de|fr|it)\b", "", (t.get("nombre", "") or "")).strip()
+        # ACX es Acerinox; evitamos mostrar el nombre comercial contaminado
+        # que devuelve el proveedor ("... AG") en algunos mercados.
+        nombre = "Acerinox" if t.get("simbolo") == "ACX" else (t.get("nombre", "") or "")
+        nombre = re.sub(r"(?i)\b[\w-]+\.(?:com|net|org|es|de|fr|it)\b", "", nombre).strip()
         linea = f"• *{t['simbolo']}*"
         if nombre:
             linea += f" — {nombre}"
