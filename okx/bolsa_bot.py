@@ -222,10 +222,11 @@ def texto_precios(cfg, titulo="📊 *PRECIOS EN VIVO*"):
         q = d["q"]
         # No mostrar dominios en el nombre: Telegram los convierte en enlaces
         # automáticamente (p.ej. bet-at-home.com en ACX).
-        nombre = t.get("nombre", "") or ""
+        nombre = "Acerinox" if t.get("simbolo") == "ACX" else (t.get("nombre", "") or "")
         nombre = re.sub(r"(?i)\b[\w-]+\.(?:com|net|org|es|de|fr|it)\b", "", nombre).strip()
         lineas.append(f"{flecha(q['pct'])} *{t['simbolo']}*" + (f" {nombre}" if nombre else ""))
-        lineas.append(f"    {fmt_precio(q)} · Hoy {circulo_dia(q.get('cambio'))} {fmt_pct(q['pct'])}")
+        # Precios mantiene el formato original: precio y porcentaje del día.
+        lineas.append(f"    {fmt_precio(q)} · {fmt_pct(q['pct'])}")
     return "\n".join(lineas)
 
 
