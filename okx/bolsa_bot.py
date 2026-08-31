@@ -251,6 +251,12 @@ def texto_saldo():
             total_valor += valor
             ic = "🟢" if pnl >= 0 else "🔴"
             lineas.append(f"    ahora {fmt_precio(q)} · valor {fmt_cant(valor, q['moneda'])}")
+            # Variación de la cotización durante la sesión actual.
+            cambio_hoy = q.get("cambio")
+            if cambio_hoy is not None:
+                lineas.append(f"    Hoy: {fmt_cant(cambio_hoy, q['moneda'])} · {fmt_pct(q.get('pct'))}")
+            else:
+                lineas.append("    Hoy: —")
             lineas.append(f"    {ic} {fmt_cant(pnl, q['moneda'])} ({pnl_pct:+.2f}%)")
         else:
             lineas.append("    ⚠️ sin cotización ahora")
@@ -390,7 +396,11 @@ def cmd_seguimiento():
               "Pulsa el botón de cada acción para ver posibles entradas y stop loss:"]
     botones = []
     for t in tickers:
-        lineas.append(f"• *{t['simbolo']}*")
+        nombre = re.sub(r"(?i)\b[\w-]+\.(?:com|net|org|es|de|fr|it)\b", "", (t.get("nombre", "") or "")).strip()
+        linea = f"• *{t['simbolo']}*"
+        if nombre:
+            linea += f" — {nombre}"
+        lineas.append(linea)
         botones.append([{"text": f"🤖 Análisis IA {t['simbolo']}",
                           "callback_data": f"ana:{t['simbolo']}"}])
     enviar("\n".join(lineas), kb_inline(botones))
