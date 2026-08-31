@@ -550,18 +550,49 @@ def add_precio(txt):
 
 
 # ---------------------------------------------------------------- modificar
-def empezar_modificar():
-    posiciones = cargar_cartera()
-    if not posiciones:
-        enviar("ℹ️ No tienes acciones compradas todavía.\n"
-               "Usa ➕ *Añadir* → 💵 *Comprada*.")
-        return
-    botones = [[{"text": f"{p['simbolo']} ({p['cantidad']:g})",
-                 "callback_data": f"mod_sel:{p['simbolo']}"}] for p in posiciones]
-    botones.append([{"text": "❌ Cancelar", "callback_data": "mod_sel:cancelar"}])
-    enviar("✏️ *Modificar acción*\n\n¿Cuál quieres modificar?",
-           kb_inline(botones))
+def _nombre_ticker(t):
+    """Nombre corto y legible para las listas del panel."""
+    simbolo = t.get("simbolo", "")
+    if simbolo == "ACX":
+        return "Acerinox"
+    nombre = re.sub(r"(?i)\b[\w-]+\.(?:com|net|org|es|de|fr|it)\b", "", (t.get("nombre", "") or "")).strip()
+    return nombre or "sin nombre"
 
+
+def empezar_modificar():
+    cfg = cargar_config()
+    seguimiento = cfg.get("tickers", [])
+    cartera = cargar_cartera()
+    if not seguimiento and not cartera:
+        enviar("ℹ️ No tienes acciones en seguimiento ni en cartera.", teclado())
+        return
+
+    # Panel en dos columnas: permite localizar rápidamente cada acción.
+    izq = ["👀 SEGUIMIENTO"]
+    for t in seguimiento:
+        izq.append(f"{t.get('simbolo', '')} — {_nombre_ticker(t)}")
+    der = ["💼 CARTERA"]
+    for p in cartera:
+        der.append(f"{p.get('simbolo', '')} — {_nombre_ticker(p)}")
+    filas = []
+    for i in range(max(len(izq), len(der))):
+        a = izq[i] if i < len(izq) else ""
+        b = der[i] if i < len(der) else ""
+        # Evita que un nombre largo desplace visualmente la segunda columna.
+        a = a[:30]
+        b = b[:30]
+        filas.append(f"{a:<32} {b}")
+
+    botones = []
+    for p in cartera:
+        botones.append([{"text": f"✏️ {p['simbolo']} — {_nombre_ticker(p)}",
+                         "callback_data": f"mod_sel:{p['simbolo']}"}])
+    botones.append([{"text": "❌ Cancelar", "callback_data": "mod_sel:cancelar"}])
+    texto = ("✏️ *MODIFICAR ACCIONES*\n\n" +
+             "`" + "\n".join(filas) + "`\n\n" +
+             ("Pulsa una acción de la cartera para cambiar cantidad o precio de compra."
+              if cartera else "No hay acciones compradas que modificar."))
+    enviar(texto, kb_inline(botones))
 
 def mod_sel(simbolo):
     if simbolo == "cancelar":
