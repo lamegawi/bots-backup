@@ -15,6 +15,7 @@ Funciones:
 Fuente: Yahoo Finance (chart API, sin clave).
 """
 import json
+import html
 import os
 import re
 import sys
@@ -110,10 +111,12 @@ def tg(method, **params):
         return json.loads(r.read().decode())
 
 
-def enviar(texto, keyboard=None):
+def enviar(texto, keyboard=None, parse_mode=None):
     p = {"chat_id": CHAT_ID, "text": texto, "disable_web_page_preview": True}
     if keyboard is not None:
         p["reply_markup"] = json.dumps(keyboard)
+    if parse_mode:
+        p["parse_mode"] = parse_mode
     return tg("sendMessage", **p)
 
 
@@ -579,20 +582,23 @@ def empezar_modificar():
         a = izq[i] if i < len(izq) else ""
         b = der[i] if i < len(der) else ""
         # Evita que un nombre largo desplace visualmente la segunda columna.
-        a = a[:30]
-        b = b[:30]
-        filas.append(f"{a:<32} {b}")
+        a = a[:32]
+        b = b[:32]
+        # Separador fijo y ancho monoespaciado: la cartera queda claramente
+        # a la derecha y alineada aunque los nombres tengan distinta longitud.
+        filas.append(f"{a:<36} │  {b}")
 
     botones = []
     for p in cartera:
         botones.append([{"text": f"✏️ {p['simbolo']} — {_nombre_ticker(p)}",
                          "callback_data": f"mod_sel:{p['simbolo']}"}])
     botones.append([{"text": "❌ Cancelar", "callback_data": "mod_sel:cancelar"}])
-    texto = ("✏️ *MODIFICAR ACCIONES*\n\n" +
-             "`" + "\n".join(filas) + "`\n\n" +
+    panel = "\n".join(filas)
+    texto = ("✏️ <b>MODIFICAR ACCIONES</b>\n\n" +
+             "<pre>" + html.escape(panel) + "</pre>\n" +
              ("Pulsa una acción de la cartera para cambiar cantidad o precio de compra."
               if cartera else "No hay acciones compradas que modificar."))
-    enviar(texto, kb_inline(botones))
+    enviar(texto, kb_inline(botones), parse_mode="HTML")
 
 def mod_sel(simbolo):
     if simbolo == "cancelar":
