@@ -31,7 +31,11 @@
   "atr": 0.08139662098573897,
   "stop_dist_pct": 1.673,
   "apalancamiento": 10,
-  "estado": "abierta"
+  "estado": "cerrada",
+  "ts_cierre": "2026-08-31 01:23",
+  "pnl_usd": -8.29,
+  "r_resultado": -0.83,
+  "motivo": "BE"
  },
  {
   "id": 1787739300721,
@@ -133,6 +137,44 @@
   "atr": 0.07886009040122458,
   "stop_dist_pct": 1.581,
   "apalancamiento": 10,
+  "estado": "cerrada",
+  "ts_cierre": "2026-08-30 23:01",
+  "pnl_usd": 9.19,
+  "r_resultado": 0.92,
+  "motivo": "TP"
+ },
+ {
+  "id": 1788124341485,
+  "ts_apertura": "2026-08-30 23:12",
+  "bot": "demo",
+  "moneda": "UNI",
+  "direccion": "LONG",
+  "entrada": 5.22,
+  "contratos": 77,
+  "riesgo_usd": 10.0,
+  "score": 10.312273960540955,
+  "atr": 0.08691601926323204,
+  "stop_dist_pct": 2.498,
+  "apalancamiento": 8,
+  "estado": "cerrada",
+  "ts_cierre": "2026-08-31 02:15",
+  "pnl_usd": -11.58,
+  "r_resultado": -1.16,
+  "motivo": "SL"
+ },
+ {
+  "id": 1788136117945,
+  "ts_apertura": "2026-08-31 02:28",
+  "bot": "demo",
+  "moneda": "UNI",
+  "direccion": "LONG",
+  "entrada": 5.142,
+  "contratos": 73,
+  "riesgo_usd": 10.0,
+  "score": 9.077888362304884,
+  "atr": 0.09106440066085505,
+  "stop_dist_pct": 2.656,
+  "apalancamiento": 7,
   "estado": "abierta"
  }
 ]

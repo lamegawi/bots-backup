@@ -1,56 +1,62 @@
 {
- "ETC: SHORT": {
-  "symbol": "ETC",
-  "direction": "SHORT",
-  "entry": 7.484,
-  "contratos": 8,
-  "sl_algo_id": "3873685495658098688",
-  "state": "opened",
-  "risk_usd": 10.0,
-  "opened_at": 1787947224.825466,
-  "dist": 0.01580574,
-  "initial_sl": 7.60229014,
-  "tp_levels": [
-   {
-    "nivel": "1.0R",
-    "precio": 7.40513991,
-    "sz": 2,
-    "algoId": "3873685502201212928"
-   },
-   {
-    "nivel": "1.5R",
-    "precio": 7.36570986,
-    "sz": 2,
-    "algoId": "3873685508576555008"
-   },
-   {
-    "nivel": "2.0R",
-    "precio": 7.32627982,
-    "sz": 2,
-    "algoId": "3873685515052560384"
-   },
-   {
-    "nivel": "2.5R",
-    "precio": 7.28684977,
-    "sz": 2,
-    "algoId": "3873685521629229056"
-   }
-  ],
-  "qty_vista": 8.0
- },
- "HYPE: LONG": {
-  "symbol": "HYPE",
-  "direction": "LONG",
-  "entry": 93.94255135135136,
-  "contratos": 37,
-  "sl_algo_id": "3876765074417299456",
-  "state": "trailing",
-  "risk_usd": 10.0,
-  "opened_at": 1787952602.119982,
-  "dist": 0.04,
-  "initial_sl": 104.5992324,
-  "tp_levels": [],
-  "trail_algo_id": "3873734564950556672",
-  "qty_vista": 37.0
- }
+  "HYPE: LONG": {
+    "symbol": "HYPE",
+    "direction": "LONG",
+    "entry": 93.94255135135136,
+    "contratos": 37,
+    "sl_algo_id": "3876765074417299456",
+    "state": "trailing",
+    "risk_usd": 10.0,
+    "opened_at": 1787952602.119982,
+    "dist": 0.04,
+    "initial_sl": 104.5992324,
+    "tp_levels": [],
+    "trail_algo_id": "3873734564950556672",
+    "qty_vista": 37.0
+  },
+  "UNI: LONG": {
+    "symbol": "UNI",
+    "direction": "LONG",
+    "entry": 5.142,
+    "contratos": 73,
+    "sl_algo_id": "3880023691908132864",
+    "state": "opened",
+    "risk_usd": 10.0,
+    "opened_at": 1788136117.9451892,
+    "dist": 0.02656488,
+    "initial_sl": 5.0054034,
+    "tp_levels": [
+      {
+        "nivel": "1.0R",
+        "precio": 5.2330644,
+        "sz": 15,
+        "algoId": "3880023698283474944"
+      },
+      {
+        "nivel": "1.5R",
+        "precio": 5.2785966,
+        "sz": 15,
+        "algoId": "3880023704390381568"
+      },
+      {
+        "nivel": "2.0R",
+        "precio": 5.3241288,
+        "sz": 15,
+        "algoId": "3880023710530842624"
+      },
+      {
+        "nivel": "2.5R",
+        "precio": 5.369661,
+        "sz": 15,
+        "algoId": "3880023716570640384"
+      },
+      {
+        "nivel": "3.0R",
+        "precio": 5.4151932,
+        "sz": 13,
+        "algoId": "3880023723113754624"
+      }
+    ],
+    "qty_vista": 73.0
+  }
 }

@@ -553,6 +553,7 @@ def manage_positions():
                      f"Cerrados ~{cerr} ct · quedan {qty:g} ct · "
                      f"P&L actual {unreal:+.2f} USDC", teclado())
         m["qty_vista"] = qty
+        changed = True
 
         # Break-even al 1:1
         if (BREAKEVEN_ENABLED and m.get("state") == "opened"
