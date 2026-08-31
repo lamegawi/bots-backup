@@ -25,6 +25,21 @@
       "simbolo": "MTS.MC",
       "nombre": "ARCELORMITTAL SA",
       "yahoo": "MTS.MC"
+    },
+    {
+      "simbolo": "FDMT",
+      "nombre": "4D Molecular Therapeutics, Inc.",
+      "yahoo": "FDMT"
+    },
+    {
+      "simbolo": "SAB.MC",
+      "nombre": "BANCO DE SABADELL",
+      "yahoo": "SAB.MC"
+    },
+    {
+      "simbolo": "HOME.MC",
+      "nombre": "NEINOR HOMES, S.A.",
+      "yahoo": "HOME.MC"
     }
   ]
 }

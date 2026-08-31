@@ -122,7 +122,11 @@
   "atr": 1.6439971192811027,
   "stop_dist_pct": 2.74,
   "apalancamiento": 7,
-  "estado": "abierta"
+  "estado": "cerrada",
+  "ts_cierre": "2026-08-31 17:29",
+  "pnl_usd": -23.09,
+  "r_resultado": -2.31,
+  "motivo": "SL"
  },
  {
   "id": 1787947224826,

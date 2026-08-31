@@ -1,19 +1,4 @@
 {
-  "HYPE: LONG": {
-    "symbol": "HYPE",
-    "direction": "LONG",
-    "entry": 93.94255135135136,
-    "contratos": 37,
-    "sl_algo_id": "3876765074417299456",
-    "state": "trailing",
-    "risk_usd": 10.0,
-    "opened_at": 1787952602.119982,
-    "dist": 0.04,
-    "initial_sl": 104.5992324,
-    "tp_levels": [],
-    "trail_algo_id": "3873734564950556672",
-    "qty_vista": 37.0
-  },
   "UNI: LONG": {
     "symbol": "UNI",
     "direction": "LONG",
@@ -57,6 +42,6 @@
         "algoId": "3880023723113754624"
       }
     ],
-    "qty_vista": 73.0
+    "qty_vista": 43.0
   }
 }
