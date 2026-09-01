@@ -273,6 +273,64 @@ def texto_precios(cfg, titulo="📊 *PRECIOS EN VIVO*"):
 
 
 
+
+
+def texto_saldo():
+    posiciones = cargar_cartera()
+    lineas = ["💰 *SALDO (cartera)*", ""]
+    if not posiciones:
+        lineas.append("Aún no has añadido acciones compradas.\n"
+                      "Usa ➕ *Añadir* → 💵 *Comprada*.")
+        return "\n".join(lineas)
+
+    total_invertido = 0.0
+    total_valor = 0.0
+    posiciones = sorted(posiciones, key=lambda p: (datos_mercado(p)[0], p.get("simbolo", "")))
+    mercado_anterior = None
+    for p in posiciones:
+        simbolo = p["simbolo"]
+        mercado, abierto = datos_mercado(p)
+        estado_mercado = "ABIERTO" if abierto else "CERRADO"
+        if mercado != mercado_anterior:
+            lineas.append(f"— {mercado} —")
+            mercado_anterior = mercado
+        cantidad = p["cantidad"]
+        pc = p["precio_compra"]
+        invertido = cantidad * pc
+        total_invertido += invertido
+        try:
+            q = get_quote(p["yahoo"])
+        except Exception:
+            q = None
+        nombre = _nombre_ticker(p) if "_nombre_ticker" in globals() else (p.get("nombre", "") or "")
+        lineas.append(f"*{simbolo}* ({nombre}) · {mercado} · {estado_mercado}")
+        lineas.append(f"    {cantidad:g} × {pc:,.2f} {p.get('moneda', '')}")
+        if q:
+            valor = cantidad * q["precio"]
+            pnl = valor - invertido
+            pnl_pct = (q["precio"] / pc - 1) * 100 if pc else 0.0
+            total_valor += valor
+            ic = "🟢" if pnl >= 0 else "🔴"
+            lineas.append(f"    ahora {fmt_precio(q)} · valor {fmt_cant(valor, q['moneda'])}")
+            # Variación de la cotización durante la sesión actual.
+            cambio_hoy = q.get("cambio")
+            if cambio_hoy is not None:
+                lineas.append(f"    Hoy: {circulo_dia(cambio_hoy)} {fmt_cant(cambio_hoy, q['moneda'])} · {fmt_pct(q.get('pct'))}")
+            else:
+                lineas.append("    Hoy: —")
+            lineas.append(f"    {ic} {fmt_cant(pnl, q['moneda'])} ({pnl_pct:+.2f}%)")
+        else:
+            lineas.append("    ⚠️ sin cotización ahora")
+            total_valor += invertido
+        lineas.append("")
+
+    pnl_total = total_valor - total_invertido
+    ic_t = "🟢" if pnl_total >= 0 else "🔴"
+    lineas.append(f"*Total invertido*: {total_invertido:,.2f}")
+    lineas.append(f"*Valor actual*: {total_valor:,.2f}")
+    lineas.append(f"{ic_t} *P&L total*: {pnl_total:+,.2f}")
+    return "\n".join(lineas)
+
 def fmt_cant(v, moneda):
     if moneda == "USD":
         return f"${v:,.2f}"
