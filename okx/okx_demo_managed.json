@@ -43,5 +43,19 @@
       }
     ],
     "qty_vista": 43.0
+  },
+  "AVAX: LONG": {
+    "symbol": "AVAX",
+    "direction": "LONG",
+    "entry": 7.08618,
+    "contratos": 50,
+    "sl_algo_id": "3882563265133850624",
+    "state": "adopted",
+    "risk_usd": 10.0,
+    "opened_at": 1788211802.1957707,
+    "dist": 0.04,
+    "initial_sl": 6.985976,
+    "tp_levels": [],
+    "qty_vista": 50.0
   }
 }
