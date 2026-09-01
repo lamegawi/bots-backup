@@ -277,7 +277,7 @@ def texto_precios(cfg, titulo="📊 *PRECIOS EN VIVO*"):
 
 def texto_saldo():
     posiciones = cargar_cartera()
-    lineas = ["💰 *SALDO (cartera)*", ""]
+    lineas = ["💰 SALDO (cartera)", ""]
     if not posiciones:
         lineas.append("Aún no has añadido acciones compradas.\n"
                       "Usa ➕ *Añadir* → 💵 *Comprada*.")
@@ -303,7 +303,7 @@ def texto_saldo():
         except Exception:
             q = None
         nombre = _nombre_ticker(p) if "_nombre_ticker" in globals() else (p.get("nombre", "") or "")
-        lineas.append(f"*{simbolo}* ({nombre}) · {mercado} · {estado_mercado}")
+        lineas.append(f"{simbolo} — {nombre} · {mercado} · {estado_mercado}")
         lineas.append(f"    {cantidad:g} × {pc:,.2f} {p.get('moneda', '')}")
         if q:
             valor = cantidad * q["precio"]
@@ -326,9 +326,9 @@ def texto_saldo():
 
     pnl_total = total_valor - total_invertido
     ic_t = "🟢" if pnl_total >= 0 else "🔴"
-    lineas.append(f"*Total invertido*: {total_invertido:,.2f}")
-    lineas.append(f"*Valor actual*: {total_valor:,.2f}")
-    lineas.append(f"{ic_t} *P&L total*: {pnl_total:+,.2f}")
+    lineas.append(f"Total invertido: {total_invertido:,.2f}")
+    lineas.append(f"Valor actual: {total_valor:,.2f}")
+    lineas.append(f"{ic_t} P/L total: {pnl_total:+,.2f}")
     return "\n".join(lineas)
 
 def fmt_cant(v, moneda):
@@ -607,7 +607,10 @@ def _nombre_ticker(t):
     simbolo = t.get("simbolo", "")
     if simbolo == "ACX":
         return "Acerinox"
-    nombre = re.sub(r"(?i)\b[\w-]+\.(?:com|net|org|es|de|fr|it)\b", "", (t.get("nombre", "") or "")).strip()
+    nombre = re.sub(r"(?i)\b[\w-]+\.(?:com|net|org|es|de|fr|it)\b", "", (t.get("nombre", "") or ""))
+    nombre = re.sub(r"\s+", " ", nombre).strip()
+    # El proveedor añade a veces una R final y espacios de relleno.
+    nombre = re.sub(r"(?:\s|\.)R$", "", nombre).rstrip(" .")
     return nombre or "sin nombre"
 
 
