@@ -142,6 +142,35 @@ def _norm_texto(t):
 
 
 # ------------------------------------------------------------------ datos
+MERCADOS = {
+    "Madrid": ("Europe/Madrid", 9, 0, 17, 30),
+    "Frankfurt": ("Europe/Berlin", 9, 0, 17, 30),
+    "Londres": ("Europe/London", 8, 0, 16, 30),
+    "París": ("Europe/Paris", 9, 0, 17, 30),
+    "Nueva York": ("America/New_York", 9, 30, 16, 0),
+}
+
+
+def datos_mercado(ticker):
+    yahoo = (ticker.get("yahoo") or "").upper()
+    simbolo = (ticker.get("simbolo") or "").upper()
+    if yahoo.endswith(".MC") or simbolo.endswith(".MC"):
+        nombre = "Madrid"
+    elif yahoo.endswith(".L") or simbolo.endswith(".L"):
+        nombre = "Londres"
+    elif yahoo.endswith(".PA") or simbolo.endswith(".PA"):
+        nombre = "París"
+    elif yahoo.endswith(".F") or yahoo.endswith(".DE") or simbolo.endswith(".F"):
+        nombre = "Frankfurt"
+    else:
+        nombre = "Nueva York"
+    zona, hi, mi, hf, mf = MERCADOS[nombre]
+    ahora = datetime.now(ZoneInfo(zona))
+    minutos = ahora.hour * 60 + ahora.minute
+    abierto = ahora.weekday() < 5 and hi * 60 + mi <= minutos < hf * 60 + mf
+    return nombre, abierto
+
+
 def get_quote(yahoo):
     url = (f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(yahoo)}"
            f"?range=1d&interval=1d")
@@ -216,70 +245,32 @@ def fmt_precio(q):
 
 def texto_precios(cfg, titulo="📊 *PRECIOS EN VIVO*"):
     datos = fetch_watchlist(cfg)
+    datos.sort(key=lambda d: (datos_mercado(d["ticker"])[0],
+                              d["ticker"].get("simbolo", "")))
     lineas = [titulo, ""]
+    mercado_anterior = None
     for d in datos:
         t = d["ticker"]
+        mercado, abierto = datos_mercado(t)
+        estado = "ABIERTO" if abierto else "CERRADO"
+        if mercado != mercado_anterior:
+            if mercado_anterior is not None:
+                lineas.append("")
+            lineas.append(f"— {mercado} —")
+            mercado_anterior = mercado
         if not d["ok"]:
-            lineas.append(f"• {t['simbolo']} ({t['nombre']}): ⚠️ sin datos")
+            lineas.append(f"• {t['simbolo']} · {mercado} · {estado}: ⚠️ sin datos")
             continue
         q = d["q"]
-        # No mostrar dominios en el nombre: Telegram los convierte en enlaces
-        # automáticamente (p.ej. bet-at-home.com en ACX).
         nombre = "Acerinox" if t.get("simbolo") == "ACX" else (t.get("nombre", "") or "")
         nombre = re.sub(r"(?i)\b[\w-]+\.(?:com|net|org|es|de|fr|it)\b", "", nombre).strip()
-        lineas.append(f"{flecha(q['pct'])} *{t['simbolo']}*" + (f" {nombre}" if nombre else ""))
-        # Precios mantiene el formato original: precio y porcentaje del día.
+        linea = f"{flecha(q['pct'])} *{t['simbolo']}*"
+        if nombre:
+            linea += f" {nombre}"
+        lineas.append(linea + f" · {mercado} · {estado}")
         lineas.append(f"    {fmt_precio(q)} · {fmt_pct(q['pct'])}")
     return "\n".join(lineas)
 
-
-def texto_saldo():
-    posiciones = cargar_cartera()
-    lineas = ["💰 *SALDO (cartera)*", ""]
-    if not posiciones:
-        lineas.append("Aún no has añadido acciones compradas.\n"
-                      "Usa ➕ *Añadir* → 💵 *Comprada*.")
-        return "\n".join(lineas)
-
-    total_invertido = 0.0
-    total_valor = 0.0
-    for p in posiciones:
-        simbolo = p["simbolo"]
-        cantidad = p["cantidad"]
-        pc = p["precio_compra"]
-        invertido = cantidad * pc
-        total_invertido += invertido
-        try:
-            q = get_quote(p["yahoo"])
-        except Exception:
-            q = None
-        lineas.append(f"*{simbolo}* ({p.get('nombre', '')})")
-        lineas.append(f"    {cantidad:g} × {pc:,.2f} {p.get('moneda', '')}")
-        if q:
-            valor = cantidad * q["precio"]
-            pnl = valor - invertido
-            pnl_pct = (q["precio"] / pc - 1) * 100 if pc else 0.0
-            total_valor += valor
-            ic = "🟢" if pnl >= 0 else "🔴"
-            lineas.append(f"    ahora {fmt_precio(q)} · valor {fmt_cant(valor, q['moneda'])}")
-            # Variación de la cotización durante la sesión actual.
-            cambio_hoy = q.get("cambio")
-            if cambio_hoy is not None:
-                lineas.append(f"    Hoy: {circulo_dia(cambio_hoy)} {fmt_cant(cambio_hoy, q['moneda'])} · {fmt_pct(q.get('pct'))}")
-            else:
-                lineas.append("    Hoy: —")
-            lineas.append(f"    {ic} {fmt_cant(pnl, q['moneda'])} ({pnl_pct:+.2f}%)")
-        else:
-            lineas.append("    ⚠️ sin cotización ahora")
-            total_valor += invertido
-        lineas.append("")
-
-    pnl_total = total_valor - total_invertido
-    ic_t = "🟢" if pnl_total >= 0 else "🔴"
-    lineas.append(f"*Total invertido*: {total_invertido:,.2f}")
-    lineas.append(f"*Valor actual*: {total_valor:,.2f}")
-    lineas.append(f"{ic_t} *P&L total*: {pnl_total:+,.2f}")
-    return "\n".join(lineas)
 
 
 def fmt_cant(v, moneda):
