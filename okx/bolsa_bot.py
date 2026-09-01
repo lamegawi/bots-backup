@@ -455,15 +455,15 @@ def cmd_seguimiento():
     lineas = ["👀 *ACCIONES EN SEGUIMIENTO*", "",
               "Pulsa el botón de cada acción para ver posibles entradas y stop loss:"]
     botones = []
+    cotizaciones = {d["ticker"].get("simbolo"): d for d in fetch_watchlist(cfg)}
     for t in tickers:
-        # ACX es Acerinox; evitamos mostrar el nombre comercial contaminado
-        # que devuelve el proveedor ("... AG") en algunos mercados.
-        nombre = "Acerinox" if t.get("simbolo") == "ACX" else (t.get("nombre", "") or "")
-        nombre = re.sub(r"(?i)\b[\w-]+\.(?:com|net|org|es|de|fr|it)\b", "", nombre).strip()
-        linea = f"• *{t['simbolo']}*"
-        if nombre:
-            linea += f" — {nombre}"
-        lineas.append(linea)
+        nombre = _nombre_ticker(t) if "_nombre_ticker" in globals() else (t.get("nombre", "") or "")
+        mercado, abierto = datos_mercado(t)
+        d = cotizaciones.get(t.get("simbolo"), {})
+        q = d.get("q") if d.get("ok") else None
+        precio = fmt_precio(q) if q else "sin precio"
+        estado = "ABIERTO" if abierto else "CERRADO"
+        lineas.append(f"• {t['simbolo']} — {nombre} · {precio} · {mercado} · {estado}")
         botones.append([{"text": f"🤖 Análisis IA {t['simbolo']}",
                           "callback_data": f"ana:{t['simbolo']}"}])
     enviar("\n".join(lineas), kb_inline(botones))
