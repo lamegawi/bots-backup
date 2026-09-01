@@ -361,9 +361,115 @@ def cmd_precios():
     enviar(texto_precios(cargar_config()))
 
 
-def cmd_alertas():
-    enviar(texto_alertas(cargar_config()))
+def _tickers_disponibles(cfg):
+    """Valores de seguimiento y cartera, sin duplicados."""
+    salida = list(cfg.get("tickers", []))
+    vistos = {x.get("simbolo") for x in salida}
+    for x in cargar_cartera():
+        if x.get("simbolo") not in vistos:
+            salida.append(x); vistos.add(x.get("simbolo"))
+    return salida
 
+
+def empezar_alertas():
+    enviar("🔔 *ALERTAS*\n\n¿Qué quieres hacer?", kb_inline([
+        [{"text": "➕ AÑADIR", "callback_data": "alert_menu:add"},
+         {"text": "🗑️ QUITAR", "callback_data": "alert_menu:quit"}],
+        [{"text": "❌ CANCELAR", "callback_data": "alert_menu:cancel"}]]))
+
+
+def alertas_anadir():
+    cfg = cargar_config(); tickers = _tickers_disponibles(cfg)
+    if not tickers:
+        enviar("No hay acciones guardadas en seguimiento o cartera.", teclado()); return
+    botones = [[{"text": f"{t.get('simbolo')} — {_nombre_ticker(t)}",
+                  "callback_data": f"alert_add:{t.get('simbolo')}"}] for t in tickers]
+    botones.append([{"text": "❌ CANCELAR", "callback_data": "alert_menu:cancel"}])
+    enviar("➕ *AÑADIR ALERTA*\n\nElige una acción:", kb_inline(botones))
+
+
+def alertas_tipo(simbolo):
+    ESPERA["datos"] = {"alert_simbolo": simbolo}; ESPERA["paso"] = "alert_precio"
+    enviar(f"🔔 *{simbolo}*\n\nElige el tipo de alerta:", kb_inline([
+        [{"text": "📈 Si sube de X", "callback_data": "alert_type:above"},
+         {"text": "🎯 Si llega a X", "callback_data": "alert_type:reach"}],
+        [{"text": "📉 Si baja de X", "callback_data": "alert_type:below"},
+         {"text": "❌ CANCELAR", "callback_data": "alert_type:cancel"}]]))
+    ESPERA["paso"] = "alert_type"
+
+
+def alertas_pedir_precio(tipo):
+    if tipo == "cancel":
+        ESPERA["paso"] = None; ESPERA["datos"] = {}; enviar("❌ Cancelado.", teclado()); return
+    ESPERA["datos"]["alert_tipo"] = tipo; ESPERA["paso"] = "alert_precio"
+    texto = {"above": "suba por encima", "reach": "llegue a", "below": "baje por debajo"}[tipo]
+    enviar(f"Escribe el precio al que quieres que {texto} (ej. `100` o `100,50`).")
+
+
+def alertas_guardar_precio(txt):
+    try: precio = float(str(txt).replace(",", ".").replace("€", "").replace("$", "").strip())
+    except Exception:
+        enviar("Escribe solo un precio numérico."); return
+    if precio <= 0: enviar("El precio debe ser mayor que 0."); return
+    d = ESPERA["datos"]; estado = cargar_alertas(); lista = estado.setdefault("personalizadas", [])
+    if any(a.get("activo", True) and a.get("simbolo") == d["alert_simbolo"]
+           and a.get("tipo") == d["alert_tipo"] and float(a.get("precio", 0)) == precio for a in lista):
+        enviar("ℹ️ Esa alerta ya existe.", teclado()); ESPERA["paso"] = None; return
+    lista.append({"id": int(time.time() * 1000), "simbolo": d["alert_simbolo"],
+                  "tipo": d["alert_tipo"], "precio": precio, "activo": True,
+                  "creada": datetime.now(MAD).isoformat()})
+    guardar_alertas(estado); ESPERA["paso"] = None; ESPERA["datos"] = {}
+    enviar(f"✅ Alerta guardada para *{d['alert_simbolo']}* en {precio:g}.", teclado())
+
+
+def alertas_quitar():
+    activas = [a for a in _alertas_personales(cargar_alertas()) if a.get("activo", True)]
+    simbolos = sorted({a.get("simbolo") for a in activas})
+    if not simbolos:
+        enviar("🗑️ No hay alertas personalizadas guardadas.", teclado()); return
+    botones = [[{"text": f"🗑️ {x}", "callback_data": f"alert_del:{x}"}] for x in simbolos]
+    botones.append([{"text": "❌ CANCELAR", "callback_data": "alert_menu:cancel"}])
+    enviar("🗑️ *QUITAR ALERTA*\n\nElige la acción:", kb_inline(botones))
+
+
+def alertas_elegir_borrado(simbolo):
+    activas = [a for a in _alertas_personales(cargar_alertas())
+               if a.get("activo", True) and a.get("simbolo") == simbolo]
+    if not activas:
+        enviar("No quedan alertas para esa acción.", teclado()); return
+    botones = []
+    for a in activas:
+        tipo = {"above": "sube de", "reach": "llega a", "below": "baja de"}.get(a.get("tipo"), "límite")
+        botones.append([{"text": f"🗑️ {simbolo}: {tipo} {float(a.get('precio')):g}",
+                          "callback_data": f"alert_delid:{a.get('id')}"}])
+    botones.append([{"text": "❌ CANCELAR", "callback_data": "alert_menu:cancel"}])
+    enviar("Elige la alerta que quieres borrar:", kb_inline(botones))
+
+
+def alerta_borrar_id(alert_id):
+    estado = cargar_alertas(); lista = estado.get("personalizadas", [])
+    antes = len(lista)
+    lista = [a for a in lista if str(a.get("id")) != str(alert_id)]
+    estado["personalizadas"] = lista; guardar_alertas(estado)
+    enviar("✅ Alerta eliminada." if len(lista) < antes else "ℹ️ La alerta ya no existía.", teclado())
+
+
+def _alertas_personales(estado):
+    return estado.get("personalizadas", []) if isinstance(estado, dict) else []
+
+
+def cmd_alertas():
+    cfg = cargar_config(); estado = cargar_alertas()
+    activas = [a for a in _alertas_personales(estado) if a.get("activo", True)]
+    lineas = [f"🔔 *ALERTAS (umbral diario {cfg['umbral_pct']:g}%)*", ""]
+    lineas.append("Alertas personalizadas guardadas: " + str(len(activas)))
+    for a in activas:
+        tipo = {"above": "↑", "reach": "=", "below": "↓"}.get(a.get("tipo"), "?")
+        lineas.append(f"• {a.get('simbolo')} {tipo} {float(a.get('precio')):g}")
+    enviar("\n".join(lineas), kb_inline([
+        [{"text": "➕ AÑADIR", "callback_data": "alert_menu:add"},
+         {"text": "🗑️ QUITAR", "callback_data": "alert_menu:quit"}],
+        [{"text": "❌ CANCELAR", "callback_data": "alert_menu:cancel"}]]))
 
 def cmd_saldo():
     enviar(texto_saldo())
@@ -795,6 +901,20 @@ def procesar_callback(cb):
     tg("answerCallbackQuery", callback_query_id=cb.get("id"))
     if data.startswith("ana:"):
         cmd_analisis(partes[1])
+    elif data == "alert_menu:add":
+        alertas_anadir()
+    elif data == "alert_menu:quit":
+        alertas_quitar()
+    elif data == "alert_menu:cancel":
+        ESPERA["paso"] = None; ESPERA["datos"] = {}; enviar("❌ Cancelado.", teclado())
+    elif data.startswith("alert_add:"):
+        alertas_tipo(partes[1])
+    elif data.startswith("alert_type:"):
+        alertas_pedir_precio(partes[1])
+    elif data.startswith("alert_del:"):
+        alertas_elegir_borrado(partes[1])
+    elif data.startswith("alert_delid:"):
+        alerta_borrar_id(partes[1])
     elif data.startswith("add_tipo:"):
         add_tipo(partes[1])
     elif data.startswith("del_lista:"):
@@ -828,6 +948,9 @@ def procesar_texto(t):
         return
     # si hay un flujo en curso, el texto va a ese flujo
     paso = ESPERA.get("paso")
+    if paso == "alert_precio":
+        alertas_guardar_precio(t)
+        return
     if paso == "add_sym":
         add_sym(t)
         return
@@ -875,31 +998,43 @@ def resumen_diario(slot):
 
 # ------------------------------------------------------------------ alertas
 def check_alertas():
-    cfg = cargar_config()
-    umbral = cfg["umbral_pct"]
+    cfg = cargar_config(); umbral = cfg["umbral_pct"]
     hoy = datetime.now(MAD).strftime("%Y-%m-%d")
-    estado = cargar_alertas()
-    dia = estado.get(hoy, {})
-    datos = fetch_watchlist(cfg)
-    avisos = []
+    estado = cargar_alertas(); dia = estado.get(hoy, {})
+    datos = fetch_watchlist(cfg); avisos = []
     for d in datos:
-        if not d["ok"]:
-            continue
+        if not d["ok"]: continue
         t, q = d["ticker"], d["q"]
-        if q["pct"] is None or abs(q["pct"]) < umbral:
-            continue
-        if dia.get(t["simbolo"]):
-            continue
-        dia[t["simbolo"]] = True
-        avisos.append((t, q))
-    if avisos:
-        for t, q in avisos:
-            dir_ = "sube" if q["pct"] > 0 else "baja"
-            enviar(f"🔔 *ALERTA*: {t['simbolo']} ({t['nombre']}) {dir_} "
-                   f"*{q['pct']:+.2f}%* hoy.\nPrecio: {fmt_precio(q)}.")
-        estado[hoy] = dia
-        guardar_alertas(estado)
-
+        if q["pct"] is None or abs(q["pct"]) < umbral or dia.get(t["simbolo"]): continue
+        dia[t["simbolo"]] = True; avisos.append((t, q))
+    mapa = {t.get("simbolo"): t for t in _tickers_disponibles(cfg)}
+    personal = False
+    for a in _alertas_personales(estado):
+        if not a.get("activo", True): continue
+        t = mapa.get(a.get("simbolo"))
+        if not t: continue
+        try:
+            q = get_quote(t["yahoo"]); actual = float(q["precio"]) if q else None
+            limite = float(a["precio"]); tipo = a.get("tipo")
+            if tipo == "above": cumple = actual is not None and actual >= limite
+            elif tipo == "below": cumple = actual is not None and actual <= limite
+            else:
+                # "llega a X": se considera alcanzado al cruzar X (según el precio actual).
+                sentido = a.get("sentido")
+                if sentido is None and actual is not None:
+                    a["sentido"] = "above" if limite >= actual else "below"
+                    sentido = a["sentido"]
+                cumple = actual is not None and ((sentido == "above" and actual >= limite) or (sentido == "below" and actual <= limite))
+            if cumple:
+                texto = {"above": "sube por encima de", "reach": "llega a", "below": "baja por debajo de"}.get(tipo, "alcanza")
+                enviar(f"🔔 *ALERTA*: {t['simbolo']} {texto} {limite:g}.\nPrecio actual: {fmt_precio(q)}.")
+                a["activo"] = False; a["disparada"] = datetime.now(MAD).isoformat(); personal = True
+        except Exception as e: print("alerta personalizada:", e)
+    for t, q in avisos:
+        dir_ = "sube" if q["pct"] > 0 else "baja"
+        enviar(f"🔔 *ALERTA*: {t['simbolo']} ({t['nombre']}) {dir_} *{q['pct']:+.2f}%* hoy.\nPrecio: {fmt_precio(q)}.")
+    if avisos or personal:
+        estado[hoy] = dia; guardar_alertas(estado)
 
 def main():
     if not TOKEN or not CHAT_ID:
