@@ -2,16 +2,6 @@
   "umbral_pct": 3.0,
   "tickers": [
     {
-      "simbolo": "ACX",
-      "nombre": "bet-at-home.com AG            I",
-      "yahoo": "ACX.F"
-    },
-    {
-      "simbolo": "REP",
-      "nombre": "Repsol S.A.                   A",
-      "yahoo": "REP.F"
-    },
-    {
       "simbolo": "SAN.MC",
       "nombre": "BANCO SANTANDER S.A.",
       "yahoo": "SAN.MC"
@@ -40,6 +30,16 @@
       "simbolo": "HOME.MC",
       "nombre": "NEINOR HOMES, S.A.",
       "yahoo": "HOME.MC"
+    },
+    {
+      "simbolo": "REP.MC",
+      "nombre": "REPSOL,  S.A.",
+      "yahoo": "REP.MC"
+    },
+    {
+      "simbolo": "ACX.MC",
+      "nombre": "ACERINOX, S.A.",
+      "yahoo": "ACX.MC"
     }
   ]
 }

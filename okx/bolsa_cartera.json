@@ -63,6 +63,14 @@
       "moneda": "EUR",
       "precio_compra": 29.47,
       "cantidad": 70.0
+    },
+    {
+      "simbolo": "SAN.MC",
+      "nombre": "BANCO SANTANDER S.A.",
+      "yahoo": "SAN.MC",
+      "moneda": "EUR",
+      "precio_compra": 12.452,
+      "cantidad": 400.0
     }
   ]
 }

@@ -1,49 +1,4 @@
 {
-  "UNI: LONG": {
-    "symbol": "UNI",
-    "direction": "LONG",
-    "entry": 5.142,
-    "contratos": 73,
-    "sl_algo_id": "3880023691908132864",
-    "state": "opened",
-    "risk_usd": 10.0,
-    "opened_at": 1788136117.9451892,
-    "dist": 0.02656488,
-    "initial_sl": 5.0054034,
-    "tp_levels": [
-      {
-        "nivel": "1.0R",
-        "precio": 5.2330644,
-        "sz": 15,
-        "algoId": "3880023698283474944"
-      },
-      {
-        "nivel": "1.5R",
-        "precio": 5.2785966,
-        "sz": 15,
-        "algoId": "3880023704390381568"
-      },
-      {
-        "nivel": "2.0R",
-        "precio": 5.3241288,
-        "sz": 15,
-        "algoId": "3880023710530842624"
-      },
-      {
-        "nivel": "2.5R",
-        "precio": 5.369661,
-        "sz": 15,
-        "algoId": "3880023716570640384"
-      },
-      {
-        "nivel": "3.0R",
-        "precio": 5.4151932,
-        "sz": 13,
-        "algoId": "3880023723113754624"
-      }
-    ],
-    "qty_vista": 43.0
-  },
   "AVAX: LONG": {
     "symbol": "AVAX",
     "direction": "LONG",
@@ -57,5 +12,50 @@
     "initial_sl": 6.985976,
     "tp_levels": [],
     "qty_vista": 50.0
+  },
+  "HYPE: SHORT": {
+    "symbol": "HYPE",
+    "direction": "SHORT",
+    "entry": 83.333,
+    "contratos": 31,
+    "sl_algo_id": "3883797325190557697",
+    "state": "opened",
+    "risk_usd": 10.0,
+    "opened_at": 1788248581.031076,
+    "dist": 0.03838483,
+    "initial_sl": 86.53172278,
+    "tp_levels": [
+      {
+        "nivel": "1.0R",
+        "precio": 81.20051815,
+        "sz": 6,
+        "algoId": "3883797331800780801"
+      },
+      {
+        "nivel": "1.5R",
+        "precio": 80.13427722,
+        "sz": 6,
+        "algoId": "3883797338377449473"
+      },
+      {
+        "nivel": "2.0R",
+        "precio": 79.06803629,
+        "sz": 6,
+        "algoId": "3883797344920563713"
+      },
+      {
+        "nivel": "2.5R",
+        "precio": 78.00179536,
+        "sz": 6,
+        "algoId": "3883797351463677953"
+      },
+      {
+        "nivel": "3.0R",
+        "precio": 76.93555444,
+        "sz": 7,
+        "algoId": "3883797357973237761"
+      }
+    ],
+    "qty_vista": 25.0
   }
 }
