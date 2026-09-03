@@ -1,0 +1,119 @@
+==============================================================================
+DIAGNOSTICO V5 - 2026-09-03 18:26:53
+==============================================================================
+--- WALLET ---
+  0xb0e1197098e6d427c01720f1631cad24ce740fa0  (de archivo /root/wallet_address.txt)
+
+--- SALDO ON-CHAIN (Polygon RPC directo) ---
+  USDC nativo: $0.00
+  USDC.e:      $0.00
+  pUSD:        $0.00 (no consultado en v5)
+  TOTAL:       $0.00
+
+--- POSICIONES (74) ---
+  Total invertido:  $575.69
+  Valor actual:     $25.29
+  PnL no realizado: $-550.39
+
+--- POR ESTADO ---
+  EN_PROFIT: 2 posiciones (valor $24.91, invertido $18.00)
+  EN_PERDIDA: 3 posiciones (valor $0.38, invertido $4.92)
+  FANTASMA: 69 posiciones (valor $0.00, invertido $552.77)
+
+--- POR CATEGORÍA ---
+  ELON_BOT: 62 (valor $0.00, invertido $520.28, PnL $-520.28)
+  MANUAL_BRASIL: 1 (valor $0.05, invertido $3.00, PnL $-2.95)
+  MANUAL_POLITICA: 1 (valor $15.46, invertido $15.00, PnL $+0.46)
+  OTRO: 6 (valor $0.00, invertido $31.00, PnL $-31.00)
+  ZELENSKYY_BOT: 4 (valor $9.78, invertido $6.41, PnL $+3.37)
+
+--- DETALLE: EN_PROFIT (2) ---
+  [MANUAL_POLITICA] 2026 Balance of Power: D Senate, D House
+    Yes size=30.61  cur=$15.46  init=$15.00  PnL=$+0.46
+  [ZELENSKYY_BOT] Will Zelenskyy post 100-119 posts from September 1 to September 8, 202
+    Yes size=30.00  cur=$9.45  init=$3.00  PnL=$+6.45
+
+--- DETALLE: FANTASMA (top 20 de 69) ---
+  [ELON_BOT] Will Elon Musk post 240-259 tweets from July 24 to July 31, 2026?
+    Yes size=102.25  init=$50.00  → vale $0
+  [ELON_BOT] Will Elon Musk post 200-219 tweets from July 14 to July 21, 2026?
+    Yes size=255.47  init=$37.60  → vale $0
+  [ELON_BOT] Will Elon Musk post 140-159 tweets from July 17 to July 24, 2026?
+    Yes size=88.24  init=$30.00  → vale $0
+  [ELON_BOT] Will Elon Musk post 40-64 tweets from July 23 to July 25, 2026?
+    Yes size=58.82  init=$30.00  → vale $0
+  [ELON_BOT] Will Elon Musk post 200-219 tweets from July 10 to July 17, 2026?
+    Yes size=337.52  init=$25.10  → vale $0
+  [ELON_BOT] Will Elon Musk post 160-179 tweets from May 22 to May 29, 2026?
+    Yes size=37.59  init=$20.00  → vale $0
+  [ELON_BOT] Will Elon Musk post 220-239 tweets from June 9 to June 16, 2026?
+    Yes size=255.08  init=$17.84  → vale $0
+  [ELON_BOT] Will Elon Musk post 200-219 tweets from July 7 to July 14, 2026?
+    Yes size=139.17  init=$16.70  → vale $0
+  [ELON_BOT] Will Elon Musk post 160-179 tweets from July 14 to July 21, 2026?
+    Yes size=36.11  init=$13.00  → vale $0
+  [ELON_BOT] Will Elon Musk post 200-219 tweets from June 30 to July 7, 2026?
+    Yes size=92.50  init=$11.10  → vale $0
+  [ELON_BOT] Will Elon Musk post 140-159 tweets from May 1 to May 8, 2026?
+    Yes size=50.39  init=$10.00  → vale $0
+  [ELON_BOT] Will Elon Musk post 200-219 tweets from May 29 to June 5, 2026?
+    Yes size=43.48  init=$10.00  → vale $0
+  [ELON_BOT] Will Elon Musk post 40-64 tweets from July 30 to August 1, 2026?
+    Yes size=33.33  init=$10.00  → vale $0
+  [ELON_BOT] Will Elon Musk post 100-119 tweets from May 8 to May 15, 2026?
+    Yes size=27.05  init=$10.00  → vale $0
+  [ELON_BOT] Will Elon Musk post 65-89 tweets from June 18 to June 20, 2026?
+    Yes size=26.32  init=$10.00  → vale $0
+  [OTRO] Aarhus GF vs. KKS Lech Poznań: O/U 2.5
+    Under size=24.51  init=$10.00  → vale $0
+  [ELON_BOT] Will Elon Musk post 120-139 tweets from May 5 to May 12, 2026?
+    Yes size=23.20  init=$10.00  → vale $0
+  [ELON_BOT] Will Elon Musk post 40-64 tweets from August 29 to August 31, 2026?
+    No size=35.71  init=$10.00  → vale $0
+  [ELON_BOT] Will Elon Musk post <40 tweets from August 31 to September 2, 2026?
+    Yes size=60.61  init=$9.70  → vale $0
+  [ELON_BOT] Will Elon Musk post 40-64 tweets from August 31 to September 2, 2026?
+    No size=45.45  init=$9.09  → vale $0
+  ... y 49 más
+
+--- DETALLE: EN_PERDIDA (top 20) ---
+  [MANUAL_BRASIL] Will Romeu Zema win the 2026 Brazilian presidential election?
+    Yes size=36.21  cur=$0.05  init=$3.00  PnL=$-2.95
+  [ZELENSKYY_BOT] Will Zelenskyy post 140-159 posts from August 28 to September 4, 2026?
+    Yes size=17.00  cur=$0.25  init=$1.56  PnL=$-1.32
+  [ZELENSKYY_BOT] Will Zelenskyy post 160-179 posts from August 28 to September 4, 2026?
+    Yes size=8.85  cur=$0.08  init=$0.35  PnL=$-0.27
+
+--- LOG COMPLETO ---
+PAT de /root/diag_token.txt
+======================================================================
+DIAG V5 · 2026-09-03T18:26:53.090219
+======================================================================
+
+[1/4] Buscando wallet address...
+  ✓ wallet de /root/wallet_address.txt: 0xb0e11970...740fa0
+  wallet: 0xb0e1197098e6d427c01720f1631cad24ce740fa0
+  fuente: archivo /root/wallet_address.txt
+
+[2/4] Consultando saldo on-chain via Polygon RPC...
+  Error leyendo USDC: todos los RPC fallaron: <urlopen error [Errno -2] Name or service not known>
+  Error leyendo USDC.e: todos los RPC fallaron: <urlopen error [Errno -2] Name or service not known>
+  TOTAL: $0.00
+
+[3/4] Analizando posiciones...
+  74 posiciones leídas
+  Total: $25.29 valor, $575.69 invertido, PnL $-550.39
+  Por estado:
+    FANTASMA: 69
+    EN_PROFIT: 2
+    EN_PERDIDA: 3
+    VACIA: 0
+  Por categoría:
+    ELON_BOT: 62 (valor $0.00, invertido $520.28)
+    OTRO: 6 (valor $0.00, invertido $31.00)
+    MANUAL_BRASIL: 1 (valor $0.05, invertido $3.00)
+    MANUAL_POLITICA: 1 (valor $15.46, invertido $15.00)
+    ZELENSKYY_BOT: 4 (valor $9.78, invertido $6.41)
+
+[4/4] Publicando informe...
+==============================================================================
