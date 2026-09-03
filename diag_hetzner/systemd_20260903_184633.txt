@@ -1,0 +1,335 @@
+==============================================================================
+INSPECCION SERVICIOS SYSTEMD - 2026-09-03 18:46:33
+==============================================================================
+======================================================================
+INSPECCION SERVICIOS SYSTEMD · 2026-09-03T18:46:33.662041
+======================================================================
+
+[1] Listando servicios polymarket...
+  poly-backup-cruzado.service                           loaded    inactive dead    Replica el backup de bot-poly a vm4
+  poly-backup-github.service                            loaded    inactive dead    Backup semanal del código a GitHub
+  poly-backup.service                                   loaded    inactive dead    Backup diario bot-poly
+  poly-elon.service                                     loaded    active   running Bot Polymarket Elon 48h (v1)
+  poly-fantasmas-trump.service                          loaded    inactive dead    Comprobación de posiciones fantasma de Trump (auto-reparación)
+  poly-fantasmas-zelen.service                          loaded    inactive dead    Comprobación de posiciones fantasma de Zelenskyy (auto-reparación)
+  poly-fantasmas.service                                loaded    inactive dead    Comprobación de posiciones fantasma de Polymarket (auto-reparación)
+  poly-gestor.service                                   loaded    active   running Gestor de cierre anticipado de posiciones Polymarket
+  poly-mensual.service                                  loaded    active   running Bot Polymarket Elon MENSUAL (v1)
+  poly-salud-diario.service                             loaded    inactive dead    Informe de salud diario Polymarket (08:00 y 22:00 Madrid)
+  poly-salud-trump.service                              loaded    inactive dead    Chequeo de salud Trump (bot-poly)
+  poly-salud-zelen.service                              loaded    inactive dead    Chequeo de salud Zelenskyy (bot-poly)
+  poly-salud.service                                    loaded    inactive dead    Chequeo de salud Polymarket (bot-poly)
+  poly-semanal.service                                  loaded    active   running Bot Polymarket Elon SEMANAL (v1)
+  poly-telegram-zelen.service                           loaded    active   running Bot Telegram de Polymarket Zelenskyy
+  poly-telegram.service                                 loaded    active   running Bot Telegram de Polymarket (Elon_polymarket_bot)
+  poly-test-diario-trump.service                        loaded    inactive dead    Test integral diario de Trump (detección y auto-reparación)
+  poly-test-diario-zelen.service                        loaded    inactive dead    Test integral diario de Zelenskyy (detección y auto-reparación)
+  poly-test-diario.service                              loaded    inactive dead    Test integral diario de Polymarket (detección y auto-reparación)
+  poly-trump.service                                    loaded    active   running Bot Polymarket Trump Truth Social posts
+  poly-zelenskyy.service                                loaded    active   running Bot Polymarket Zelenskyy SEMANAL
+
+[2] Leyendo cada servicio...
+
+--- poly-backup-cruzado.service ---
+  EXEC: ExecStart=/root/backup_cruzado.sh...
+
+--- poly-backup-github.service ---
+  EXEC: ExecStart=/root/backup_github.sh...
+
+--- poly-backup.service ---
+  EXEC: ExecStart=/root/backup_poly.sh...
+
+--- poly-elon.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real...
+
+--- poly-fantasmas-trump.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --solo-fantasmas --zelen --fix...
+
+--- poly-fantasmas-zelen.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  ENV var: ZELEN_BOT_TOKEN=...
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --solo-fantasmas --zelen --fix...
+
+--- poly-fantasmas.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --solo-fantasmas --fix...
+
+--- poly-gestor.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/gestionar_posiciones.py --loop 5...
+
+--- poly-mensual.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real...
+
+--- poly-salud-diario.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/check_salud.py --test...
+
+--- poly-salud-trump.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  ENV var: TRUMP_BOT_TOKEN=...
+  ENV var: TELEGRAM_CHAT_ID=...
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/check_salud.py --trump...
+
+--- poly-salud-zelen.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  ENV var: ZELEN_BOT_TOKEN=...
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/check_salud.py --zelen...
+
+--- poly-salud.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/check_salud.py...
+
+--- poly-semanal.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real...
+
+--- poly-telegram-zelen.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  ENV var: ZELEN_BOT_TOKEN=...
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/poly_telegram_zelen.py...
+
+--- poly-telegram.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/poly_telegram_bot.py...
+
+--- poly-test-diario-trump.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --zelen --fix...
+
+--- poly-test-diario-zelen.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  ENV var: ZELEN_BOT_TOKEN=...
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --zelen --fix...
+
+--- poly-test-diario.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --fix...
+
+--- poly-trump.service ---
+  EXEC: ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real...
+
+--- poly-zelenskyy.service ---
+  ENV FILE: /etc/polymarket.env
+    POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+    POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+    POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+    POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+    REAL_CONFIRMADO=1
+    HTTP_PROXY=http://100.83.57.99:8888
+    HTTPS_PROXY=http://100.83.57.99:8888
+    ALL_PROXY=http://100.83.57.99:8888
+    NO_PROXY=localhost,127.0.0.1,api.telegr
+    LOCK_APUESTAS=/opt/polymarket/apuestas_compa
+    TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+    TELEGRAM_CHAT_ID=250818720
+  EXEC: ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real...
+
+[3] Buscando archivos .env en /opt/polymarket/...
+
+[4] Buscando en /root...
+  /root/resultado_2h_poly.txt
+  /root/backup_poly.sh
+  /root/diag_token.txt
+  /root/backup_poly.log
+  /root/enviar_poly.sh
+  /root/recolector_poly.sh
+  /root/wallet_address.txt
+  /root/leer_sistemas_poly.txt
+  /root/diagnostico_poly.txt
+==============================================================================
