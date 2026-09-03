@@ -1,0 +1,124 @@
+==============================================================================
+HISTORIAL COMPLETO ZELENSKYY - 2026-09-03 19:46:19
+==============================================================================
+
+ESTRUCTURA:
+  claves: ['saldo', 'paso', 'activa', 'historial']
+
+  saldo: 759.96
+  paso: 3
+  activa: {
+  "slug": "zelenskyy-of-tweets-september-1-september-8-2026",
+  "fecha": "2026-09-03",
+  "bin_titulo": "100-119",
+  "lo": 100,
+  "hi": 119,
+  "lado": "YES",
+  "precio": 0.095,
+  "cuota": 10.53,
+  "p_modelo": 0.2285,
+  "paso": 3,
+  "stake": 5.88,
+  "motor": "motor_v2_ev_escalones_tope10",
+  "ev": 2.405,
+  "order_id": "0xc746744d71ac73358f086a43111a8d2a71b1f4be137590840cbd3c48e99d9a55",
+  "token_id": "74069906016251304369189307909194389301514311639633461483319668603245762741644",
+  "pendiente": false,
+  "fecha_orden_ts": 1788442767.3830664,
+  "ventana_fin": "2026-09-08T16:00:00+00:00"
+}
+
+HISTORIAL:
+
+--- Operación [0] ---
+{
+  "id": "reconc",
+  "fecha": "2026-08-21",
+  "mercado": "zelenskyy-of-tweets-august-21-august-28-2026",
+  "bin": "40-59",
+  "lado": "YES",
+  "precio": 0.249,
+  "cuota": 4.02,
+  "p_modelo": 0.6361,
+  "paso": 2,
+  "stake": 1.49,
+  "real": "vendido/desaparecido (sin registro del gestor)",
+  "resultado": "P",
+  "beneficio": -1.49,
+  "saldo": 498.51
+}
+
+--- Operación [1] ---
+{
+  "id": "reconc",
+  "fecha": "2026-08-25",
+  "mercado": "zelenskyy-of-tweets-august-25-september-1-2026",
+  "bin": "140-159",
+  "lado": "YES",
+  "precio": 0.036,
+  "cuota": 27.78,
+  "p_modelo": 0.4421,
+  "paso": 3,
+  "stake": 10.0,
+  "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+  "resultado": "G",
+  "beneficio": 267.8,
+  "saldo": 766.31
+}
+
+--- Operación [2] ---
+{
+  "id": "reconc",
+  "fecha": "2026-08-26",
+  "mercado": "zelenskyy-of-tweets-august-25-september-1-2026",
+  "bin": "200+",
+  "lado": "YES",
+  "precio": 0.172,
+  "cuota": 5.81,
+  "p_modelo": 1.0,
+  "paso": 1,
+  "stake": 6.0,
+  "real": "vendido/desaparecido (sin registro del gestor)",
+  "resultado": "P",
+  "beneficio": -6.0,
+  "saldo": 760.31
+}
+
+--- Operación [3] ---
+{
+  "id": "reconc",
+  "fecha": "2026-08-28",
+  "mercado": "zelenskyy-of-tweets-august-28-september-4-2026",
+  "bin": "160-179",
+  "lado": "YES",
+  "precio": 0.04,
+  "cuota": 25.0,
+  "p_modelo": 0.5236,
+  "paso": 2,
+  "stake": 8.4,
+  "real": "vendido/desaparecido (sin registro del gestor)",
+  "resultado": "P",
+  "beneficio": -0.35,
+  "saldo": 759.96,
+  "nota": "FIXZEL: llenado parcial real 8.85 shares x $0.04 = $0.35 (antes -8.40 con stake completo)"
+}
+
+--- Operación [4] ---
+{
+  "id": "62bfc595fddd",
+  "fecha": "2026-08-28",
+  "mercado": "zelenskyy-of-tweets-august-28-september-4-2026",
+  "bin": "140-159",
+  "lado": "YES",
+  "precio": 0.046,
+  "cuota": 21.74,
+  "p_modelo": 0.4788,
+  "paso": 3,
+  "stake": 0.78,
+  "real": "FIXWIN-anticipado @ 0.037 (p=0%<35% -> 40-59 p=68%)",
+  "motor": "motor_v2_ev_escalones_tope10",
+  "ev": 10.409,
+  "resultado": "G",
+  "beneficio": -0.0,
+  "saldo": 759.96
+}
