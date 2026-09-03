@@ -1,0 +1,36 @@
+==============================================================================
+CONSULTA SALDO CLOB v2 - 2026-09-03 19:07:48
+==============================================================================
+
+--- VARIABLES DE ENTORNO ---
+  POLY_PRIVATE_KEY=0x5a140f...8af3 (66 chars)
+  POLY_RELAYER_API_KEY=019fe5ab...d37e (36 chars)
+  POLY_RELAYER_API_KEY_ADDRESS=0x8a22F7...bae6 (42 chars)
+  POLY_WALLET_ADDRESS=0xb0E119...0FA0 (42 chars)
+  TELEGRAM_BOT_TOKEN=89323640...w8XE (46 chars)
+
+--- SALDO VIA SDK ---
+  ERROR: PolyException: API Credentials are needed to interact with this endpoint!
+
+--- SALDO VIA RELAYER ---
+  ERROR: todos los endpoints fallaron: URLError on https://relayer.polymarket.com: <urlopen error Tunnel connection failed: 502 Bad Gateway>
+
+--- LOG COMPLETO ---
+======================================================================
+CONSULTA SALDO CLOB v2 · 2026-09-03T19:07:46.357597
+======================================================================
+
+[1/4] Cargando /etc/polymarket.env...
+  ✓ 12 variables cargadas
+  POLY_PRIVATE_KEY: 0x5a140fd5...
+  POLY_WALLET_ADDRESS: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+  POLY_RELAYER_API_KEY: 019fe5ab-e...
+
+[2/4] Intentando con py-clob-client-v2 SDK...
+  ✗ PolyException: API Credentials are needed to interact with this endpoint!
+
+[3/4] Intentando con relayer API directo...
+  ✗ todos los endpoints fallaron: URLError on https://relayer.polymarket.com: <urlopen error Tunnel connection failed: 502 Bad Gateway>
+
+[4/4] Publicando informe...
+==============================================================================
