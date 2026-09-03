@@ -1,0 +1,65 @@
+==============================================================================
+CONSULTA SALDO CLOB v5 - 2026-09-03 19:22:54
+==============================================================================
+
+Wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+
+--- SALDO CLOB (SDK v2) ---
+  ERROR: PolyException: API Credentials are needed to interact with this endpoint!
+Traceback (most recent call last):
+  File "/root/consultar_saldo_clob_v5.py", line 112, in consultar_saldo_sdk_v2
+    r = client.get_balance_allowance(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 699, in get_balance_allowance
+    headers = self._l2_headers("GET", GET_BALANCE_ALLOWANCE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 261, in _l2_headers
+    self.assert_level_2_auth()
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 219, in assert_level_2_auth
+    raise PolyException(L2_AUTH_UNAVAILABLE)
+py_clob_client_v2.exceptions.PolyException: API Credentials are needed to interact with this endpoint!
+
+
+--- PORTFOLIO (data-api) ---
+  Posiciones:    74
+  Valor actual:  $25.59
+  Invertido:     $575.69
+  PnL no realizado: $-550.09
+
+
+--- LOG COMPLETO ---
+======================================================================
+CONSULTA SALDO CLOB v5 · 2026-09-03T19:22:53.246518
+======================================================================
+
+  wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+
+[1/4] Consultando con SDK v2 (create_or_derive_api_key)...
+  api_key derivada OK: 3b509bb7...
+  ✗ PolyException: API Credentials are needed to interact with this endpoint!
+Traceback (most recent call last):
+  File "/root/consultar_saldo_clob_v5.py", line 112, in consultar_saldo_sdk_v2
+    r = client.get_balance_allowance(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 699, in get_balance_allowance
+    headers = self._l2_headers("GET", GET_BALANCE_ALLOWANCE)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 261, in _l2_headers
+    self.assert_level_2_auth()
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 219, in assert_level_2_auth
+    raise PolyException(L2_AUTH_UNAVAILABLE)
+py_clob_client_v2.exceptions.PolyException: API Credentials are needed to interact with this endpoint!
+
+
+[2/4] Valor del portfolio (data-api)...
+  ✓ 74 posiciones
+  ✓ Valor actual: $25.59
+  ✓ Invertido:    $575.69
+  ✓ PnL:          $-550.09
+
+[3/4] Calculando bankroll total...
+  bankroll CLOB:    ? (no se pudo consultar)
+  valor posiciones: $25.59
+
+[4/4] Publicando informe...
+==============================================================================
