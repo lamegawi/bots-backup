@@ -1,0 +1,37 @@
+==============================================================================
+CONSULTA SALDO CLOB v4 - 2026-09-03 19:18:40
+==============================================================================
+
+Wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+
+--- SALDO VIA SDK v1 (py_clob_client) ---
+  ERROR: py_clob_client v1 no instalado: No module named 'py_clob_client'
+
+--- VALOR DEL PORTFOLIO (data-api) ---
+  Posiciones: 74
+  Valor:      $25.59
+  PnL:        $-550.09
+
+
+--- LOG COMPLETO ---
+======================================================================
+CONSULTA SALDO CLOB v4 · 2026-09-03T19:18:39.457996
+======================================================================
+
+  wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+
+[1/5] Investigando SDK instalado...
+  py_clob_client_v2 path: /usr/local/lib/python3.12/dist-packages/py_clob_client_v2/__init__.py
+  ClobClient v2 métodos: ['assert_level_1_auth', 'assert_level_2_auth', 'create_api_key', 'create_builder_api_key', 'create_or_derive_api_key', 'create_readonly_api_key', 'delete_api_key', 'delete_readonly_api_key', 'derive_api_key', 'get_api_keys', 'get_balance_allowance', 'get_builder_api_keys', 'get_readonly_api_keys', 'revoke_builder_api_key', 'set_api_creds', 'update_balance_allowance']
+  py_clob_client v1 error: No module named 'py_clob_client'
+
+[2/5] Probando SDK v1...
+  ✗ py_clob_client v1 no instalado: No module named 'py_clob_client'
+
+[3/5] Valor del portfolio (data-api)...
+  ✓ 74 posiciones
+  ✓ Valor actual: $25.59
+  ✓ PnL:          $-550.09
+
+[4/5] Publicando informe...
+==============================================================================
