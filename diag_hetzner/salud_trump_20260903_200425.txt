@@ -1,0 +1,133 @@
+==============================================================================
+VERIFICACION SALUD TRUMP - 2026-09-03 20:04:25
+==============================================================================
+
+======================================================================
+VERIFICACION SALUD TRUMP · 2026-09-03T20:04:25.248162
+======================================================================
+
+[1] Servicios trump (todos):
+  poly-fantasmas-trump.service                          loaded    inactive dead    Comprobación de posiciones fantasma de Trump (auto-reparación)
+  poly-salud-trump.service                              loaded    inactive dead    Chequeo de salud Trump (bot-poly)
+  poly-test-diario-trump.service                        loaded    inactive dead    Test integral diario de Trump (detección y auto-reparación)
+  poly-trump.service                                    loaded    active   running Bot Polymarket Trump Truth Social posts
+
+[2] Servicios esperados vs reales:
+  ✓ poly-trump.service
+  ✗ FALTA poly-telegram-trump.service
+  ✓ poly-salud-trump.service
+  ✓ poly-test-diario-trump.service
+  ✓ poly-fantasmas-trump.service
+  ✗ FALTA poly-backup-cruzado.service
+
+[3] Contenido de servicios de salud de Trump (si existen):
+
+--- poly-fantasmas-trump.service ---
+  [Unit]
+  Description=Comprobación de posiciones fantasma de Trump (auto-reparación)
+  After=network-online.target
+  Wants=network-online.target
+  [Service]
+  Type=oneshot
+  EnvironmentFile=/etc/polymarket.env
+  ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --solo-fantasmas --zelen --fix
+  StandardOutput=append:/var/log/poly-fantasmas-trump.log
+  StandardError=append:/var/log/poly-fantasmas-trump.log
+
+--- poly-salud-trump.service ---
+  [Unit]
+  Description=Chequeo de salud Trump (bot-poly)
+  After=network-online.target
+  Wants=network-online.target
+  [Service]
+  Type=oneshot
+  EnvironmentFile=/etc/polymarket.env
+  Environment=TRUMP_BOT_TOKEN=nano /opt/polymarket/bot-polymarket-trump/config.json
+  Environment=TELEGRAM_CHAT_ID=@lamegawi_Trump_bot
+  ExecStart=/usr/bin/python3 /opt/polymarket/check_salud.py --trump
+  StandardOutput=append:/var/log/poly-salud-trump.log
+  StandardError=append:/var/log/poly-salud-trump.log
+
+--- poly-test-diario-trump.service ---
+  [Unit]
+  Description=Test integral diario de Trump (detección y auto-reparación)
+  After=network-online.target
+  Wants=network-online.target
+  [Service]
+  Type=oneshot
+  EnvironmentFile=/etc/polymarket.env
+  ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --zelen --fix
+  StandardOutput=append:/var/log/poly-test-diario-trump.log
+  StandardError=append:/var/log/poly-test-diario-trump.log
+
+[4] Comprobar si existen los check_salud.py y check_integral.py con soporte para Trump:
+
+  /opt/polymarket/check_salud.py: EXISTE
+    ¿menciona 'trump'? True
+    > trump = "--trump" in sys.argv
+
+  /opt/polymarket/check_integral.py: EXISTE
+    ¿menciona 'trump'? True
+    > trump = "--trump" in sys.argv
+
+[5] Ver los timers (programación diaria) de Trump:
+  Thu 2026-09-03 20:07:29 UTC  3min 3s Thu 2026-09-03 19:37:29 UTC    26min ago poly-fantasmas-trump.timer     poly-fantasmas-trump.service
+  Thu 2026-09-03 20:07:29 UTC  3min 3s Thu 2026-09-03 19:37:29 UTC    26min ago poly-fantasmas.timer           poly-fantasmas.service
+  Thu 2026-09-03 20:09:18 UTC 4min 53s Thu 2026-09-03 19:39:18 UTC    25min ago poly-fantasmas-zelen.timer     poly-fantasmas-zelen.service
+  Thu 2026-09-03 20:12:00 UTC     7min Thu 2026-09-03 20:02:00 UTC 2min 24s ago poly-salud-trump.timer         poly-salud-trump.service
+  Thu 2026-09-03 20:12:00 UTC     7min Thu 2026-09-03 20:02:00 UTC 2min 24s ago poly-salud-zelen.timer         poly-salud-zelen.service
+  Thu 2026-09-03 20:12:00 UTC     7min Thu 2026-09-03 20:02:00 UTC 2min 24s ago poly-salud.timer               poly-salud.service
+  Thu 2026-09-03 22:00:00 UTC 1h 55min Thu 2026-09-03 20:00:01 UTC 4min 23s ago poly-backup-2h.timer           poly-backup-github.service
+  Fri 2026-09-04 02:15:00 UTC       6h Thu 2026-09-03 02:15:01 UTC      17h ago poly-backup.timer              poly-backup.service
+  Fri 2026-09-04 02:30:00 UTC       6h Thu 2026-09-03 02:30:00 UTC      17h ago poly-backup-github.timer       poly-backup-github.service
+  Fri 2026-09-04 03:15:00 UTC       7h Thu 2026-09-03 03:15:21 UTC      16h ago poly-backup-cruzado.timer      poly-backup-cruzado.service
+  Fri 2026-09-04 06:00:00 UTC       9h Thu 2026-09-03 20:00:01 UTC 4min 23s ago poly-salud-diario.timer        poly-salud-diario.service
+  Fri 2026-09-04 07:00:00 UTC      10h Thu 2026-09-03 19:00:00 UTC  1h 4min ago poly-test-diario.timer         poly-test-diario.service
+  Fri 2026-09-04 07:05:00 UTC      11h Thu 2026-09-03 19:05:04 UTC    59min ago poly-test-diario-zelen.timer   poly-test-diario-zelen.service
+  Fri 2026-09-04 07:10:00 UTC      11h Thu 2026-09-03 19:10:00 UTC    54min ago poly-test-diario-trump.timer   poly-test-diario-trump.service
+
+[6] Ver últimas ejecuciones de servicios de salud Trump:
+
+  poly-fantasmas-trump.service:
+    ○ poly-fantasmas-trump.service - Comprobación de posiciones fantasma de Trump (auto-reparación)
+    Loaded: loaded (/etc/systemd/system/poly-fantasmas-trump.service; static)
+    Active: inactive (dead) since Thu 2026-09-03 19:37:29 UTC; 26min ago
+    TriggeredBy: ● poly-fantasmas-trump.timer
+    Process: 705988 ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --solo-fantasmas --zelen --fix (code=exited, status=0/SUCCESS)
+    Main PID: 705988 (code=exited, status=0/SUCCESS)
+    CPU: 165ms
+    
+    Sep 03 19:37:29 bot-poly systemd[1]: Starting poly-fantasmas-trump.service - Comprobación de posiciones fantasma de Trump (auto-reparación)...
+    Sep 03 19:37:29 bot-poly systemd[1]: poly-fantasmas-trump.service: Deactivated successfully.
+    Sep 03 19:37:29 bot-poly systemd[1]: Finished poly-fantasmas-trump.service - Comprobación de posiciones fantasma de Trump (auto-reparación).
+    
+
+  poly-salud-trump.service:
+    ○ poly-salud-trump.service - Chequeo de salud Trump (bot-poly)
+    Loaded: loaded (/etc/systemd/system/poly-salud-trump.service; static)
+    Active: inactive (dead) since Thu 2026-09-03 20:02:01 UTC; 2min 23s ago
+    TriggeredBy: ● poly-salud-trump.timer
+    Process: 707836 ExecStart=/usr/bin/python3 /opt/polymarket/check_salud.py --trump (code=exited, status=0/SUCCESS)
+    Main PID: 707836 (code=exited, status=0/SUCCESS)
+    CPU: 212ms
+    
+    Sep 03 20:02:00 bot-poly systemd[1]: Starting poly-salud-trump.service - Chequeo de salud Trump (bot-poly)...
+    Sep 03 20:02:01 bot-poly systemd[1]: poly-salud-trump.service: Deactivated successfully.
+    Sep 03 20:02:01 bot-poly systemd[1]: Finished poly-salud-trump.service - Chequeo de salud Trump (bot-poly).
+    
+
+  poly-test-diario-trump.service:
+    ○ poly-test-diario-trump.service - Test integral diario de Trump (detección y auto-reparación)
+    Loaded: loaded (/etc/systemd/system/poly-test-diario-trump.service; static)
+    Active: inactive (dead) since Thu 2026-09-03 19:10:19 UTC; 54min ago
+    TriggeredBy: ● poly-test-diario-trump.timer
+    Process: 703648 ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --zelen --fix (code=exited, status=0/SUCCESS)
+    Main PID: 703648 (code=exited, status=0/SUCCESS)
+    CPU: 4.469s
+    
+    Sep 03 19:10:00 bot-poly systemd[1]: Starting poly-test-diario-trump.service - Test integral diario de Trump (detección y auto-reparación)...
+    Sep 03 19:10:19 bot-poly systemd[1]: poly-test-diario-trump.service: Deactivated successfully.
+    Sep 03 19:10:19 bot-poly systemd[1]: Finished poly-test-diario-trump.service - Test integral diario de Trump (detección y auto-reparación).
+    Sep 03 19:10:19 bot-poly systemd[1]: poly-test-diario-trump.service: Consumed 4.469s CPU time.
+    
+==============================================================================
