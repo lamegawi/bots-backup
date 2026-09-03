@@ -57,5 +57,50 @@
       }
     ],
     "qty_vista": 25.0
+  },
+  "UNI: LONG": {
+    "symbol": "UNI",
+    "direction": "LONG",
+    "entry": 5.844,
+    "contratos": 99,
+    "sl_algo_id": "3888440622398877696",
+    "state": "opened",
+    "risk_usd": 10.0,
+    "opened_at": 1788386962.0823276,
+    "dist": 0.01723892,
+    "initial_sl": 5.74325574,
+    "tp_levels": [
+      {
+        "nivel": "1.0R",
+        "precio": 5.91116284,
+        "sz": 20,
+        "algoId": "3888440629042655232"
+      },
+      {
+        "nivel": "1.5R",
+        "precio": 5.94474426,
+        "sz": 20,
+        "algoId": "3888440635585769472"
+      },
+      {
+        "nivel": "2.0R",
+        "precio": 5.97832568,
+        "sz": 20,
+        "algoId": "3888440642128883712"
+      },
+      {
+        "nivel": "2.5R",
+        "precio": 6.0119071,
+        "sz": 20,
+        "algoId": "3888440648604889088"
+      },
+      {
+        "nivel": "3.0R",
+        "precio": 6.04548852,
+        "sz": 19,
+        "algoId": "3888440655449993216"
+      }
+    ],
+    "qty_vista": 79.0
   }
 }
