@@ -1,0 +1,52 @@
+==============================================================================
+DIAGNOSTICO V4 - 2026-09-03 18:04:12
+==============================================================================
+ERRORES: saldo_usdc_onchain no devolvió datos
+
+--- SALDO REAL ON-CHAIN ---
+  No se pudo leer saldo
+
+--- POSICIONES (data-api) ---
+Total: 74
+Valor actual: $25.29
+Invertido:    $575.69
+PnL no realizado: $-550.39
+
+POSITIVAS (2):
+  size=   30.61  cur=$  15.46  init=$ 15.00  PnL=$+0.46  Yes   2026 Balance of Power: D Senate, D House
+  size=   30.00  cur=$   9.45  init=$  3.00  PnL=$+6.45  Yes   Will Zelenskyy post 100-119 posts from September 1 to September 8, 202
+
+DUST (59):
+  Con valor residual: 3
+    size=   36.21  cur=$  0.05  init=$  3.00  Yes   Will Romeu Zema win the 2026 Brazilian presidential election?
+    size=   17.00  cur=$  0.25  init=$  1.56  Yes   Will Zelenskyy post 140-159 posts from August 28 to September 4, 2026?
+    size=    8.85  cur=$  0.08  init=$  0.35  Yes   Will Zelenskyy post 160-179 posts from August 28 to September 4, 2026?
+  Sin valor (~$0): 56
+
+--- LOG COMPLETO ---
+PAT de /root/diag_token.txt
+======================================================================
+DIAG V4 · 2026-09-03T18:04:12.447066
+======================================================================
+
+[1/3] Saldo real on-chain...
+  probando /opt/polymarket/bot-polymarket-elon
+    /opt/polymarket/bot-polymarket-elon sin wallet
+  probando /opt/polymarket/bot-polymarket-elon-semanal
+    /opt/polymarket/bot-polymarket-elon-semanal sin wallet
+  probando /opt/polymarket/bot-polymarket-elon-mensual
+    /opt/polymarket/bot-polymarket-elon-mensual sin wallet
+  probando /opt/polymarket/bot-polymarket-zelenskyy
+    /opt/polymarket/bot-polymarket-zelenskyy sin wallet
+  probando /opt/polymarket/bot-polymarket-trump
+    /opt/polymarket/bot-polymarket-trump sin wallet
+  ⚠️  NINGÚN bot tiene wallet_address. Probando variable de entorno...
+  ✗ No se pudo encontrar wallet en ningún sitio
+
+[2/3] Analizando posiciones de Polymarket...
+  74 posiciones leídas
+  Total: $25.29 valor, $575.69 invertido, PnL $-550.39
+  Positivas: 2 | Grandes: 13 | Dust: 59
+
+[3/3] Publicando informe...
+==============================================================================
