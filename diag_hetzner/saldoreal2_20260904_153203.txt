@@ -1,0 +1,72 @@
+==============================================================================
+SALDO REAL TOTAL v2 - 2026-09-04 15:32:03
+==============================================================================
+
+Wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+
+--- ON-CHAIN (Polygon eth_call, método del bot Telegram) ---
+  pUSD: $292.34
+  USDC.e: $0.00
+  USDC: $0.00
+  SUBTOTAL: $292.34
+
+--- CLOB SDK ---
+  Balance: $0.00, Allowance: $0.00
+
+--- DATA-API posiciones ---
+  75 posiciones, valor $19.40
+
+==============================================================================
+BANKROLL REAL TOTAL: $311.74
+PnL desde $500 inicial: $-188.26
+==============================================================================
+
+--- JSON VIRTUALES (no usar) ---
+  Elon 48h: $477.84 (virtual)
+  Zelenskyy sem: $756.34 (virtual)
+  Trump mens: (no existe)
+
+--- LOG COMPLETO ---
+======================================================================
+SALDO REAL TOTAL v2 (método del bot Telegram) · 2026-09-04T15:31:57.385497
+======================================================================
+
+Lee el saldo EXACTAMENTE como lo hace el bot de Telegram:
+  eth_call directo a Polygon → pUSD + USDC.e + USDC
+
+Wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+
+[1/3] Saldo on-chain (Polygon eth_call)...
+      tokens: pUSD + USDC.e + USDC
+  pUSD: $292.34  (vía https://1rpc.io/matic)
+  USDC.e: $0.00  (vía https://1rpc.io/matic)
+  USDC: $0.00  (vía https://1rpc.io/matic)
+  subtotal on-chain: $292.34
+
+[2/3] Saldo CLOB (SDK)...
+  ✓ CLOB balance:  $0.00
+  ✓ CLOB allowance: $0.00
+
+[3/3] Posiciones abiertas (data-api)...
+  ✓ 75 posiciones
+  ✓ valor actual:  $19.40
+
+======================================================================
+💰 BANKROLL REAL TOTAL (mismo método que el bot Telegram)
+======================================================================
+  on-chain Polygon:    $   292.34  ← este es el que ve el bot
+  + CLOB balance:      $     0.00
+  + posiciones value:  $    19.40
+  ─────────────────────────────────────────
+  TOTAL:               $   311.74
+
+  PnL desde $500 inicial: $-188.26
+======================================================================
+
+📊 SALDOS VIRTUALES (JSON, MAL):
+  Elon 48h: $477.84 (virtual)
+  Zelenskyy sem: $756.34 (virtual)
+  Trump mens: (no existe)
+
+======================================================================
+==============================================================================
