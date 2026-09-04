@@ -1,0 +1,41 @@
+Sincronizar JSON v3 - 20260904_160545
+======================================================================
+SINCRONIZAR SALDOS JSON v3 · 2026-09-04T16:05:41.525675
+======================================================================
+
+Los 3 bots comparten la MISMA wallet.
+El cash real + posiciones es para los 3, NO se divide.
+
+Cash on-chain:   $282.34
+Posiciones:      $21.21
+TOTAL REAL:      $303.55
+
+--- Elon 48h (/opt/polymarket/bot-polymarket-elon/real.json) ---
+  ops: 7
+  pnl histórico:           $-22.16
+  saldo virtual actual:    $477.84
+  bankroll inicial REAL:   $325.71
+  nuevo saldo propuesto:   $303.55  (cash+posiciones real)
+  cambio:                  $-174.29
+
+--- Zelenskyy sem (/opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json) ---
+  ops: 4
+  pnl histórico:           $-7.84
+  saldo virtual actual:    $756.34
+  bankroll inicial REAL:   $311.39
+  nuevo saldo propuesto:   $303.55  (cash+posiciones real)
+  cambio:                  $-452.79
+
+--- Trump mens --- NO EXISTE /opt/polymarket/bot-polymarket-trump/real.json
+
+Aplicando cambios (con backup)...
+
+  backup: /opt/polymarket/bot-polymarket-elon/real.json.bak.20260904_160545
+  ✓ Elon 48h: saldo=$303.55, bankroll_inicial=$325.71
+
+  backup: /opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json.bak.20260904_160545
+  ✓ Zelenskyy sem: saldo=$303.55, bankroll_inicial=$311.39
+
+======================================================================
+✅ Sincronización completada (v3, cash compartido)
+======================================================================
