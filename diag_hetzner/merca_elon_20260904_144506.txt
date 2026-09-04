@@ -1,0 +1,51 @@
+==============================================================================
+ANÁLISIS MERCADOS ELON - 2026-09-04 14:45:06
+==============================================================================
+
+======================================================================
+ANÁLISIS MERCADOS ELON · 2026-09-04T14:45:06.193760
+======================================================================
+
+[1] Leyendo /opt/polymarket/bot-polymarket-elon/real.json:
+  activa: True
+    slug: elon-musk-of-tweets-september-3-september-5-2026
+    bin: <40
+    lado: YES
+    precio: 0.051
+    cuota: 19.61
+    p_modelo: 77%
+    paso: 6
+    stake: $10.00
+    ev: 15.01
+    motor: motor_v2_ev_escalones_tope10
+  historial: 7 ops
+
+[2] ANÁLISIS DEL HISTORIAL:
+
+  Cuotas en las que ha apostado:
+    min: 3.08, max: 17.86, media: 6.69
+    Cuotas >10 (improbables): 1 de 7
+    Cuotas >20: 0
+    Cuotas >50: 0
+    Cuotas >100: 0
+
+  p_modelo (probabilidad estimada):
+    min: 0%, max: 92%, media: 46%
+
+  Stakes:
+    min: $3.30, max: $10.00
+
+  Resultado por cuota:
+    cuota 10-20: G=0 P=1 (win rate 0%)
+    cuota  5-10: G=0 P=1 (win rate 0%)
+    cuota    <5: G=1 P=4 (win rate 20%)
+
+  HISTORIAL DETALLADO (todas las ops):
+    ❌ 2026-08-18 | bin=<40        | cuota=  4.35 | p=  92% | stake=$ 3.30 | paso=1
+    ✅ 2026-08-20 | bin=90-114     | cuota=  4.72 | p=  64% | stake=$ 7.43 | paso=2
+    ❌ 2026-08-22 | bin=90-114     | cuota=  8.70 | p=  78% | stake=$ 6.60 | paso=1
+    ❌ 2026-08-30 | bin=<40        | cuota= 17.86 | p=  71% | stake=$ 9.90 | paso=2
+    ❌ 2026-08-30 | bin=40-64      | cuota=  3.57 | p=  14% | stake=$10.00 | paso=3
+    ❌ 2026-09-01 | bin=40-64      | cuota=  3.08 | p=   0% | stake=$10.00 | paso=4
+    ❌ 2026-09-02 | bin=40-64      | cuota=  4.55 | p=   0% | stake=$10.00 | paso=5
+==============================================================================
