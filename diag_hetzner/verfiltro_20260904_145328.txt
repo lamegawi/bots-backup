@@ -1,0 +1,54 @@
+==============================================================================
+VERIFICAR FILTRO ELON - 2026-09-04 14:53:28
+==============================================================================
+
+======================================================================
+VERIFICAR FILTRO ELON · 2026-09-04T14:53:28.952386
+======================================================================
+
+[1] Verificar que /opt/polymarket/bot-polymarket-elon/senal_vivo.py tiene el filtro:
+  ✓ El archivo local tiene el filtro
+
+[2] Estado del servicio poly-elon:
+  active
+
+[3] Últimas 50 líneas del log de poly-elon:
+  Aug 30 13:08:10 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+  Aug 30 13:08:10 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+  Aug 30 13:08:10 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+  Aug 30 13:08:10 bot-poly systemd[1]: poly-elon.service: Consumed 35min 34.893s CPU time, 105.6M memory peak, 0B memory swap peak.
+  Aug 30 13:08:10 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+  Aug 30 17:15:58 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+  Aug 30 17:15:58 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+  Aug 30 17:15:58 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+  Aug 30 17:15:58 bot-poly systemd[1]: poly-elon.service: Consumed 2min 32.192s CPU time.
+  Aug 30 17:15:58 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+  Aug 30 17:32:13 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+  Aug 30 17:32:13 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+  Aug 30 17:32:13 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+  Aug 30 17:32:13 bot-poly systemd[1]: poly-elon.service: Consumed 13.206s CPU time.
+  Aug 30 17:32:13 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+  Sep 02 06:33:48 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+  Sep 02 06:33:48 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+  Sep 02 06:33:48 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+  Sep 02 06:33:48 bot-poly systemd[1]: poly-elon.service: Consumed 43min 2.097s CPU time, 81.4M memory peak, 0B memory swap peak.
+  Sep 02 06:33:48 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+  Sep 02 06:33:58 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+  Sep 02 06:33:58 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+  Sep 02 06:33:58 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+  Sep 02 06:33:58 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+  Sep 04 14:50:44 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+  Sep 04 14:50:44 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+  Sep 04 14:50:44 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+  Sep 04 14:50:44 bot-poly systemd[1]: poly-elon.service: Consumed 39min 9.735s CPU time, 81.6M memory peak, 0B memory swap peak.
+  Sep 04 14:50:44 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+
+[4] Estado actual del bot:
+  activa: True
+    slug: elon-musk-of-tweets-september-3-september-5-2026
+    bin: <40
+    cuota: 19.61
+    p_modelo: 77%
+    paso: 6
+    stake: $10.00
+==============================================================================
