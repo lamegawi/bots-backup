@@ -181,6 +181,21 @@ def evaluar(avg7, v2, ajuste, lam48, mercados, paso, t0_override=-1, ahora=None)
                 stake = stake_motor_v2(stake_base, p_lado, cuota_lado)
                 if stake is None:
                     continue  # EV por debajo del mínimo: no entrar
+                # Filtro de seguridad (arena 2026-09-04): no apostar si la
+                # probabilidad efectiva del lado es < 10% (caso típico: bot
+                # cree p=77% en bin "<40" pero mercado cuota 19.6 = 5% real).
+                # Sin este filtro, el bot mete apuestas "suicidas" con EV
+                # inflado por p_modelo descalibrado.
+                if p_lado < 0.10:
+                    log(f"  · [FILTRO] descartado {b.get('titulo', '?')} {lado} "
+                        f"p_lado={p_lado:.0%} (cuota {cuota_lado:.2f})")
+                    continue
+                # Filtro de cuota máxima: no apostar en mercados con
+                # cuota > 25 (improbables de ganar aunque el bot crea).
+                if cuota_lado and cuota_lado > 25:
+                    log(f"  · [FILTRO] descartado {b.get('titulo', '?')} {lado} "
+                        f"cuota={cuota_lado:.2f} (>25, demasiado improbable)")
+                    continue
                 candidatas.append({"mercado": mk["titulo"], "slug": mk["slug"],
                                    "ventana": (inicio, fin), "tipo": mk["tipo"],
                                    "bin_titulo": b["titulo"], "lo": b["lo"], "hi": b["hi"],
