@@ -1,0 +1,4 @@
+Ghost zelen borrada - 20260904_151757
+Borradas 1 ops
+Saldo: $756.34
+Backup: /opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json.bak.20260904_151757
