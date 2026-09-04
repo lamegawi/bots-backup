@@ -1,0 +1,66 @@
+==============================================================================
+SALDO REAL TOTAL - 2026-09-04 15:23:23
+==============================================================================
+
+Wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+
+--- COMPONENTES ---
+  CLOB balance:  $0.00
+  CLOB allow:    $0.00
+  Posiciones:    75
+  Valor actual:  $20.57
+  Invertido:     $585.69
+  PnL no realiz: $-565.11
+
+==============================================================================
+==> BANKROLL REAL TOTAL: $20.57
+   ($0.00 CLOB + $20.57 posiciones)
+==> PnL desde $500 inicial: $-479.43
+==============================================================================
+
+--- JSON VIRTUALES (MAL, no usar) ---
+  Elon 48h: $477.84 (virtual)
+  Zelenskyy sem: $756.34 (virtual)
+
+--- LOG COMPLETO ---
+======================================================================
+SALDO REAL TOTAL · 2026-09-04T15:23:21.373294
+======================================================================
+
+⚠️  ESTE ES EL SALDO REAL DE TU WALLET POLYMARKET
+   NO usa los saldos virtuales de los JSON (que están mal)
+
+Wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+
+[1/2] Consultando saldo CLOB (SDK)...
+  ✓ Balance CLOB:   $0.00
+  ✓ Allowance:      $0.00
+
+[2/2] Consultando posiciones abiertas (data-api)...
+  ✓ 75 posiciones abiertas
+  ✓ Valor actual:   $20.57
+  ✓ Invertido:      $585.69
+  ✓ PnL no realizado: $-565.11
+
+======================================================================
+💰 BANKROLL REAL TOTAL
+======================================================================
+  CLOB libre:        $0.00
+  Posiciones:        $20.57
+  ─────────────────────────
+  TOTAL REAL:        $20.57
+
+  PnL desde $500 inicial: $-479.43
+
+  Desglose por bot (estimado, no exacto):
+  (todos los bots usan la misma wallet 0x...0FA0)
+
+======================================================================
+
+📊 PARA COMPARAR CON LOS JSON VIRTUALES (que están MAL):
+  Elon 48h: $477.84 (virtual, NO real)
+  Zelenskyy sem: $756.34 (virtual, NO real)
+  Trump mens: no se pudo leer
+
+======================================================================
+==============================================================================
