@@ -1,0 +1,26 @@
+======================================================================
+SNAPSHOT JSONS · 2026-09-04T18:36:27.692574
+======================================================================
+
+--- Elon 48h (/opt/polymarket/bot-polymarket-elon/real.json) ---
+  tamaño:  3758 bytes
+  sha256:  c1e188dbc70ab62544b33fc83de76586ce63dfba473a9c66ae355ecd70fdc2bf
+  saldo:   $303.55
+  paso:    6
+  activa:  True
+  ops:     7
+  _sincronizado_ts: 20260904_160545
+  _bankroll_inicial_real: $325.71
+
+--- Zelenskyy sem (/opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json) ---
+  tamaño:  4605 bytes
+  sha256:  00c48cc8c7afe3530ec7b81384a09fb5c294dd334eef73a0990c450e3a643e8e
+  saldo:   $303.55
+  paso:    3
+  activa:  True
+  ops:     4
+  _sincronizado_ts: 20260904_160545
+  _bankroll_inicial_real: $311.39
+
+--- Trump mens (/opt/polymarket/bot-polymarket-trump/real.json) ---
+  (no existe)
