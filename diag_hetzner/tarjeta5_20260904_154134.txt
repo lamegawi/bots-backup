@@ -1,0 +1,74 @@
+==============================================================================
+  TARJETA DE ACCIÓN · 5 PUNTOS · 2026-09-04 15:41
+==============================================================================
+
+📊 DIAGNÓSTICO REAL (método del bot Telegram)
+------------------------------------------------------------------------------
+  Cash on-chain (pUSD + USDC.e + USDC):   $   282.34
+      · pUSD                            $   282.34
+      · USDC.e                          $     0.00
+      · USDC                            $     0.00
+  Posiciones abiertas (76 mercados):    $    26.30
+  ─────────────────────────────────────────
+  BANKROLL REAL TOTAL:                      $   308.64
+  PnL desde $500 inicial:                   $  -191.36  (-38.3%)
+
+📋 SALDOS VIRTUALES vs REALES (los JSON mienten)
+------------------------------------------------------------------------------
+  Bot                     Virtual  Real (estimado)   Activa
+  Elon 48h           $    477.84  $         94.11        SÍ
+  Zelenskyy sem      $    756.34  $         94.11        SÍ
+  Trump mens         $      0.00  $         94.11        NO
+
+==============================================================================
+🎯 5 ACCIONES CONCRETAS PARA LOS PRÓXIMOS 7 DÍAS
+==============================================================================
+
+1️⃣  ACEPTAR LA REALIDAD Y ACTUAR
+------------------------------------------------------------------------------
+   El bankroll REAL es $308.64 (no $1234 que dicen los JSON).
+   Has perdido $191.36 del capital inicial (38%).
+   Con $308.64 la estrategia debe cambiar: stakes más pequeños,
+   más selectivo. La paciencia es rentable.
+
+2️⃣  DEJAR QUE EL FILTRO FUNCIONE (sin tocar nada)
+------------------------------------------------------------------------------
+   Los 3 bots ya tienen el filtro p_lado<10% y cuota<25 (desde 14:50).
+   Trump YA bloqueó 2 cuotas absurdas (2000 y 142).
+   En 7 días comparamos win rate antes/después.
+   → comando diario: python3 /root/seguimiento_filtros.py
+
+3️⃣  ARREGLAR EL BUG DEL PnL EN LOS JSON (prioridad alta)
+------------------------------------------------------------------------------
+   Los JSON reportan saldos falsos (Elon $477, Zelenskyy $756).
+   Bug en operar_real.py línea 381/128: el benef no cuadra con la wallet.
+   Solución: recalcular el saldo de cada JSON desde el bankroll real
+   distribuido proporcionalmente a las ops.
+   → script: python3 /root/sincronizar_saldo_json.py --apply
+
+4️⃣  CONSIDERAR PARAR ELON (es el más arriesgado)
+------------------------------------------------------------------------------
+   Elon: win rate 14%, $10 en <40 con cuota 19.6 (suicida).
+   Aún con el filtro, Elon apuesta a mercados muy volátiles.
+   Opción: systemctl stop poly-elon (y dejar Zelenskyy solo).
+   Mejor opción: reducir su stake máximo a $3-5.
+
+5️⃣  MONITOREO DIARIO (5 minutos al día)
+------------------------------------------------------------------------------
+   Todos los días a las 20:00 ejecuta:
+     python3 /root/saldo_real_total_v2.py    # saldo real
+     python3 /root/seguimiento_filtros.py    # filtros aplicados
+   Anota el resultado en un txt local. Si en 7 días:
+     · bankroll < $250 → PARA los 3 bots
+     · bankroll > $350 → mantén estrategia
+     · win rate > 30% → considera subir stakes
+
+==============================================================================
+📅 CHECKLIST DIARIO (5 min)
+==============================================================================
+  □ Ejecutar saldo_real_total_v2.py
+  □ Ejecutar seguimiento_filtros.py
+  □ Anotar el resultado
+  □ Si bankroll cae mucho, parar bots
+
+==============================================================================
