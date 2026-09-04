@@ -1,0 +1,35 @@
+Seguimiento filtros - 20260904_151225
+
+======================================================================
+SEGUIMIENTO FILTROS - 2026-09-04T15:12:25.432011
+======================================================================
+
+Cuenta de apuestas DESCARTADAS por el filtro desde hoy:
+
+--- Elon 48h (poly-elon) ---
+  estado: active
+  descartes por p_lado<10%: 0
+  descartes por cuota>25:    0
+  TOTAL descartes:          0
+
+--- Zelenskyy sem (poly-zelenskyy) ---
+  estado: active
+  descartes por p_lado<10%: 0
+  descartes por cuota>25:    0
+  TOTAL descartes:          0
+
+--- Trump mensual (poly-trump) ---
+  estado: active
+  descartes por p_lado<10%: 0
+  descartes por cuota>25:    2
+  TOTAL descartes:          2
+  ejemplos:
+    Sep 04 15:00:55 bot-poly python3[779034]:   · [FILTRO] descartado 80-99 YES cuota=2000.00 (>25, demasiado improbable)
+    Sep 04 15:00:55 bot-poly python3[779034]:   · [FILTRO] descartado 100-119 YES cuota=142.86 (>25, demasiado improbable)
+
+=== TOTAL 3 BOTS ===
+  descartes por p_lado<10%: 0
+  descartes por cuota>25:    2
+  TOTAL:                     2
+
+======================================================================
