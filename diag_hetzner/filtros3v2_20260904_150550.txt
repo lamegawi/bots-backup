@@ -1,0 +1,91 @@
+Filtros 3 bots v2 - 20260904_150550
+
+======================================================================
+VERIFICAR FILTROS 3 BOTS (v2) - 2026-09-04T15:05:50.260340
+======================================================================
+
+--- Elon 48h (poly-elon) ---
+  servicio: active
+  filtro local: ✓ presente (p_lado<10% y cuota<25)
+  activa: SÍ
+    slug: elon-musk-of-tweets-september-3-september-5-2026
+    bin: <40
+    cuota: 19.61
+    p_modelo: 77%
+    paso: 6
+    stake: $10.00
+  ops totales: 0
+  journalctl (ultimas 30):
+    Aug 30 13:08:10 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Aug 30 17:15:58 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+    Aug 30 17:15:58 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+    Aug 30 17:15:58 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Aug 30 17:15:58 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Aug 30 17:32:13 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+    Aug 30 17:32:13 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+    Aug 30 17:32:13 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Aug 30 17:32:13 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Sep 02 06:33:48 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+    Sep 02 06:33:48 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+    Sep 02 06:33:48 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Sep 02 06:33:48 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Sep 02 06:33:58 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+    Sep 02 06:33:58 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+    Sep 02 06:33:58 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Sep 02 06:33:58 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Sep 04 14:50:44 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+    Sep 04 14:50:44 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+    Sep 04 14:50:44 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Sep 04 14:50:44 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Sep 04 15:00:47 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+    Sep 04 15:00:47 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+    Sep 04 15:00:47 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+    Sep 04 15:00:47 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+
+--- Zelenskyy sem (poly-zelenskyy) ---
+  servicio: active
+  filtro local: ✓ presente (p_lado<10% y cuota<25)
+  activa: SÍ
+    slug: zelenskyy-of-tweets-september-1-september-8-2026
+    bin: 100-119
+    cuota: 10.53
+    p_modelo: 23%
+    paso: 3
+    stake: $5.88
+  ops totales: 0
+  journalctl (ultimas 30):
+    Aug 30 17:15:59 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+    Aug 30 17:15:59 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+    Aug 30 17:15:59 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+    Aug 30 17:15:59 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+    Aug 30 17:32:13 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+    Aug 30 17:32:13 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+    Aug 30 17:32:13 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+    Aug 30 17:32:13 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+    Aug 30 17:35:16 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+    Aug 30 17:35:16 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+    Aug 30 17:35:16 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+    Aug 30 17:35:16 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+    Sep 02 06:33:48 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+    Sep 02 06:33:48 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+    Sep 02 06:33:48 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+    Sep 02 06:33:48 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+    Sep 02 06:33:58 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+    Sep 02 06:33:58 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+    Sep 02 06:33:58 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+    Sep 02 06:33:58 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+    Sep 04 15:00:47 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+    Sep 04 15:00:47 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+    Sep 04 15:00:47 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+    Sep 04 15:00:47 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+
+--- Trump mensual (poly-trump) ---
+  servicio: active
+  filtro local: ✓ presente (p_lado<10% y cuota<25)
+  ERROR parseando: Expecting value: line 1 column 1 (char 0)
+  journalctl (ultimas 30):
+    Sep 04 15:00:55 bot-poly python3[779034]: [2026-09-04 11:00:55 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+    Sep 04 15:00:55 bot-poly python3[779034]:   · [FILTRO] descartado 80-99 YES cuota=2000.00 (>25, demasiado improbable)
+    Sep 04 15:00:55 bot-poly python3[779034]:   · [FILTRO] descartado 100-119 YES cuota=142.86 (>25, demasiado improbable)
+
+======================================================================
