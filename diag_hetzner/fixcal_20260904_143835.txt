@@ -1,0 +1,216 @@
+==============================================================================
+FIXCAL 3 BOTS - 2026-09-04 14:38:35
+==============================================================================
+
+======================================================================
+FIXCAL 3 BOTS · 2026-09-04T14:38:35.881591
+======================================================================
+
+[1] CONFIGS DE CADA BOT:
+
+--- Elon 48h ---
+  config.json:
+    ntfy: {
+      "topic": "elon-poly-gg1j0zp6",
+      "token": null
+}
+    resumen: {
+      "hora": -1
+}
+    telegram: {
+      "token": "8932364064:AAEE1iuyNX0beaVzFVcYMu_A4eNXCpEw8XE",
+      "chat_id": "250818720"
+}
+
+--- Zelenskyy ---
+  config.json:
+    ntfy: {
+      "topic": "zelen-poly-5cx43prf",
+      "token": null
+}
+    resumen: {
+      "hora": -1
+}
+    telegram: {
+      "token": "8945807929:AAHU9mmI6yLi8-e99sOFwSxmYqhzw7AV7J0",
+      "chat_id": "250818720"
+}
+
+--- Trump ---
+  config.json:
+    ntfy: {
+      "topic": "elon-poly-s2iduxz9",
+      "token": null
+}
+    resumen: {
+      "hora": 20
+}
+    telegram: {
+      "token": "8982773230:AAGfqqMxn3cgxcYDU_WAS2aWlkcl1UlGTxM",
+      "chat_id": 250818720
+}
+
+======================================================================
+[2] LÓGICA FIXCAL (líneas relevantes):
+======================================================================
+
+=== Elon 48h ===
+  bot.py:15  cumple las reglas (cuota ≥ 3.00, p_modelo ≥ 60% / ≤ 30%,
+  bot.py:152  bankroll=operar_real.BANKROLL,
+  bot.py:172  bankroll=papel.BANKROLL,
+  bot.py:283  f"(cuota {a['cuota']}) · paso {a['paso']} · "
+  bot.py:284  f"stake ${a['stake']:.2f} · fin ventana {a.get('ventana_fin', '?')}")
+  bot.py:286  print("  Sin apuesta activa (esperando señal 48 h con cuota ≥ 3.00)")
+  papel.py:15  stake del paso actual del ciclo.
+  papel.py:50  BANKROLL = 500.0
+  papel.py:55  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  papel.py:64  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  papel.py:75  w.writerow(["id", "fecha", "mercado", "bin", "lado", "precio", "cuota",
+  papel.py:76  "p_modelo", "paso", "stake", "real", "resultado",
+  papel.py:80  tr["bin"], tr["lado"], tr["precio"], tr["cuota"],
+  papel.py:81  tr["p_modelo"], tr["paso"], tr["stake"], tr["real"],
+  papel.py:128  benef = round(act["stake"] * (act["cuota"] - 1), 2)
+  papel.py:133  benef = -round(act["stake"], 2)
+  papel.py:139  "lado": act["lado"], "precio": act["precio"], "cuota": act["cuota"],
+  papel.py:141  "stake": round(act["stake"], 2), "real": winner_titulo,
+  papel.py:183  _p = _c["p_modelo"] if _c["lado"] == "YES" else (1 - _c["p_modelo"])
+  papel.py:184  _c["_ev"] = round(_p * _c["cuota"], 3)
+  papel.py:193  "cuota": round(c["cuota"], 2), "p_modelo": round(c["p_modelo"], 4),
+  papel.py:194  "paso": estado["paso"], "stake": c["stake"],
+  papel.py:198  f"a {c['precio']:.3f} (cuota {c['cuota']:.2f}, p_modelo {c['p_modelo']:.0%}) "
+  papel.py:199  f"· paso {estado['paso']} · stake ${c['stake']:.2f}")
+  papel.py:229  bankroll=BANKROLL,
+  operar_real.py:14  · Stake según la tabla 3.30 × 1.5^(paso-1) y límite de ciclo paso 7
+  operar_real.py:61  BANKROLL = 500.0
+  operar_real.py:144  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  operar_real.py:149  else (1 if k == "paso" else BANKROLL)))
+  operar_real.py:152  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  operar_real.py:163  w.writerow(["id", "fecha", "mercado", "bin", "lado", "precio", "cuota",
+  operar_real.py:164  "p_modelo", "paso", "stake", "real", "resultado",
+  operar_real.py:168  tr["bin"], tr["lado"], tr["precio"], tr["cuota"],
+  operar_real.py:169  tr["p_modelo"], tr["paso"], tr["stake"], tr["real"],
+  operar_real.py:379  fee = round(act["stake"] * fee_pct, 2)
+  operar_real.py:381  benef = round(act["stake"] * (act["cuota"] - 1) - fee, 2)
+  operar_real.py:386  benef = -round(act["stake"] + fee, 2)
+  operar_real.py:392  "lado": act["lado"], "precio": act["precio"], "cuota": act["cuota"],
+  operar_real.py:394  "stake": round(act["stake"], 2), "real": winner_titulo,
+  operar_real.py:411  f"Stake ${act['stake']:.2f} · saldo de la operación ${benef:+.2f}\n"
+  operar_real.py:413  titulo="💰 Apuesta REAL cerrada",
+  operar_real.py:452  _p = _c["p_modelo"] if _c["lado"] == "YES" else (1 - _c["p_modelo"])
+  operar_real.py:453  _c["_ev"] = round(_p * _c["cuota"], 3)
+  operar_real.py:474  coste_total = c["stake"] * (1 + fee)
+  operar_real.py:475  if coste_total > cfg.get("bankroll", BANKROLL) * 0.5:
+  operar_real.py:476  print(f"  [BLOQUEADO] el stake ${c['stake']:.2f} supera el 50% del "
+  operar_real.py:521  f"@{c['precio']:.3f} (cuota {c['cuota']:.2f}) · "
+  operar_real.py:522  f"size {c['stake']:.2f} USDC · token {token_id[:12]}…")
+  operar_real.py:531  size_shares = round(c["stake"] / c["precio"], 2)
+  operar_real.py:534  f"(stake ${c['stake']:.2f} a precio {c['precio']:.3f}).")
+
+=== Zelenskyy ===
+  bot_semanal.py:15  cumple las reglas (cuota ≥ 3.00, p_modelo ≥ 60% / ≤ 30%,
+  bot_semanal.py:154  bankroll=operar_real.BANKROLL,
+  bot_semanal.py:174  bankroll=papel.BANKROLL,
+  bot_semanal.py:285  f"(cuota {a['cuota']}) · paso {a['paso']} · "
+  bot_semanal.py:286  f"stake ${a['stake']:.2f} · fin ventana {a.get('ventana_fin', '?')}")
+  bot_semanal.py:288  print("  Sin apuesta activa (esperando señal 48 h con cuota ≥ 3.00)")
+  papel_semanal.py:15  stake del paso actual del ciclo.
+  papel_semanal.py:50  BANKROLL = 500.0
+  papel_semanal.py:55  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  papel_semanal.py:64  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  papel_semanal.py:75  w.writerow(["id", "fecha", "mercado", "bin", "lado", "precio", "cuota",
+  papel_semanal.py:76  "p_modelo", "paso", "stake", "real", "resultado",
+  papel_semanal.py:80  tr["bin"], tr["lado"], tr["precio"], tr["cuota"],
+  papel_semanal.py:81  tr["p_modelo"], tr["paso"], tr["stake"], tr["real"],
+  papel_semanal.py:128  benef = round(act["stake"] * (act["cuota"] - 1), 2)
+  papel_semanal.py:133  benef = -round(act["stake"], 2)
+  papel_semanal.py:139  "lado": act["lado"], "precio": act["precio"], "cuota": act["cuota"],
+  papel_semanal.py:141  "stake": round(act["stake"], 2), "real": winner_titulo,
+  papel_semanal.py:183  _p = _c["p_modelo"] if _c["lado"] == "YES" else (1 - _c["p_modelo"])
+  papel_semanal.py:184  _c["_ev"] = round(_p * _c["cuota"], 3)
+  papel_semanal.py:193  "cuota": round(c["cuota"], 2), "p_modelo": round(c["p_modelo"], 4),
+  papel_semanal.py:194  "paso": estado["paso"], "stake": c["stake"],
+  papel_semanal.py:198  f"a {c['precio']:.3f} (cuota {c['cuota']:.2f}, p_modelo {c['p_modelo']:.0%}) "
+  papel_semanal.py:199  f"· paso {estado['paso']} · stake ${c['stake']:.2f}")
+  papel_semanal.py:229  bankroll=BANKROLL,
+  operar_real_semanal.py:14  · Stake según la tabla 3.30 × 1.5^(paso-1) y límite de ciclo paso 7
+  operar_real_semanal.py:61  BANKROLL = 500.0
+  operar_real_semanal.py:144  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  operar_real_semanal.py:149  else (1 if k == "paso" else BANKROLL)))
+  operar_real_semanal.py:152  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  operar_real_semanal.py:163  w.writerow(["id", "fecha", "mercado", "bin", "lado", "precio", "cuota",
+  operar_real_semanal.py:164  "p_modelo", "paso", "stake", "real", "resultado",
+  operar_real_semanal.py:168  tr["bin"], tr["lado"], tr["precio"], tr["cuota"],
+  operar_real_semanal.py:169  tr["p_modelo"], tr["paso"], tr["stake"], tr["real"],
+  operar_real_semanal.py:379  fee = round(act["stake"] * fee_pct, 2)
+  operar_real_semanal.py:381  benef = round(act["stake"] * (act["cuota"] - 1) - fee, 2)
+  operar_real_semanal.py:386  benef = -round(act["stake"] + fee, 2)
+  operar_real_semanal.py:392  "lado": act["lado"], "precio": act["precio"], "cuota": act["cuota"],
+  operar_real_semanal.py:394  "stake": round(act["stake"], 2), "real": winner_titulo,
+  operar_real_semanal.py:411  f"Stake ${act['stake']:.2f} · saldo de la operación ${benef:+.2f}\n"
+  operar_real_semanal.py:413  titulo="[SEMANAL] 💰 Apuesta REAL cerrada",
+  operar_real_semanal.py:452  _p = _c["p_modelo"] if _c["lado"] == "YES" else (1 - _c["p_modelo"])
+  operar_real_semanal.py:453  _c["_ev"] = round(_p * _c["cuota"], 3)
+  operar_real_semanal.py:474  coste_total = c["stake"] * (1 + fee)
+  operar_real_semanal.py:475  if coste_total > cfg.get("bankroll", BANKROLL) * 0.5:
+  operar_real_semanal.py:476  print(f"  [BLOQUEADO] el stake ${c['stake']:.2f} supera el 50% del "
+  operar_real_semanal.py:521  f"@{c['precio']:.3f} (cuota {c['cuota']:.2f}) · "
+  operar_real_semanal.py:522  f"size {c['stake']:.2f} USDC · token {token_id[:12]}…")
+  operar_real_semanal.py:531  size_shares = round(c["stake"] / c["precio"], 2)
+  operar_real_semanal.py:534  f"(stake ${c['stake']:.2f} a precio {c['precio']:.3f}).")
+
+=== Trump ===
+  bot_semanal.py:15  cumple las reglas (cuota ≥ 3.00, p_modelo ≥ 60% / ≤ 30%,
+  bot_semanal.py:154  bankroll=operar_real.BANKROLL,
+  bot_semanal.py:174  bankroll=papel.BANKROLL,
+  bot_semanal.py:285  f"(cuota {a['cuota']}) · paso {a['paso']} · "
+  bot_semanal.py:286  f"stake ${a['stake']:.2f} · fin ventana {a.get('ventana_fin', '?')}")
+  bot_semanal.py:288  print("  Sin apuesta activa (esperando señal 48 h con cuota ≥ 3.00)")
+  papel_semanal.py:15  stake del paso actual del ciclo.
+  papel_semanal.py:50  BANKROLL = 500.0
+  papel_semanal.py:55  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  papel_semanal.py:64  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  papel_semanal.py:75  w.writerow(["id", "fecha", "mercado", "bin", "lado", "precio", "cuota",
+  papel_semanal.py:76  "p_modelo", "paso", "stake", "real", "resultado",
+  papel_semanal.py:80  tr["bin"], tr["lado"], tr["precio"], tr["cuota"],
+  papel_semanal.py:81  tr["p_modelo"], tr["paso"], tr["stake"], tr["real"],
+  papel_semanal.py:128  benef = round(act["stake"] * (act["cuota"] - 1), 2)
+  papel_semanal.py:133  benef = -round(act["stake"], 2)
+  papel_semanal.py:139  "lado": act["lado"], "precio": act["precio"], "cuota": act["cuota"],
+  papel_semanal.py:141  "stake": round(act["stake"], 2), "real": winner_titulo,
+  papel_semanal.py:183  _p = _c["p_modelo"] if _c["lado"] == "YES" else (1 - _c["p_modelo"])
+  papel_semanal.py:184  _c["_ev"] = round(_p * _c["cuota"], 3)
+  papel_semanal.py:193  "cuota": round(c["cuota"], 2), "p_modelo": round(c["p_modelo"], 4),
+  papel_semanal.py:194  "paso": estado["paso"], "stake": c["stake"],
+  papel_semanal.py:198  f"a {c['precio']:.3f} (cuota {c['cuota']:.2f}, p_modelo {c['p_modelo']:.0%}) "
+  papel_semanal.py:199  f"· paso {estado['paso']} · stake ${c['stake']:.2f}")
+  papel_semanal.py:229  bankroll=BANKROLL,
+  operar_real_semanal.py:14  · Stake según la tabla 3.30 × 1.5^(paso-1) y límite de ciclo paso 7
+  operar_real_semanal.py:61  BANKROLL = 500.0
+  operar_real_semanal.py:144  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  operar_real_semanal.py:149  else (1 if k == "paso" else BANKROLL)))
+  operar_real_semanal.py:152  return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+  operar_real_semanal.py:163  w.writerow(["id", "fecha", "mercado", "bin", "lado", "precio", "cuota",
+  operar_real_semanal.py:164  "p_modelo", "paso", "stake", "real", "resultado",
+  operar_real_semanal.py:168  tr["bin"], tr["lado"], tr["precio"], tr["cuota"],
+  operar_real_semanal.py:169  tr["p_modelo"], tr["paso"], tr["stake"], tr["real"],
+  operar_real_semanal.py:379  fee = round(act["stake"] * fee_pct, 2)
+  operar_real_semanal.py:381  benef = round(act["stake"] * (act["cuota"] - 1) - fee, 2)
+  operar_real_semanal.py:386  benef = -round(act["stake"] + fee, 2)
+  operar_real_semanal.py:392  "lado": act["lado"], "precio": act["precio"], "cuota": act["cuota"],
+  operar_real_semanal.py:394  "stake": round(act["stake"], 2), "real": winner_titulo,
+  operar_real_semanal.py:411  f"Stake ${act['stake']:.2f} · saldo de la operación ${benef:+.2f}\n"
+  operar_real_semanal.py:413  titulo="[TRUMP] 💰 Apuesta REAL cerrada",
+  operar_real_semanal.py:452  _p = _c["p_modelo"] if _c["lado"] == "YES" else (1 - _c["p_modelo"])
+  operar_real_semanal.py:453  _c["_ev"] = round(_p * _c["cuota"], 3)
+  operar_real_semanal.py:474  coste_total = c["stake"] * (1 + fee)
+  operar_real_semanal.py:475  if coste_total > cfg.get("bankroll", BANKROLL) * 0.5:
+  operar_real_semanal.py:476  print(f"  [BLOQUEADO] el stake ${c['stake']:.2f} supera el 50% del "
+  operar_real_semanal.py:521  f"@{c['precio']:.3f} (cuota {c['cuota']:.2f}) · "
+  operar_real_semanal.py:522  f"size {c['stake']:.2f} USDC · token {token_id[:12]}…")
+  operar_real_semanal.py:531  size_shares = round(c["stake"] / c["precio"], 2)
+  operar_real_semanal.py:534  f"(stake ${c['stake']:.2f} a precio {c['precio']:.3f}).")
+
+======================================================================
+[3] TABLAS DE STAKE (si existen):
+======================================================================
+==============================================================================
