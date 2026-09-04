@@ -1,0 +1,117 @@
+================================================================
+CHEAT SHEET - DIAGNÓSTICO REMOTO HETZNER → GITHUB → ARENA.AI
+================================================================
+Imprime esto o tenlo a mano. 1 página.
+
+REPO
+- Repo: lamegawi/bots-backup
+- Rama de trabajo: arena/01a058fe-bots-backup
+- Rama de diagnóstico: diag-public (carpeta diag_hetzner/)
+- Servidor: 46.225.146.21 (root, pwd 4856)
+
+================================================================
+PARA TI (EN POWERHELL SSH)
+================================================================
+
+# 1) Conectar
+ssh root@46.225.146.21
+
+# 2) Verificar que el PAT está vivo (debe decir ✓ en GET y PUT)
+python3 /root/verifica_pat.py
+
+# 3) Si da 401 "Bad credentials", crear PAT nuevo en
+#    https://github.com/settings/tokens  (scope: repo)
+#    y actualizar:
+echo "ghp_NUEVO_TOKEN" > /root/diag_token.txt
+chmod 600 /root/diag_token.txt
+
+# 4) Ejecutar el diagnóstico completo
+python3 /root/diag_v4.py 2>&1 | tee /root/diag_v4.log
+
+# 5) Decir "hecho" en el chat. Esperar 30-60s. NO pegar nada.
+
+================================================================
+PARA EL AGENTE (EN ARENA.AI)
+================================================================
+
+# Ver el último informe publicado
+gh api "repos/lamegawi/bots-backup/contents/diag_hetzner?ref=diag-public" --jq '.[] | .name' | sort | tail -1
+
+# Leer un informe (reemplaza NOMBRE)
+gh api "repos/lamegawi/bots-backup/contents/diag_hetzner/NOMBRE.txt?ref=diag-public" -H "Accept: application/vnd.github.v3.raw"
+
+# Subir un script nuevo
+git -C /home/user/bots-backup add scripts_despliegue/MI_SCRIPT.py
+git -C /home/user/bots-backup -c user.email="lamegawi@users.noreply.github.com" -c user.name="lamegawi" commit -m "..."
+git -C /home/user/bots-backup push origin arena/01a058fe-bots-backup
+# (esperar 20-30s por consistencia de GitHub)
+
+# URL raw de un script (para que el usuario lo descargue)
+https://raw.githubusercontent.com/lamegawi/bots-backup/arena/01a058fe-bots-backup/scripts_despliegue/MI_SCRIPT.py
+
+================================================================
+DIAGNÓSTICOS ÚTILES EN HETZNER
+================================================================
+
+# Ver bots corriendo
+systemctl list-units --type=service --state=active | grep poly
+
+# Ver log de un bot
+journalctl -u poly-elon -n 50 --no-pager
+
+# Ver PnL virtual de un bot
+cat /opt/polymarket/bot-polymarket-elon/real.json
+
+# Ver PnL real del gestor
+cat /opt/polymarket/cierres_anticipados.json
+
+# Ver posiciones sin publicar
+curl -s "https://data-api.polymarket.com/positions?user=0xb0E1197098E6d427c01720F1631cAD24CE740FA0&limit=200" -H "User-Agent: Mozilla/5.0" | python3 -m json.tool | head -50
+
+================================================================
+FUNDAMENTAL DEL FLUJO
+================================================================
+
+TÚ                              GITHUB                    AGENTE
+|                               |                          |
+|--ejecuta script-->            |                          |
+|                               |<--sube resultado---------|
+|                               |                          |
+|                               |---lee resultado--------->|
+|                               |                          |
+|<--responde con análisis-------|                          |
+
+================================================================
+SEGURIDAD
+================================================================
+
+- PAT: solo scope "repo", en /root/diag_token.txt con chmod 600
+- NUNCA pegar el PAT en el chat
+- Si se expone accidentalmente: revocar inmediatamente en
+  https://github.com/settings/tokens
+- Cambiar la contraseña de Hetzner si la has compartido
+
+================================================================
+CUANDO FALLA
+================================================================
+
+Síntoma                              | Causa                    | Solución
+--------------------------------------|--------------------------|--------------------------
+HTTP 401 "Bad credentials"            | PAT revocado/expirado    | Crear PAT nuevo
+Script no aparece en GitHub           | PUT falló                | Ejecutar verifica_pat.py
+"no se pudo encontrar wallet"         | config.json sin wallet   | Añadir wallet_address
+PowerShell corta la salida            | Autocompletado PS        | Usar `> archivo.log 2>&1`
+Conexión SSH caída                    | Red inestable            | Reconectar
+diag_hetzner/ no aparece en GitHub    | Eventual consistency     | Esperar 30-60s y reintentar
+
+================================================================
+DOCUMENTACIÓN COMPLETA
+================================================================
+
+Lee el manual completo:
+  scripts_despliegue/INSTRUCCIONES_DIAGNOSTICO_REMOTO.md
+  (15.7 KB, 362 líneas, todo explicado en detalle)
+
+================================================================
+FIN DEL CHEAT SHEET
+================================================================

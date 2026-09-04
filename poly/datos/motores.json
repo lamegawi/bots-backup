@@ -18,7 +18,7 @@
     },
     {
       "nombre": "motor_v2_ev_escalones_tope10",
-      "descripcion": "Conteo t0 corregido (posts+reposts+quotes) · entrada solo al inicio (48h≤12h, semanal≤24h, mensual≤72h) · guarda de bin decidido · tamaño por EV (1.8-2.5 ×1 · 2.5-4.0 ×1.5 · >4.0 ×2 · tope 10€) sobre el martingala base.",
+      "descripcion": "Conteo t0 corregido (posts+reposts+quotes) · entrada solo al inicio (48h≤12h, semanal≤24h, mensual≤72h) · guarda de bin decidido · tamaño por EV (1.8-2.5 ×1 · 2.5-4.0 ×1.5 · >4.0 ×2 · tope 10€) sobre el martingala base. Compartido por los 5 bots (Elon 48h, Elon semanal, Elon mensual, Zelenskyy, Trump).",
       "fecha_inicio": "2026-08-19",
       "fecha_fin": null,
       "stats": null
@@ -29,5 +29,12 @@
     "motivo": "los 6 bots corrían el mismo motor (v2) y duplicaban riesgo (p.ej. -3,30 x2 en <40 el 18/08).",
     "estado": "poly-elon-v2, poly-semanal-v2, poly-mensual-v2 parados y deshabilitados (no borrados).",
     "uso_futuro": "laboratorio para probar el próximo motor en modo papel."
+  },
+  "cobertura_por_bot": {
+    "bot-polymarket-elon":          {"motor": "motor_v2_ev_escalones_tope10", "mercado": "Elon Musk followers (X/Twitter)", "ventana": "48h"},
+    "bot-polymarket-elon-semanal":  {"motor": "motor_v2_ev_escalones_tope10", "mercado": "Elon Musk followers (X/Twitter)", "ventana": "semanal"},
+    "bot-polymarket-elon-mensual":  {"motor": "motor_v2_ev_escalones_tope10", "mercado": "Elon Musk followers (X/Twitter)", "ventana": "mensual"},
+    "bot-polymarket-zelenskyy":     {"motor": "motor_v2_ev_escalones_tope10", "mercado": "Zelenskyy suit color (X/Instagram)", "ventana": "semanal"},
+    "bot-polymarket-trump":         {"motor": "motor_v2_ev_escalones_tope10", "mercado": "Donald Trump # Truth Social (semanal)", "ventana": "semanal"}
   }
 }

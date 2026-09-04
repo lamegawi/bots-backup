@@ -1,0 +1,20 @@
+# NUNCA subir credenciales
+config_real.json
+*.key
+*.pem
+
+# Logs (opcional conservarlos)
+*.log
+
+# Entorno Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Opcional: el historial Excel es grande y se regenera
+# (si lo quieres versionar, borra estas 2 líneas)
+*.xlsx
+
+# Archivos temporales
+/tmp/

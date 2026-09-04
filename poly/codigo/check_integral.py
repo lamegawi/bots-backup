@@ -5,6 +5,7 @@
 Modos (cada uno vigila y notifica a su propio bot de Telegram):
   - por defecto (--elon):  bots de Elon (48h, semanal, mensual)
   - --zelen:               bot de Zelenskyy
+  - --trump:               bot de Trump (Donald Trump # Truth Social)
 
 Comprueba:
   A. Servicios systemd del grupo activos.
@@ -22,9 +23,10 @@ Comprueba:
 Uso:
   python3 check_integral.py               # grupo Elon
   python3 check_integral.py --zelen       # grupo Zelenskyy
+  python3 check_integral.py --trump       # grupo Trump
   python3 check_integral.py --test        # imprime también por pantalla
   python3 check_integral.py --fix         # reconcilia los bots atascados
-  python3 check_integral.py --solo-fantasmas [--zelen]  # solo fantasmas
+  python3 check_integral.py --solo-fantasmas [--zelen|--trump]  # solo fantasmas
 """
 import json
 import os
@@ -39,6 +41,7 @@ from zoneinfo import ZoneInfo
 BASE = "/opt/polymarket"
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
 TOKEN_ZELEN = os.environ.get("ZELEN_BOT_TOKEN", "").strip()
+TOKEN_TRUMP = os.environ.get("TRUMP_BOT_TOKEN", "").strip()
 CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
 FUNDER = "0xb0E1197098E6d427c01720F1631cAD24CE740FA0"
 PROXY = "http://100.83.57.99:8888"
@@ -53,9 +56,13 @@ BOTS_ELON = [
 BOTS_ZELEN = [
     ("Zelenskyy", f"{BASE}/bot-polymarket-zelenskyy/real_zelen.json",       "bot-polymarket-zelenskyy"),
 ]
+BOTS_TRUMP = [
+    ("Trump", f"{BASE}/bot-polymarket-trump/real_trump.json", "bot-polymarket-trump"),
+]
 SERVICIOS_ELON = ["poly-elon", "poly-semanal", "poly-mensual",
                   "poly-telegram", "poly-gestor"]
 SERVICIOS_ZELEN = ["poly-zelenskyy", "poly-telegram-zelen"]
+SERVICIOS_TRUMP = ["poly-trump"]
 MOTOR_ESPERADO = "motor_v2_ev_escalones_tope10"
 MESES = {"january", "february", "march", "april", "may", "june", "july",
          "august", "september", "october", "november", "december"}
@@ -67,8 +74,9 @@ LOCK = f"{BASE}/apuestas_compartidas.json"
 
 # ------------------------------------------------------------------- estado
 def _cfg():
-    """Configuración según el modo (--zelen o no)."""
+    """Configuración según el modo (--zelen, --trump o no)."""
     zelen = "--zelen" in sys.argv
+    trump = "--trump" in sys.argv
     if zelen:
         return {
             "nombre": "ZELENSKYY",
@@ -80,6 +88,18 @@ def _cfg():
             "csv": f"{BASE}/bot-polymarket-zelenskyy/datos_zelen.csv",
             "csv_nombre": "datos_zelen.csv",
             "mercado_nombre": "mercado_activo.json Zelenskyy",
+        }
+    if trump:
+        return {
+            "nombre": "TRUMP",
+            "bots": BOTS_TRUMP,
+            "servicios": SERVICIOS_TRUMP,
+            "token": TOKEN_TRUMP,
+            "clave_titulo": "trump",
+            "mercado_json": f"{BASE}/bot-polymarket-trump/mercado_activo.json",
+            "csv": f"{BASE}/bot-polymarket-trump/datos_trump.csv",
+            "csv_nombre": "datos_trump.csv",
+            "mercado_nombre": "mercado_activo.json Trump",
         }
     return {
         "nombre": "POLYMARKET",
@@ -379,6 +399,20 @@ def check_funciones(cfg):
                     mal.append(f"zelenskyy.{nom}: {e}")
         except Exception as e:
             mal.append(f"poly_telegram_zelen: {e}")
+    elif cfg["nombre"] == "TRUMP":
+        # El bot de Trump tiene su propio notificar.py (no_telegram_via_saldo)
+        # y su flujo semanal es distinto. Aquí solo verificamos que el
+        # módulo se puede importar sin errores.
+        try:
+            sys.path.insert(0, f"{BASE}/bot-polymarket-trump")
+            import notificar_semanal as NT
+            # Sanity check: que existan las funciones de notificación semanal
+            for nom in ("notificar_inicio_semana", "notificar_resumen"):
+                if not hasattr(NT, nom):
+                    mal.append(f"trump: notificar_semanal sin función {nom}")
+                    break
+        except Exception as e:
+            mal.append(f"trump.notificar_semanal: {e}")
     else:
         try:
             import posiciones_reales as PR

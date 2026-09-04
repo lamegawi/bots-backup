@@ -1,0 +1,13 @@
+{
+  "ntfy": {
+    "topic": "REEMPLAZAR_POR_TU_TEMA_NTFY",
+    "token": null
+  },
+  "telegram": {
+    "token": "REEMPLAZAR_POR_TU_BOT_TOKEN",
+    "chat_id": "REEMPLAZAR_POR_TU_CHAT_ID"
+  },
+  "resumen": {
+    "hora": 20
+  }
+}

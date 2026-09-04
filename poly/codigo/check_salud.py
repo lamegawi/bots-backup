@@ -7,6 +7,8 @@ Modos:
     y notifica al bot de Elon (TELEGRAM_BOT_TOKEN).
   - --zelen: vigila SOLO los servicios de Zelenskyy
     y notifica al bot de Zelenskyy (ZELEN_BOT_TOKEN).
+  - --trump: vigila SOLO los servicios de Trump (Donald Trump # Truth Social)
+    y notifica al bot de Trump (TRUMP_BOT_TOKEN).
 
 En ambos casos también comprueba: Tailscale con el PC, proxy del PC
 (100.83.57.99:8888) + IP de salida, y Polymarket (clob) a través del proxy.
@@ -25,15 +27,18 @@ import urllib.request
 
 TOKEN_ELON = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
 TOKEN_ZELEN = os.environ.get("ZELEN_BOT_TOKEN", "").strip()
+TOKEN_TRUMP = os.environ.get("TRUMP_BOT_TOKEN", "").strip()
 CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
 ESTADO_FILE = "/opt/polymarket/salud_estado.json"
 ESTADO_FILE_ZELEN = "/opt/polymarket/salud_estado_zelen.json"
+ESTADO_FILE_TRUMP = "/opt/polymarket/salud_estado_trump.json"
 IP_CASA = "85.85.41.76"
 PROXY = "http://100.83.57.99:8888"
 
 SERVICIOS_ELON = ["poly-elon", "poly-semanal", "poly-mensual",
                   "poly-telegram", "poly-gestor"]
 SERVICIOS_ZELEN = ["poly-zelenskyy", "poly-telegram-zelen"]
+SERVICIOS_TRUMP = ["poly-trump"]
 
 
 def tg_send(texto, token):
@@ -130,6 +135,11 @@ def main():
         servicios = SERVICIOS_ZELEN
         estado_file = ESTADO_FILE_ZELEN
         titulo = "ZELENSKYY"
+    elif "--trump" in sys.argv:
+        token = TOKEN_TRUMP
+        servicios = SERVICIOS_TRUMP
+        estado_file = ESTADO_FILE_TRUMP
+        titulo = "TRUMP"
     else:
         token = TOKEN_ELON
         servicios = SERVICIOS_ELON

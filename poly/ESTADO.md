@@ -1,19 +1,20 @@
-# POLY 2026-08-29 02:15 UTC
-- poly-elon: active
-- poly-semanal: active
-- poly-mensual: active
-- poly-zelenskyy: active
-- poly-telegram: active
-2026-08-18,47
-2026-08-19,86
-2026-08-20,85
-2026-08-21,52
-2026-08-22,17
-2026-08-23,31
-2026-08-24,33
-2026-08-25,26
-2026-08-26,14
-2026-08-27,30
-[2026-08-28 21:57:55 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
-[2026-08-28 22:04:15 EDT]       · jina-tw: 5 items
-[2026-08-28 22:12:55 EDT]       · jina-tw: 5 items
+# POLY 2026-08-31 (UTC) — estado de bots
+- poly-elon:       active   (bot-polymarket-elon, 48h)
+- poly-semanal:    active   (bot-polymarket-elon-semanal)
+- poly-mensual:    active   (bot-polymarket-elon-mensual)
+- poly-zelenskyy:  active   (bot-polymarket-zelenskyy)
+- poly-telegram:   active   (bot de comandos de Elon)
+- poly-trump:      active   (bot-polymarket-trump, semanal Truth Social)
+
+Último check de salud: 2026-08-31. Todos los bots en estado OK según
+check_salud.py / check_integral.py (corre cada 15 min en cron).
+
+Fuente de datos de Trump: xtracker.polymarket.com (Truth Social) +
+jina.ai como respaldo + nitter como último recurso (ver
+bot-polymarket-trump/recoger_tweets.py).
+
+Mercados activos de Trump (3 semanales, gamma-api):
+- "Donald Trump # Truth Social Weekly Count – Week of <fecha>"
+
+CSV de datos histórico: bot-polymarket-trump/datos_trump.csv
+
