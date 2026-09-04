@@ -1,4 +1,4 @@
-# Estado OKX - 2026-09-03 04:00 UTC
+# Estado OKX - 2026-09-04 04:00 UTC
 
 ## Servicios
 - okx-demo-bot: active
@@ -21,11 +21,10 @@
 - signal: /root/.okx_signal_pausado
 
 ## Cuenta demo (posiciones y P&L)
-- equity demo: $469845.61
-- UNI-USD_UM_XPERP-310718 LONG 79.0 ct | P&L -9.30
-- HYPE-USD_UM_XPERP-310801 SHORT 25.0 ct | P&L +2.66
-- AVAX-USD_UM_XPERP-310801 LONG 50.0 ct | P&L +9.44
+- equity demo: $478042.46
+- DOGE-USD_UM_XPERP-310516 LONG 481.0 ct | P&L -2.60
+- AVAX-USD_UM_XPERP-310801 LONG 50.0 ct | P&L +20.44
 - ORBS-USD_UM_XPERP-310822 LONG 42.0 ct | P&L -22.95
 
 ## Cuenta real (solo saldo, sin detalle)
-- equity real: $400.90 | posiciones: 0
+- equity real: $401.52 | posiciones: 0

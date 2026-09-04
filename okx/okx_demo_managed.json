@@ -5,102 +5,59 @@
     "entry": 7.08618,
     "contratos": 50,
     "sl_algo_id": "3882563265133850624",
-    "state": "adopted",
+    "state": "breakeven",
     "risk_usd": 10.0,
     "opened_at": 1788211802.1957707,
     "dist": 0.04,
     "initial_sl": 6.985976,
     "tp_levels": [],
-    "qty_vista": 50.0
+    "qty_vista": 50.0,
+    "sw_sl_px": 7.32156
   },
-  "HYPE: SHORT": {
-    "symbol": "HYPE",
-    "direction": "SHORT",
-    "entry": 83.333,
-    "contratos": 31,
-    "sl_algo_id": "3883797325190557697",
-    "state": "opened",
-    "risk_usd": 10.0,
-    "opened_at": 1788248581.031076,
-    "dist": 0.03838483,
-    "initial_sl": 86.53172278,
-    "tp_levels": [
-      {
-        "nivel": "1.0R",
-        "precio": 81.20051815,
-        "sz": 6,
-        "algoId": "3883797331800780801"
-      },
-      {
-        "nivel": "1.5R",
-        "precio": 80.13427722,
-        "sz": 6,
-        "algoId": "3883797338377449473"
-      },
-      {
-        "nivel": "2.0R",
-        "precio": 79.06803629,
-        "sz": 6,
-        "algoId": "3883797344920563713"
-      },
-      {
-        "nivel": "2.5R",
-        "precio": 78.00179536,
-        "sz": 6,
-        "algoId": "3883797351463677953"
-      },
-      {
-        "nivel": "3.0R",
-        "precio": 76.93555444,
-        "sz": 7,
-        "algoId": "3883797357973237761"
-      }
-    ],
-    "qty_vista": 25.0
-  },
-  "UNI: LONG": {
-    "symbol": "UNI",
+  "DOGE: LONG": {
+    "symbol": "DOGE",
     "direction": "LONG",
-    "entry": 5.844,
-    "contratos": 99,
-    "sl_algo_id": "3888440622398877696",
+    "entry": 0.08774,
+    "contratos": 481,
+    "sl_algo_id": "3891501987409735680",
     "state": "opened",
     "risk_usd": 10.0,
-    "opened_at": 1788386962.0823276,
-    "dist": 0.01723892,
-    "initial_sl": 5.74325574,
+    "opened_at": 1788478197.8308897,
+    "dist": 0.02371164,
+    "initial_sl": 0.08565954,
     "tp_levels": [
       {
         "nivel": "1.0R",
-        "precio": 5.91116284,
-        "sz": 20,
-        "algoId": "3888440629042655232"
+        "precio": 0.08912697,
+        "sz": 96,
+        "algoId": "3891501993818632192"
       },
       {
         "nivel": "1.5R",
-        "precio": 5.94474426,
-        "sz": 20,
-        "algoId": "3888440635585769472"
+        "precio": 0.08982046,
+        "sz": 96,
+        "algoId": "3891502000227528704"
       },
       {
         "nivel": "2.0R",
-        "precio": 5.97832568,
-        "sz": 20,
-        "algoId": "3888440642128883712"
+        "precio": 0.09051395,
+        "sz": 96,
+        "algoId": "3891502006535761920"
       },
       {
         "nivel": "2.5R",
-        "precio": 6.0119071,
-        "sz": 20,
-        "algoId": "3888440648604889088"
+        "precio": 0.09120743,
+        "sz": 96,
+        "algoId": "3891502012743331840"
       },
       {
         "nivel": "3.0R",
-        "precio": 6.04548852,
-        "sz": 19,
-        "algoId": "3888440655449993216"
+        "precio": 0.09190092,
+        "sz": 97,
+        "algoId": "3891502019252891648"
       }
     ],
-    "qty_vista": 79.0
+    "sw_sl_px": 0.08565954,
+    "qty_vista": 481.0
   }
 }

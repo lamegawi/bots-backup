@@ -376,6 +376,14 @@ TRAILING_CALLBACK = 0.03     # porcentaje de persecucion (3%)
 TRAILING_DESDE_R = 1.5       # activacion con +1.5R de ganancia flotante
 TRAILING_CANCELAR_TPS = True # al activarse: SL y TPs fuera, manda el trailing
 
+# === FIXTS2_ARENA: trailing a SOFTWARE (el exchange NO soporta move_order_stop
+# en X-Perps: error 51155). El bot sube el SL por tramos con amend-algos:
+#   activacion +TRAILING_DESDE_R, nuevo = precio*(1-callback) con suelo en el BE,
+#   ratchet (solo sube, nunca baja), minimo TRAILING_SW_MIN_PCT de mejora por amend.
+# En modo software los TPs se conservan (no se cancelan).
+TRAILING_SW = True            # True = trailing por software (recomendado)
+TRAILING_SW_MIN_PCT = 0.002   # 0.2% de mejora minima para hacer un amend
+
 def manage_positions():
     positions = get_all_positions()
     pos_map = {}
@@ -438,60 +446,77 @@ def manage_positions():
             m["ausente"] = 0
             changed = True
         qty = p["qty"]; unreal = p["pnl"]
-        # === FIXTS_ARENA: a +TRAILING_DESDE_R el BE fijo se convierte en TRAILING ===
+        # === FIXWDOG_ARENA: watchdog del SL — si el SL del exchange desaparece
+        # (cancelado, rollover, fallo), se recoloca YA al nivel vigente.
+        _pend_sl = []
         try:
-            if (TRAILING_ACTIVAR and m and not m.get("trail_algo_id")
-                    and m.get("state") != "trailing"):
+            _pend_sl = client.algo_pendientes(inst_id) or []
+        except Exception:
+            pass
+        if m.get("sl_algo_id"):
+            _sl_vivo = any(str(_a.get("algoId")) == str(m.get("sl_algo_id"))
+                           for _a in _pend_sl)
+            if not _sl_vivo:
+                _nivel = m.get("sw_sl_px") or m.get("initial_sl")
+                if _nivel:
+                    try:
+                        _nuevo = client.orden_algo_sl(
+                            inst_id, "sell" if direction == "LONG" else "buy",
+                            float(_nivel), int(qty))
+                        if _nuevo:
+                            m["sl_algo_id"] = _nuevo
+                            m["sw_sl_px"] = float(_nivel)
+                            changed = True
+                            print("[WDOG] %s %s: SL ausente en el exchange -> recolocado @ %s (#%s)"
+                                  % (base, direction, _nivel, _nuevo))
+                            enviar("🚨 *[DEMO] %s %s*: el SL habia desaparecido -> recolocado @ %.6g"
+                                   % (base, direction, float(_nivel)))
+                        else:
+                            print("[WDOG] %s: sin algoId al recolocar (reintenta)" % base)
+                    except Exception as _we:
+                        print("[WDOG] %s: fallo al recolocar: %s" % (base, str(_we)[:100]))
+
+        # === FIXTS2_ARENA: trailing a SOFTWARE via amend-algos (ratchet) ===
+        # El exchange no soporta move_order_stop en X-Perps (error 51155).
+        # Nuevo SL = precio*(1-callback) con suelo en el BE; solo sube (ratchet);
+        # si queda >= BE la posicion pasa a estado breakeven. Los TPs se conservan.
+        try:
+            if (TRAILING_ACTIVAR and TRAILING_SW and m
+                    and m.get("state") != "trailing" and m.get("sl_algo_id")):
                 _riesgo = float(m.get("risk_usd", 0) or 0)
                 _rr = (float(unreal or 0) / _riesgo) if _riesgo > 0 else 0.0
-                if _rr >= TRAILING_DESDE_R:
-                    _iid = client.inst_id(p.get("base", ""))
-                    if _iid:
-                        _ya = client.trailing_pendientes(_iid)
-                        if _ya:
-                            m["trail_algo_id"] = _ya[0].get("algoId")
-                            m["state"] = "trailing"
-                            try:
-                                client.cancelar_algo(_iid, m.get("sl_algo_id"))
-                            except Exception:
-                                pass
-                            if TRAILING_CANCELAR_TPS:
-                                for _tp in (m.get("tp_levels") or []):
-                                    try:
-                                        client.cancelar_algo(_iid, _tp.get("algoId"))
-                                    except Exception:
-                                        pass
+                _entry_m = float(m.get("entry", 0) or 0)
+                _px = float(p.get("mark", 0) or 0) or float(p.get("entry", 0) or 0)
+                if _rr >= TRAILING_DESDE_R and _entry_m > 0 and _px > 0:
+                    _is_long = (direction == "LONG")
+                    _be_lvl = (_entry_m * (1 + BREAKEVEN_BUFFER) if _is_long
+                               else _entry_m * (1 - BREAKEVEN_BUFFER))
+                    _cand = (_px * (1 - TRAILING_CALLBACK) if _is_long
+                             else _px * (1 + TRAILING_CALLBACK))
+                    _cand = max(_cand, _be_lvl) if _is_long else min(_cand, _be_lvl)
+                    _cur = float(m.get("sw_sl_px") or 0)
+                    if _cur <= 0:
+                        for _a in _pend_sl:
+                            if str(_a.get("algoId")) == str(m.get("sl_algo_id")) \
+                                    and _a.get("slTriggerPx"):
+                                _cur = float(_a["slTriggerPx"])
+                                break
+                    if _cur > 0:
+                        _mejora = ((_cand - _cur) if _is_long
+                                    else (_cur - _cand)) / _cur
+                        if _mejora >= TRAILING_SW_MIN_PCT:
+                            client.mover_sl_algo(inst_id, m["sl_algo_id"], _cand)
+                            m["sw_sl_px"] = _cand
+                            if m.get("state") in ("opened", "adopted"):
+                                m["state"] = "breakeven"
                             changed = True
-                            print("  [TRAILING] " + p.get("base", "?") + ": trailing ya existente -> registrado")
-                        else:
-                            _pz = next((abs(int(float(_pp.get("pos", 0) or 0)))
-                                        for _pp in (client.posiciones() or [])
-                                        if _pp.get("instId") == _iid), 0)
-                            if _pz > 0:
-                                _lado = "sell" if p.get("direction") == "LONG" else "buy"
-                                _aid = client.orden_trailing(_iid, _lado,
-                                                             TRAILING_CALLBACK, _pz)
-                                if _aid:
-                                    m["trail_algo_id"] = _aid
-                                    m["state"] = "trailing"
-                                    try:
-                                        client.cancelar_algo(_iid, m.get("sl_algo_id"))
-                                    except Exception:
-                                        pass
-                                    if TRAILING_CANCELAR_TPS:
-                                        for _tp in (m.get("tp_levels") or []):
-                                            try:
-                                                client.cancelar_algo(_iid, _tp.get("algoId"))
-                                            except Exception:
-                                                pass
-                                    changed = True
-                                    print("  [TRAILING] " + p.get("base", "?") + ": colocado #" + str(_aid)
-                                          + " (cb " + str(int(TRAILING_CALLBACK * 100)) + "%, "
-                                          + str(_pz) + " ct) | SL y TPs retirados")
-                                else:
-                                    print("  [TRAILING] " + p.get("base", "?") + ": fallo al colocar (reintenta)")
+                            print("  [TRAILSW] %s %s: SL a %.6g (px %.6g, cb %.0f%%)"
+                                  % (base, direction, _cand, _px,
+                                     TRAILING_CALLBACK * 100))
+                            enviar("🎯 *%s %s (DEMO)* — trailing: SL a %.6g"
+                                   % (base, direction, _cand))
         except Exception as _et:
-            print("  [TRAILING] error: " + str(_et)[:80])
+            print("  [TRAILSW] error: " + str(_et)[:100])
 
         entry = float(p.get("entry", 0) or 0)
         dist = float(m.get("dist", 0) or 0)
@@ -507,26 +532,40 @@ def manage_positions():
         m["qty_vista"] = qty
         changed = True
 
-        # Break-even al 1:1: cancelar SL y recrearlo en la entrada (+buffer)
-        if (BREAKEVEN_ENABLED and m.get("state") == "opened"
+        # Break-even al 1:1 — FIXBE2_ARENA: crear el SL nuevo ANTES de cancelar
+        # el antiguo y verificar que queda vivo (nunca dejar la posicion sin SL).
+        # Tambien aplica a posiciones "adopted" (las adoptadas tambien hacen BE).
+        if (BREAKEVEN_ENABLED and m.get("state") in ("opened", "adopted")
                 and unreal >= risk_actual):
             be_price = (entry * (1 + BREAKEVEN_BUFFER) if direction == "LONG"
                         else entry * (1 - BREAKEVEN_BUFFER))
             try:
-                client.cancelar_algo(inst_id, m.get("sl_algo_id"))
-            except Exception as e:
-                print(f"  [BE] cancelar SL: {e}")
-            try:
                 nuevo_sl = client.orden_algo_sl(inst_id,
                                                 "sell" if direction == "LONG" else "buy",
                                                 be_price, int(qty))
-                m["sl_algo_id"] = nuevo_sl
-                m["state"] = "breakeven"
-                changed = True
-                print(f"  [BE] {base} {direction} SL a BREAK-EVEN @ {be_price}")
-                enviar(f"🛡️ *{base} {direction} (DEMO)* — SL a break-even @ {be_price:.6g}")
+                _pend2 = client.algo_pendientes(inst_id) or []
+                _confirmado = any(str(_a.get("algoId")) == str(nuevo_sl)
+                                  for _a in _pend2)
+                if nuevo_sl and _confirmado:
+                    try:
+                        client.cancelar_algo(inst_id, m.get("sl_algo_id"))
+                    except Exception as e:
+                        print(f"  [BE] cancelar SL viejo: {e} (el nuevo esta vivo, OK)")
+                    m["sl_algo_id"] = nuevo_sl
+                    m["sw_sl_px"] = be_price
+                    m["state"] = "breakeven"
+                    changed = True
+                    print(f"  [BE] {base} {direction} SL a BREAK-EVEN @ {be_price}")
+                    enviar(f"🛡️ *{base} {direction} (DEMO)* — SL a break-even @ {be_price:.6g}")
+                else:
+                    print(f"  [BE] FIXBE2: SL nuevo no confirmado vivo -> se cancela y se mantiene el anterior")
+                    try:
+                        if nuevo_sl:
+                            client.cancelar_algo(inst_id, nuevo_sl)
+                    except Exception:
+                        pass
             except Exception as e:
-                print(f"  [BE] recrear SL: {e}")
+                print(f"  [BE] recrear SL: {e} (se mantiene el SL anterior)")
 
     if changed:
         save_managed(managed)
@@ -870,7 +909,8 @@ def open_position(plan):
         "contratos": plan["contratos"], "sl_algo_id": sl_id, "state": "opened",
         "risk_usd": RISK_USD, "opened_at": time.time(),
         "dist": round((plan["atr"] * ATR_MULT_SL) / plan["entry"], 8),
-        "initial_sl": plan["stop"], "tp_levels": tps_colocados}
+        "initial_sl": plan["stop"], "tp_levels": tps_colocados,
+        "sw_sl_px": plan["stop"]}   # FIXTS2_ARENA: nivel SL actual (ratchet SW)
     save_managed(managed)
     return {"symbol": base, "direction": plan["direction"], "entry": plan["entry"],
             "contratos": plan["contratos"], "sl": plan["stop"],
