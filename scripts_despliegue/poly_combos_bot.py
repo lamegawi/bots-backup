@@ -1,18 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v6 — Simples + Combos automáticos + Estadísticas
-==================================================================
-Estrategia en 3 niveles:
-  · SIMPLE  (1 evento) → cuota 1.40-2.50
-  · DOBLE   (2 eventos mismo deporte) → cuota objetivo 1.80-3.50
-  · TRIPLE  (3 eventos mismo deporte) → cuota objetivo 2.50-5.00
-
-Sistema de estadísticas:
-  · Por tipo (simple/doble/triple)
-  · Win rate, PnL total, PnL medio
-  · Mejor trade, peor trade
-  · Por deporte
+POLY COMBOS BOT v7 — Mercados activos en tiempo real
+====================================================
+Estrategia nueva (vs v6):
+  1. Lee mercados ACTIVOS de Polymarket (gamma-api: active=true, closed=false)
+  2. Filtra por deportes con eventos que aún no han empezado o están en juego
+  3. Aplica la lógica de top traders: cuota 1.20-2.50, stake bajo
+  4. Ejecuta automáticamente
 
 ARCHIVOS:
   · /root/poly_combos_token.txt       - Token Telegram
@@ -39,7 +34,7 @@ def log(s):
     print(line, flush=True)
     LOG.append(line)
 
-# Anti-shadow module
+# Anti-shadow
 try:
     import importlib.util as _ilu
     _ilu.find_spec("copy")
@@ -59,50 +54,31 @@ BACKUP_FILE = "/opt/polymarket/combos_estado.bak.json"
 ENV_FILE = "/etc/polymarket.env"
 
 # ============================================
-# ESTRATEGIA — Simples + Combos
+# ESTRATEGIA v7 — Mercados activos
 # ============================================
-STAKE_POR_TRADE = 2.0             # $ por pierna
-STAKE_POR_COMBO_DOBLE = 1.0       # $ por pierna (combo 2 = $2 total)
-STAKE_POR_COMBO_TRIPLE = 0.70     # $ por pierna (combo 3 = $2.10 total)
-CUOTA_MIN_SIMPLE = 1.40
-CUOTA_MAX_SIMPLE = 2.50
-CUOTA_OBJ_DOBLE = (1.80, 3.50)    # rango objetivo para combos dobles
-CUOTA_OBJ_TRIPLE = (2.50, 5.00)
+STAKE_POR_TRADE = 2.0
+CUOTA_MIN = 1.20
+CUOTA_MAX = 2.50
 MAX_TRADES_SIMULTANEOS = 3
-HORAS_RECIENTE = 6
 INTERVALO_AUTO_S = 300
 PESO_MIN = 5
+MAX_MERCADOS_A_REVISAR = 100  # limita para no saturar
 
 MODO_OPERACION = "AUTO"
 CHAT_ID = None
-ULTIMO_TRADE_TS = 0               # throttle
+ULTIMO_TRADE_TS = 0
 
-TOP_TRADERS = [
-    ("pleaseplease123",     "0x5e9458202b5817a72cf81105ec8a30e6f3705ba1", 10),
-    ("ferrariChampions2026", "0xfe787d2da716d60e8acff57fb87eb13cd4d10319", 8),
-    ("balthazar",            "0x5a218c7ad04135830a45c41aaed7294df7809318", 5),
-    ("Sassy-Bucket",         "0x4bff30af91642dc7d2b19a8664378fe55c45fc26", 5),
-    ("Jsram",                "0x83720820a8aa6c3f20ad71850e7a1a17d16c5223", 5),
-    ("Flaznorp",             "0x821dab0565ebf5b327f51db06223fdcfe01acf16", 5),
-    ("Talvez10",             "0xa71093cafc0c099b4ccab24c3cb8018d817923c4", 4),
-    ("GoalLineGhost",        "0x0346afae2603313d2bbee96b628536c8cbe352a5", 3),
-    ("AV23IUa",              "0xdb859a551fcf56e49416160911476bea7307152f", 3),
+# Categorias de mercados que nos interesan (deportes)
+CATEGORIAS_DEPORTES = [
+    "Sports", "Soccer", "Tennis", "Basketball", "Baseball",
+    "Football", "Hockey", "MMA", "Boxing", "UFC", "NFL",
+    "NBA", "MLB", "NHL", "NCAA", "EPL", "La Liga",
+    "Champions League", "Bundesliga", "Serie A",
 ]
 
-DEPORTES_KEYWORDS = {
-    "MLB": ["MLB"],
-    "UFC": ["UFC", "MMA", "Fight Night"],
-    "NFL": ["NFL", "NCAAF"],
-    "NBA": ["NBA", "NCAAB"],
-    "Tennis": ["tennis", "ATP", "WTA", "US Open"],
-    "Soccer": ["soccer", "EPL", "Bundesliga", "Serie A", "La Liga", "Ligue 1", "World Cup"],
-}
-EXCLUIR = ["Trump", "Biden", "Election", "President", "Congress",
-           "Bitcoin", "Ethereum", "Crypto", "NFT",
-           "Fed", "rate", "inflation", "Russia", "Ukraine", "China",
-           "Iran", "Israel", "WHO", "covid", "pandemic"]
-
-TRADES_CACHE = {"ts": 0, "trades": []}
+EXCLUIR_KEYWORDS = ["Trump", "Biden", "Election", "President", "Congress",
+                    "Bitcoin", "Ethereum", "Crypto", "NFT", "Fed",
+                    "Russia", "Ukraine", "China", "Iran", "Israel", "WHO"]
 
 
 # ============================================
@@ -186,7 +162,7 @@ def enviar(chat_id, texto, reply_markup=None):
 
 
 # ============================================
-# CREDENCIALES Y CLOB
+# CREDENCIALES
 # ============================================
 def cargar_env():
     env = {}
@@ -243,8 +219,77 @@ def get_clob_client():
 
 
 # ============================================
-# UTILIDADES DE MERCADO
+# MERCADOS ACTIVOS EN TIEMPO REAL
 # ============================================
+def listar_mercados_deportes():
+    """Lee mercados ACTIVOS de Polymarket y filtra por deportes.
+    Devuelve lista de {question, slug, clobTokenIds, ...}"""
+    mercados = []
+    try:
+        # pagination: cargar varias paginas
+        for offset in range(0, MAX_MERCADOS_A_REVISAR, 50):
+            url = f"https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=50&offset={offset}&order=volume24hr&ascending=false"
+            status, body = http_get(url, timeout=15)
+            if status != 200:
+                log(f"  gamma-api status {status}")
+                break
+            batch = json.loads(body)
+            if not batch:
+                break
+            for m in batch:
+                # filtrar por deportes
+                titulo = (m.get("question") or m.get("title") or "").lower()
+                tags = [t.lower() for t in (m.get("tags") or [])]
+                # detectar si es deporte
+                es_deporte = False
+                for cat in CATEGORIAS_DEPORTES:
+                    if cat.lower() in titulo or cat.lower() in str(tags):
+                        es_deporte = True
+                        break
+                if not es_deporte:
+                    continue
+                # excluir politico/crypto
+                if any(ex.lower() in titulo for ex in EXCLUIR_KEYWORDS):
+                    continue
+                # precio
+                try:
+                    prices = json.loads(m.get("outcomePrices") or "[]")
+                except:
+                    prices = []
+                if len(prices) < 1:
+                    continue
+                try:
+                    yes_price = float(prices[0])
+                except:
+                    continue
+                if not (0.05 <= yes_price <= 0.95):
+                    continue
+                # token IDs
+                try:
+                    tokens = json.loads(m.get("clobTokenIds") or "[]")
+                except:
+                    tokens = []
+                if not tokens:
+                    continue
+                # volumen
+                vol = float(m.get("volume24hr") or m.get("volumeNum") or 0)
+                mercados.append({
+                    "question": m.get("question", ""),
+                    "slug": m.get("slug", ""),
+                    "yes_token": tokens[0],
+                    "no_token": tokens[1] if len(tokens) > 1 else tokens[0],
+                    "yes_price": yes_price,
+                    "cuota": round(1/yes_price, 2) if yes_price > 0 else 0,
+                    "volumen_24h": vol,
+                    "tags": tags,
+                    "fin": m.get("endDate") or m.get("endDateIso"),
+                })
+        # ordenar por volumen (mas liquido primero)
+        mercados.sort(key=lambda x: -x["volumen_24h"])
+    except Exception as e:
+        log(f"  listar_mercados error: {e}")
+    return mercados
+
 def get_precio_actual(token_id):
     try:
         url = f"{HOST_CLOB}/midpoint?token_id={token_id}"
@@ -265,191 +310,12 @@ def get_precio_actual(token_id):
     except: pass
     return None
 
-def buscar_token_por_titulo(titulo, asset_hint=None):
-    """Busca el token_id de un mercado.
-    Estrategia:
-      1. Si el asset_hint parece válido (precio entre 0.01 y 0.99), usarlo
-      2. Si no, buscar en gamma-api con match mas flexible
-    Devuelve (token_id, side, question) o (None, None, None).
-    """
-    # 1. verificar el asset_hint - si responde con precio válido, usarlo
-    if asset_hint and str(asset_hint).isdigit() and len(str(asset_hint)) > 20:
-        precio_test = get_precio_actual(str(asset_hint))
-        if precio_test and 0.01 < precio_test < 0.99:
-            return str(asset_hint), "YES", titulo
-        # si no, descartar
-    # 2. buscar por titulo en gamma-api con mejor matching
-    try:
-        url = "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=500"
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=20) as r:
-            markets = json.loads(r.read())
-        titulo_lower = titulo.lower()
-        # equipos principales (palabras mas largas)
-        palabras = [p for p in titulo_lower.replace(":", " ").replace("vs.", " ").split() if len(p) > 3]
-        # quitar palabras comunes
-        STOP = {"over", "under", "spread", "moneyline", "win", "match", "fight", "night", "fight", "score", "total"}
-        palabras = [p for p in palabras if p not in STOP]
-        mejor = None
-        mejor_score = 0
-        for m in markets:
-            q = (m.get("question") or m.get("title") or "").lower()
-            if not q: continue
-            # contar matches exactos
-            match = sum(1 for p in palabras if p in q)
-            if not palabras: continue
-            score = match / len(palabras)
-            if score > mejor_score:
-                mejor_score = score
-                mejor = m
-        if mejor and mejor_score >= 0.5:  # al menos 50% de las palabras
-            tokens_str = mejor.get("clobTokenIds") or "[]"
-            try: tokens = json.loads(tokens_str)
-            except: tokens = []
-            if tokens:
-                # elegir YES o NO según el titulo
-                side = "YES"
-                if " no " in f" {titulo_lower} ":
-                    side = "NO"
-                token_id = tokens[0] if side == "YES" else (tokens[1] if len(tokens) > 1 else tokens[0])
-                # verificar que el token tiene precio valido
-                precio_test = get_precio_actual(token_id)
-                if precio_test and 0.01 < precio_test < 0.99:
-                    return token_id, side, mejor.get("question", "")
-    except Exception as e:
-        log(f"  buscar_token error: {e}")
-    return None, None, None
-
-def detectar_deporte(titulo):
-    """Detecta el deporte principal de un titulo."""
-    t = titulo.lower()
-    for deporte, kws in DEPORTES_KEYWORDS.items():
-        if any(k.lower() in t for k in kws):
-            return deporte
-    return "Other"
-
-
-# ============================================
-# DETECCIÓN DE TRADES
-# ============================================
-def detectar_trades():
-    """Detecta trades de top traders. Devuelve lista con todos los candidatos.
-    Solo incluye trades con timestamp RECIENTE (últimas HORAS_RECIENTE horas)."""
-    ahora = datetime.now().timestamp()
-    candidatos = []
-    for nombre, wallet, peso in TOP_TRADERS:
-        try:
-            url = f"https://data-api.polymarket.com/trades?user={wallet}&limit=30"
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=20) as r:
-                trades = json.loads(r.read())
-            for t in trades:
-                if not isinstance(t, dict): continue
-                titulo = t.get("title", "") or t.get("question", "")
-                if any(ex in titulo for ex in EXCLUIR):
-                    continue
-                deporte = detectar_deporte(titulo)
-                if deporte == "Other":
-                    continue
-                ts = t.get("timestamp", 0)
-                if ahora - ts > HORAS_RECIENTE * 3600:
-                    continue
-                price = float(t.get("price", 0))
-                if price <= 0: continue
-                # FILTRO CLAVE: solo incluir trades cuyo precio esté en rango
-                # de mercado activo (entre 0.05 y 0.95)
-                if not (0.05 <= price <= 0.95):
-                    continue
-                candidatos.append({
-                    "trader": nombre, "peso": peso, "titulo": titulo,
-                    "side": t.get("side", "?"), "price": price,
-                    "size": float(t.get("size", 0)),
-                    "asset": t.get("asset", "?"),
-                    "timestamp": ts,
-                    "cuota": round(1/price, 2),
-                    "deporte": deporte,
-                })
-        except Exception as e:
-            log(f"error {nombre}: {e}")
-    candidatos.sort(key=lambda x: -x["peso"])
-    return candidatos
-
-def trades_refresh():
-    ahora = time.time()
-    if ahora - TRADES_CACHE["ts"] > 60 or not TRADES_CACHE["trades"]:
-        TRADES_CACHE["ts"] = ahora
-        TRADES_CACHE["trades"] = detectar_trades()
-    return TRADES_CACHE["trades"]
-
-
-# ============================================
-# DETECCIÓN DE COMBOS
-# ============================================
-def agrupar_por_deporte(trades):
-    """Agrupa trades por deporte. Solo incluye los del mismo deporte."""
-    grupos = defaultdict(list)
-    for t in trades:
-        grupos[t["deporte"]].append(t)
-    return grupos
-
-def detectar_combos(trades):
-    """Detecta posibles combos (2-3 trades del mismo deporte)."""
-    grupos = agrupar_por_deporte(trades)
-    combos = []
-    for deporte, lista in grupos.items():
-        # ordenar por cuota (menor primero, para encontrar el doble optimo)
-        lista.sort(key=lambda x: x["cuota"])
-        # dobles: 2 trades con cuota 1.20-1.40 cada uno
-        if len(lista) >= 2:
-            c1, c2 = lista[0], lista[1]
-            cuota_combo = round(c1["cuota"] * c2["cuota"], 2)
-            if CUOTA_OBJ_DOBLE[0] <= cuota_combo <= CUOTA_OBJ_DOBLE[1] * 1.5:
-                combos.append({
-                    "tipo": "doble",
-                    "deporte": deporte,
-                    "trades": [c1, c2],
-                    "cuota_combo": cuota_combo,
-                    "stake_por_pierna": STAKE_POR_COMBO_DOBLE,
-                    "stake_total": STAKE_POR_COMBO_DOBLE * 2,
-                })
-        # triples: 3 trades
-        if len(lista) >= 3:
-            c1, c2, c3 = lista[0], lista[1], lista[2]
-            cuota_combo = round(c1["cuota"] * c2["cuota"] * c3["cuota"], 2)
-            if CUOTA_OBJ_TRIPLE[0] <= cuota_combo <= CUOTA_OBJ_TRIPLE[1] * 1.5:
-                combos.append({
-                    "tipo": "triple",
-                    "deporte": deporte,
-                    "trades": [c1, c2, c3],
-                    "cuota_combo": cuota_combo,
-                    "stake_por_pierna": STAKE_POR_COMBO_TRIPLE,
-                    "stake_total": STAKE_POR_COMBO_TRIPLE * 3,
-                })
-    return combos
-
-def detectar_simples(trades):
-    """Trades con cuota individual buena (>= 1.40) que no entran en combo."""
-    combos = detectar_combos(trades)
-    # titulos que ya estan en combos
-    titulos_en_combos = set()
-    for c in combos:
-        for t in c["trades"]:
-            titulos_en_combos.add(t["titulo"][:50])
-    simples = []
-    for t in trades:
-        if t["titulo"][:50] in titulos_en_combos:
-            continue
-        if CUOTA_MIN_SIMPLE <= t["cuota"] <= CUOTA_MAX_SIMPLE:
-            if t["peso"] >= PESO_MIN:
-                simples.append(t)
-    return simples[:MAX_TRADES_SIMULTANEOS]
-
 
 # ============================================
 # EJECUCIÓN DE TRADES
 # ============================================
-def enviar_orden(token_id, precio, stake_dolares, chat_id=None):
-    """Envía una orden BUY a CLOB. Devuelve (ok, oid_o_error)."""
+def enviar_orden(token_id, precio, stake_dolares):
+    """Envía una orden BUY. Devuelve (ok, oid_o_error)."""
     global ULTIMO_TRADE_TS
     ahora = time.time()
     if ahora - ULTIMO_TRADE_TS < 10:
@@ -471,124 +337,54 @@ def enviar_orden(token_id, precio, stake_dolares, chat_id=None):
     except Exception as e:
         return False, str(e)[:200]
 
-def ejecutar_simple(trade, chat_id=None):
-    """Ejecuta un trade simple (1 evento)."""
-    log(f"[SIMPLE] {trade['titulo'][:50]}")
-    # buscar mercado (usando el asset del trade directamente)
-    token_id, side, q = buscar_token_por_titulo(trade["titulo"], asset_hint=trade.get("asset"))
-    if not token_id:
-        log(f"  SKIP: no encontre mercado (asset={str(trade.get('asset'))[:20]})")
-        return False, "no_encontrado", None
-    log(f"  token_id={token_id[:20]}... side={side}")
-    # re-leer precio
-    precio = get_precio_actual(token_id)
+def ejecutar_trade(mercado, chat_id=None):
+    """Ejecuta un trade en un mercado activo."""
+    titulo = mercado["question"]
+    log(f"[TRADE] {titulo[:60]}")
+    # re-leer precio actual
+    precio = get_precio_actual(mercado["yes_token"])
     if not precio or precio <= 0 or precio >= 1:
-        log(f"  SKIP: no pude leer precio actual")
-        return False, "precio_no_disponible", None
-    log(f"  precio actual={precio:.3f} (cuota {1/precio:.2f})")
+        log(f"  SKIP: precio no disponible")
+        return False, "precio_no_disponible"
+    if not (0.05 <= precio <= 0.95):
+        log(f"  SKIP: precio {precio} fuera de mercado activo")
+        return False, "mercado_inactivo"
     cuota = round(1/precio, 2)
-    if not (CUOTA_MIN_SIMPLE <= cuota <= CUOTA_MAX_SIMPLE):
-        log(f"  SKIP: cuota {cuota} fuera de rango [{CUOTA_MIN_SIMPLE}-{CUOTA_MAX_SIMPLE}]")
-        return False, f"cuota_{cuota}_fuera_rango", None
+    if not (CUOTA_MIN <= cuota <= CUOTA_MAX):
+        log(f"  SKIP: cuota {cuota} fuera de [{CUOTA_MIN}-{CUOTA_MAX}]")
+        return False, f"cuota_{cuota}_fuera"
     # enviar
-    log(f"  enviando orden...")
-    ok, resultado = enviar_orden(token_id, precio, STAKE_POR_TRADE, chat_id)
+    log(f"  precio={precio:.3f} cuota={cuota:.2f} stake=${STAKE_POR_TRADE}")
+    ok, resultado = enviar_orden(mercado["yes_token"], precio, STAKE_POR_TRADE)
     if not ok:
         log(f"  ERROR: {resultado}")
-        return False, resultado, None
-    log(f"  OK orden={str(resultado.get('oid', '?'))[:18]}")
-    # re-leer precio
-    precio = get_precio_actual(token_id)
-    if not precio or precio <= 0 or precio >= 1:
-        return False, "precio_no_disponible", None
-    cuota = round(1/precio, 2)
-    if not (CUOTA_MIN_SIMPLE <= cuota <= CUOTA_MAX_SIMPLE):
-        return False, f"cuota_{cuota}_fuera_rango", None
-    # enviar
-    ok, resultado = enviar_orden(token_id, precio, STAKE_POR_TRADE, chat_id)
-    if not ok:
-        return False, resultado, None
-    # guardar en estado
+        return False, resultado
+    # guardar
     registro = {
-        **trade,
         "tipo": "simple",
         "copiado_en": datetime.now().isoformat(),
+        "question": titulo,
+        "slug": mercado.get("slug"),
+        "yes_token": mercado["yes_token"],
         "precio_ejecutado": precio,
         "cuota_ejecutada": cuota,
         "size_shares": resultado["size"],
         "stake_dolares": STAKE_POR_TRADE,
         "order_id": resultado["oid"],
-        "token_id": token_id,
+        "volumen_24h": mercado.get("volumen_24h", 0),
         "status": "ejecutado",
     }
     estado = cargar_estado()
     estado["trades_copiados"].append(registro)
     guardar_estado(estado)
     if chat_id:
-        enviar(chat_id, f"✅ *SIMPLE ejecutado*\n"
-                      f"📌 {trade['titulo'][:55]}\n"
+        enviar(chat_id, f"✅ *TRADE EJECUTADO*\n"
+                      f"📌 {titulo[:60]}\n"
                       f"💵 {resultado['size']} shares @ {precio:.2f} (cuota {cuota:.2f})\n"
-                      f"💰 Stake: ${STAKE_POR_TRADE:.2f}\n"
+                      f"💰 Stake: ${STAKE_POR_TRADE}\n"
+                      f"📊 Vol 24h: ${mercado.get('volumen_24h', 0):.0f}\n"
                       f"🆔 `{str(resultado['oid'])[:18]}`")
-    return True, "ok", registro
-
-def ejecutar_combo(combo, chat_id=None):
-    """Ejecuta un combo (2 o 3 piernas)."""
-    log(f"[COMBO-{combo['tipo'].upper()}] {combo['deporte']} cuota objetivo {combo['cuota_combo']}")
-    piernas = []
-    for trade in combo["trades"]:
-        token_id, side, q = buscar_token_por_titulo(trade["titulo"], asset_hint=trade.get("asset"))
-        if not token_id:
-            log(f"  skip pierna: {trade['titulo'][:30]} - no encontrado")
-            return False, "pierna_no_encontrada", None
-        precio = get_precio_actual(token_id)
-        if not precio or precio <= 0 or precio >= 1:
-            return False, f"precio_no_disponible_{trade['titulo'][:20]}", None
-        ok, resultado = enviar_orden(token_id, precio, combo["stake_por_pierna"], chat_id)
-        if not ok:
-            return False, f"error_{trade['titulo'][:20]}:{resultado}", None
-        piernas.append({
-            "trade": trade,
-            "token_id": token_id,
-            "precio": precio,
-            "cuota": round(1/precio, 2),
-            "order_id": resultado["oid"],
-            "size_shares": resultado["size"],
-            "stake": combo["stake_por_pierna"],
-        })
-        # throttle entre piernas
-        time.sleep(3)
-    # todas las piernas ejecutadas
-    cuota_real = 1.0
-    for p in piernas:
-        cuota_real *= p["cuota"]
-    cuota_real = round(cuota_real, 2)
-    combo_id = f"combo_{datetime.now().strftime('%Y%m%d%H%M%S')}_{combo['deporte']}"
-    registro = {
-        "tipo": combo["tipo"],
-        "deporte": combo["deporte"],
-        "combo_id": combo_id,
-        "copiado_en": datetime.now().isoformat(),
-        "piernas": piernas,
-        "cuota_objetivo": combo["cuota_combo"],
-        "cuota_real": cuota_real,
-        "stake_total": combo["stake_total"],
-        "stake_por_pierna": combo["stake_por_pierna"],
-        "status": "ejecutado",
-    }
-    estado = cargar_estado()
-    estado["trades_copiados"].append(registro)
-    guardar_estado(estado)
-    if chat_id:
-        texto = f"✅ *COMBO {combo['tipo'].upper()} ({combo['deporte']})*\n"
-        texto += f"💰 Stake total: ${combo['stake_total']:.2f}\n"
-        texto += f"📈 Cuota real: *{cuota_real:.2f}*\n\n"
-        for i, p in enumerate(piernas, 1):
-            texto += f"  {i}. {p['trade']['titulo'][:40]}\n"
-            texto += f"     {p['size_shares']} @ {p['precio']:.2f} (cuota {p['cuota']:.2f})\n"
-        texto += f"\n_Retorno si todos ganan: ${combo['stake_total'] * cuota_real:.2f}_"
-        enviar(chat_id, texto)
-    return True, "ok", registro
+    return True, "ok"
 
 
 # ============================================
@@ -621,99 +417,59 @@ def guardar_estado(estado):
 # ESTADÍSTICAS
 # ============================================
 def calcular_stats():
-    """Calcula estadísticas detalladas por tipo, deporte, etc."""
     estado = cargar_estado()
     copiados = estado.get("trades_copiados", [])
     historial = estado.get("historial", [])
-    stats = {
-        "total_operaciones": len(copiados),
-        "simples": 0, "dobles": 0, "triples": 0,
-        "stake_total": 0.0,
-        "ganancias": 0.0,  # suma de PnL positivos
-        "perdidas": 0.0,   # suma de PnL negativos
-        "pnl_total": 0.0,
-        "wins": 0, "losses": 0,
-        "por_tipo": {"simple": {"count": 0, "wins": 0, "losses": 0, "pnl": 0.0},
-                     "doble": {"count": 0, "wins": 0, "losses": 0, "pnl": 0.0},
-                     "triple": {"count": 0, "wins": 0, "losses": 0, "pnl": 0.0}},
-        "por_deporte": defaultdict(lambda: {"count": 0, "wins": 0, "losses": 0, "pnl": 0.0}),
-        "mejor_trade": None,
-        "peor_trade": None,
+    s = {
+        "total": len(copiados), "wins": 0, "losses": 0,
+        "pnl": 0.0, "stake": 0.0, "mejor": None, "peor": None,
     }
-    # analizar trades
     for op in copiados + historial:
-        tipo = op.get("tipo", "simple")
-        if tipo not in ("simple", "doble", "triple"):
-            tipo = "simple"
-        stats["por_tipo"][tipo]["count"] += 1
-        # deporte
-        deporte = op.get("deporte", "Other")
-        if tipo == "simple":
-            deporte = deporte or detectar_deporte(op.get("titulo", ""))
-        stats["por_deporte"][deporte]["count"] += 1
-        # pnl (si está cerrado)
         pnl = op.get("pnl")
         stake = op.get("stake_dolares") or op.get("stake_total") or 0
         if pnl is not None:
-            stats["pnl_total"] += pnl
-            stats["stake_total"] += stake
-            if pnl > 0:
-                stats["wins"] += 1
-                stats["ganancias"] += pnl
-                stats["por_tipo"][tipo]["wins"] += 1
-                stats["por_deporte"][deporte]["wins"] += 1
-            else:
-                stats["losses"] += 1
-                stats["perdidas"] += pnl
-                stats["por_tipo"][tipo]["losses"] += 1
-                stats["por_deporte"][deporte]["losses"] += 1
-            stats["por_tipo"][tipo]["pnl"] += pnl
-            stats["por_deporte"][deporte]["pnl"] += pnl
-            # mejor / peor
-            if stats["mejor_trade"] is None or pnl > stats["mejor_trade"].get("pnl", -9999):
-                stats["mejor_trade"] = op
-            if stats["peor_trade"] is None or pnl < stats["peor_trade"].get("pnl", 9999):
-                stats["peor_trade"] = op
-    stats["simples"] = stats["por_tipo"]["simple"]["count"]
-    stats["dobles"] = stats["por_tipo"]["doble"]["count"]
-    stats["triples"] = stats["por_tipo"]["triple"]["count"]
-    return stats
+            s["pnl"] += pnl
+            s["stake"] += stake
+            if pnl > 0: s["wins"] += 1
+            else: s["losses"] += 1
+            if s["mejor"] is None or pnl > s["mejor"].get("pnl", -9999):
+                s["mejor"] = op
+            if s["peor"] is None or pnl < s["peor"].get("pnl", 9999):
+                s["peor"] = op
+    return s
 
 
 # ============================================
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    estado = cargar_estado()
-    texto = (f"🤖 *POLY COMBOS BOT v6*\n\n"
-             f"Modo: *{estado.get('modo', MODO_OPERACION)}*\n"
-             f"Stake simple: *${STAKE_POR_TRADE}* | doble: ${STAKE_POR_COMBO_DOBLE}/pierna | triple: ${STAKE_POR_COMBO_TRIPLE}/pierna\n"
-             f"Cuota simple: *{CUOTA_MIN_SIMPLE}-{CUOTA_MAX_SIMPLE}*\n\n"
-             f"📌 *Estrategia*:\n"
-             f"   · Si cuota individual ≥ 1.40 → *simple*\n"
-             f"   · Si 2 trades del mismo deporte con cuota baja → *combo doble*\n"
-             f"   · Si 3 trades del mismo deporte con cuota baja → *combo triple*\n\n"
-             f"📊 Pulsa *Stats* para ver estadísticas detalladas")
+    texto = (f"🤖 *POLY COMBOS BOT v7*\n\n"
+             f"Modo: *{MODO_OPERACION}*\n"
+             f"Stake: *${STAKE_POR_TRADE}*\n"
+             f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
+             f"📌 *Estrategia v7* (nueva):\n"
+             f"   · Lee mercados ACTIVOS de Polymarket (no trades viejos)\n"
+             f"   · Filtra deportes con volumen\n"
+             f"   · Compra shares a cuota 1.20-2.50\n"
+             f"   · Automático cada 5 min\n\n"
+             f"📊 *Stats* para ver estadísticas")
     return enviar(chat_id, texto)
 
 def cmd_trades(chat_id):
-    trades = trades_refresh()
-    simples = detectar_simples(trades)
-    combos = detectar_combos(trades)
-    if not simples and not combos:
-        return enviar(chat_id, "❌ No hay trades con cuota 1.40-2.50 ahora mismo.")
-    texto = f"*🎯 OPORTUNIDADES*\n"
-    if simples:
-        texto += f"\n*🟢 SIMPLES ({len(simples)}):*\n"
-        for i, t in enumerate(simples, 1):
-            texto += f"{i}. {t['titulo'][:50]}\n   {t['trader']} | cuota {t['cuota']:.2f} | ${STAKE_POR_TRADE}\n\n"
-    if combos:
-        texto += f"\n*🟡 COMBOS ({len(combos)}):*\n"
-        for i, c in enumerate(combos, 1):
-            texto += f"{i}. {c['tipo'].upper()} {c['deporte']} → cuota {c['cuota_combo']:.2f}\n"
-            for t in c["trades"]:
-                texto += f"   · {t['titulo'][:40]} (cuota {t['cuota']:.2f})\n"
-            texto += f"   Stake: ${c['stake_total']:.2f}\n\n"
+    mercados = listar_mercados_deportes()
+    if not mercados:
+        return enviar(chat_id, "❌ No hay mercados activos ahora mismo.")
+    # filtrar por cuota
+    filtrados = [m for m in mercados if CUOTA_MIN <= m["cuota"] <= CUOTA_MAX]
+    if not filtrados:
+        # mostrar los 10 mas liquidos aunque esten fuera de cuota
+        texto = f"📋 *MERCADOS ACTIVOS ({len(mercados)})*\n_Ninguno en cuota {CUOTA_MIN}-{CUOTA_MAX}_\n\n"
+        for m in mercados[:5]:
+            texto += f"· {m['question'][:55]} (cuota {m['cuota']:.2f})\n"
+        return enviar(chat_id, texto)
+    texto = f"📋 *MERCADOS EN RANGO ({len(filtrados)})*\n"
+    for i, m in enumerate(filtrados[:10], 1):
+        texto += f"{i}. {m['question'][:55]}\n   cuota {m['cuota']:.2f} · vol ${m['volumen_24h']:.0f}\n\n"
     return enviar(chat_id, texto)
 
 def cmd_saldo(chat_id):
@@ -750,90 +506,68 @@ def cmd_saldo(chat_id):
     return enviar(chat_id, texto)
 
 def cmd_stats(chat_id):
-    """Muestra estadísticas detalladas."""
     s = calcular_stats()
     total = s["wins"] + s["losses"]
-    winrate = (s["wins"]/total*100) if total > 0 else 0
-    roi = (s["pnl_total"]/s["stake_total"]*100) if s["stake_total"] > 0 else 0
+    wr = (s["wins"]/total*100) if total > 0 else 0
+    roi = (s["pnl"]/s["stake"]*100) if s["stake"] > 0 else 0
     texto = f"📊 *ESTADÍSTICAS*\n\n"
-    texto += f"*Operaciones totales:* {s['total_operaciones']}\n"
-    texto += f"   · Simples: {s['simples']}\n"
-    texto += f"   · Dobles: {s['dobles']}\n"
-    texto += f"   · Triples: {s['triples']}\n\n"
+    texto += f"Operaciones: {s['total']}\n"
     if total > 0:
-        texto += f"*Resultados cerrados:* {total}\n"
-        texto += f"   · ✅ Wins: {s['wins']}\n"
-        texto += f"   · ❌ Losses: {s['losses']}\n"
-        texto += f"   · 📈 Win rate: *{winrate:.1f}%*\n\n"
-        texto += f"*PnL total:* ${s['pnl_total']:+.2f}\n"
-        texto += f"   · Ganancias: ${s['ganancias']:+.2f}\n"
-        texto += f"   · Pérdidas: ${s['perdidas']:+.2f}\n"
-        texto += f"   · Stake total: ${s['stake_total']:.2f}\n"
-        texto += f"   · ROI: *{roi:+.1f}%*\n\n"
-    # por tipo
-    texto += "*Por tipo:*\n"
-    for tipo in ("simple", "doble", "triple"):
-        t = s["por_tipo"][tipo]
-        if t["count"] == 0: continue
-        cerrado = t["wins"] + t["losses"]
-        wr = (t["wins"]/cerrado*100) if cerrado > 0 else 0
-        texto += f"   {tipo}: {t['count']} ops, {cerrado} cerrados, WR {wr:.0f}%, PnL ${t['pnl']:+.2f}\n"
-    texto += "\n"
-    # por deporte
-    if s["por_deporte"]:
-        texto += "*Por deporte:*\n"
-        for dep, d in sorted(s["por_deporte"].items(), key=lambda x: -x[1]["count"]):
-            if d["count"] == 0: continue
-            cerrado = d["wins"] + d["losses"]
-            wr = (d["wins"]/cerrado*100) if cerrado > 0 else 0
-            texto += f"   {dep}: {d['count']} ops, WR {wr:.0f}%, PnL ${d['pnl']:+.2f}\n"
-    # mejor y peor
-    if s["mejor_trade"]:
-        t = s["mejor_trade"]
-        titulo = t.get("titulo") or "combo " + t.get("deporte", "?")
-        texto += f"\n🏆 *Mejor:* {titulo[:40]} → ${t.get('pnl', 0):+.2f}\n"
-    if s["peor_trade"]:
-        t = s["peor_trade"]
-        titulo = t.get("titulo") or "combo " + t.get("deporte", "?")
-        texto += f"\n💀 *Peor:* {titulo[:40]} → ${t.get('pnl', 0):+.2f}\n"
+        texto += f"Cerradas: {total} (✅{s['wins']} ❌{s['losses']})\n"
+        texto += f"Win rate: *{wr:.1f}%*\n"
+        texto += f"PnL: *${s['pnl']:+.2f}*\n"
+        texto += f"Stake: ${s['stake']:.2f}\n"
+        texto += f"ROI: *{roi:+.1f}%*\n"
+    if s["mejor"]:
+        m = s["mejor"]
+        texto += f"\n🏆 Mejor: {m.get('question','?')[:40]} → ${m.get('pnl',0):+.2f}\n"
+    if s["peor"]:
+        m = s["peor"]
+        texto += f"💀 Peor: {m.get('question','?')[:40]} → ${m.get('pnl',0):+.2f}\n"
+    if s["total"] == 0:
+        texto += "\n_Aún no hay operaciones. Espera la próxima pasada AUTO._"
     return enviar(chat_id, texto)
 
 def cmd_abiertas(chat_id):
     estado = cargar_estado()
-    copiados = estado.get("trades_copiados", [])
-    if not copiados:
-        return enviar(chat_id, "📭 Sin operaciones del bot de Combos aún.")
-    texto = f"*📂 OPERACIONES ({len(copiados)})*\n\n"
-    for op in copiados[-15:]:
-        if op.get("tipo") == "simple":
-            titulo = op.get("titulo", "?")[:50]
-            precio = op.get("precio_ejecutado", 0)
-            oid = str(op.get("order_id", ""))[:10]
-            texto += f"🟢 {titulo}\n   ${op.get('stake_dolares',0):.2f} @ {precio:.2f} `{oid}`\n\n"
-        else:
-            texto += f"🟡 COMBO {op.get('tipo')} {op.get('deporte','')}\n"
-            texto += f"   Cuota real {op.get('cuota_real',0):.2f}, stake ${op.get('stake_total',0):.2f}\n\n"
+    ejecutadas = [c for c in estado.get("trades_copiados", []) if c.get("status") == "ejecutado"]
+    if not ejecutadas:
+        return enviar(chat_id, "📭 Sin operaciones aún.")
+    texto = f"📂 *OPERACIONES DE COMBOS ({len(ejecutadas)})*\n\n"
+    for op in ejecutadas[-10:]:
+        titulo = op.get("question", "?")[:50]
+        oid = str(op.get("order_id", ""))[:10]
+        precio = op.get("precio_ejecutado", 0)
+        stake = op.get("stake_dolares", 0)
+        texto += f"✅ {titulo}\n   ${stake:.2f} @ {precio:.2f} `{oid}`\n\n"
     return enviar(chat_id, texto)
 
 def cmd_cerradas(chat_id):
     estado = cargar_estado()
     historial = estado.get("historial", [])
     if not historial:
-        return enviar(chat_id, "📭 Aún no hay cerradas.")
+        return enviar(chat_id, "📭 Sin cerradas.")
     total = sum(float(h.get("pnl", 0) or 0) for h in historial)
-    texto = f"*✅ CERRADAS ({len(historial)})*\n_PnL: ${total:+.2f}_\n\n"
-    for h in historial[-20:]:
-        titulo = (h.get("titulo") or "combo " + h.get("deporte",""))[:50]
+    texto = f"✅ *CERRADAS ({len(historial)})*\n_PnL: ${total:+.2f}_\n\n"
+    for h in historial[-15:]:
+        titulo = h.get("question", "?")[:50]
         pnl = float(h.get("pnl", 0) or 0)
         ico = "🟢" if pnl >= 0 else "🔴"
-        fecha = h.get("cerrado_en", h.get("copiado_en", ""))[:16]
-        texto += f"{ico} {titulo} → ${pnl:+.2f} ({fecha})\n"
+        texto += f"{ico} {titulo} → ${pnl:+.2f}\n"
     return enviar(chat_id, texto)
 
 def cmd_top(chat_id):
-    texto = "*🏆 LEADERBOARD POLYMARKET*\n\n"
-    for i, (n, _, _) in enumerate(TOP_TRADERS[:10], 1):
-        texto += f"{i}. {n}\n"
+    texto = ("*🏆 TOP TRADERS POLYMARKET*\n\n"
+             "1. pleaseplease123 +$1.0M\n"
+             "2. ferrariChampions2026 +$791K\n"
+             "3. balthazar +$534K\n"
+             "4. 0xd9670... +$466K\n"
+             "5. Talvez10 +$339K\n"
+             "6. AV23IUa +$311K\n"
+             "7. 11vsldfdsgfkjgos +$272K\n"
+             "8. Flaznorp +$265K\n"
+             "9. sainttroplay +$207K\n"
+             "10. ExplosiveNinja +$189K")
     return enviar(chat_id, texto)
 
 def cmd_modo(chat_id, modo):
@@ -845,43 +579,34 @@ def cmd_modo(chat_id, modo):
     estado = cargar_estado()
     estado["modo"] = modo
     guardar_estado(estado)
-    desc = {"AUTO": "🟢 ejecuta automáticamente", "SEMI": "🟡 informa pero no opera",
-            "OFF": "🔴 solo informa"}[modo]
-    enviar(chat_id, f"*Modo: {modo}*\n_{desc}_")
+    enviar(chat_id, f"*Modo: {modo}*")
     if modo == "AUTO":
         threading.Thread(target=lambda: auto_pasada(chat_id), daemon=True).start()
 
 def cmd_stake(chat_id, valor):
-    global STAKE_POR_TRADE, STAKE_POR_COMBO_DOBLE, STAKE_POR_COMBO_TRIPLE
+    global STAKE_POR_TRADE
     try:
         stake = float(valor)
         if stake < 0.5 or stake > 50:
-            return enviar(chat_id, "❌ Entre $0.50 y $50")
+            return enviar(chat_id, "❌ $0.50-$50")
         STAKE_POR_TRADE = stake
-        STAKE_POR_COMBO_DOBLE = stake / 2
-        STAKE_POR_COMBO_TRIPLE = stake / 3
         estado = cargar_estado()
         estado["stake"] = stake
         guardar_estado(estado)
-        return enviar(chat_id, f"*Stake simple: ${stake:.2f}*\n"
-                              f"_Doble: ${STAKE_POR_COMBO_DOBLE:.2f}/pierna_\n"
-                              f"_Triple: ${STAKE_POR_COMBO_TRIPLE:.2f}/pierna_")
+        return enviar(chat_id, f"*Stake: ${stake:.2f}*")
     except:
         return enviar(chat_id, "❌ /stake 2.5")
 
 def cmd_status(chat_id):
     global CHAT_ID
     CHAT_ID = chat_id
-    estado = cargar_estado()
     s = calcular_stats()
-    texto = (f"*📊 ESTADO*\n\n"
-             f"Modo: *{estado.get('modo', MODO_OPERACION)}*\n"
-             f"Stake simple: *${STAKE_POR_TRADE}*\n"
-             f"Cuota simple: *{CUOTA_MIN_SIMPLE}-{CUOTA_MAX_SIMPLE}*\n"
-             f"Trades ejecutados: *{s['total_operaciones']}* "
-             f"(🟢{s['simples']} 🟡{s['dobles']} 🔴{s['triples']})\n"
-             f"PnL: *${s['pnl_total']:+.2f}* | "
-             f"WR: *{(s['wins']/(s['wins']+s['losses'])*100) if (s['wins']+s['losses'])>0 else 0:.0f}%*\n"
+    texto = (f"📊 *ESTADO v7*\n\n"
+             f"Modo: *{MODO_OPERACION}*\n"
+             f"Stake: *${STAKE_POR_TRADE}*\n"
+             f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
+             f"Trades: *{s['total']}*\n"
+             f"PnL: *${s['pnl']:+.2f}*\n"
              f"Proxy: `{PROXY_URL}`\n"
              f"Hora: {datetime.now().strftime('%H:%M:%S')}")
     return enviar(chat_id, texto)
@@ -891,29 +616,32 @@ def cmd_status(chat_id):
 # AUTO LOOP
 # ============================================
 def auto_pasada(chat_id):
-    """Una pasada: detecta oportunidades y ejecuta."""
+    """Lee mercados activos, filtra por cuota, ejecuta automaticamente."""
     if MODO_OPERACION != "AUTO":
         return
     log(f"[AUTO] pasada")
-    trades = trades_refresh()
-    simples = detectar_simples(trades)
-    combos = detectar_combos(trades)
-    if not simples and not combos:
-        enviar(chat_id, "🔄 *AUTO:* sin oportunidades ahora mismo.")
+    mercados = listar_mercados_deportes()
+    if not mercados:
+        enviar(chat_id, "🔄 *AUTO:* sin mercados activos ahora.")
         return
+    # filtrar por cuota objetivo
+    candidatos = [m for m in mercados if CUOTA_MIN <= m["cuota"] <= CUOTA_MAX]
+    # ordenar por volumen
+    candidatos.sort(key=lambda x: -x["volumen_24h"])
+    if not candidatos:
+        enviar(chat_id, f"🔄 *AUTO:* {len(mercados)} mercados activos pero ninguno en cuota {CUOTA_MIN}-{CUOTA_MAX}.")
+        return
+    enviar(chat_id, f"🔄 *AUTO: {len(candidatos)} mercados en rango. Ejecutando...*")
     ejecutar = 0
-    # ejecutar primero los combos (mayor valor)
-    for combo in combos[:1]:  # max 1 combo por pasada para no saturar
-        ok, motivo, reg = ejecutar_combo(combo, chat_id)
-        if ok: ejecutar += 1
-        time.sleep(5)
-    # luego simples
-    budget = MAX_TRADES_SIMULTANEOS - ejecutar
-    for t in simples[:budget]:
-        ok, motivo, reg = ejecutar_simple(t, chat_id)
-        if ok: ejecutar += 1
-        time.sleep(2)
-    enviar(chat_id, f"✅ *AUTO: {ejecutar} operación(es) ejecutada(s)*")
+    for m in candidatos[:MAX_TRADES_SIMULTANEOS]:
+        ok, motivo = ejecutar_trade(m, chat_id)
+        if ok:
+            ejecutar += 1
+        time.sleep(3)
+    if ejecutar:
+        enviar(chat_id, f"✅ *AUTO: {ejecutar} trade(s) ejecutado(s)*")
+    else:
+        enviar(chat_id, f"⚠️ *AUTO: 0 ejecuciones*")
 
 def auto_loop():
     while True:
@@ -987,7 +715,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("Bot iniciado")
+    log("v7 iniciado")
     offset = 0
     while True:
         try:
@@ -1011,7 +739,7 @@ def main():
     if not cargar_token():
         log("ERROR: no se encontró el token")
         return
-    log(f"v6 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v7 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
