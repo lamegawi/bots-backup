@@ -1,0 +1,61 @@
+==========================================
+ACTUALIZACION - Sat Sep  5 10:40:37 PM UTC 2026
+==========================================
+== Detener bot ==
+
+== Borrar archivo antiguo ==
+
+== Descargar nueva version ==
+Branch: 72897bfe
+raw: 29927 bytes
+Tamano final: 29927 bytes
+
+== Verificar sintaxis ==
+OK
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+== Reiniciar servicio ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 22:40:39 UTC; 8s ago
+   Main PID: 919931 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 12.7M (peak: 13.1M)
+        CPU: 173ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─919931 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 05 22:40:39 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+== Log reciente ==
+[22:10:49] [AUTO] pasada
+[22:15:50] [AUTO] pasada
+[22:20:29] [AUTO] pasada
+[22:20:52] [AUTO] pasada
+[22:22:57] v7 cargado · modo=AUTO · stake=$2.0
+[22:22:57] Proxy: http://100.83.57.99:8888
+[22:22:58] Test proxy: 200
+[22:22:58] v7 iniciado
+[22:26:48] loop err: The read operation timed out
+[22:37:22] [AUTO] pasada
+[22:37:23]   pagina 1: +50 total, 0 deportes
+[22:37:23]   pagina 2: +50 total, 0 deportes
+[22:37:24]   pagina 3: +50 total, 0 deportes
+[22:37:24]   pagina 4: +50 total, 0 deportes
+[22:37:25]   pagina 5: +50 total, 0 deportes
+[22:37:58] [AUTO] pasada
+[22:37:59]   pagina 1: +50 total, 0 deportes
+[22:37:59]   pagina 2: +50 total, 0 deportes
+[22:38:00]   pagina 3: +50 total, 0 deportes
+[22:38:00]   pagina 4: +50 total, 0 deportes
+[22:38:01]   pagina 5: +50 total, 0 deportes
+[22:40:39] v7 cargado · modo=AUTO · stake=$2.0
+[22:40:39] Proxy: http://100.83.57.99:8888
+[22:40:40] Test proxy: 200
+[22:40:40] v7 iniciado
+
+==========================================
+FIN - Sat Sep  5 10:40:47 PM UTC 2026
+==========================================
