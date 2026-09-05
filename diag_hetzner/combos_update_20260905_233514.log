@@ -1,0 +1,61 @@
+==========================================
+ACTUALIZACION - Sat Sep  5 11:35:14 PM UTC 2026
+==========================================
+== Detener bot ==
+
+== Borrar archivo antiguo ==
+
+== Descargar nueva version ==
+Branch: e35baed3
+raw: 33005 bytes
+Tamano final: 33005 bytes
+
+== Verificar sintaxis ==
+OK
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+== Reiniciar servicio ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 23:35:17 UTC; 8s ago
+   Main PID: 924563 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 12.8M (peak: 13.3M)
+        CPU: 163ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─924563 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 05 23:35:17 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+== Log reciente ==
+[23:26:37] update err: name 'condition_id' is not defined
+[23:30:50] [AUTO] pasada
+[23:30:51]   pagina 1: +50 mercados, 0 combos de deportes
+[23:30:51]   pagina 2: +50 mercados, 1 combos de deportes
+[23:30:51]   pagina 3: +50 mercados, 9 combos de deportes
+[23:30:52]   pagina 4: +50 mercados, 47 combos de deportes
+[23:30:52]   pagina 5: +50 mercados, 78 combos de deportes
+[23:31:15] update err: name 'condition_id' is not defined
+[23:31:22] [TRADE] US Open ATP: Michael Zheng vs Arthur Gea
+[23:31:23]   token real resuelto: 234333119502820491...
+[23:31:23]   precio=0.805 cuota=1.24 stake=$2.0
+[23:31:23]   ERROR: size_2.48_muy_pequeno
+[23:31:26] [TRADE] Spread: Philadelphia Union (-1.5)
+[23:31:27]   token real resuelto: 958718972036241424...
+[23:31:27]   precio=0.445 cuota=2.25 stake=$2.0
+[23:31:27]   ERROR: size_4.49_muy_pequeno
+[23:31:30] [TRADE] Will Columbus Crew win on 2026-09-05?
+[23:31:30]   token real resuelto: 574452736916002160...
+[23:31:31]   precio=0.485 cuota=2.06 stake=$2.0
+[23:31:31]   ERROR: size_4.12_muy_pequeno
+[23:32:27] update err: name 'condition_id' is not defined
+[23:35:17] v10 cargado · modo=AUTO · stake=$5.0
+[23:35:17] Proxy: http://100.83.57.99:8888
+[23:35:18] Test proxy: 200
+[23:35:18] v10 iniciado
+
+==========================================
+FIN - Sat Sep  5 11:35:25 PM UTC 2026
+==========================================
