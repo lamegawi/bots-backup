@@ -69,16 +69,54 @@ CHAT_ID = None
 ULTIMO_TRADE_TS = 0
 
 # Categorias de mercados que nos interesan (deportes)
-CATEGORIAS_DEPORTES = [
-    "Sports", "Soccer", "Tennis", "Basketball", "Baseball",
-    "Football", "Hockey", "MMA", "Boxing", "UFC", "NFL",
-    "NBA", "MLB", "NHL", "NCAA", "EPL", "La Liga",
-    "Champions League", "Bundesliga", "Serie A",
-]
+DEPORTES_KEYWORDS = {
+    # Deportes con sus titulos comunes
+    "MLB": ["mlb", "yankees", "dodgers", "astros", "mets", "giants",
+            "nationals", "cardinals", "padres", "braves", "cubs",
+            "red sox", "rangers", "tigers", "guardians", "royals",
+            "mariners", "angels", "athletics", "orioles", "rays",
+            "blue jays", "twins", "white sox", "brewers", "reds",
+            "pirates", "rockies", "diamondbacks", "marlins", "phillies"],
+    "UFC": ["ufc", "mma", "fight night", "knockout", "submission",
+            "featherweight", "lightweight", "heavyweight", "middleweight",
+            "welterweight", "bantamweight", "flyweight"],
+    "NFL": ["nfl", "quarterback", "touchdown", "super bowl", "chiefs",
+            "cowboys", "eagles", "packers", "ravens", "bills",
+            "49ers", "lions", "dolphins", "jets", "texans", "colts",
+            "jaguars", "titans", "broncos", "raiders", "chargers",
+            "browns", "bengals", "steelers", "saints", "falcons",
+            "panthers", "bears", "vikings", "cardinals", "buccaneers",
+            "rams", "seahawks", "commanders"],
+    "NBA": ["nba", "lakers", "celtics", "warriors", "bulls", "heat",
+            "knicks", "nets", "bucks", "76ers", "raptors", "nuggets",
+            "suns", "mavericks", "clippers", "rockets", "spurs",
+            "thunder", "trail blazers", "jazz", "kings", "pacers",
+            "hawks", "hornets", "pistons", "magic", "cavaliers",
+            "timberwolves", "grizzlies", "pelicans"],
+    "Tennis": ["tennis", "atp", "wta", "us open", "wimbledon",
+               "french open", "australian open", "roland garros",
+               "djokovic", "alcaraz", "sinner", "medvedev", "zverev",
+               "swiatek", "sabalenka", "rybakina", "gael monfils",
+               "federer", "nadal"],
+    "Soccer": ["soccer", "epl", "premier league", "la liga", "bundesliga",
+               "serie a", "ligue 1", "champions league", "europa league",
+               "world cup", "uefa", "real madrid", "barcelona", "atletico",
+               "manchester", "liverpool", "chelsea", "arsenal", "tottenham",
+               "bayern", "dortmund", "psg", "juventus", "milan", "inter",
+               "napoli", "roma", "ajax"],
+    "NCAAF": ["ncaaf", "college football", "alabama", "georgia", "lsu",
+              "michigan", "ohio state", "texas", "oklahoma", "notre dame",
+              "usc", "oregon"],
+    "NCAAB": ["ncaab", "march madness", "kansas", "duke", "kentucky",
+              "north carolina", "villanova", "uconn"],
+}
 
-EXCLUIR_KEYWORDS = ["Trump", "Biden", "Election", "President", "Congress",
-                    "Bitcoin", "Ethereum", "Crypto", "NFT", "Fed",
-                    "Russia", "Ukraine", "China", "Iran", "Israel", "WHO"]
+EXCLUIR_KEYWORDS = ["xi jinping", "trump", "biden", "election", "president",
+                    "congress", "senate", "democratic", "republican", "governor",
+                    "bitcoin", "ethereum", "crypto", "nft", "fed",
+                    "russia", "ukraine", "china", "iran", "israel", "who",
+                    "nobel", "oscar", "grammy", "emmy", "box office",
+                    "movie", "film", "album", "song", "taylor swift", "kanye"]
 
 
 # ============================================
@@ -221,73 +259,77 @@ def get_clob_client():
 # ============================================
 # MERCADOS ACTIVOS EN TIEMPO REAL
 # ============================================
+def detectar_deporte_por_titulo(titulo):
+    """Detecta el deporte a partir del titulo del mercado."""
+    t = titulo.lower()
+    for deporte, kws in DEPORTES_KEYWORDS.items():
+        if any(k in t for k in kws):
+            return deporte
+    return None
+
 def listar_mercados_deportes():
     """Lee mercados ACTIVOS de Polymarket y filtra por deportes.
-    Devuelve lista de {question, slug, clobTokenIds, ...}"""
+    Estrategia: cargar varios paginas y filtrar por titulo."""
     mercados = []
-    try:
-        # pagination: cargar varias paginas
-        for offset in range(0, MAX_MERCADOS_A_REVISAR, 50):
-            url = f"https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=50&offset={offset}&order=volume24hr&ascending=false"
-            status, body = http_get(url, timeout=15)
-            if status != 200:
-                log(f"  gamma-api status {status}")
-                break
+    # cargar hasta 5 paginas = 250 mercados
+    for offset in range(0, 250, 50):
+        url = f"https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=50&offset={offset}"
+        status, body = http_get(url, timeout=15)
+        if status != 200:
+            log(f"  gamma-api status {status}")
+            break
+        try:
             batch = json.loads(body)
-            if not batch:
-                break
-            for m in batch:
-                # filtrar por deportes
-                titulo = (m.get("question") or m.get("title") or "").lower()
-                tags = [t.lower() for t in (m.get("tags") or [])]
-                # detectar si es deporte
-                es_deporte = False
-                for cat in CATEGORIAS_DEPORTES:
-                    if cat.lower() in titulo or cat.lower() in str(tags):
-                        es_deporte = True
-                        break
-                if not es_deporte:
-                    continue
-                # excluir politico/crypto
-                if any(ex.lower() in titulo for ex in EXCLUIR_KEYWORDS):
-                    continue
-                # precio
-                try:
-                    prices = json.loads(m.get("outcomePrices") or "[]")
-                except:
-                    prices = []
-                if len(prices) < 1:
-                    continue
-                try:
-                    yes_price = float(prices[0])
-                except:
-                    continue
-                if not (0.05 <= yes_price <= 0.95):
-                    continue
-                # token IDs
-                try:
-                    tokens = json.loads(m.get("clobTokenIds") or "[]")
-                except:
-                    tokens = []
-                if not tokens:
-                    continue
-                # volumen
-                vol = float(m.get("volume24hr") or m.get("volumeNum") or 0)
-                mercados.append({
-                    "question": m.get("question", ""),
-                    "slug": m.get("slug", ""),
-                    "yes_token": tokens[0],
-                    "no_token": tokens[1] if len(tokens) > 1 else tokens[0],
-                    "yes_price": yes_price,
-                    "cuota": round(1/yes_price, 2) if yes_price > 0 else 0,
-                    "volumen_24h": vol,
-                    "tags": tags,
-                    "fin": m.get("endDate") or m.get("endDateIso"),
-                })
-        # ordenar por volumen (mas liquido primero)
-        mercados.sort(key=lambda x: -x["volumen_24h"])
-    except Exception as e:
-        log(f"  listar_mercados error: {e}")
+        except:
+            break
+        if not batch:
+            break
+        for m in batch:
+            titulo = m.get("question") or m.get("title") or ""
+            titulo_lower = titulo.lower()
+            # excluir si contiene palabras no-deseadas
+            if any(ex in titulo_lower for ex in EXCLUIR_KEYWORDS):
+                continue
+            # detectar deporte
+            deporte = detectar_deporte_por_titulo(titulo)
+            if not deporte:
+                continue
+            # precio
+            try:
+                prices = json.loads(m.get("outcomePrices") or "[]")
+            except:
+                prices = []
+            if len(prices) < 1:
+                continue
+            try:
+                yes_price = float(prices[0])
+            except:
+                continue
+            if not (0.05 <= yes_price <= 0.95):
+                continue
+            # token IDs
+            try:
+                tokens = json.loads(m.get("clobTokenIds") or "[]")
+            except:
+                tokens = []
+            if not tokens:
+                continue
+            # volumen
+            vol = float(m.get("volume24hr") or m.get("volumeNum") or 0)
+            mercados.append({
+                "question": titulo,
+                "slug": m.get("slug", ""),
+                "yes_token": tokens[0],
+                "no_token": tokens[1] if len(tokens) > 1 else tokens[0],
+                "yes_price": yes_price,
+                "cuota": round(1/yes_price, 2) if yes_price > 0 else 0,
+                "volumen_24h": vol,
+                "deporte": deporte,
+                "fin": m.get("endDate") or m.get("endDateIso"),
+            })
+        log(f"  pagina {offset//50 + 1}: +{sum(1 for m in batch)} total, {len(mercados)} deportes")
+    # ordenar por volumen (mas liquido primero)
+    mercados.sort(key=lambda x: -x["volumen_24h"])
     return mercados
 
 def get_precio_actual(token_id):
