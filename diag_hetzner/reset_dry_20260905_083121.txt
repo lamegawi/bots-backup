@@ -1,0 +1,27 @@
+Reset DRY-RUN - 20260905_083121
+======================================================================
+RESET MENSUAL FINALIZADAS · 2026-09-05T08:31:21.847248
+======================================================================
+  Hoy: 2026-09-05
+  Primer dia del mes: 2026-09-01
+  Nueva FECHA_INICIO: datetime(2026, 9, 1).date()
+  FECHA_INICIO actual: FECHA_INICIO = datetime(2026, 8, 17).date()
+  Cambiando a: FECHA_INICIO = datetime(2026, 9, 1).date()  # primer dia del mes actual
+
+Cambios:
+  - FECHA_INICIO = datetime(2026, 8, 17).date()
+  + FECHA_INICIO = datetime(2026, 9, 1).date()  # primer dia del mes actual
+  -         return (f"📅 *OPERACIONES FINALIZADAS (desde 17/08/2026)*\n\n"
+  +         return (f"📅 *OPERACIONES FINALIZADAS (desde 01/09/2026)*\n\n"
+  -                 f"⚪ Sin operaciones cerradas desde el 17/08 todavía.\n"
+  +                 f"⚪ Sin operaciones cerradas desde el 01/09\n"
+  -                 f"_Cuenta desde el cierre positivo del 15-17/08._")
+  +                 f"_Cuenta desde el 01/09/2026 (reset mensual)._")
+  -     lineas = [f"📅 *OPERACIONES FINALIZADAS (desde 17/08/2026)*", ""]
+  +     lineas = [f"📅 *OPERACIONES FINALIZADAS (desde 01/09/2026)*", ""]
+  -     lineas.append("_Cuenta desde el cierre positivo del 15-17/08._")
+  +     lineas.append("_Cuenta desde el 01/09/2026 (reset mensual)._")
+
+======================================================================
+MODO DRY-RUN: no se ha tocado nada
+Para aplicar: /root/reset_mensual.py
