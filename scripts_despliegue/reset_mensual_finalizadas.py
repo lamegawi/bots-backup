@@ -165,7 +165,7 @@ def main():
     log("=" * 70)
     log("OK: FECHA_INICIO actualizado. El bot mostrara solo finalizadas del mes.")
     log("IMPORTANTE: reiniciar el bot de Telegram para que recargue el modulo:")
-    log("  systemctl restart poly-telegram-bot")
+    log("  systemctl restart poly-telegram")
     log("=" * 70)
 
     # publicar
