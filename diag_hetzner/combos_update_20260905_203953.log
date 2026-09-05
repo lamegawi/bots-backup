@@ -1,0 +1,61 @@
+==========================================
+ACTUALIZACION - Sat Sep  5 08:39:53 PM UTC 2026
+==========================================
+== Detener bot ==
+
+== Borrar archivo antiguo ==
+
+== Descargar nueva version ==
+Branch: 32a4377c
+raw: 35846 bytes
+Tamano final: 35846 bytes
+
+== Verificar sintaxis ==
+OK
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+== Reiniciar servicio ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 20:39:56 UTC; 8s ago
+   Main PID: 911566 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 13.5M (peak: 13.7M)
+        CPU: 161ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─911566 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 05 20:39:56 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+== Log reciente ==
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[20:26:53]   ERROR enviando orden: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[20:26:53] [REAL] ejecutando trade: US Open ATP: Jakub Mensik vs Learner Tien
+[20:31:53] [AUTO] revisando trades (CHAT_ID=250818720)
+[20:31:54] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[20:31:54] [REAL] ejecutando trade: AS Roma vs. Atalanta BC: O/U 1.5
+[20:31:54] [REAL] ejecutando trade: US Open ATP: Jakub Mensik vs Learner Tien
+[20:34:13] Token cargado
+[20:34:13] Wallet: 0xb0e1197098e6d427c01720f1631cad24ce740fa0
+[20:34:13] Modo: AUTO
+[20:34:13] Stake: $2.0
+[20:34:13] Bot iniciado, esperando mensajes...
+[20:36:13] [AUTO] revisando trades (CHAT_ID=250818720)
+[20:36:13] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[20:36:14] loop error: The read operation timed out
+[20:36:14] [REAL] ejecutando trade: AS Roma vs. Atalanta BC: O/U 1.5
+[20:36:14] [REAL] ejecutando trade: US Open ATP: Jakub Mensik vs Learner Tien
+[20:39:56] Token cargado
+[20:39:56] Wallet: 0xb0e1197098e6d427c01720f1631cad24ce740fa0
+[20:39:56] Modo: AUTO
+[20:39:56] Stake: $2.0
+[20:39:56] Proxy PC: http://100.83.57.99:8888
+[20:39:56] Test proxy...
+[20:39:57]   Proxy OK (status 200)
+[20:39:57] Bot iniciado, esperando mensajes...
+
+==========================================
+FIN - Sat Sep  5 08:40:04 PM UTC 2026
+==========================================
