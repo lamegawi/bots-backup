@@ -64,7 +64,7 @@ ENV_FILE = "/etc/polymarket.env"
 STAKE_POR_TRADE = 2.0
 MAX_TRADES_SIMULTANEOS = 3
 HORAS_RECIENTE = 24
-MODO_OPERACION = "OFF"  # AUTO, SEMI, OFF — OFF por defecto, NUNCA opera solo
+MODO_OPERACION = "AUTO"  # AUTO, SEMI, OFF — AUTO por defecto: opera al arrancar
 CHAT_ID = None  # se detecta al primer mensaje
 
 TOP_TRADERS = [
@@ -452,9 +452,7 @@ def cmd_copiar(chat_id, num):
     if MODO_OPERACION == "OFF":
         return enviar(chat_id,
                       "*🔴 MODO OFF — No se ejecutan operaciones*\n\n"
-                      "Cambia a SEMI o AUTO desde los botones de abajo.\n"
-                      "🟡 SEMI → copias manualmente una a una\n"
-                      "🟢 AUTO → copia automáticamente las top 3")
+                      "Cambia a 🟢 AUTO o 🟡 SEMI desde los botones de abajo.")
     trades = trades_refresh()
     if num < 1 or num > len(trades):
         return enviar(chat_id, f"❌ Número inválido. Hay {len(trades)} trades disponibles.")
@@ -489,34 +487,75 @@ def cmd_saldo(chat_id):
     botones = [[{"text": "🔙 Volver", "callback_data": "menu"}]]
     return enviar(chat_id, texto, {"inline_keyboard": botones})
 
+def _posiciones_combos():
+    """Lee las posiciones que este bot de Combos ha copiado (estado local).
+    NO mezcla con las posiciones de otros bots (Elon/Zelensky) que usan la
+    misma wallet en Polymarket."""
+    estado = cargar_estado()
+    return estado.get("trades_copiados", []), estado.get("historial", [])
+
 def cmd_abiertas(chat_id):
+    """Muestra SOLO las posiciones que este bot de Combos ha abierto.
+    Filtra por titulo o asset para no mostrar las de Elon/Zelensky."""
+    copiados, _ = _posiciones_combos()
+    # tokens/assets que el bot de combos ha operado
+    tokens_combos = set()
+    titulos_combos = set()
+    for t in copiados:
+        if t.get("status") == "ok":
+            titulos_combos.add((t.get("titulo") or "")[:30].lower())
+            for k in ("asset", "token_id", "order_id"):
+                v = t.get(k)
+                if v: tokens_combos.add(str(v))
+    if not titulos_combos and not tokens_combos:
+        return enviar(chat_id,
+                      "*📂 POSICIONES ABIERTAS DE COMBOS*\n\n"
+                      "_El bot de Combos aún no ha abierto ninguna posición._\n"
+                      "_Pulsa 🟢 AUTO si quieres que empiece ya._")
+    # leer API solo para enriquecer con PnL actual
     pos = get_posiciones()
-    abiertas = [p for p in pos if float(p.get("currentValue", 0) or 0) > 0.001]
-    if not abiertas:
-        return enviar(chat_id, "📭 No tienes posiciones abiertas.")
-    texto = f"*📂 POSICIONES ABIERTAS ({len(abiertas)})*\n\n"
-    for p in abiertas[:15]:
+    abiertas_combos = []
+    for p in pos:
+        if float(p.get("currentValue", 0) or 0) <= 0.001: continue
+        titulo = (p.get("title") or p.get("question") or "").lower()[:30]
+        asset = str(p.get("asset", ""))
+        if titulo in titulos_combos or asset in tokens_combos:
+            abiertas_combos.append(p)
+    if not abiertas_combos:
+        return enviar(chat_id,
+                      "*📂 POSICIONES ABIERTAS DE COMBOS*\n\n"
+                      "_No hay posiciones activas del bot de Combos._\n"
+                      f"_({len(copiados)} trade(s) copiado(s) en historial)_")
+    texto = f"*📂 POSICIONES ABIERTAS DE COMBOS ({len(abiertas_combos)})*\n\n"
+    total_pnl = 0
+    for p in abiertas_combos[:15]:
         titulo = (p.get("title") or p.get("question", "?"))[:50]
         outcome = p.get("outcome", "?")
         cur = float(p.get("currentValue", 0) or 0)
         pnl = float(p.get("cashPnl", 0) or 0)
+        total_pnl += pnl
         ico = "🟢" if pnl >= 0 else "🔴"
-        texto += f"{ico} {titulo}\n   {outcome} | PnL: ${pnl:+.2f}\n\n"
+        texto += f"{ico} {titulo}\n   {outcome} | PnL: ${pnl:+.2f} (cur ${cur:.2f})\n\n"
+    texto += f"*Total PnL abierto: ${total_pnl:+.2f}*"
     return enviar(chat_id, texto)
 
 def cmd_cerradas(chat_id):
-    pos = get_posiciones()
-    cerradas = [p for p in pos if float(p.get("currentValue", 0) or 0) <= 0.001
-                and abs(float(p.get("cashPnl", 0) or 0)) > 0.001]
-    if not cerradas:
-        return enviar(chat_id, "📭 No hay cerradas.")
-    total = sum(float(p.get("cashPnl", 0) or 0) for p in cerradas)
-    texto = f"*✅ CERRADAS: {len(cerradas)} (PnL ${total:+.2f})*\n\n"
-    for p in cerradas[:20]:
-        titulo = (p.get("title") or p.get("question", "?"))[:50]
-        pnl = float(p.get("cashPnl", 0) or 0)
+    """Muestra SOLO las posiciones cerradas que este bot de Combos ha operado."""
+    _, historial = _posiciones_combos()
+    if not historial:
+        return enviar(chat_id, "📭 El bot de Combos aún no tiene cerradas.")
+    total = 0
+    for h in historial:
+        try:
+            total += float(h.get("pnl", 0) or 0)
+        except: pass
+    texto = f"*✅ CERRADAS DE COMBOS ({len(historial)})*\n_PnL total: ${total:+.2f}_\n\n"
+    for h in historial[-20:]:
+        titulo = (h.get("titulo") or h.get("title", "?"))[:50]
+        pnl = float(h.get("pnl", 0) or 0)
         ico = "🟢" if pnl >= 0 else "🔴"
-        texto += f"{ico} {titulo} → ${pnl:+.2f}\n"
+        cerrado = h.get("cerrado_en", h.get("copiado_en", "?"))[:16]
+        texto += f"{ico} {titulo}\n   ${pnl:+.2f} · {cerrado}\n\n"
     return enviar(chat_id, texto)
 
 def cmd_top(chat_id):
@@ -537,7 +576,11 @@ def cmd_modo(chat_id, modo):
     desc = {"AUTO": "🟢 copia automáticamente los top trades",
             "SEMI": "🟡 detecta y propone, espera tu aprobación",
             "OFF": "🔴 solo informa, no opera"}[modo]
-    return enviar(chat_id, f"*Modo cambiado a {modo}*\n_{desc}_")
+    enviar(chat_id, f"*Modo cambiado a {modo}*\n_{desc}_")
+    # si es AUTO, lanzar una pasada inmediata
+    if modo == "AUTO":
+        threading.Thread(target=lambda: auto_pasada_inmediata(chat_id), daemon=True).start()
+    return True
 
 def cmd_stake(chat_id, valor):
     global STAKE_POR_TRADE
@@ -610,6 +653,12 @@ def procesar_update(update):
     chat_id = msg["chat"]["id"]
     text = msg.get("text", "").strip()
     CHAT_ID = chat_id
+    # --- al recibir /start, forzar una pasada AUTO si esta en modo AUTO ---
+    if text == "/start" and MODO_OPERACION == "AUTO":
+        cmd_start(chat_id)
+        # ejecutar una pasada inmediata
+        threading.Thread(target=lambda: auto_pasada_inmediata(chat_id), daemon=True).start()
+        return
     # --- botones del teclado fijo (texto) ---
     if text == "📋 Trades":
         return cmd_trades(chat_id)
@@ -666,25 +715,47 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def auto_loop():
-    """Cada 5 minutos en modo AUTO, ejecuta los top trades nuevos."""
+    """En modo AUTO, ejecuta los top trades nuevos cada 5 minutos.
+    La primera pasada es a los 30s de arrancar (para tener CHAT_ID)."""
     ultimo_envio = 0
     while True:
         try:
             if MODO_OPERACION == "AUTO" and CHAT_ID and time.time() - ultimo_envio > 300:
+                log(f"[AUTO] revisando trades (CHAT_ID={CHAT_ID})")
                 trades = trades_refresh()
-                if trades:
-                    enviar(CHAT_ID, f"🔄 *AUTO: Detectando nuevos trades...*")
+                if not trades:
+                    enviar(CHAT_ID, "🔄 *AUTO:* sin trades de deportes ahora mismo.")
+                else:
+                    enviar(CHAT_ID, f"🔄 *AUTO: {len(trades)} trades candidatos...*")
                     ejecutar = 0
-                    for i, t in enumerate(trades, 1):
+                    for t in trades:
                         # solo copiar los del top 3
                         if t["peso"] < 5: continue
                         ok, _ = ejecutar_trade_real(t, CHAT_ID)
                         if ok: ejecutar += 1
-                    enviar(CHAT_ID, f"*AUTO: {ejecutar} trades ejecutados*")
-                    ultimo_envio = time.time()
+                    enviar(CHAT_ID, f"*AUTO: {ejecutar} trade(s) ejecutado(s)*")
+                ultimo_envio = time.time()
         except Exception as e:
             log(f"auto_loop error: {e}")
         time.sleep(60)
+
+def auto_pasada_inmediata(chat_id):
+    """Ejecuta una pasada AUTO inmediatamente (al recibir /start o cambiar a AUTO)."""
+    global MODO_OPERACION
+    if MODO_OPERACION != "AUTO":
+        return
+    log(f"[AUTO-INMEDIATA] chat {chat_id}")
+    trades = trades_refresh()
+    if not trades:
+        enviar(chat_id, "🔄 *AUTO:* sin trades de deportes ahora mismo.")
+        return
+    enviar(chat_id, f"🔄 *AUTO: {len(trades)} trades candidatos...*")
+    ejecutar = 0
+    for t in trades:
+        if t["peso"] < 5: continue
+        ok, _ = ejecutar_trade_real(t, chat_id)
+        if ok: ejecutar += 1
+    enviar(chat_id, f"*AUTO: {ejecutar} trade(s) ejecutado(s)*")
 
 def bot_loop():
     log("Bot iniciado, esperando mensajes...")
@@ -721,6 +792,7 @@ def main():
     # arrancar auto loop en thread
     t = threading.Thread(target=auto_loop, daemon=True)
     t.start()
+    # arrancar el loop principal
     bot_loop()
 
 if __name__ == "__main__":
