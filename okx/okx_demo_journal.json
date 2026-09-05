@@ -430,7 +430,11 @@
   "atr": 0.05662996458452755,
   "stop_dist_pct": 7.335,
   "apalancamiento": 2,
-  "estado": "abierta"
+  "estado": "cerrada",
+  "ts_cierre": "2026-09-05 19:39",
+  "pnl_usd": -30.06,
+  "r_resultado": -3.01,
+  "motivo": "SL"
  },
  {
   "id": 1788560245952,

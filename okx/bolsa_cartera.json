@@ -71,6 +71,15 @@
       "moneda": "EUR",
       "precio_compra": 12.452,
       "cantidad": 400.0
+    },
+    {
+      "simbolo": "ETH",
+      "nombre": "Ethereum USD",
+      "yahoo": "ETH-USD",
+      "moneda": "USD",
+      "precio_compra": 2153.78,
+      "cantidad": 1.138444,
+      "tipo": "cripto"
     }
   ]
 }

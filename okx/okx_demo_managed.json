@@ -12,54 +12,7 @@
     "initial_sl": 6.985976,
     "tp_levels": [],
     "qty_vista": 50.0,
-    "sw_sl_px": 7.32156,
-    "sl_v2": true
-  },
-  "XRP: SHORT": {
-    "symbol": "XRP",
-    "direction": "SHORT",
-    "entry": 1.158,
-    "contratos": 118,
-    "sl_algo_id": "3895110787811291136",
-    "state": "opened",
-    "risk_usd": 10.0,
-    "opened_at": 1788559341.6160855,
-    "dist": 0.07335488,
-    "initial_sl": 1.24294495,
-    "tp_levels": [
-      {
-        "nivel": "1.0R",
-        "precio": 1.10137004,
-        "sz": 24,
-        "algoId": "3894224726797103104"
-      },
-      {
-        "nivel": "1.5R",
-        "precio": 1.07305505,
-        "sz": 24,
-        "algoId": "3894224733105336320"
-      },
-      {
-        "nivel": "2.0R",
-        "precio": 1.04474007,
-        "sz": 24,
-        "algoId": "3894224739715559424"
-      },
-      {
-        "nivel": "2.5R",
-        "precio": 1.01642509,
-        "sz": 24,
-        "algoId": "3894224746325782528"
-      },
-      {
-        "nivel": "3.0R",
-        "precio": 0.98811011,
-        "sz": 22,
-        "algoId": "3894224752734679040"
-      }
-    ],
-    "sw_sl_px": 1.24294495,
-    "qty_vista": 118.0,
+    "sw_sl_px": 7.3758799999999995,
     "sl_v2": true
   },
   "UNI: LONG": {
@@ -67,8 +20,8 @@
     "direction": "LONG",
     "entry": 6.748,
     "contratos": 26,
-    "sl_algo_id": "3895110807339970560",
-    "state": "opened",
+    "sl_algo_id": "3896454077521375232",
+    "state": "breakeven",
     "risk_usd": 10.0,
     "opened_at": 1788574674.43099,
     "dist": 0.05715975,
@@ -105,7 +58,7 @@
         "algoId": "3894739236733628416"
       }
     ],
-    "sw_sl_px": 6.36228598,
+    "sw_sl_px": 6.758122,
     "qty_vista": 26.0,
     "sl_v2": true
   }

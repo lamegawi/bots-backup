@@ -40,6 +40,12 @@
       "simbolo": "ACX.MC",
       "nombre": "ACERINOX, S.A.",
       "yahoo": "ACX.MC"
+    },
+    {
+      "simbolo": "ETH",
+      "nombre": "Ethereum USD",
+      "yahoo": "ETH-USD",
+      "tipo": "cripto"
     }
   ]
 }

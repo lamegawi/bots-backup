@@ -276,6 +276,29 @@ class Cliente:
                 pass
         return len(pend)
 
+    def cancelar_ordenes_pendientes(self, inst_id):
+        """SLM13: cancela las ordenes NORMALes (no-algo) pendientes de un
+        instrumento y devuelve cuantas cancelo. Importancia: un SL disparado
+        como limite queda aqui, y mientras exista bloquea /close-position con
+        el error 51115 ('Cancel all pending close-orders...')."""
+        n = 0
+        try:
+            r = self._check(self._get(
+                "/api/v5/trade/orders-pending?instType=FUTURES&instId="
+                + urllib.parse.quote(inst_id)), "orders-pending")
+            for o in (r.get("data") or []):
+                try:
+                    self._check(self._post("/api/v5/trade/cancel-order",
+                                           {"instId": inst_id,
+                                            "ordId": o.get("ordId")}),
+                                "cancel-order")
+                    n += 1
+                except Exception:
+                    pass
+        except Exception:
+            pass
+        return n
+
     def mover_sl_algo(self, inst_id, algo_id, nuevo_sl_px):
         """Modifica el precio de disparo de una orden algo (SL a break-even)."""
         body = {"instId": inst_id, "algoId": str(algo_id),
@@ -294,7 +317,11 @@ class Cliente:
                 body["side"] = "sell"
             else:
                 body["side"] = "buy"
-            return self._post("/api/v5/trade/close-position", body)
+            # SLM13: validar la respuesta (antes devolvia el error sin exception:
+            # p.ej. 51115 "Cancel all pending close-orders..." y el llamador creia
+            # que habia cerrado).
+            return self._check(self._post("/api/v5/trade/close-position", body),
+                               "close-position")
         cierre = "sell" if side == "long" else "buy"
         body = {"instId": inst_id, "tdMode": "cross", "side": cierre,
                 "posSide": "net", "ordType": "market",

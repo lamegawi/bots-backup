@@ -422,6 +422,45 @@ def _sl_nivel_superado(direction, nivel, markp):
     return markp > nivel * (1 + SLM_EPS)
 
 
+# === SLM13: cierre de emergencia robusto (05/09) ===
+# Incidente XRP 05/09: el SL (mark+limitada) se disparo con el precio gapeado;
+# la limitada quedo pendiente en el libro y /close-position devolvio 51115
+# ("Cancel all pending close-orders...") SIN exception (cerrar() no validaba)
+# -> WDOG/SLSTALE repitieron 157 veces "CERRADA a mercado" (y 157 avisos TG)
+# con la posicion AUN ABIERTA y sangrando. Fix:
+#   (1) client.cerrar() valida la respuesta (lanza si code != 0)
+#   (2) _cerrar_seguro: cancela antes las ordenes de cierre pendientes y
+#       cierra con market reduceOnly EXPLICITO de tamano completo
+#   (3) solo se anuncia "CERRADA" cuando la orden se acepto (si no, reintenta
+#       el ciclo siguiente SIN avisar falso)
+#   (4) el aviso TG se envia max 1x/10min por evento (no 1 por ciclo)
+_WDOG_ALERTA = {}   # {key: ts del ultimo aviso TG}
+
+
+def _cerrar_seguro(inst_id, direction, base):
+    """Cierra la posicion a mercado, validado. Devuelve (ok, detalle)."""
+    try:
+        client.cancelar_ordenes_pendientes(inst_id)   # quita el bloqueo 51115
+    except Exception:
+        pass
+    try:
+        pos = [p for p in client.posiciones() if p.get("instId") == inst_id]
+        qty = abs(int(float(pos[0].get("pos", 0) or 0))) if pos else 0
+        if qty == 0:
+            return True, "sin posicion"
+        client.cerrar(inst_id, "long" if direction == "LONG" else "short", qty)
+        return True, "cerrada %d ct a mercado" % qty
+    except Exception as _e:
+        return False, str(_e)[:120]
+
+
+def _wdog_alerta(key, texto):
+    """Aviso TG con tope: max 1 cada 10 min por evento (key)."""
+    if time.time() - _WDOG_ALERTA.get(key, 0) >= 600:
+        _WDOG_ALERTA[key] = time.time()
+        enviar(texto)
+
+
 def manage_positions():
     positions = get_all_positions()
     pos_map = {}
@@ -472,8 +511,10 @@ def manage_positions():
             # FIXR_ARENA: cancelar algos huerfanos del cierre
             try:
                 _nz = client.cancelar_todas_algo(inst_id)
-                if _nz:
-                    print("  [LIMPIEZA] " + base + ": " + str(_nz) + " orden(es) huerfana(s) cancelada(s)")
+                _nz2 = client.cancelar_ordenes_pendientes(inst_id)  # SLM13: SL disparado como limite
+                if _nz or _nz2:
+                    print("  [LIMPIEZA] " + base + ": " + str(_nz)
+                          + " algo + " + str(_nz2) + " normal(es) cancelada(s)")
             except Exception as _ez:
                 print("  [LIMPIEZA] " + base + ": " + str(_ez))
             del managed[key]
@@ -500,16 +541,16 @@ def manage_positions():
                     # SLM2: si el precio YA supero el nivel, recolocar seria
                     # ridiculo (dispararia al momento): se cierra la posicion.
                     if _sl_nivel_superado(direction, _nivel, p.get("mark", 0)):
-                        try:
-                            client.cerrar(inst_id,
-                                          "long" if direction == "LONG" else "short")
-                            print("[WDOG] %s %s: SL ausente y el precio ya supero el nivel %.6g -> CERRADA a mercado"
-                                  % (base, direction, float(_nivel)))
-                            enviar("🚨 *[DEMO] %s %s*: el SL habia desaparecido con el precio YA mas alla del nivel -> cerrada a mercado"
-                                   % (base, direction))
-                        except Exception as _we2:
-                            print("[WDOG] %s: fallo al cerrar a mercado: %s"
-                                  % (base, str(_we2)[:100]))
+                        _ok, _det = _cerrar_seguro(inst_id, direction, base)   # SLM13
+                        if _ok:
+                            print("[WDOG] %s %s: SL ausente y el precio ya supero el nivel %.6g -> CERRADA a mercado (%s)"
+                                  % (base, direction, float(_nivel), _det))
+                            _wdog_alerta("wdog:" + key,
+                                         "🚨 *[DEMO] %s %s*: el SL habia desaparecido con el precio YA mas alla del nivel -> cerrada a mercado"
+                                         % (base, direction))
+                        else:
+                            print("[WDOG] %s %s: FALLO al cerrar a mercado: %s (reintenta ciclo sig)"
+                                  % (base, direction, _det))
                         changed = True
                         continue
                     try:
@@ -555,16 +596,16 @@ def manage_positions():
                                        or m.get("initial_sl") or 0)
                         if _nivel > 0:
                             if _sl_nivel_superado(direction, _nivel, _markp):
-                                try:
-                                    client.cerrar(inst_id,
-                                                  "long" if direction == "LONG" else "short")
-                                    print("[SLM] %s %s: nivel de SL ya superado (mark %.6g vs %.6g) -> CERRADA a mercado"
-                                          % (base, direction, _markp, _nivel))
-                                    enviar("🚨 *[DEMO] %s %s*: el nivel del SL ya estaba superado -> cerrada a mercado"
-                                           % (base, direction))
-                                except Exception as _we3:
-                                    print("[SLM] %s: fallo al cerrar: %s"
-                                          % (base, str(_we3)[:100]))
+                                _ok, _det = _cerrar_seguro(inst_id, direction, base)   # SLM13
+                                if _ok:
+                                    print("[SLM] %s %s: nivel de SL ya superado (mark %.6g vs %.6g) -> CERRADA a mercado (%s)"
+                                          % (base, direction, _markp, _nivel, _det))
+                                    _wdog_alerta("slm:" + key,
+                                                 "🚨 *[DEMO] %s %s*: el nivel del SL ya estaba superado -> cerrada a mercado"
+                                                 % (base, direction))
+                                else:
+                                    print("[SLM] %s %s: FALLO al cerrar: %s (reintenta ciclo sig)"
+                                          % (base, direction, _det))
                                 changed = True
                                 continue
                             _nuevo = client.orden_algo_sl(
@@ -606,16 +647,16 @@ def manage_positions():
                             except (TypeError, ValueError):
                                 _lim = 0.0
                             if _lim > 0 and _sl_nivel_superado(direction, _lim, _markp):
-                                try:
-                                    client.cerrar(inst_id,
-                                                  "long" if direction == "LONG" else "short")
-                                    print("[SLSTALE] %s %s: SL limitada no rellenable (mark %.6g vs limite %.6g) -> CERRADA a mercado"
-                                          % (base, direction, _markp, _lim))
-                                    enviar("🚨 *%s %s (DEMO)*: el precio gapeo la SL limitada (no podia rellenar) -> cerrada a mercado"
-                                           % (base, direction))
-                                except Exception as _we4:
-                                    print("[SLSTALE] %s: fallo al cerrar: %s"
-                                          % (base, str(_we4)[:100]))
+                                _ok, _det = _cerrar_seguro(inst_id, direction, base)   # SLM13
+                                if _ok:
+                                    print("[SLSTALE] %s %s: SL limitada no rellenable (mark %.6g vs limite %.6g) -> CERRADA a mercado (%s)"
+                                          % (base, direction, _markp, _lim, _det))
+                                    _wdog_alerta("stale:" + key,
+                                                 "🚨 *%s %s (DEMO)*: el precio gapeo la SL limitada (no podia rellenar) -> cerrada a mercado"
+                                                 % (base, direction))
+                                else:
+                                    print("[SLSTALE] %s %s: FALLO al cerrar: %s (reintenta ciclo sig)"
+                                          % (base, direction, _det))
                                 changed = True
                                 continue
         except Exception as _slme:
