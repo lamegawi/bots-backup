@@ -1,0 +1,21 @@
+=== TEST CONDITION_ID - Sat Sep  5 11:22:05 PM UTC 2026 ===
+== 1. Cargar 1 combo ==
+  title: Will the U.S. invade Iran before 2027?
+  condition_id: 0x5db999fad322cea2914535aae5517060c3f80ad6d8c0231cde2124a434d16846
+  position_ids[0] COMPLETO: 798559951534518479645224261511384773234863312866932338530531601041078616064
+  len position_id: 75
+  outcome_prices: ['0.145', '0.855']
+
+== 2. CLOB /midpoint con position_id completo ==
+  ERROR: HTTP Error 404: Not Found
+
+== 3. CLOB /markets/{condition_id} ==
+  status: 200
+  body: {"enable_order_book":true,"active":true,"closed":false,"archived":false,"accepting_orders":true,"accepting_order_timestamp":"2025-11-05T17:51:55Z","minimum_order_size":5,"minimum_tick_size":0.01,"condition_id":"0x5db999fad322cea2914535aae5517060c3f80ad6d8c0231cde2124a434d16846","question_id":"0x132f882f851badfe460732d16fa20309910759adc990d9073e9f77ad6387d7c2","question":"Will the U.S. invade Iran before 2027?","description":"This market will resolve to \"Yes\" if the United States commences a mi
+
+== 4. gamma-api markets/{id} ==
+  status: 200
+  gamma market: id=559651 question=Xi Jinping out before 2027?
+  clobTokenIds: ["32338220190071351435772801779725302244575775216413325951443816017994629993401", "25659310674993675562345759665114759892400026242514633218387667107987341231962"]
+  real token_id: 32338220190071351435772801779725302244575775216413325951443816017994629993401
+  midpoint con real token: status=200 body={"mid":"0.0445"}
