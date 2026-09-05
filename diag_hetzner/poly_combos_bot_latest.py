@@ -265,7 +265,17 @@ def get_precio_actual(token_id):
     except: pass
     return None
 
-def buscar_token_por_titulo(titulo):
+def buscar_token_por_titulo(titulo, asset_hint=None):
+    """Busca el token_id de un mercado.
+    Estrategia:
+      1. Si el asset_hint (token_id) viene en el trade, USARLO DIRECTO
+      2. Si no, buscar por titulo en gamma-api con score de palabras
+    Devuelve (token_id, side, question) o (None, None, None).
+    """
+    # 1. usar el asset directamente (ES el token_id)
+    if asset_hint and str(asset_hint).isdigit() and len(str(asset_hint)) > 20:
+        return str(asset_hint), "YES", titulo
+    # 2. fallback: buscar por titulo
     try:
         url = "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=500"
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
@@ -448,8 +458,8 @@ def enviar_orden(token_id, precio, stake_dolares, chat_id=None):
 def ejecutar_simple(trade, chat_id=None):
     """Ejecuta un trade simple (1 evento)."""
     log(f"[SIMPLE] {trade['titulo'][:50]}")
-    # buscar mercado
-    token_id, side, q = buscar_token_por_titulo(trade["titulo"])
+    # buscar mercado (usando el asset del trade directamente)
+    token_id, side, q = buscar_token_por_titulo(trade["titulo"], asset_hint=trade.get("asset"))
     if not token_id:
         return False, "no_encontrado", None
     # re-leer precio
@@ -492,7 +502,7 @@ def ejecutar_combo(combo, chat_id=None):
     log(f"[COMBO-{combo['tipo'].upper()}] {combo['deporte']} cuota objetivo {combo['cuota_combo']}")
     piernas = []
     for trade in combo["trades"]:
-        token_id, side, q = buscar_token_por_titulo(trade["titulo"])
+        token_id, side, q = buscar_token_por_titulo(trade["titulo"], asset_hint=trade.get("asset"))
         if not token_id:
             log(f"  skip pierna: {trade['titulo'][:30]} - no encontrado")
             return False, "pierna_no_encontrada", None
