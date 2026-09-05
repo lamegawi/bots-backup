@@ -13,10 +13,18 @@ echo "  Python: $PY_BIN ($PY_VER)"
 echo "== Creando directorio $INSTALL_DIR =="
 mkdir -p $INSTALL_DIR
 
-echo "== Bajando bot =="
-curl -sL --max-time 60 "https://raw.githubusercontent.com/lamegawi/bots-backup/main/scripts_despliegue/${BOT_NAME}.py" -o $INSTALL_DIR/${BOT_NAME}.py
+BRANCH="${BRANCH:-8a1348c}"
+echo "== Bajando bot (branch $BRANCH) =="
+curl -sL --max-time 60 "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/scripts_despliegue/${BOT_NAME}.py" -o $INSTALL_DIR/${BOT_NAME}.py
 chmod +x $INSTALL_DIR/${BOT_NAME}.py
-echo "  tamano: $(stat -c %s $INSTALL_DIR/${BOT_NAME}.py) bytes"
+SIZE=$(stat -c %s $INSTALL_DIR/${BOT_NAME}.py 2>/dev/null || echo 0)
+echo "  tamano: $SIZE bytes"
+if [ "$SIZE" -lt 1000 ]; then
+  echo "  ERROR: archivo descargado demasiado pequeno. Probando main..."
+  curl -sL --max-time 60 "https://raw.githubusercontent.com/lamegawi/bots-backup/main/scripts_despliegue/${BOT_NAME}.py" -o $INSTALL_DIR/${BOT_NAME}.py
+  SIZE=$(stat -c %s $INSTALL_DIR/${BOT_NAME}.py)
+  echo "  reintento main: $SIZE bytes"
+fi
 
 echo "== Instalando py-clob-client-v2 =="
 pip install --break-system-packages --quiet py-clob-client-v2 eth_account requests 2>&1 | tail -5
