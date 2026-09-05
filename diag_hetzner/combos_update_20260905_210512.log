@@ -1,0 +1,61 @@
+==========================================
+ACTUALIZACION - Sat Sep  5 09:05:12 PM UTC 2026
+==========================================
+== Detener bot ==
+
+== Borrar archivo antiguo ==
+
+== Descargar nueva version ==
+Branch: 3a5c11ac
+raw: 38760 bytes
+Tamano final: 38760 bytes
+
+== Verificar sintaxis ==
+OK
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+== Reiniciar servicio ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 21:05:14 UTC; 8s ago
+   Main PID: 913169 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 13.4M (peak: 13.6M)
+        CPU: 174ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─913169 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 05 21:05:14 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+== Log reciente ==
+[20:36:14] loop error: The read operation timed out
+[20:36:14] [REAL] ejecutando trade: AS Roma vs. Atalanta BC: O/U 1.5
+[20:36:14] [REAL] ejecutando trade: US Open ATP: Jakub Mensik vs Learner Tien
+[20:39:56] Token cargado
+[20:39:56] Wallet: 0xb0e1197098e6d427c01720f1631cad24ce740fa0
+[20:39:56] Modo: AUTO
+[20:39:56] Stake: $2.0
+[20:39:56] Proxy PC: http://100.83.57.99:8888
+[20:39:56] Test proxy...
+[20:39:57]   Proxy OK (status 200)
+[20:39:57] Bot iniciado, esperando mensajes...
+[20:50:33] v6 cargado · modo=AUTO · stake=$2.0
+[20:50:33] Proxy: http://100.83.57.99:8888
+[20:50:34] Test proxy: 200
+[20:50:34] Bot iniciado
+[20:55:34] [AUTO] pasada
+[20:55:34] [COMBO-DOBLE] Tennis cuota objetivo 1.93
+[20:55:35]   skip pierna: US Open WTA: Cristina Bucsa vs - no encontrado
+[20:55:40] [SIMPLE] UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe
+[20:55:42] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[20:55:44] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:05:15] v6 cargado · modo=AUTO · stake=$2.0
+[21:05:15] Proxy: http://100.83.57.99:8888
+[21:05:16] Test proxy: 200
+[21:05:16] Bot iniciado
+
+==========================================
+FIN - Sat Sep  5 09:05:22 PM UTC 2026
+==========================================
