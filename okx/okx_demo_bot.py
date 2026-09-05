@@ -724,6 +724,12 @@ MARCADORES = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣",
               "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
 
 
+def _dir_c(d):
+    """SLM12: direccion con color visual (emoji; la API de Telegram no soporta
+    color de texto): 🟢 LONG en verde, 🔴 SHORT en rojo."""
+    return "🟢 LONG" if d == "LONG" else "🔴 SHORT"
+
+
 def boton_estado():
     pos = get_all_positions()
     if not pos:
@@ -742,8 +748,8 @@ def boton_estado():
             ic, pnl_txt = "🔴", f"{pnl:+.2f}"
         else:
             ic, pnl_txt = "⚪️", "0.00"
-        linea = (f"{marca} {sym} {d} · {p['qty']:g} ct · ent {p['entry']:g} · "
-                 f"mark {p['mark']:g} · P&L {ic} {pnl_txt} USD")
+        linea = (f"{marca} {sym} {_dir_c(d)} · {p['qty']:g} ct · ent {p['entry']:g} · "
+                 f"mark {p['mark']:g} · P&L {ic} {pnl_txt} USD")   # SLM12: 🟢LONG/🔴SHORT
         m = managed.get(f"{p['base']}: {d}")   # SLM6: el key lleva espacio (FIXK)
         if m and m.get("state") == "breakeven":
             linea += " · 🔒 SL en BE"
@@ -995,7 +1001,7 @@ def main():
                     _tag = _tag_sl(_mg.get(f"{p['base']}: {p['direction']}"),
                                    p.get("pnl", 0), p.get("qty"),
                                    p.get("entry", 0), p["symbol"])
-                    print(f"  [DEMO] {p['symbol']} {p['direction']} P&L={p['pnl']:+.2f}{_tag}")
+                    print(f"  [DEMO] {p['symbol']} {_dir_c(p['direction'])} P&L={p['pnl']:+.2f}{_tag}")   # SLM12
         except KeyboardInterrupt:
             print("\nBot demo OKX detenido.")
             break
