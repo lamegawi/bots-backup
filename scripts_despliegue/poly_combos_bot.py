@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v10 — Combos (parlays) en tiempo real
+POLY COMBOS BOT v10.6 — Combos (parlays) en tiempo real
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -425,30 +425,73 @@ def resolver_token_real(condition_id):
 # EJECUCIÓN DE TRADES
 # ============================================
 def enviar_orden(token_id, precio, stake_dolares):
-    """Envía una orden BUY via py_clob_client con proxy forzado."""
+    """v10.6: Firma la orden con ClobClient, luego envia via HTTP directo
+    con proxy (como hace el bot de Elon con curl)."""
     global ULTIMO_TRADE_TS
     ahora = time.time()
     if ahora - ULTIMO_TRADE_TS < 10:
         return False, "throttle"
-    # Calcular size
     size_shares = round(stake_dolares / precio, 2)
     if size_shares < MIN_SHARES:
         stake_necesario = MIN_SHARES * precio * 1.01
         return False, f"size_{size_shares}_necesita_stake_${stake_necesario:.2f}"
-    # Crear cliente (con proxy forzado)
-    client = get_clob_client()
-    if not client:
-        return False, "cliente_no_disponible"
+
+    env = cargar_env()
+    signer = env.get("POLY_PRIVATE_KEY", "").strip()
+    api_key = env.get("POLY_API_KEY", "").strip()
+    api_secret = env.get("POLY_API_SECRET", "").strip()
+    api_passphrase = env.get("POLY_API_PASSPHRASE", "").strip()
+    wallet = env.get("POLY_WALLET_ADDRESS", WALLET).strip()
+    if not signer or not api_key:
+        return False, "sin_credenciales"
+
+    # 1) Crear cliente SOLO para firmar (no envia)
     try:
-        from py_clob_client_v2.clob_types import OrderArgs
-        resp = client.create_and_post_order(
-            OrderArgs(token_id=token_id, price=precio,
-                      size=size_shares, side="BUY"))
-        oid = resp.get("orderID") or resp.get("order_id") or "?"
-        ULTIMO_TRADE_TS = ahora
-        return True, {"oid": oid, "size": size_shares, "precio": precio}
+        from py_clob_client_v2.client import ClobClient
+        from py_clob_client_v2.clob_types import ApiCreds, OrderArgs
+        from py_clob_client_v2 import SignatureTypeV2
+        client = ClobClient(
+            host=HOST_CLOB,
+            chain_id=137,
+            key=signer,
+            creds=ApiCreds(api_key, api_secret, api_passphrase),
+            funder=wallet,
+            signature_type=int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA),
+        )
+        # Crear la orden firmada (NO la posteamos)
+        order_args = OrderArgs(token_id=token_id, price=precio,
+                                size=size_shares, side="BUY")
+        signed_order = client.create_order(order_args)
+        log(f"  orden firmada: {str(signed_order)[:120]}")
     except Exception as e:
-        return False, str(e)[:200]
+        return False, f"firma_error:{str(e)[:200]}"
+
+    # 2) Enviar la orden firmada via HTTP POST directo CON PROXY
+    try:
+        body = json.dumps(signed_order) if not isinstance(signed_order, str) else signed_order
+        url = f"{HOST_CLOB}/order"
+        timestamp = str(int(time.time()))
+        # Headers L2 auth requeridos por Polymarket CLOB
+        headers = {
+            "Content-Type": "application/json",
+            "POLY_ADDRESS": wallet,
+            "POLY_API_KEY": api_key,
+            "POLY_PASSPHRASE": api_passphrase,
+            "POLY_TIMESTAMP": timestamp,
+        }
+        status, resp_body = http_post(url, body, headers)
+        log(f"  HTTP POST /order -> {status} {resp_body[:200]}")
+        if status in (200, 201):
+            try:
+                data = json.loads(resp_body)
+            except:
+                data = {"raw": resp_body[:200]}
+            oid = data.get("orderID") or data.get("order_id") or data.get("id") or "?"
+            ULTIMO_TRADE_TS = ahora
+            return True, {"oid": oid, "size": size_shares, "precio": precio}
+        return False, f"http_{status}:{resp_body[:200]}"
+    except Exception as e:
+        return False, f"http_error:{str(e)[:200]}"
 
 def ejecutar_trade(mercado, chat_id=None):
     """Ejecuta un trade en un mercado activo (v10: combo con token real)."""
@@ -574,7 +617,7 @@ def calcular_stats():
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v10*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v10.6*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -849,7 +892,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v10 iniciado")
+    log("v10.6 iniciado")
     offset = 0
     while True:
         try:
@@ -873,7 +916,7 @@ def main():
     if not cargar_token():
         log("ERROR: no se encontró el token")
         return
-    log(f"v10 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v10.6 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
