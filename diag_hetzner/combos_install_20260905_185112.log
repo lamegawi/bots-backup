@@ -1,0 +1,122 @@
+==========================================
+INSTALADOR v3 - Sat Sep  5 06:51:12 PM UTC 2026
+==========================================
+
+=== Paso 1: Detener bot anterior ===
+OK
+
+=== Paso 2: Verificar /root ===
+ls: cannot access '/root/copy*': No such file or directory
+(no hay copy.py - OK)
+total 324
+drwxr-xr-x 13 1000 1000  4096 Sep  5 18:50 .
+drwxr-xr-x  3 root root  4096 Aug 17 20:24 ..
+-rw-r--r--  1 root root   466 Sep  5 18:50 apuestas_compartidas.json
+-rw-r--r--  1 root root   301 Aug 22 04:41 apuestas_compartidas.json.bak_20260822_044155
+drwxr-xr-x  8 root root  4096 Aug 19 17:47 _backup_motor_v1
+drwxr-xr-x  4 root root  4096 Aug 31 01:00 backup_trump_20260831_201030
+-rw-r--r--  1 root root   151 Aug 18 20:00 balance_bot.json
+drwxr-xr-x  6 1000 1000  4096 Sep  5 17:19 bot-polymarket-elon
+drwxr-xr-x  5 1000 1000  4096 Sep  2 09:00 bot-polymarket-elon-mensual
+drwxr-xr-x  5 1000 1000  4096 Aug 30 08:30 bot-polymarket-elon-mensual-v2
+drwxr-xr-x  5 1000 1000  4096 Sep  2 09:00 bot-polymarket-elon-semanal
+drwxr-xr-x  5 1000 1000  4096 Aug 30 08:30 bot-polymarket-elon-semanal-v2
+drwxr-xr-x  5 1000 1000  4096 Aug 30 08:30 bot-polymarket-elon-v2
+drwxr-xr-x  4 root root  4096 Sep  4 17:00 bot-polymarket-trump
+drwxr-xr-x  6 root root  4096 Sep  5 18:00 bot-polymarket-zelenskyy
+-rw-r--r--  1 root root  2818 Aug 18 14:17 check_abiertas2.py
+-rw-r--r--  1 root root  2337 Aug 18 14:16 check_abiertas.py
+-rw-r--r--  1 root root  2598 Aug 18 14:03 check_estado.py
+-rw-r--r--  1 root root  2765 Aug 18 14:18 check_final.py
+-rw-r--r--  1 root root  1384 Aug 18 16:56 check_ganadoras.py
+-rw-r--r--  1 root root 24040 Aug 30 18:21 check_integral.py
+-rw-r--r--  1 root root 22118 Aug 30 06:49 check_integral.py.bakZB
+-rw-r--r--  1 root root  2118 Aug 18 14:05 check_ordenes.py
+-rw-r--r--  1 root root  2476 Aug 18 14:16 check_posiciones.py
+-rw-r--r--  1 root root  6066 Aug 30 18:11 check_salud.py
+-rw-r--r--  1 root root  1294 Aug 18 14:04 check_ventanas2.py
+-rw-r--r--  1 root root  1518 Aug 18 17:37 check_ventanas_ahora.py
+-rw-r--r--  1 root root  1235 Aug 18 14:04 check_ventanas.py
+-rw-r--r--  1 root root  7132 Sep  3 08:38 cierres_anticipados.json
+-rw-r--r--  1 root root 11538 Aug 18 21:00 gestionar_posiciones.py
+-rw-r--r--  1 root root    29 Sep  5 18:30 .jina_backoff.json
+-rw-r--r--  1 root root    66 Aug 26 19:38 .jina_key
+drwxr-xr-x  3 root root  4096 Aug 19 18:11 motores
+-rw-r--r--  1 root root  1062 Aug 19 18:00 motores.json
+-rw-r--r--  1 1000 1000  2022 Aug 19 18:12 motores.py
+-rw-r--r--  1 root root 14491 Aug 22 04:35 poly_telegram_bot.py
+-rwxr-xr-x  1 root root 10588 Sep  3 20:32 poly_telegram_trump.py
+-rw-r--r--  1 root root 14689 Aug 22 04:35 poly_telegram_zelen.py
+-rw-r--r--  1 root root     9 Sep  5 18:50 poly_tg_offset.txt
+-rw-r--r--  1 root root 15446 Sep  5 08:33 posiciones_reales.py
+-rw-r--r--  1 root root 15403 Aug 22 04:47 posiciones_reales.py.bak.20260905_083327
+-rw-r--r--  1 root root 15417 Sep  5 08:33 posiciones_reales.py.bak.20260905_083334
+-rw-r--r--  1 root root   649 Aug 18 19:43 proxy_pc.bat
+-rw-r--r--  1 root root  5362 Aug 18 18:39 proxy_pc.py
+-rw-r--r--  1 root root    41 Sep  5 18:45 salud_estado.json
+-rw-r--r--  1 root root    41 Sep  5 18:45 salud_estado_trump.json
+-rw-r--r--  1 root root    41 Sep  5 18:45 salud_estado_zelen.json
+-rw-r--r--  1 root root     8 Sep  5 07:23 trump_tg_offset.txt
+-rw-r--r--  1 root root     9 Sep  5 18:51 zelen_tg_offset.txt
+
+=== Paso 3: Detectar Python ===
+Python: /usr/bin/python3 (3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0])
+
+=== Paso 4: Instalar py-clob-client-v2 ===
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+=== Paso 5: Test de importacion ===
+OK
+
+=== Paso 6: Descargar bot ===
+Probando: https://raw.githubusercontent.com/lamegawi/bots-backup/0ea7b68/scripts_despliegue/poly_combos_bot.py
+Descarga 1 (raw): 27210 bytes
+Tamano final: 27210 bytes
+
+=== Paso 7: Verificar sintaxis ===
+OK sintaxis
+head:
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+=== Paso 8: Crear servicio systemd ===
+
+=== Paso 9: Estado del servicio ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 18:51:18 UTC; 6s ago
+   Main PID: 903325 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 12.3M (peak: 12.8M)
+        CPU: 107ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─903325 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 05 18:51:18 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+=== Paso 10: Log ===
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+[18:51:18] Token cargado
+[18:51:18] Wallet: 0xb0e1197098e6d427c01720f1631cad24ce740fa0
+[18:51:18] Modo: AUTO
+[18:51:18] Stake: $2.0
+[18:51:18] Bot iniciado, esperando mensajes...
+
+==========================================
+FIN - Sat Sep  5 06:51:24 PM UTC 2026
+==========================================
