@@ -32,7 +32,7 @@ python3 -m py_compile /root/backup_bolsa_completo.py
 python3 -u /root/backup_bolsa_completo.py
 ```
 
-El PAT debe estar únicamente en `/root/diag_token.txt`, con permisos `600`, o disponible mediante `GH_PAT`. No se debe pegar en la terminal ni en el chat.
+El PAT debe estar únicamente en `/root/diag_token.txt`, `/root/.gist_token` o disponible mediante `GH_PAT`, siempre con permisos `600`. No se debe pegar en la terminal ni en el chat.
 
 ## Resultado esperado
 

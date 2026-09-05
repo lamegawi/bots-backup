@@ -28,7 +28,7 @@ FILES = [
 
 
 def find_pat():
-    for filename in ("/root/diag_token.txt", "/tmp/diag_token.txt"):
+    for filename in ("/root/diag_token.txt", "/tmp/diag_token.txt", "/root/.gist_token"):
         path = Path(filename)
         if path.exists():
             value = path.read_text().strip()
