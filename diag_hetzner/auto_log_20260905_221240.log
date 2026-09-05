@@ -1,0 +1,89 @@
+=== AUTO PUBLICAR LOG - Sat Sep  5 10:12:40 PM UTC 2026 ===
+
+== systemctl ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 22:05:48 UTC; 6min ago
+   Main PID: 917400 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 15.6M (peak: 17.8M)
+        CPU: 415ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─917400 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Iteración 1 - Sat Sep  5 10:12:40 PM UTC 2026 ===
+--- log completo ---
+[21:28:02] [COMBO-DOBLE] Tennis cuota objetivo 3.76
+[21:28:08] [SIMPLE] UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe
+[21:28:08]   token_id=81602505631162230019... side=YES
+[21:28:08]   precio actual=1.000 (cuota 1.00)
+[21:28:08]   SKIP: cuota 1.0 fuera de rango [1.4-2.5]
+[21:28:10] [SIMPLE] UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe
+[21:28:10]   token_id=83801212170764771200... side=YES
+[21:28:10]   precio actual=0.001 (cuota 2000.00)
+[21:28:10]   SKIP: cuota 2000.0 fuera de rango [1.4-2.5]
+[21:28:12] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:28:12]   token_id=75429697229412977320... side=YES
+[21:28:13]   SKIP: no pude leer precio actual
+[21:33:15] [AUTO] pasada
+[21:33:16] [COMBO-DOBLE] Tennis cuota objetivo 2.13
+[21:33:21] [SIMPLE] UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe
+[21:33:21]   token_id=81602505631162230019... side=YES
+[21:33:21]   precio actual=1.000 (cuota 1.00)
+[21:33:21]   SKIP: cuota 1.0 fuera de rango [1.4-2.5]
+[21:33:23] [SIMPLE] UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe
+[21:33:23]   token_id=83801212170764771200... side=YES
+[21:33:23]   precio actual=0.001 (cuota 2000.00)
+[21:33:23]   SKIP: cuota 2000.0 fuera de rango [1.4-2.5]
+[21:33:25] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:33:25]   token_id=75429697229412977320... side=YES
+[21:33:26]   SKIP: no pude leer precio actual
+[21:36:15] v6 cargado · modo=AUTO · stake=$2.0
+[21:36:15] Proxy: http://100.83.57.99:8888
+[21:36:16] Test proxy: 200
+[21:36:16] Bot iniciado
+[21:45:04] v6 cargado · modo=AUTO · stake=$2.0
+[21:45:04] Proxy: http://100.83.57.99:8888
+[21:45:05] Test proxy: 200
+[21:45:05] Bot iniciado
+[21:50:05] [AUTO] pasada
+[21:50:06] [COMBO-DOBLE] Tennis cuota objetivo 3.5
+[21:50:12] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:50:12]   SKIP: no encontre mercado (asset=75429697229412977320)
+[21:50:14] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:50:15]   SKIP: no encontre mercado (asset=75429697229412977320)
+[21:50:17] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:50:18]   SKIP: no encontre mercado (asset=75429697229412977320)
+[21:54:45] v6 cargado · modo=AUTO · stake=$2.0
+[21:54:45] Proxy: http://100.83.57.99:8888
+[21:54:46] Test proxy: 200
+[21:54:46] Bot iniciado
+[22:05:48] v7 cargado · modo=AUTO · stake=$2.0
+[22:05:48] Proxy: http://100.83.57.99:8888
+[22:05:49] Test proxy: 200
+[22:05:49] v7 iniciado
+[22:10:49] [AUTO] pasada
+--- estado ---
+{
+  "modo": "AUTO",
+  "trades_copiados": [
+    {
+      "trader": "pleaseplease123",
+      "peso": 10,
+      "titulo": "Washington Nationals vs. Los Angeles Dodgers: O/U 8.5",
+      "side": "BUY",
+      "price": 0.54,
+      "size": 434.0,
+      "asset": "95952339111587815223537791500571044605986864428829629834185439441029088171356",
+      "timestamp": 1788559234,
+      "cuota": 1.85,
+      "stake_sugerido": 2.0,
+      "copiado_en": "2026-09-05T19:00:01.832312",
+      "status": "error",
+      "chat_id": 250818720,
+      "order_id": "tamaño 3.7 < 5 shares mínimo"
+    }
+  ],
+  "historial": []
+}
