@@ -1,0 +1,61 @@
+==========================================
+ACTUALIZACION - Sat Sep  5 09:22:58 PM UTC 2026
+==========================================
+== Detener bot ==
+
+== Borrar archivo antiguo ==
+
+== Descargar nueva version ==
+Branch: a2ae2a5f
+raw: 39688 bytes
+Tamano final: 39688 bytes
+
+== Verificar sintaxis ==
+OK
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+== Reiniciar servicio ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 21:23:00 UTC; 8s ago
+   Main PID: 914267 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 13.3M (peak: 13.5M)
+        CPU: 161ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─914267 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 05 21:23:00 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+== Log reciente ==
+[20:50:34] Test proxy: 200
+[20:50:34] Bot iniciado
+[20:55:34] [AUTO] pasada
+[20:55:34] [COMBO-DOBLE] Tennis cuota objetivo 1.93
+[20:55:35]   skip pierna: US Open WTA: Cristina Bucsa vs - no encontrado
+[20:55:40] [SIMPLE] UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe
+[20:55:42] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[20:55:44] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:05:15] v6 cargado · modo=AUTO · stake=$2.0
+[21:05:15] Proxy: http://100.83.57.99:8888
+[21:05:16] Test proxy: 200
+[21:05:16] Bot iniciado
+[21:15:16] [AUTO] pasada
+[21:15:16] [SIMPLE] US Open ATP: Michael Zheng vs Arthur Gea
+[21:15:19] [SIMPLE] US Open ATP: Michael Zheng vs Arthur Gea
+[21:15:21] [SIMPLE] US Open ATP: Michael Zheng vs Arthur Gea
+[21:20:24] [AUTO] pasada
+[21:20:25] [COMBO-DOBLE] Tennis cuota objetivo 3.76
+[21:20:30] [SIMPLE] UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe
+[21:20:32] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:20:35] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:23:01] v6 cargado · modo=AUTO · stake=$2.0
+[21:23:01] Proxy: http://100.83.57.99:8888
+[21:23:01] Test proxy: 200
+[21:23:01] Bot iniciado
+
+==========================================
+FIN - Sat Sep  5 09:23:08 PM UTC 2026
+==========================================
