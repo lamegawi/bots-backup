@@ -15,16 +15,53 @@ mkdir -p $INSTALL_DIR
 
 BRANCH="${BRANCH:-8a1348c}"
 echo "== Bajando bot (branch $BRANCH) =="
+# Estrategia 1: raw URL con rama
 curl -sL --max-time 60 "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/scripts_despliegue/${BOT_NAME}.py" -o $INSTALL_DIR/${BOT_NAME}.py
 chmod +x $INSTALL_DIR/${BOT_NAME}.py
 SIZE=$(stat -c %s $INSTALL_DIR/${BOT_NAME}.py 2>/dev/null || echo 0)
-echo "  tamano: $SIZE bytes"
+echo "  intento 1 (raw $BRANCH): $SIZE bytes"
+
 if [ "$SIZE" -lt 1000 ]; then
-  echo "  ERROR: archivo descargado demasiado pequeno. Probando main..."
-  curl -sL --max-time 60 "https://raw.githubusercontent.com/lamegawi/bots-backup/main/scripts_despliegue/${BOT_NAME}.py" -o $INSTALL_DIR/${BOT_NAME}.py
-  SIZE=$(stat -c %s $INSTALL_DIR/${BOT_NAME}.py)
-  echo "  reintento main: $SIZE bytes"
+  # Estrategia 2: API GitHub sin auth (sirve para repos publicos)
+  echo "  fallback: API GH sin auth..."
+  curl -sL --max-time 60 \
+    "https://api.github.com/repos/lamegawi/bots-backup/contents/scripts_despliegue/${BOT_NAME}.py?ref=${BRANCH}" \
+    -H "Accept: application/vnd.github.v3.raw" \
+    -o $INSTALL_DIR/${BOT_NAME}.py
+  SIZE=$(stat -c %s $INSTALL_DIR/${BOT_NAME}.py 2>/dev/null || echo 0)
+  echo "  intento 2 (API GH): $SIZE bytes"
 fi
+
+if [ "$SIZE" -lt 1000 ]; then
+  # Estrategia 3: API GH con base64 (parsear el content)
+  echo "  fallback: API GH + base64..."
+  JSON=$(curl -sL --max-time 60 \
+    "https://api.github.com/repos/lamegawi/bots-backup/contents/scripts_despliegue/${BOT_NAME}.py?ref=${BRANCH}")
+  echo "$JSON" | python3 -c "
+import sys, json, base64
+try:
+    d = json.load(sys.stdin)
+    if 'content' in d:
+        sys.stdout.buffer.write(base64.b64decode(d['content']))
+    else:
+        sys.exit(1)
+" > $INSTALL_DIR/${BOT_NAME}.py 2>/dev/null
+  SIZE=$(stat -c %s $INSTALL_DIR/${BOT_NAME}.py 2>/dev/null || echo 0)
+  echo "  intento 3 (base64): $SIZE bytes"
+fi
+
+if [ "$SIZE" -lt 1000 ]; then
+  # Estrategia 4: API GH desde diag-public
+  echo "  fallback: diag-public..."
+  curl -sL --max-time 60 \
+    "https://raw.githubusercontent.com/lamegawi/bots-backup/diag-public/diag_hetzner/${BOT_NAME}_latest.py" \
+    -o $INSTALL_DIR/${BOT_NAME}.py
+  SIZE=$(stat -c %s $INSTALL_DIR/${BOT_NAME}.py 2>/dev/null || echo 0)
+  echo "  intento 4 (diag-public): $SIZE bytes"
+fi
+
+chmod +x $INSTALL_DIR/${BOT_NAME}.py
+echo "  tamano final: $SIZE bytes"
 
 echo "== Instalando py-clob-client-v2 =="
 pip install --break-system-packages --quiet py-clob-client-v2 eth_account requests 2>&1 | tail -5
