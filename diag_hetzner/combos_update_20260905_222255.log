@@ -1,0 +1,61 @@
+==========================================
+ACTUALIZACION - Sat Sep  5 10:22:55 PM UTC 2026
+==========================================
+== Detener bot ==
+
+== Borrar archivo antiguo ==
+
+== Descargar nueva version ==
+Branch: 50af2170
+raw: 29927 bytes
+Tamano final: 29927 bytes
+
+== Verificar sintaxis ==
+OK
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+== Reiniciar servicio ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 22:22:57 UTC; 8s ago
+   Main PID: 918453 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 12.6M (peak: 13.0M)
+        CPU: 177ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─918453 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 05 22:22:57 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+== Log reciente ==
+[21:45:05] Bot iniciado
+[21:50:05] [AUTO] pasada
+[21:50:06] [COMBO-DOBLE] Tennis cuota objetivo 3.5
+[21:50:12] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:50:12]   SKIP: no encontre mercado (asset=75429697229412977320)
+[21:50:14] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:50:15]   SKIP: no encontre mercado (asset=75429697229412977320)
+[21:50:17] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:50:18]   SKIP: no encontre mercado (asset=75429697229412977320)
+[21:54:45] v6 cargado · modo=AUTO · stake=$2.0
+[21:54:45] Proxy: http://100.83.57.99:8888
+[21:54:46] Test proxy: 200
+[21:54:46] Bot iniciado
+[22:05:48] v7 cargado · modo=AUTO · stake=$2.0
+[22:05:48] Proxy: http://100.83.57.99:8888
+[22:05:49] Test proxy: 200
+[22:05:49] v7 iniciado
+[22:10:49] [AUTO] pasada
+[22:15:50] [AUTO] pasada
+[22:20:29] [AUTO] pasada
+[22:20:52] [AUTO] pasada
+[22:22:57] v7 cargado · modo=AUTO · stake=$2.0
+[22:22:57] Proxy: http://100.83.57.99:8888
+[22:22:58] Test proxy: 200
+[22:22:58] v7 iniciado
+
+==========================================
+FIN - Sat Sep  5 10:23:05 PM UTC 2026
+==========================================
