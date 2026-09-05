@@ -118,13 +118,27 @@ try:
         if os.path.exists(os.path.join(r, ".git")):
             repo_cwd = r
             break
-    r = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, timeout=5, cwd=repo_cwd)
-    if r.returncode == 0:
-        sha = r.stdout.strip()
-        # leer el log
-        r2 = subprocess.run(["git", "log", "-1", "--format=%H %s %ai"], capture_output=True, text=True, timeout=5, cwd=repo_cwd)
-        log_git = r2.stdout.strip()
-        # subirlo como texto
+    sha = None
+    log_git = ""
+    if repo_cwd:
+        r = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, timeout=5, cwd=repo_cwd)
+        if r.returncode == 0:
+            sha = r.stdout.strip()
+            r2 = subprocess.run(["git", "log", "-1", "--format=%H %s %ai"], capture_output=True, text=True, timeout=5, cwd=repo_cwd)
+            log_git = r2.stdout.strip()
+    if not sha and PAT:
+        # fallback: leer desde GitHub API
+        try:
+            req = urllib.request.Request(
+                f"https://api.github.com/repos/{REPO}/commits/{BRANCH}",
+                headers={"Authorization": f"token {PAT}", "User-Agent": "diag"})
+            with urllib.request.urlopen(req, timeout=15) as r2:
+                d = json.loads(r2.read())
+                sha = d.get("sha", "")
+                log_git = d.get("commit", {}).get("message", "") + " - " + d.get("commit", {}).get("author", {}).get("date", "")
+        except Exception as e:
+            log(f"  err leyendo desde API: {e}")
+    if sha:
         contenido = f"git rev: {sha}\ncommit: {log_git}\nfecha: {datetime.now().isoformat()}\n"
         ok = github_put(f"{backups_dir}/git_info_{ts}.txt", contenido.encode(), f"backup info {ts}")
         log(f"  ✓ git HEAD: {sha[:8]}")
