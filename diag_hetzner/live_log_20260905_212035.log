@@ -1,0 +1,99 @@
+=== LIVE LOG - Sat Sep  5 09:20:35 PM UTC 2026 ===
+
+== systemctl ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 21:05:14 UTC; 15min ago
+   Main PID: 913169 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 43.1M (peak: 43.6M)
+        CPU: 1.249s
+     CGroup: /system.slice/poly-combos-bot.service
+             └─913169 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+== LOG COMPLETO (ultimas 60 lineas) ==
+[20:16:48] [AUTO] revisando trades (CHAT_ID=250818720)
+[20:16:49] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[20:16:50] [REAL] ejecutando trade: Villarreal CF vs. RC Deportivo A Coruña: O/U 3.5
+[20:16:50] [REAL] ejecutando trade: Spread: Houston Astros (-1.5)
+[20:21:50] [AUTO] revisando trades (CHAT_ID=250818720)
+[20:21:51] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[20:21:51] [REAL] ejecutando trade: US Open ATP: Jakub Mensik vs Learner Tien
+[20:21:51] [REAL] ejecutando trade: Villarreal CF vs. RC Deportivo A Coruña: O/U 3.5
+[20:26:51] [AUTO] revisando trades (CHAT_ID=250818720)
+[20:26:52] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[20:26:52] [REAL] ejecutando trade: AS Roma vs. Atalanta BC: O/U 1.5
+[20:26:52]   BUY 5.13 shares @ 0.390 = $2.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[20:26:53]   ERROR enviando orden: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[20:26:53] [REAL] ejecutando trade: US Open ATP: Jakub Mensik vs Learner Tien
+[20:31:53] [AUTO] revisando trades (CHAT_ID=250818720)
+[20:31:54] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[20:31:54] [REAL] ejecutando trade: AS Roma vs. Atalanta BC: O/U 1.5
+[20:31:54] [REAL] ejecutando trade: US Open ATP: Jakub Mensik vs Learner Tien
+[20:34:13] Token cargado
+[20:34:13] Wallet: 0xb0e1197098e6d427c01720f1631cad24ce740fa0
+[20:34:13] Modo: AUTO
+[20:34:13] Stake: $2.0
+[20:34:13] Bot iniciado, esperando mensajes...
+[20:36:13] [AUTO] revisando trades (CHAT_ID=250818720)
+[20:36:13] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[20:36:14] loop error: The read operation timed out
+[20:36:14] [REAL] ejecutando trade: AS Roma vs. Atalanta BC: O/U 1.5
+[20:36:14] [REAL] ejecutando trade: US Open ATP: Jakub Mensik vs Learner Tien
+[20:39:56] Token cargado
+[20:39:56] Wallet: 0xb0e1197098e6d427c01720f1631cad24ce740fa0
+[20:39:56] Modo: AUTO
+[20:39:56] Stake: $2.0
+[20:39:56] Proxy PC: http://100.83.57.99:8888
+[20:39:56] Test proxy...
+[20:39:57]   Proxy OK (status 200)
+[20:39:57] Bot iniciado, esperando mensajes...
+[20:50:33] v6 cargado · modo=AUTO · stake=$2.0
+[20:50:33] Proxy: http://100.83.57.99:8888
+[20:50:34] Test proxy: 200
+[20:50:34] Bot iniciado
+[20:55:34] [AUTO] pasada
+[20:55:34] [COMBO-DOBLE] Tennis cuota objetivo 1.93
+[20:55:35]   skip pierna: US Open WTA: Cristina Bucsa vs - no encontrado
+[20:55:40] [SIMPLE] UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe
+[20:55:42] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[20:55:44] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:05:15] v6 cargado · modo=AUTO · stake=$2.0
+[21:05:15] Proxy: http://100.83.57.99:8888
+[21:05:16] Test proxy: 200
+[21:05:16] Bot iniciado
+[21:15:16] [AUTO] pasada
+[21:15:16] [SIMPLE] US Open ATP: Michael Zheng vs Arthur Gea
+[21:15:19] [SIMPLE] US Open ATP: Michael Zheng vs Arthur Gea
+[21:15:21] [SIMPLE] US Open ATP: Michael Zheng vs Arthur Gea
+[21:20:24] [AUTO] pasada
+[21:20:25] [COMBO-DOBLE] Tennis cuota objetivo 3.76
+[21:20:30] [SIMPLE] UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe
+[21:20:32] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:20:35] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+
+== ESTADO GUARDADO ==
+{
+  "modo": "AUTO",
+  "trades_copiados": [
+    {
+      "trader": "pleaseplease123",
+      "peso": 10,
+      "titulo": "Washington Nationals vs. Los Angeles Dodgers: O/U 8.5",
+      "side": "BUY",
+      "price": 0.54,
+      "size": 434.0,
+      "asset": "95952339111587815223537791500571044605986864428829629834185439441029088171356",
+      "timestamp": 1788559234,
+      "cuota": 1.85,
+      "stake_sugerido": 2.0,
+      "copiado_en": "2026-09-05T19:00:01.832312",
+      "status": "error",
+      "chat_id": 250818720,
+      "order_id": "tamaño 3.7 < 5 shares mínimo"
+    }
+  ],
+  "historial": []
+}
