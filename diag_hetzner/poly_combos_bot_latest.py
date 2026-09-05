@@ -333,7 +333,8 @@ def detectar_deporte(titulo):
 # DETECCIÓN DE TRADES
 # ============================================
 def detectar_trades():
-    """Detecta trades de top traders. Devuelve lista con todos los candidatos."""
+    """Detecta trades de top traders. Devuelve lista con todos los candidatos.
+    Solo incluye trades con timestamp RECIENTE (últimas HORAS_RECIENTE horas)."""
     ahora = datetime.now().timestamp()
     candidatos = []
     for nombre, wallet, peso in TOP_TRADERS:
@@ -355,6 +356,10 @@ def detectar_trades():
                     continue
                 price = float(t.get("price", 0))
                 if price <= 0: continue
+                # FILTRO CLAVE: solo incluir trades cuyo precio esté en rango
+                # de mercado activo (entre 0.05 y 0.95)
+                if not (0.05 <= price <= 0.95):
+                    continue
                 candidatos.append({
                     "trader": nombre, "peso": peso, "titulo": titulo,
                     "side": t.get("side", "?"), "price": price,
