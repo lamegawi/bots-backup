@@ -1,0 +1,60 @@
+==========================================
+ACTUALIZACION - Sat Sep  5 06:59:01 PM UTC 2026
+==========================================
+== Detener bot ==
+
+== Borrar archivo antiguo ==
+
+== Descargar nueva version ==
+raw: 32594 bytes
+Tamano final: 32594 bytes
+
+== Verificar sintaxis ==
+OK
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+== Reiniciar servicio ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 18:59:03 UTC; 8s ago
+   Main PID: 903966 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 12.6M (peak: 13.0M)
+        CPU: 94ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─903966 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 05 18:59:03 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+== Log reciente ==
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+/usr/bin/python3: can't open file '/opt/polymarket/poly_combos_bot.py': [Errno 2] No such file or directory
+[18:51:18] Token cargado
+[18:51:18] Wallet: 0xb0e1197098e6d427c01720f1631cad24ce740fa0
+[18:51:18] Modo: AUTO
+[18:51:18] Stake: $2.0
+[18:51:18] Bot iniciado, esperando mensajes...
+[18:52:18] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[18:52:18] [REAL] ejecutando trade: Fenerbahçe SK vs. Beşiktaş JK: O/U 3.5
+[18:52:19] [REAL] ejecutando trade: AS Roma vs. Atalanta BC: O/U 2.5
+[18:57:20] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[18:57:20] [REAL] ejecutando trade: Fenerbahçe SK vs. Beşiktaş JK: O/U 3.5
+[18:57:20] [REAL] ejecutando trade: AS Roma vs. Atalanta BC: O/U 2.5
+[18:59:03] Token cargado
+[18:59:03] Wallet: 0xb0e1197098e6d427c01720f1631cad24ce740fa0
+[18:59:03] Modo: AUTO
+[18:59:03] Stake: $2.0
+[18:59:03] Bot iniciado, esperando mensajes...
+
+==========================================
+FIN - Sat Sep  5 06:59:11 PM UTC 2026
+==========================================
