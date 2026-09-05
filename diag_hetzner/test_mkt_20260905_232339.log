@@ -1,0 +1,40 @@
+=== TEST MARKET CLOB - Sat Sep  5 11:23:39 PM UTC 2026 ===
+
+=== COMBO 1: Will the U.S. invade Iran before 2027? ===
+  condition_id: 0x5db999fad322cea2914535aae5517060c3f80ad6d8c0231cde2124a434d16846
+  outcome_prices: ['0.145', '0.855']
+  position_ids[0] (75 digitos, NO tradable): 7985599515345184796452242615113847732348...
+  /markets/0x5db999fa... status 200
+  question: Will the U.S. invade Iran before 2027?
+  tokens: [{'token_id': '55115078421062885512539156303747803058407616201213034911037320915726138659123', 'outcome': 'Yes', 'price': 0.145, 'winner': False}]
+  YES token_id: 5511507842106288551253915630374780305840...
+  midpoint: {'mid': '0.145'}
+  accepting_orders: True
+  closed: False
+  active: True
+
+=== COMBO 2: Will China invade Taiwan by end of 2026? ===
+  condition_id: 0xd9fb1184af0064e5e34b129f5b79afa5a17b7e32f2953ab05efed82315fee6d4
+  outcome_prices: ['0.0375', '0.9625']
+  position_ids[0] (75 digitos, NO tradable): 7376275431319289770735974061976299222416...
+  /markets/0xd9fb1184... status 200
+  question: Will China invade Taiwan by end of 2026?
+  tokens: [{'token_id': '94559586571241563470235664821564670251180951772614764383113614156422396181162', 'outcome': 'Yes', 'price': 0.0375, 'winner': False}]
+  YES token_id: 9455958657124156347023566482156467025118...
+  midpoint: {'mid': '0.0375'}
+  accepting_orders: True
+  closed: False
+  active: True
+
+=== COMBO 3: Will Richard Grenell be the leader of Venezuela en ===
+  condition_id: 0x831493dce463d9adcad78c492f2cbec6ecdac31f4e8c5a894fdac68c130549d4
+  outcome_prices: ['0.0005', '0.9995']
+  position_ids[0] (75 digitos, NO tradable): 1144926578546976989723827182788077007959...
+  /markets/0x831493dc... status 200
+  question: Will Richard Grenell be the leader of Venezuela end of 2026?
+  tokens: [{'token_id': '63041927234014862550752749844577619438319946530923167906649363118591050055991', 'outcome': 'Yes', 'price': 0.0005, 'winner': False}]
+  YES token_id: 6304192723401486255075274984457761943831...
+  midpoint: {'mid': '0.0005'}
+  accepting_orders: True
+  closed: False
+  active: True
