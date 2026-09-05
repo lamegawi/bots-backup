@@ -1,0 +1,10 @@
+BACKUP COMPLETO BOT DE BOLSA
+Fecha: 2026-09-05T08:21:17.035067
+Servidor: bot-vm4
+Servicio bolsa-bot: active
+Rama: arena/01a0587c-bots-backup
+SHA rama: 1a71e9b9fa220d4e8bbdf0b7226cffba33ccc2d4
+Copia local: /root/backup_bolsa_local/2026-09-05_20260905_082117
+Archivos subidos: 4
+Archivos ausentes: ninguno
+No se incluyen tokens ni credenciales.
