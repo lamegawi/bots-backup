@@ -154,6 +154,8 @@ MERCADOS = {
 def datos_mercado(ticker):
     yahoo = (ticker.get("yahoo") or "").upper()
     simbolo = (ticker.get("simbolo") or "").upper()
+    if ticker.get("tipo") == "cripto" or yahoo.endswith("-USD") or yahoo.endswith("-EUR"):
+        return "Cripto 24/7", True
     if yahoo.endswith(".MC") or simbolo.endswith(".MC"):
         nombre = "Madrid"
     elif yahoo.endswith(".L") or simbolo.endswith(".L"):
@@ -195,6 +197,15 @@ def get_quote(yahoo):
         "nombre": meta.get("shortName") or meta.get("longName") or yahoo,
         "yahoo": yahoo,
     }
+
+
+def buscar_quote_crypto(simbolo):
+    base = (simbolo or "").strip().upper()
+    yahoo = base if "-" in base else base + "-USD"
+    q = get_quote(yahoo)
+    if q:
+        q["yahoo"] = yahoo
+    return q
 
 
 def buscar_quote(simbolo):
@@ -595,8 +606,10 @@ def empezar_anadir():
     ESPERA["paso"] = "add_tipo"
     ESPERA["datos"] = {}
     enviar("➕ *Añadir acción*\n\n¿Cómo la quieres añadir?",
-           kb_inline([[{"text": "💵 Comprada", "callback_data": "add_tipo:compra"},
-                       {"text": "👀 Para seguimiento", "callback_data": "add_tipo:seg"}],
+           kb_inline([[{"text": "💵 Acción comprada", "callback_data": "add_tipo:compra"},
+                       {"text": "₿ Cripto comprada", "callback_data": "add_tipo:crypto_compra"}],
+                      [{"text": "👀 Acción seguimiento", "callback_data": "add_tipo:seg"},
+                       {"text": "₿ Cripto seguimiento", "callback_data": "add_tipo:crypto_seg"}],
                       [{"text": "❌ Cancelar", "callback_data": "add_tipo:cancelar"}]]))
 
 
@@ -607,7 +620,9 @@ def add_tipo(tipo):
         return
     ESPERA["datos"]["tipo"] = tipo
     ESPERA["paso"] = "add_sym"
-    if tipo == "compra":
+    if tipo.startswith("crypto"):
+        enviar("✍️ Escríbeme el símbolo de la criptomoneda (ej. `BTC`, `ETH`, `SOL`).")
+    elif tipo == "compra":
         enviar("✍️ Escríbeme el *ticker* de la acción (tal como aparece, "
                "p.ej. `NVDA`, `BBVA.MC`, `SAP.DE`).")
     else:
@@ -620,23 +635,32 @@ def add_sym(simbolo):
     if not simbolo:
         enviar("El ticker no puede estar vacío. Inténtalo otra vez.")
         return
-    q = buscar_quote(simbolo)
+    es_crypto = ESPERA["datos"].get("tipo", "").startswith("crypto")
+    try:
+        q = buscar_quote_crypto(simbolo) if es_crypto else buscar_quote(simbolo)
+    except Exception:
+        q = None
     if not q:
         enviar(f"⚠️ No encuentro cotización para *{simbolo}*.\n"
                "Revisa el ticker (p.ej. `BBVA.MC`, `NVDA`) o cancela con ❌.",
                kb_inline([[{"text": "❌ Cancelar", "callback_data": "add_tipo:cancelar"}]]))
         return
+    if es_crypto:
+        simbolo = simbolo.split("-")[0]
     ESPERA["datos"]["yahoo"] = q["yahoo"]
     ESPERA["datos"]["nombre"] = q["nombre"]
+    ESPERA["datos"]["tipo_activo"] = "cripto" if es_crypto else "accion"
     ESPERA["datos"]["moneda"] = q["moneda"]
     ESPERA["datos"]["simbolo"] = simbolo
-    if ESPERA["datos"]["tipo"] == "seg":
+    if ESPERA["datos"]["tipo"] in ("seg", "crypto_seg"):
         cfg = cargar_config()
         if any(t["simbolo"] == simbolo for t in cfg["tickers"]):
             enviar(f"ℹ️ *{simbolo}* ya estaba en la watchlist.")
         else:
-            cfg["tickers"].append({"simbolo": simbolo, "nombre": q["nombre"],
-                                   "yahoo": q["yahoo"]})
+            nuevo = {"simbolo": simbolo, "nombre": q["nombre"], "yahoo": q["yahoo"]}
+            if es_crypto:
+                nuevo["tipo"] = "cripto"
+            cfg["tickers"].append(nuevo)
             guardar_config(cfg)
             enviar(f"✅ *{simbolo}* ({q['nombre']}) añadido a seguimiento.")
         ESPERA["paso"] = None
@@ -693,13 +717,16 @@ def add_precio(txt):
     posiciones.append({"simbolo": d["simbolo"], "nombre": d["nombre"],
                        "yahoo": d["yahoo"], "moneda": d["moneda"],
                        "precio_compra": precio,
-                       "cantidad": cantidad})
+                       "cantidad": cantidad,
+                       "tipo": d.get("tipo_activo", "accion")})
     guardar_cartera(posiciones)
     # también a la watchlist si no está
     cfg = cargar_config()
     if not any(t["simbolo"] == d["simbolo"] for t in cfg["tickers"]):
-        cfg["tickers"].append({"simbolo": d["simbolo"], "nombre": d["nombre"],
-                               "yahoo": d["yahoo"]})
+        nuevo = {"simbolo": d["simbolo"], "nombre": d["nombre"], "yahoo": d["yahoo"]}
+        if d.get("tipo_activo") == "cripto":
+            nuevo["tipo"] = "cripto"
+        cfg["tickers"].append(nuevo)
         guardar_config(cfg)
     enviar(f"✅ *{d['simbolo']}* guardada:\n"
            f"{cantidad:g} × {precio:,.2f} {d['moneda']}.")
