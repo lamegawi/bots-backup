@@ -1,0 +1,97 @@
+=== TEST COMBOS FULL - Sat Sep  5 11:00:46 PM UTC 2026 ===
+
+  pagina 1: +50 (deportes=0, politica=50, otros=0)
+  pagina 2: +50 (deportes=0, politica=100, otros=0)
+  pagina 3: +50 (deportes=13, politica=137, otros=0)
+  pagina 4: +50 (deportes=63, politica=137, otros=0)
+  pagina 5: +50 (deportes=113, politica=137, otros=0)
+  pagina 6: +50 (deportes=163, politica=137, otros=0)
+  pagina 7: +50 (deportes=213, politica=137, otros=0)
+  pagina 8: +50 (deportes=263, politica=137, otros=0)
+  pagina 9: +50 (deportes=313, politica=137, otros=0)
+  pagina 10: +50 (deportes=363, politica=137, otros=0)
+
+=== RESUMEN ===
+Total: 500
+Deportes: 363
+Politica: 137
+Otros: 0
+
+=== PRIMEROS 15 DEPORTES ===
+  US Open ATP: Michael Zheng vs Arthur Gea
+    tags: sports, tennis, games
+    precio yes: 0.365 (cuota 2.74)
+    vol: $997165
+
+  Russia x Ukraine Peace Combo
+    tags: sports, russia, ukraine, zelenskyy
+    precio yes: 0.095 (cuota 10.53)
+    vol: $616219
+
+  US Open ATP: Zizou Bergs vs Botic van de Zandschulp
+    tags: sports, tennis, games
+    precio yes: 0.390 (cuota 2.56)
+    vol: $578649
+
+  Valorant: NRG vs LOUD (BO5) - VCT Americas Stage 2 Playoffs
+    tags: sports, esports, games, valorant
+    precio yes: 0.420 (cuota 2.38)
+    vol: $520334
+
+  Will Red Bull Bragantino win on 2026-09-05?
+    tags: sports, soccer, games, brazil-serie-a
+    precio yes: 0.001 (cuota 2000.00)
+    vol: $500352
+
+  San Francisco Giants vs. New York Mets
+    tags: sports, baseball, mlb, games
+    precio yes: 1.000 (cuota 1.00)
+    vol: $460516
+
+  Tulane vs. Duke
+    tags: sports, cfb, games
+    precio yes: 0.065 (cuota 15.38)
+    vol: $416721
+
+  Will Columbus Crew win on 2026-09-05?
+    tags: sports, mls, soccer, games
+    precio yes: 0.475 (cuota 2.11)
+    vol: $363586
+
+  Boise State vs. Oregon
+    tags: sports, cfb, games
+    precio yes: 0.087 (cuota 11.49)
+    vol: $359312
+
+  Chicago Cubs vs. Miami Marlins
+    tags: sports, baseball, mlb, games
+    precio yes: 0.695 (cuota 1.44)
+    vol: $331935
+
+  Will FC Barcelona win on 2026-09-06?
+    tags: sports, la-liga, soccer, games
+    precio yes: 0.755 (cuota 1.32)
+    vol: $274191
+
+  Detroit Tigers vs. Cleveland Guardians
+    tags: sports, baseball, mlb, games
+    precio yes: 0.620 (cuota 1.61)
+    vol: $248939
+
+  Tampa Bay Rays vs. New York Yankees
+    tags: sports, baseball, mlb, games
+    precio yes: 0.425 (cuota 2.35)
+    vol: $248902
+
+  Will Manchester United FC win on 2026-09-06?
+    tags: sports, premier-league, EPL, soccer
+    precio yes: 0.455 (cuota 2.20)
+    vol: $242604
+
+  Baylor vs. Auburn
+    tags: sports, cfb, games
+    precio yes: 0.205 (cuota 4.88)
+    vol: $241798
+
+
+=== OTROS (no deportes ni politica) - primeros 10 ===
