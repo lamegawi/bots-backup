@@ -1,0 +1,89 @@
+=== V10 LOG - Sat Sep  5 11:33:28 PM UTC 2026 ===
+
+== Status ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 23:25:50 UTC; 7min ago
+   Main PID: 923847 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 42.3M (peak: 42.8M)
+        CPU: 907ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─923847 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+== Ultimas 50 lineas del log ==
+[23:22:43]   pagina 3: +50 mercados, 9 combos de deportes
+[23:22:44]   pagina 4: +50 mercados, 49 combos de deportes
+[23:22:44]   pagina 5: +50 mercados, 80 combos de deportes
+[23:22:44] [TRADE] US Open ATP: Michael Zheng vs Arthur Gea
+[23:22:45]   SKIP: precio no disponible
+[23:22:46] [TRADE] US Open ATP: Zizou Bergs vs Botic van de Zandschulp
+[23:22:47]   SKIP: precio no disponible
+[23:22:48] [TRADE] US Open ATP: Zizou Bergs vs Botic van de Zandschulp
+[23:22:48]   SKIP: precio no disponible
+[23:22:50] [TRADE] Will Columbus Crew win on 2026-09-05?
+[23:22:50]   SKIP: precio no disponible
+[23:22:51] [TRADE] Will Columbus Crew win on 2026-09-05?
+[23:22:52]   SKIP: precio no disponible
+[23:24:23] [AUTO] pasada
+[23:24:23]   pagina 1: +50 mercados, 0 combos de deportes
+[23:24:24]   pagina 2: +50 mercados, 1 combos de deportes
+[23:24:24]   pagina 3: +50 mercados, 9 combos de deportes
+[23:24:25]   pagina 4: +50 mercados, 49 combos de deportes
+[23:24:25]   pagina 5: +50 mercados, 80 combos de deportes
+[23:24:25] [TRADE] US Open ATP: Michael Zheng vs Arthur Gea
+[23:24:26]   SKIP: precio no disponible
+[23:24:29] [TRADE] US Open ATP: Zizou Bergs vs Botic van de Zandschulp
+[23:24:29]   SKIP: precio no disponible
+[23:24:32] [TRADE] Will Columbus Crew win on 2026-09-05?
+[23:24:33]   SKIP: precio no disponible
+[23:25:50] v10 cargado · modo=AUTO · stake=$2.0
+[23:25:50] Proxy: http://100.83.57.99:8888
+[23:25:50] Test proxy: 200
+[23:25:50] v10 iniciado
+[23:26:37] update err: name 'condition_id' is not defined
+[23:30:50] [AUTO] pasada
+[23:30:51]   pagina 1: +50 mercados, 0 combos de deportes
+[23:30:51]   pagina 2: +50 mercados, 1 combos de deportes
+[23:30:51]   pagina 3: +50 mercados, 9 combos de deportes
+[23:30:52]   pagina 4: +50 mercados, 47 combos de deportes
+[23:30:52]   pagina 5: +50 mercados, 78 combos de deportes
+[23:31:15] update err: name 'condition_id' is not defined
+[23:31:22] [TRADE] US Open ATP: Michael Zheng vs Arthur Gea
+[23:31:23]   token real resuelto: 234333119502820491...
+[23:31:23]   precio=0.805 cuota=1.24 stake=$2.0
+[23:31:23]   ERROR: size_2.48_muy_pequeno
+[23:31:26] [TRADE] Spread: Philadelphia Union (-1.5)
+[23:31:27]   token real resuelto: 958718972036241424...
+[23:31:27]   precio=0.445 cuota=2.25 stake=$2.0
+[23:31:27]   ERROR: size_4.49_muy_pequeno
+[23:31:30] [TRADE] Will Columbus Crew win on 2026-09-05?
+[23:31:30]   token real resuelto: 574452736916002160...
+[23:31:31]   precio=0.485 cuota=2.06 stake=$2.0
+[23:31:31]   ERROR: size_4.12_muy_pequeno
+[23:32:27] update err: name 'condition_id' is not defined
+
+== estado ==
+{
+  "modo": "AUTO",
+  "trades_copiados": [
+    {
+      "trader": "pleaseplease123",
+      "peso": 10,
+      "titulo": "Washington Nationals vs. Los Angeles Dodgers: O/U 8.5",
+      "side": "BUY",
+      "price": 0.54,
+      "size": 434.0,
+      "asset": "95952339111587815223537791500571044605986864428829629834185439441029088171356",
+      "timestamp": 1788559234,
+      "cuota": 1.85,
+      "stake_sugerido": 2.0,
+      "copiado_en": "2026-09-05T19:00:01.832312",
+      "status": "error",
+      "chat_id": 250818720,
+      "order_id": "tamaño 3.7 < 5 shares mínimo"
+    }
+  ],
+  "historial": []
+}
