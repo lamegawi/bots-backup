@@ -57,6 +57,11 @@ TELEGRAM_TOKEN = None
 WALLET = "0xb0e1197098e6d427c01720f1631cad24ce740fa0"
 HOST_CLOB = "https://clob.polymarket.com"
 
+# Proxy en el PC del usuario (Tailscale 100.83.57.99:8888)
+# Las operaciones SE EJECUTAN a traves de este proxy para que salgan con
+# la IP de tu PC (no la IP de Hetzner, que Polymarket rechaza).
+PROXY_URL = "http://100.83.57.99:8888"
+
 ESTADO_FILE = "/opt/polymarket/combos_estado.json"
 BACKUP_FILE = "/opt/polymarket/combos_estado.bak.json"
 ENV_FILE = "/etc/polymarket.env"
@@ -127,6 +132,50 @@ def telegram_api(method, params=None, files=None):
         log(f"telegram_api error: {e}")
         return None
 
+# ============================================
+# PROXY (Tailscale → PC del usuario)
+# ============================================
+# Todas las llamadas HTTP del bot pasan por aqui para que las requests
+# salgan con la IP del PC del usuario, no de Hetzner.
+import ssl
+_proxy_ctx = None
+def _proxy_opener():
+    """Devuelve un opener configurado con el proxy del PC."""
+    global _proxy_ctx
+    if _proxy_ctx is None:
+        _proxy_ctx = ssl.create_default_context()
+        # ser permisivos con certificados auto-firmados del proxy
+        _proxy_ctx.check_hostname = False
+        _proxy_ctx.verify_mode = ssl.CERT_NONE
+    proxy_handler = urllib.request.ProxyHandler({
+        "http": PROXY_URL,
+        "https": PROXY_URL,
+    })
+    https_handler = urllib.request.HTTPSHandler(context=_proxy_ctx)
+    return urllib.request.build_opener(proxy_handler, https_handler)
+
+def http_get(url, timeout=20):
+    """GET via proxy. Devuelve (status, body_str) o (None, error_str)."""
+    try:
+        opener = _proxy_opener()
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with opener.open(req, timeout=timeout) as r:
+            return r.status, r.read().decode("utf-8", errors="replace")
+    except Exception as e:
+        return None, str(e)
+
+def http_post_json(url, payload, timeout=20):
+    """POST JSON via proxy. Devuelve (status, body_str)."""
+    try:
+        opener = _proxy_opener()
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(url, data=data, method="POST",
+            headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"})
+        with opener.open(req, timeout=timeout) as r:
+            return r.status, r.read().decode("utf-8", errors="replace")
+    except Exception as e:
+        return None, str(e)
+
 # Teclado fijo SIEMPRE visible (debajo del cuadro de texto)
 TECLADO_FIJO = {
     "keyboard": [
@@ -191,7 +240,10 @@ def cargar_env():
     return env
 
 def get_clob_client():
-    """Crea el cliente CLOB usando las credenciales del env."""
+    """Crea el cliente CLOB usando las credenciales del env.
+    IMPORTANTE: el cliente se configura para usar el proxy del PC
+    (Tailscale 100.83.57.99:8888) en TODAS las llamadas HTTP.
+    """
     try:
         from py_clob_client_v2.client import ClobClient
         from py_clob_client_v2.clob_types import ApiCreds
@@ -204,6 +256,11 @@ def get_clob_client():
     if not signer:
         log("ERROR: falta POLY_PRIVATE_KEY en /etc/polymarket.env")
         return None
+    # Forzar proxy a nivel de entorno para que TODOS los requests (incluido
+    # el SDK) vayan por el PC del usuario
+    os.environ["HTTP_PROXY"] = PROXY_URL
+    os.environ["HTTPS_PROXY"] = PROXY_URL
+    os.environ["ALL_PROXY"] = PROXY_URL
     kwargs = {}
     if env.get("POLY_API_KEY") and env.get("POLY_API_SECRET") and env.get("POLY_API_PASSPHRASE"):
         kwargs["creds"] = ApiCreds(env["POLY_API_KEY"], env["POLY_API_SECRET"],
@@ -214,12 +271,22 @@ def get_clob_client():
     kwargs["signature_type"] = int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA)
     try:
         client = ClobClient(HOST_CLOB, chain_id=137, key=signer, **kwargs)
+        # Forzar proxy tambien en el cliente httpx interno del SDK
+        try:
+            import httpx
+            # reemplazar el transport con uno que use proxy
+            client.client = httpx.Client(
+                proxies={"http://": PROXY_URL, "https://": PROXY_URL},
+                verify=False, timeout=30)
+        except Exception as e:
+            log(f"aviso: no se pudo parchar httpx client: {e}")
         if "creds" not in kwargs:
             try:
                 creds = client.derive_api_key()
                 client.set_api_creds(creds)
             except Exception as e:
                 log(f"aviso derive_api_key: {e}")
+        log(f"  cliente CLOB creado (proxy={PROXY_URL})")
         return client
     except Exception as e:
         log(f"ERROR creando cliente CLOB: {e}")
@@ -789,6 +856,15 @@ def main():
     log(f"Wallet: {WALLET}")
     log(f"Modo: {MODO_OPERACION}")
     log(f"Stake: ${STAKE_POR_TRADE}")
+    log(f"Proxy PC: {PROXY_URL}")
+    # test rapido del proxy
+    log("Test proxy...")
+    status, body = http_get("https://api.telegram.org", timeout=10)
+    if status:
+        log(f"  Proxy OK (status {status})")
+    else:
+        log(f"  PROXY NO RESPONDE: {body[:200]}")
+        log(f"  AVISO: las operaciones se enviarán DIRECTO desde Hetzner")
     # arrancar auto loop en thread
     t = threading.Thread(target=auto_loop, daemon=True)
     t.start()
