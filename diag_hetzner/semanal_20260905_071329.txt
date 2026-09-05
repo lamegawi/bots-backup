@@ -1,0 +1,57 @@
+Seguimiento semanal - 20260905_071329
+
+======================================================================
+SEGUIMIENTO SEMANAL · 2026-09-05T07:13:25.949627
+======================================================================
+
+[1] Saldo real (on-chain + posiciones)
+  wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+  cash on-chain:  $276.34
+  posiciones:     $19.28  (77 mercados)
+  TOTAL REAL:     $295.62
+  PnL desde $500: $-204.38 (-40.9%)
+
+[2] Analisis por bot
+
+--- Elon 48h (poly-elon) ---
+  servicio: active
+  saldo: $303.55
+  ops totales: 7
+  activa: NO
+  cerradas: 7, G: 1, P: 6
+  win rate: 14.3%
+  PnL cerrado: $-22.16
+  filtros descartados (semana): p_lado<10%=0, cuota>25=0
+  TOTAL descartes: 0
+
+--- Zelenskyy sem (poly-zelenskyy) ---
+  servicio: active
+  saldo: $303.55
+  ops totales: 4
+  activa: SÍ
+  cerradas: 4, G: 1, P: 3
+  win rate: 25.0%
+  PnL cerrado: $-7.84
+  filtros descartados (semana): p_lado<10%=0, cuota>25=0
+  TOTAL descartes: 0
+
+--- Trump mens (poly-trump) ---
+  servicio: active
+  sin JSON (/opt/polymarket/bot-polymarket-trump/real.json)
+
+======================================================================
+RESUMEN SEMANAL
+======================================================================
+Bot                   WinRate        PnL    Filtros      Saldo
+------------------------------------------------------------
+Elon 48h                14.3% $  -22.16          0 $  303.55
+Zelenskyy sem           25.0% $   -7.84          0 $  303.55
+
+PROYECCION (asumiendo mismas condiciones):
+  Elon 48h: $-94.97/mes ($-3.17/dia)
+  Zelenskyy sem: $-33.60/mes ($-1.12/dia)
+
+RECOMENDACIONES:
+  ⚠️  Elon: win rate 14.3% — considera reducir stake
+
+======================================================================
