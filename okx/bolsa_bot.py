@@ -201,10 +201,25 @@ def get_quote(yahoo):
 
 def buscar_quote_crypto(simbolo):
     base = (simbolo or "").strip().upper()
-    yahoo = base if "-" in base else base + "-USD"
+    yahoo = base if "-" in base else base + "-EUR"
     q = get_quote(yahoo)
     if q:
         q["yahoo"] = yahoo
+    return q
+
+
+def yahoo_activo(item):
+    yahoo = item.get("yahoo", "")
+    if item.get("tipo") == "cripto" or yahoo.upper().endswith("-USD") or yahoo.upper().endswith("-EUR"):
+        base = yahoo.rsplit("-", 1)[0]
+        return base + "-EUR"
+    return yahoo
+
+
+def get_quote_activo(item):
+    q = get_quote(yahoo_activo(item))
+    if q and item.get("tipo") == "cripto":
+        q["moneda"] = "EUR"
     return q
 
 
@@ -224,7 +239,7 @@ def fetch_watchlist(cfg):
     out = []
     for t in cfg["tickers"]:
         try:
-            q = get_quote(t["yahoo"])
+            q = get_quote_activo(t)
             out.append({"ticker": t, "ok": True, "q": q})
         except Exception as e:
             out.append({"ticker": t, "ok": False, "error": str(e)})
@@ -310,7 +325,7 @@ def texto_saldo():
         invertido = cantidad * pc
         total_invertido += invertido
         try:
-            q = get_quote(p["yahoo"])
+            q = get_quote_activo(p)
         except Exception:
             q = None
         nombre = _nombre_ticker(p) if "_nombre_ticker" in globals() else (p.get("nombre", "") or "")
@@ -504,7 +519,7 @@ def historial_diario(yahoo, rango="1y"):
 def analisis_ia(ticker, quote):
     """Análisis técnico orientativo para ayudar a decidir; no ejecuta órdenes."""
     try:
-        velas = historial_diario(ticker["yahoo"])
+        velas = historial_diario(yahoo_activo(ticker))
         closes = [x[0] for x in velas]
         precio = float(quote["precio"])
         sma20 = sum(closes[-20:]) / 20 if len(closes) >= 20 else None
@@ -552,7 +567,7 @@ def cmd_analisis(simbolo):
         enviar(f"No encuentro *{simbolo}* en seguimiento.", teclado())
         return
     try:
-        quote = get_quote(ticker["yahoo"])
+        quote = get_quote_activo(ticker)
     except Exception:
         quote = None
     if not quote:
@@ -1041,7 +1056,7 @@ def check_alertas():
         t = mapa.get(a.get("simbolo"))
         if not t: continue
         try:
-            q = get_quote(t["yahoo"]); actual = float(q["precio"]) if q else None
+            q = get_quote_activo(t); actual = float(q["precio"]) if q else None
             limite = float(a["precio"]); tipo = a.get("tipo")
             if tipo == "above": cumple = actual is not None and actual >= limite
             elif tipo == "below": cumple = actual is not None and actual <= limite
