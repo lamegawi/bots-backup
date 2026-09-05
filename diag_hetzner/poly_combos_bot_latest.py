@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v7 — Mercados activos en tiempo real
+POLY COMBOS BOT v9 — Combos (parlays) en tiempo real
 ====================================================
-Estrategia nueva (vs v6):
-  1. Lee mercados ACTIVOS de Polymarket (gamma-api: active=true, closed=false)
-  2. Filtra por deportes con eventos que aún no han empezado o están en juego
-  3. Aplica la lógica de top traders: cuota 1.20-2.50, stake bajo
-  4. Ejecuta automáticamente
+Estrategia nueva (vs v7):
+  1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
+  2. Cada combo = 2-10 legs, paga si TODOS aciertan
+  3. Cuota objetivo 1.20-2.50 (multiplicacion de legs)
+  4. Ejecuta automaticamente via CLOB
 
 ARCHIVOS:
   · /root/poly_combos_token.txt       - Token Telegram
@@ -267,70 +267,93 @@ def detectar_deporte_por_titulo(titulo):
             return deporte
     return None
 
-def listar_mercados_deportes():
-    """Lee mercados ACTIVOS de Polymarket y filtra por deportes.
-    Estrategia: cargar varios paginas y filtrar por titulo."""
-    mercados = []
-    # cargar hasta 5 paginas = 250 mercados
-    for offset in range(0, 250, 50):
-        url = f"https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=50&offset={offset}"
+def listar_combos():
+    """Lee COMBOS ACTIVOS de Polymarket (endpoint publico RFQ).
+    Cada combo = 2-10 legs, paga si todos aciertan.
+    Cuota = multiplicacion de las probs de cada leg."""
+    combos = []
+    cursor = ""
+    paginas = 0
+    while paginas < 5:  # hasta 5 paginas
+        url = "https://clob.polymarket.com/v1/rfq/combo-markets?limit=50"
+        if cursor:
+            url += f"&cursor={urllib.parse.quote(cursor)}"
         status, body = http_get(url, timeout=15)
         if status != 200:
-            log(f"  gamma-api status {status}")
+            log(f"  combo-markets status {status}")
             break
         try:
-            batch = json.loads(body)
+            data = json.loads(body)
         except:
             break
+        batch = data.get("markets", [])
         if not batch:
             break
         for m in batch:
-            titulo = m.get("question") or m.get("title") or ""
-            titulo_lower = titulo.lower()
-            # excluir si contiene palabras no-deseadas
-            if any(ex in titulo_lower for ex in EXCLUIR_KEYWORDS):
+            titulo = m.get("title") or m.get("question") or ""
+            tags = m.get("tags") or []
+            slug = m.get("slug", "")
+            # tags son listas: ["sports", "soccer", "games"]
+            # Filtrar solo deportes
+            tags_str = " ".join(tags).lower() if isinstance(tags, list) else str(tags).lower()
+            es_deporte = any(t in tags_str for t in ["sport", "soccer", "football", "basketball",
+                                                      "baseball", "tennis", "mma", "ufc",
+                                                      "cricket", "esports", "nfl", "nba", "mlb",
+                                                      "ncaaf", "ncaab", "wnba", "nhl", "fight"])
+            if not es_deporte:
                 continue
-            # detectar deporte
-            deporte = detectar_deporte_por_titulo(titulo)
-            if not deporte:
-                continue
-            # precio
+            # outcome_prices = [precio_yes, precio_no]
             try:
-                prices = json.loads(m.get("outcomePrices") or "[]")
+                prices = m.get("outcome_prices", [])
+                if isinstance(prices, str):
+                    prices = json.loads(prices)
             except:
                 prices = []
-            if len(prices) < 1:
+            if not prices:
                 continue
             try:
                 yes_price = float(prices[0])
             except:
                 continue
-            if not (0.05 <= yes_price <= 0.95):
+            if not (0.02 <= yes_price <= 0.95):
                 continue
-            # token IDs
+            # position_ids = [token_yes, token_no]
             try:
-                tokens = json.loads(m.get("clobTokenIds") or "[]")
+                tokens = m.get("position_ids", [])
+                if isinstance(tokens, str):
+                    tokens = json.loads(tokens)
             except:
                 tokens = []
-            if not tokens:
+            if not tokens or len(tokens) < 1:
                 continue
-            # volumen
-            vol = float(m.get("volume24hr") or m.get("volumeNum") or 0)
-            mercados.append({
+            vol = float(m.get("volume") or 0)
+            market_id = m.get("id", "")
+            condition_id = m.get("condition_id", "")
+            combos.append({
+                "market_id": market_id,
+                "condition_id": condition_id,
                 "question": titulo,
-                "slug": m.get("slug", ""),
-                "yes_token": tokens[0],
-                "no_token": tokens[1] if len(tokens) > 1 else tokens[0],
+                "slug": slug,
+                "yes_token": str(tokens[0]),
+                "no_token": str(tokens[1]) if len(tokens) > 1 else str(tokens[0]),
                 "yes_price": yes_price,
                 "cuota": round(1/yes_price, 2) if yes_price > 0 else 0,
-                "volumen_24h": vol,
-                "deporte": deporte,
-                "fin": m.get("endDate") or m.get("endDateIso"),
+                "volumen": vol,
+                "tags": tags,
             })
-        log(f"  pagina {offset//50 + 1}: +{sum(1 for m in batch)} total, {len(mercados)} deportes")
-    # ordenar por volumen (mas liquido primero)
-    mercados.sort(key=lambda x: -x["volumen_24h"])
-    return mercados
+        log(f"  pagina {paginas + 1}: +{len(batch)} mercados, {len(combos)} combos de deportes")
+        # siguiente pagina
+        cursor = data.get("next_cursor", "")
+        if not cursor:
+            break
+        paginas += 1
+    combos.sort(key=lambda x: -x["volumen"])
+    return combos
+
+
+def listar_mercados_deportes():
+    """[LEGACY v7] Lee mercados individuales. Mantenido como fallback."""
+    return listar_combos()  # en v9 todo es combos
 
 def get_precio_actual(token_id):
     try:
@@ -380,7 +403,7 @@ def enviar_orden(token_id, precio, stake_dolares):
         return False, str(e)[:200]
 
 def ejecutar_trade(mercado, chat_id=None):
-    """Ejecuta un trade en un mercado activo."""
+    """Ejecuta un trade en un mercado activo (v9: combo)."""
     titulo = mercado["question"]
     log(f"[TRADE] {titulo[:60]}")
     # re-leer precio actual
@@ -388,7 +411,7 @@ def ejecutar_trade(mercado, chat_id=None):
     if not precio or precio <= 0 or precio >= 1:
         log(f"  SKIP: precio no disponible")
         return False, "precio_no_disponible"
-    if not (0.05 <= precio <= 0.95):
+    if not (0.02 <= precio <= 0.95):
         log(f"  SKIP: precio {precio} fuera de mercado activo")
         return False, "mercado_inactivo"
     cuota = round(1/precio, 2)
@@ -403,28 +426,33 @@ def ejecutar_trade(mercado, chat_id=None):
         return False, resultado
     # guardar
     registro = {
-        "tipo": "simple",
+        "tipo": "combo",
         "copiado_en": datetime.now().isoformat(),
         "question": titulo,
         "slug": mercado.get("slug"),
+        "market_id": mercado.get("market_id", ""),
+        "condition_id": mercado.get("condition_id", ""),
         "yes_token": mercado["yes_token"],
         "precio_ejecutado": precio,
         "cuota_ejecutada": cuota,
         "size_shares": resultado["size"],
         "stake_dolares": STAKE_POR_TRADE,
         "order_id": resultado["oid"],
-        "volumen_24h": mercado.get("volumen_24h", 0),
+        "volumen": mercado.get("volumen", 0),
+        "tags": mercado.get("tags", []),
         "status": "ejecutado",
     }
     estado = cargar_estado()
     estado["trades_copiados"].append(registro)
     guardar_estado(estado)
     if chat_id:
-        enviar(chat_id, f"✅ *TRADE EJECUTADO*\n"
+        tags_str = ", ".join(mercado.get("tags", [])[:3])
+        enviar(chat_id, f"✅ *COMBO EJECUTADO*\n"
                       f"📌 {titulo[:60]}\n"
                       f"💵 {resultado['size']} shares @ {precio:.2f} (cuota {cuota:.2f})\n"
                       f"💰 Stake: ${STAKE_POR_TRADE}\n"
-                      f"📊 Vol 24h: ${mercado.get('volumen_24h', 0):.0f}\n"
+                      f"🏷 {tags_str}\n"
+                      f"📊 Vol: ${mercado.get('volumen', 0):.0f}\n"
                       f"🆔 `{str(resultado['oid'])[:18]}`")
     return True, "ok"
 
@@ -485,33 +513,34 @@ def calcular_stats():
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v7*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v9*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
-             f"📌 *Estrategia v7* (nueva):\n"
-             f"   · Lee mercados ACTIVOS de Polymarket (no trades viejos)\n"
-             f"   · Filtra deportes con volumen\n"
-             f"   · Compra shares a cuota 1.20-2.50\n"
+             f"📌 *Estrategia v9* (COMBOS):\n"
+             f"   · Lee COMBOS (parlays) activos de Polymarket\n"
+             f"   · Solo deportes: fútbol, MLB, NBA, UFC, etc.\n"
+             f"   · Cuota 1.20-2.50 (multiplicación de legs)\n"
              f"   · Automático cada 5 min\n\n"
              f"📊 *Stats* para ver estadísticas")
     return enviar(chat_id, texto)
 
 def cmd_trades(chat_id):
-    mercados = listar_mercados_deportes()
-    if not mercados:
-        return enviar(chat_id, "❌ No hay mercados activos ahora mismo.")
+    combos = listar_combos()
+    if not combos:
+        return enviar(chat_id, "❌ No hay combos activos ahora mismo.")
     # filtrar por cuota
-    filtrados = [m for m in mercados if CUOTA_MIN <= m["cuota"] <= CUOTA_MAX]
+    filtrados = [m for m in combos if CUOTA_MIN <= m["cuota"] <= CUOTA_MAX]
     if not filtrados:
-        # mostrar los 10 mas liquidos aunque esten fuera de cuota
-        texto = f"📋 *MERCADOS ACTIVOS ({len(mercados)})*\n_Ninguno en cuota {CUOTA_MIN}-{CUOTA_MAX}_\n\n"
-        for m in mercados[:5]:
-            texto += f"· {m['question'][:55]} (cuota {m['cuota']:.2f})\n"
+        texto = f"📋 *COMBOS ACTIVOS ({len(combos)})*\n_Ninguno en cuota {CUOTA_MIN}-{CUOTA_MAX}_\n\n"
+        for m in combos[:8]:
+            tags_str = ", ".join(m.get("tags", [])[:3])
+            texto += f"· {m['question'][:50]} (cuota {m['cuota']:.2f}) [{tags_str}]\n"
         return enviar(chat_id, texto)
-    texto = f"📋 *MERCADOS EN RANGO ({len(filtrados)})*\n"
+    texto = f"📋 *COMBOS EN RANGO ({len(filtrados)})*\n"
     for i, m in enumerate(filtrados[:10], 1):
-        texto += f"{i}. {m['question'][:55]}\n   cuota {m['cuota']:.2f} · vol ${m['volumen_24h']:.0f}\n\n"
+        tags_str = ", ".join(m.get("tags", [])[:3])
+        texto += f"{i}. {m['question'][:50]}\n   cuota {m['cuota']:.2f} · vol ${m['volumen']:.0f} · {tags_str}\n\n"
     return enviar(chat_id, texto)
 
 def cmd_saldo(chat_id):
@@ -575,13 +604,14 @@ def cmd_abiertas(chat_id):
     ejecutadas = [c for c in estado.get("trades_copiados", []) if c.get("status") == "ejecutado"]
     if not ejecutadas:
         return enviar(chat_id, "📭 Sin operaciones aún.")
-    texto = f"📂 *OPERACIONES DE COMBOS ({len(ejecutadas)})*\n\n"
+    texto = f"📂 *COMBOS ABIERTOS ({len(ejecutadas)})*\n\n"
     for op in ejecutadas[-10:]:
         titulo = op.get("question", "?")[:50]
         oid = str(op.get("order_id", ""))[:10]
         precio = op.get("precio_ejecutado", 0)
         stake = op.get("stake_dolares", 0)
-        texto += f"✅ {titulo}\n   ${stake:.2f} @ {precio:.2f} `{oid}`\n\n"
+        tipo = op.get("tipo", "combo")
+        texto += f"✅ {titulo}\n   ${stake:.2f} @ {precio:.2f} ({tipo}) `{oid}`\n\n"
     return enviar(chat_id, texto)
 
 def cmd_cerradas(chat_id):
@@ -643,7 +673,7 @@ def cmd_status(chat_id):
     global CHAT_ID
     CHAT_ID = chat_id
     s = calcular_stats()
-    texto = (f"📊 *ESTADO v7*\n\n"
+    texto = (f"📊 *ESTADO v9 (Combos)*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
@@ -658,22 +688,22 @@ def cmd_status(chat_id):
 # AUTO LOOP
 # ============================================
 def auto_pasada(chat_id):
-    """Lee mercados activos, filtra por cuota, ejecuta automaticamente."""
+    """Lee combos activos, filtra por cuota, ejecuta automaticamente."""
     if MODO_OPERACION != "AUTO":
         return
     log(f"[AUTO] pasada")
-    mercados = listar_mercados_deportes()
-    if not mercados:
-        enviar(chat_id, "🔄 *AUTO:* sin mercados activos ahora.")
+    combos = listar_combos()
+    if not combos:
+        enviar(chat_id, "🔄 *AUTO:* sin combos activos ahora.")
         return
     # filtrar por cuota objetivo
-    candidatos = [m for m in mercados if CUOTA_MIN <= m["cuota"] <= CUOTA_MAX]
+    candidatos = [m for m in combos if CUOTA_MIN <= m["cuota"] <= CUOTA_MAX]
     # ordenar por volumen
-    candidatos.sort(key=lambda x: -x["volumen_24h"])
+    candidatos.sort(key=lambda x: -x["volumen"])
     if not candidatos:
-        enviar(chat_id, f"🔄 *AUTO:* {len(mercados)} mercados activos pero ninguno en cuota {CUOTA_MIN}-{CUOTA_MAX}.")
+        enviar(chat_id, f"🔄 *AUTO:* {len(combos)} combos activos pero ninguno en cuota {CUOTA_MIN}-{CUOTA_MAX}.")
         return
-    enviar(chat_id, f"🔄 *AUTO: {len(candidatos)} mercados en rango. Ejecutando...*")
+    enviar(chat_id, f"🔄 *AUTO: {len(candidatos)} combos en rango. Ejecutando...*")
     ejecutar = 0
     for m in candidatos[:MAX_TRADES_SIMULTANEOS]:
         ok, motivo = ejecutar_trade(m, chat_id)
@@ -681,7 +711,7 @@ def auto_pasada(chat_id):
             ejecutar += 1
         time.sleep(3)
     if ejecutar:
-        enviar(chat_id, f"✅ *AUTO: {ejecutar} trade(s) ejecutado(s)*")
+        enviar(chat_id, f"✅ *AUTO: {ejecutar} combo(s) ejecutado(s)*")
     else:
         enviar(chat_id, f"⚠️ *AUTO: 0 ejecuciones*")
 
@@ -757,7 +787,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v7 iniciado")
+    log("v9 iniciado")
     offset = 0
     while True:
         try:
@@ -781,7 +811,7 @@ def main():
     if not cargar_token():
         log("ERROR: no se encontró el token")
         return
-    log(f"v7 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v9 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
