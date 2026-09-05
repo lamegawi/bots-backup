@@ -1,0 +1,38 @@
+=== TEST ENDPOINT COMBOS - Sat Sep  5 10:59:12 PM UTC 2026 ===
+
+== 1. Endpoint combos-rfq-api ==
+Combos recibidos: 5
+  - Will the U.S. invade Iran before 2027?
+    tags=['politics', 'iran', 'trump', 'middle-east', 'israel', 'geopolitics', 'world', 'military-strikes']
+    outcome_prices=['0.145', '0.855']
+    position_ids[0]=7985599515345184796452242...
+    volume=64862931.801796
+
+  - Will China invade Taiwan by end of 2026?
+    tags=['politics', 'china', 'geopolitics', 'foreign-policy', 'world', 'earn-4']
+    outcome_prices=['0.0375', '0.9625']
+    position_ids[0]=7376275431319289770735974...
+    volume=40644874.085232995
+
+  - Will Richard Grenell be the leader of Venezuela end of 2026?
+    tags=['politics', 'trump', 'venezuela', 'geopolitics', 'maduro', 'trump-machado', 'rewards-20-4pt5-50']
+    outcome_prices=['0.0005', '0.9995']
+    position_ids[0]=1144926578546976989723827...
+    volume=32790653.988845035
+
+  - Will Frank Donovan be the leader of Venezuela end of 2026?
+    tags=['politics', 'trump', 'venezuela', 'geopolitics', 'maduro', 'trump-machado', 'rewards-20-4pt5-50']
+    outcome_prices=['0.0015', '0.9985']
+    position_ids[0]=1144926578546976989723827...
+    volume=25809889.144587986
+
+  - Will the Iranian regime fall before 2027?
+    tags=['politics', 'iran', 'trump', 'middle-east', 'israel', 'geopolitics', 'world', 'khamenei', 'reza-pahlavi', 'iranian-leadership-regime']
+    outcome_prices=['0.065', '0.935']
+    position_ids[0]=5616850763696931579016036...
+    volume=25626783.027368974
+
+next_cursor: MjI
+
+== 2. Test gamma-api (que ya funcionaba) ==
+gamma-api: 3 mercados (status OK)
