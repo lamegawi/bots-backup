@@ -414,8 +414,13 @@ def alertas_anadir():
     cfg = cargar_config(); tickers = _tickers_disponibles(cfg)
     if not tickers:
         enviar("No hay acciones guardadas en seguimiento o cartera.", teclado()); return
-    botones = [[{"text": f"{t.get('simbolo')} — {_nombre_ticker(t)}",
-                  "callback_data": f"alert_add:{t.get('simbolo')}"}] for t in tickers]
+    botones = []
+    for t in tickers:
+        es_crypto = (t.get("tipo") == "cripto" or
+                     str(t.get("yahoo", "")).upper().endswith(("-USD", "-EUR")))
+        marca = "🟣 CRIPTO" if es_crypto else "🔵 ACCIÓN"
+        botones.append([{"text": f"{marca} · {t.get('simbolo')} — {_nombre_ticker(t)}",
+                         "callback_data": f"alert_add:{t.get('simbolo')}"}])
     botones.append([{"text": "❌ CANCELAR", "callback_data": "alert_menu:cancel"}])
     enviar("➕ *AÑADIR ALERTA*\n\nElige una acción:", kb_inline(botones))
 
