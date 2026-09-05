@@ -1,0 +1,60 @@
+==========================================
+ACTUALIZACION - Sat Sep  5 08:34:11 PM UTC 2026
+==========================================
+== Detener bot ==
+
+== Borrar archivo antiguo ==
+
+== Descargar nueva version ==
+raw: 32594 bytes
+Tamano final: 32594 bytes
+
+== Verificar sintaxis ==
+OK
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+== Reiniciar servicio ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 20:34:13 UTC; 8s ago
+   Main PID: 911193 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 12.6M (peak: 13.1M)
+        CPU: 114ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─911193 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 05 20:34:13 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+== Log reciente ==
+[20:11:48] [REAL] ejecutando trade: Detroit Tigers vs. Cleveland Guardians: O/U 6.5
+[20:16:48] [AUTO] revisando trades (CHAT_ID=250818720)
+[20:16:49] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[20:16:50] [REAL] ejecutando trade: Villarreal CF vs. RC Deportivo A Coruña: O/U 3.5
+[20:16:50] [REAL] ejecutando trade: Spread: Houston Astros (-1.5)
+[20:21:50] [AUTO] revisando trades (CHAT_ID=250818720)
+[20:21:51] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[20:21:51] [REAL] ejecutando trade: US Open ATP: Jakub Mensik vs Learner Tien
+[20:21:51] [REAL] ejecutando trade: Villarreal CF vs. RC Deportivo A Coruña: O/U 3.5
+[20:26:51] [AUTO] revisando trades (CHAT_ID=250818720)
+[20:26:52] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[20:26:52] [REAL] ejecutando trade: AS Roma vs. Atalanta BC: O/U 1.5
+[20:26:52]   BUY 5.13 shares @ 0.390 = $2.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[20:26:53]   ERROR enviando orden: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[20:26:53] [REAL] ejecutando trade: US Open ATP: Jakub Mensik vs Learner Tien
+[20:31:53] [AUTO] revisando trades (CHAT_ID=250818720)
+[20:31:54] [REAL] ejecutando trade: Washington Nationals vs. Los Angeles Dodgers: O/U 
+[20:31:54] [REAL] ejecutando trade: AS Roma vs. Atalanta BC: O/U 1.5
+[20:31:54] [REAL] ejecutando trade: US Open ATP: Jakub Mensik vs Learner Tien
+[20:34:13] Token cargado
+[20:34:13] Wallet: 0xb0e1197098e6d427c01720f1631cad24ce740fa0
+[20:34:13] Modo: AUTO
+[20:34:13] Stake: $2.0
+[20:34:13] Bot iniciado, esperando mensajes...
+
+==========================================
+FIN - Sat Sep  5 08:34:21 PM UTC 2026
+==========================================
