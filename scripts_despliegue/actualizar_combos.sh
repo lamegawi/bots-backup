@@ -53,7 +53,10 @@ rm -f $INSTALL_DIR/${BOT_NAME}.py
 
 echo ""
 echo "== Descargar nueva version =="
-BRANCH="0057ceb"
+# Detectar el hash actual de la rama y usar la URL con ref (no main)
+BRANCH=$(curl -sL --max-time 20 "https://api.github.com/repos/lamegawi/bots-backup/commits/arena/01a058fe-bots-backup" | python3 -c "import sys,json; print(json.load(sys.stdin).get('sha','')[:8])" 2>/dev/null)
+[ -z "$BRANCH" ] && BRANCH="be6594c"
+echo "Branch: $BRANCH"
 SIZE=0
 # Intento 1: raw URL
 curl -sL --max-time 60 "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/scripts_despliegue/${BOT_NAME}.py" -o $INSTALL_DIR/${BOT_NAME}.py
