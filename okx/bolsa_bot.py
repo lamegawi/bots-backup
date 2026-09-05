@@ -151,6 +151,13 @@ MERCADOS = {
 }
 
 
+def clave_orden_activo(ticker):
+    mercado, _ = datos_mercado(ticker)
+    # Cripto siempre al final; el resto se agrupa por mercado.
+    es_cripto = 1 if mercado == "Cripto 24/7" else 0
+    return (es_cripto, mercado, ticker.get("simbolo", ""))
+
+
 def datos_mercado(ticker):
     yahoo = (ticker.get("yahoo") or "").upper()
     simbolo = (ticker.get("simbolo") or "").upper()
@@ -271,8 +278,7 @@ def fmt_precio(q):
 
 def texto_precios(cfg, titulo="📊 *PRECIOS EN VIVO*"):
     datos = fetch_watchlist(cfg)
-    datos.sort(key=lambda d: (datos_mercado(d["ticker"])[0],
-                              d["ticker"].get("simbolo", "")))
+    datos.sort(key=lambda d: clave_orden_activo(d["ticker"]))
     lineas = [titulo, ""]
     mercado_anterior = None
     for d in datos:
@@ -311,7 +317,7 @@ def texto_saldo():
 
     total_invertido = 0.0
     total_valor = 0.0
-    posiciones = sorted(posiciones, key=lambda p: (datos_mercado(p)[0], p.get("simbolo", "")))
+    posiciones = sorted(posiciones, key=clave_orden_activo)
     mercado_anterior = None
     for p in posiciones:
         simbolo = p["simbolo"]
