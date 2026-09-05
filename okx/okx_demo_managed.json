@@ -14,50 +14,96 @@
     "qty_vista": 50.0,
     "sw_sl_px": 7.32156
   },
-  "DOGE: LONG": {
-    "symbol": "DOGE",
-    "direction": "LONG",
-    "entry": 0.08774,
-    "contratos": 481,
-    "sl_algo_id": "3891501987409735680",
+  "XRP: SHORT": {
+    "symbol": "XRP",
+    "direction": "SHORT",
+    "entry": 1.158,
+    "contratos": 118,
+    "sl_algo_id": "3894224720220434432",
     "state": "opened",
     "risk_usd": 10.0,
-    "opened_at": 1788478197.8308897,
-    "dist": 0.02371164,
-    "initial_sl": 0.08565954,
+    "opened_at": 1788559341.6160855,
+    "dist": 0.07335488,
+    "initial_sl": 1.24294495,
     "tp_levels": [
       {
         "nivel": "1.0R",
-        "precio": 0.08912697,
-        "sz": 96,
-        "algoId": "3891501993818632192"
+        "precio": 1.10137004,
+        "sz": 24,
+        "algoId": "3894224726797103104"
       },
       {
         "nivel": "1.5R",
-        "precio": 0.08982046,
-        "sz": 96,
-        "algoId": "3891502000227528704"
+        "precio": 1.07305505,
+        "sz": 24,
+        "algoId": "3894224733105336320"
       },
       {
         "nivel": "2.0R",
-        "precio": 0.09051395,
-        "sz": 96,
-        "algoId": "3891502006535761920"
+        "precio": 1.04474007,
+        "sz": 24,
+        "algoId": "3894224739715559424"
       },
       {
         "nivel": "2.5R",
-        "precio": 0.09120743,
-        "sz": 96,
-        "algoId": "3891502012743331840"
+        "precio": 1.01642509,
+        "sz": 24,
+        "algoId": "3894224746325782528"
       },
       {
         "nivel": "3.0R",
-        "precio": 0.09190092,
-        "sz": 97,
-        "algoId": "3891502019252891648"
+        "precio": 0.98811011,
+        "sz": 22,
+        "algoId": "3894224752734679040"
       }
     ],
-    "sw_sl_px": 0.08565954,
-    "qty_vista": 481.0
+    "sw_sl_px": 1.24294495,
+    "qty_vista": 118.0
+  },
+  "UNI: LONG": {
+    "symbol": "UNI",
+    "direction": "LONG",
+    "entry": 6.748,
+    "contratos": 26,
+    "sl_algo_id": "3894739204924026880",
+    "state": "opened",
+    "risk_usd": 10.0,
+    "opened_at": 1788574674.43099,
+    "dist": 0.05715975,
+    "initial_sl": 6.36228598,
+    "tp_levels": [
+      {
+        "nivel": "1.0R",
+        "precio": 7.00514268,
+        "sz": 5,
+        "algoId": "3894739211500695552"
+      },
+      {
+        "nivel": "1.5R",
+        "precio": 7.13371402,
+        "sz": 5,
+        "algoId": "3894739217674711040"
+      },
+      {
+        "nivel": "2.0R",
+        "precio": 7.26228536,
+        "sz": 5,
+        "algoId": "3894739224016498688"
+      },
+      {
+        "nivel": "2.5R",
+        "precio": 7.39085671,
+        "sz": 5,
+        "algoId": "3894739230291177472"
+      },
+      {
+        "nivel": "3.0R",
+        "precio": 7.51942805,
+        "sz": 6,
+        "algoId": "3894739236733628416"
+      }
+    ],
+    "sw_sl_px": 6.36228598,
+    "qty_vista": 26.0
   }
 }
