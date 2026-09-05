@@ -1,0 +1,183 @@
+TRADES PARA COPIAR - 20260905_181721
+
+======================================================================
+DETECTAR TRADES PARA COPIAR · 2026-09-05T18:17:21.005925
+======================================================================
+Stake por trade: $2.0
+Max trades simultaneos: 3
+Ventana: ultimas 24 horas
+
+
+[pleaseplease123] peso=10
+  30 trades
+  · 22:00 | Washington Nationals vs. Los Angeles Dodgers: O/U  | BUY @ 0.54
+  · 22:00 | Washington Nationals vs. Los Angeles Dodgers: O/U  | BUY @ 0.54
+
+[ferrariChampions2026] peso=8
+  30 trades
+  · 18:14 | FC Schalke 04 vs. FC Bayern München: O/U 0.5 | BUY @ 0.59
+  · 18:13 | Coastal Carolina vs. West Virginia: O/U 44.5 | BUY @ 0.42
+  · 18:10 | Hull City AFC vs. Aston Villa FC: O/U 0.5 | BUY @ 0.67
+  · 18:06 | Hull City AFC vs. Aston Villa FC: O/U 0.5 | BUY @ 0.58
+  · 18:04 | Hull City AFC vs. Aston Villa FC: O/U 0.5 | BUY @ 0.53
+  · 18:01 | US Open ATP: Alexander Blockx vs Flavio Cobolli | BUY @ 0.65
+  · 18:01 | Real Valladolid CF vs. FC Andorra: O/U 1.5 | BUY @ 0.47
+  · 17:58 | Hull City AFC vs. Aston Villa FC: O/U 0.5 | BUY @ 0.46
+  · 17:58 | Hull City AFC vs. Aston Villa FC: O/U 0.5 | BUY @ 0.46
+  · 17:58 | Hull City AFC vs. Aston Villa FC: O/U 0.5 | BUY @ 0.46
+  · 17:55 | US Open ATP: Alexander Blockx vs Flavio Cobolli | BUY @ 0.61
+  · 17:54 | SK Brann vs. Lillestrøm SK: O/U 2.5 | BUY @ 0.56
+  · 17:54 | FC Schalke 04 vs. FC Bayern München: O/U 1.5 | BUY @ 0.52
+  · 17:52 | UFC Fight Night: Nathaniel Wood vs. Pavel Andrusca | BUY @ 0.59
+  · 17:52 | UFC Fight Night: Nathaniel Wood vs. Pavel Andrusca | BUY @ 0.58
+  · 17:51 | UFC Fight Night: Nathaniel Wood vs. Pavel Andrusca | BUY @ 0.55
+  · 17:50 | SG Dynamo Dresden vs. VfL Bochum: O/U 2.5 | BUY @ 0.45
+  · 17:49 | UFC Fight Night: Nathaniel Wood vs. Pavel Andrusca | BUY @ 0.40
+  · 17:42 | Aarhus GF vs. Silkeborg IF: O/U 2.5 | BUY @ 0.55
+  · 17:40 | Spread: FC Bayern München (-1.5) | BUY @ 0.60
+
+[balthazar] peso=5
+  30 trades
+  · 18:10 | Rayo Vallecano de Madrid vs. Real Racing Club: 2nd | BUY @ 0.27
+  · 18:10 | Rayo Vallecano de Madrid vs. Real Racing Club: 2nd | BUY @ 0.27
+
+[Sassy-Bucket] peso=5
+  30 trades
+  · 18:11 | UFC Fight Night: Ryan Spann vs. Mario Pinto (Heavy | BUY @ 0.23
+  · 18:03 | UFC Fight Night: Modestas Bukauskas vs. Oumar Sy ( | BUY @ 0.31
+  · 18:03 | UFC Fight Night: Modestas Bukauskas vs. Oumar Sy ( | BUY @ 0.31
+  · 17:47 | UFC Fight Night: Modestas Bukauskas vs. Oumar Sy ( | BUY @ 0.30
+  · 17:37 | UFC Fight Night: Nathaniel Wood vs. Pavel Andrusca | BUY @ 0.30
+  · 16:47 | UFC Fight Night: Nora Cornolle vs. Klaudia Sygula  | BUY @ 0.47
+  · 16:47 | UFC Fight Night: Nora Cornolle vs. Klaudia Sygula  | BUY @ 0.47
+  · 16:39 | UFC Fight Night: Nora Cornolle vs. Klaudia Sygula  | BUY @ 0.46
+  · 16:20 | UFC Fight Night: Nathaniel Wood vs. Pavel Andrusca | BUY @ 0.29
+  · 00:13 | Toronto Blue Jays vs. Kansas City Royals: O/U 9.5 | SELL @ 0.39
+  · 00:00 | Tampa Bay Rays vs. Texas Rangers: O/U 8.5 | BUY @ 0.50
+
+[Jsram] peso=5
+  30 trades
+  · 11:41 | Manchester City FC vs. Coventry City FC: O/U 3.5 | BUY @ 0.49
+  · 09:20 | Spread: Manchester City FC (-2.5) | BUY @ 0.57
+  · 07:45 | Spread: Manchester City FC (-2.5) | BUY @ 0.55
+  · 07:44 | Manchester City FC vs. Coventry City FC: O/U 3.5 | BUY @ 0.47
+
+[Flaznorp] peso=5
+  30 trades
+  · 18:15 | CA Aldosivi vs. CA Banfield: O/U 4.5 | BUY @ 0.27
+  · 18:15 | Rayo Vallecano de Madrid vs. Real Racing Club: O/U | BUY @ 0.56
+  · 18:15 | Rayo Vallecano de Madrid vs. Real Racing Club: O/U | BUY @ 0.55
+  · 18:15 | Fenerbahçe SK vs. Beşiktaş JK: O/U 2.5 | BUY @ 0.28
+  · 18:15 | FC Schalke 04 vs. FC Bayern München: O/U 0.5 | BUY @ 0.61
+  · 18:15 | FC Schalke 04 vs. FC Bayern München: O/U 0.5 | BUY @ 0.61
+  · 18:15 | FC Schalke 04 vs. FC Bayern München: O/U 0.5 | BUY @ 0.60
+  · 18:15 | FC Schalke 04 vs. FC Bayern München: O/U 2.5 | BUY @ 0.99
+  · 18:15 | CS Marítimo vs. Sport Lisboa e Benfica: O/U 4.5 | BUY @ 0.95
+  · 18:14 | CD Eldense vs. RCD Mallorca: O/U 4.5 | BUY @ 0.87
+  · 18:14 | AD Ceuta FC vs. Celta Fortuna: O/U 1.5 | BUY @ 0.52
+
+[Talvez10] peso=4
+  30 trades
+  · 18:02 | San Francisco Giants vs. New York Mets: O/U 8.5 | BUY @ 0.46
+  · 15:20 | UFC Fight Night: Modestas Bukauskas vs. Oumar Sy ( | BUY @ 0.70
+  · 20:47 | Eugenio Suárez: Home Runs O/U 0.5 | BUY @ 0.19
+  · 20:46 | Coby Mayo: Home Runs O/U 0.5 | BUY @ 0.18
+  · 20:46 | Matt Olson: Home Runs O/U 0.5 | BUY @ 0.14
+  · 20:16 | San Francisco Giants vs. New York Mets: O/U 7.5 | BUY @ 0.52
+
+[GoalLineGhost] peso=3
+  30 trades
+  · 15:18 | SV Werder Bremen vs. RB Leipzig: O/U 3.5 | BUY @ 0.60
+  · 15:17 | Brentford FC vs. Sunderland AFC: O/U 0.5 | BUY @ 0.25
+  · 15:17 | Spread: BV Borussia 09 Dortmund (-1.5) | BUY @ 0.10
+  · 15:17 | Spread: BV Borussia 09 Dortmund (-1.5) | BUY @ 0.10
+  · 15:17 | Aberdeen FC vs. Kilmarnock FC: O/U 0.5 | BUY @ 0.32
+  · 15:17 | Dundee United FC vs. Falkirk FC: O/U 1.5 | BUY @ 0.25
+  · 15:17 | FK Haugesund vs. Sogndal Fotball: O/U 1.5 | BUY @ 0.16
+  · 15:17 | West Bromwich Albion FC vs. Watford FC: O/U 1.5 | BUY @ 0.29
+  · 15:16 | Spread: Millwall FC (-2.5) | BUY @ 0.92
+  · 15:16 | Spread: West Ham United FC (-1.5) | BUY @ 0.51
+  · 15:16 | Spread: Millwall FC (-1.5) | BUY @ 0.68
+  · 15:16 | Aberdeen FC vs. Kilmarnock FC: O/U 0.5 | BUY @ 0.31
+  · 15:16 | Brighton & Hove Albion FC vs. Leeds United FC: O/U | BUY @ 0.25
+  · 15:16 | FC Internazionale Milano vs. SSC Napoli: O/U 4.5 | BUY @ 0.13
+  · 15:16 | Burnley FC vs. Bristol City FC: O/U 2.5 | BUY @ 0.30
+  · 15:16 | SV Werder Bremen vs. RB Leipzig: O/U 3.5 | BUY @ 0.56
+  · 15:14 | Manchester City FC vs. Coventry City FC: O/U 2.5 | BUY @ 0.54
+  · 15:14 | Spread: West Ham United FC (-1.5) | BUY @ 0.49
+  · 15:14 | Brighton & Hove Albion FC vs. Leeds United FC: O/U | BUY @ 0.60
+
+[AV23IUa] peso=3
+  30 trades
+  · 13:43 | UFC Fight Night: Morgan Charrière vs. Felipe Lima  | BUY @ 0.66
+  · 13:43 | UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe | BUY @ 0.41
+  · 13:42 | UFC Fight Night: Michael Page vs. Nursulton Ruzibo | BUY @ 0.65
+  · 13:30 | US Open ATP: Zizou Bergs vs Botic van de Zandschul | BUY @ 0.66
+  · 13:29 | US Open ATP: Jakub Mensik vs Learner Tien | BUY @ 0.56
+  · 13:29 | US Open ATP: Luciano Darderi vs Dane Sweeny | BUY @ 0.24
+  · 13:29 | US Open ATP: Alexander Blockx vs Flavio Cobolli | BUY @ 0.50
+  · 00:22 | Spread: Manchester City FC (-1.5) | BUY @ 0.67
+
+======================================================================
+RECOMENDACIONES PARA COPIAR (3 trades)
+======================================================================
+
+1. Washington Nationals vs. Los Angeles Dodgers: O/U 8.5
+   Trader: pleaseplease123 (peso 10)
+   Lado: BUY @ 0.540 (cuota 1.85)
+   Stake del trader: 434 | TU stake: $2.0
+   Cuando: 2026-09-04 22:00
+
+2. FC Schalke 04 vs. FC Bayern München: O/U 0.5
+   Trader: ferrariChampions2026 (peso 8)
+   Lado: BUY @ 0.590 (cuota 1.70)
+   Stake del trader: 716 | TU stake: $2.0
+   Cuando: 2026-09-05 18:14
+
+3. Coastal Carolina vs. West Virginia: O/U 44.5
+   Trader: ferrariChampions2026 (peso 8)
+   Lado: BUY @ 0.420 (cuota 2.38)
+   Stake del trader: 1455 | TU stake: $2.0
+   Cuando: 2026-09-05 18:13
+
+======================================================================
+
+JSON:
+[
+  {
+    "trader": "pleaseplease123",
+    "peso": 10,
+    "titulo": "Washington Nationals vs. Los Angeles Dodgers: O/U 8.5",
+    "side": "BUY",
+    "price": 0.54,
+    "size": 434.0,
+    "asset": "95952339111587815223",
+    "timestamp": 1788559234,
+    "cuota": 1.85,
+    "stake_sugerido": 2.0
+  },
+  {
+    "trader": "ferrariChampions2026",
+    "peso": 8,
+    "titulo": "FC Schalke 04 vs. FC Bayern München: O/U 0.5",
+    "side": "BUY",
+    "price": 0.5898533743,
+    "size": 716.110168,
+    "asset": "57169086446762049078",
+    "timestamp": 1788632071,
+    "cuota": 1.7,
+    "stake_sugerido": 2.0
+  },
+  {
+    "trader": "ferrariChampions2026",
+    "peso": 8,
+    "titulo": "Coastal Carolina vs. West Virginia: O/U 44.5",
+    "side": "BUY",
+    "price": 0.42,
+    "size": 1455.17,
+    "asset": "11276750604431539293",
+    "timestamp": 1788632038,
+    "cuota": 2.38,
+    "stake_sugerido": 2.0
+  }
+]
