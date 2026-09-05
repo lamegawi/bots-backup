@@ -1,0 +1,61 @@
+==========================================
+ACTUALIZACION - Sat Sep  5 09:45:01 PM UTC 2026
+==========================================
+== Detener bot ==
+
+== Borrar archivo antiguo ==
+
+== Descargar nueva version ==
+Branch: 498da73d
+raw: 40381 bytes
+Tamano final: 40381 bytes
+
+== Verificar sintaxis ==
+OK
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+== Reiniciar servicio ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 21:45:04 UTC; 8s ago
+   Main PID: 915780 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 13.3M (peak: 13.5M)
+        CPU: 183ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─915780 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 05 21:45:04 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+== Log reciente ==
+[21:28:10]   SKIP: cuota 2000.0 fuera de rango [1.4-2.5]
+[21:28:12] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:28:12]   token_id=75429697229412977320... side=YES
+[21:28:13]   SKIP: no pude leer precio actual
+[21:33:15] [AUTO] pasada
+[21:33:16] [COMBO-DOBLE] Tennis cuota objetivo 2.13
+[21:33:21] [SIMPLE] UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe
+[21:33:21]   token_id=81602505631162230019... side=YES
+[21:33:21]   precio actual=1.000 (cuota 1.00)
+[21:33:21]   SKIP: cuota 1.0 fuera de rango [1.4-2.5]
+[21:33:23] [SIMPLE] UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe
+[21:33:23]   token_id=83801212170764771200... side=YES
+[21:33:23]   precio actual=0.001 (cuota 2000.00)
+[21:33:23]   SKIP: cuota 2000.0 fuera de rango [1.4-2.5]
+[21:33:25] [SIMPLE] UFC Fight Night: Nora Cornolle vs. Klaudia Sygula 
+[21:33:25]   token_id=75429697229412977320... side=YES
+[21:33:26]   SKIP: no pude leer precio actual
+[21:36:15] v6 cargado · modo=AUTO · stake=$2.0
+[21:36:15] Proxy: http://100.83.57.99:8888
+[21:36:16] Test proxy: 200
+[21:36:16] Bot iniciado
+[21:45:04] v6 cargado · modo=AUTO · stake=$2.0
+[21:45:04] Proxy: http://100.83.57.99:8888
+[21:45:05] Test proxy: 200
+[21:45:05] Bot iniciado
+
+==========================================
+FIN - Sat Sep  5 09:45:12 PM UTC 2026
+==========================================
