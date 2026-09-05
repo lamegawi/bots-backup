@@ -1,22 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT — Bot de Telegram para COPIAR trades de top traders
-====================================================================
-Combina:
-  1. Detección de trades de los top traders (de Polymarket data-api)
-  2. Ejecución REAL automática en la CLOB con py-clob-client-v2
-  3. Bot de Telegram con botones inline para gestionar el bot
-
-MODOS DE OPERACIÓN (selector por Telegram):
-  · AUTO: copia automáticamente los top trades (3 simultaneos, $2 cada uno)
-  · SEMI: detecta y propone, pero espera botón /copiar_1, /copiar_2, /copiar_3
-  · OFF: solo informa, no opera
+POLY COMBOS BOT v5 — Combo simples automáticos
+================================================
+Estrategia: SIMPLES automáticos (1 evento) con filtro de cuota
+  · Cuota objetivo: 1.50 - 2.50 (sweet spot para deportes)
+  · Releer precio en tiempo real antes de enviar
+  · Si la cuota es peor que el máximo, SALTA el trade
+  · Máximo 3 trades simultáneos
+  · Stake configurable ($1-$5)
+  · Todo automático en modo AUTO (no requiere aprobación)
 
 ARCHIVOS:
-  · /root/poly_combos_token.txt  - Token del bot de Telegram
-  · /root/poly_combos_estado.json - Estado de operaciones copiadas
-  · /etc/polymarket.env          - Credenciales Polymarket (CLOB)
+  · /root/poly_combos_token.txt       - Token Telegram
+  · /opt/polymarket/combos_estado.json - Estado (modo, stake, trades copiados)
+  · /etc/polymarket.env               - Credenciales Polymarket (CLOB)
 
 USO:
   python3 /opt/polymarket/poly_combos_bot.py
@@ -31,8 +29,8 @@ import subprocess
 import urllib.request
 import urllib.parse
 import threading
+import ssl
 from datetime import datetime, timezone
-from http.server import BaseHTTPRequestHandler, HTTPServer
 
 LOG = []
 def log(s):
@@ -40,13 +38,10 @@ def log(s):
     print(line, flush=True)
     LOG.append(line)
 
-# Anti-shadow: forzar carga del modulo copy estandar (evita shadow modules)
+# Anti-shadow module (evita problemas con /root/copy.py)
 try:
     import importlib.util as _ilu
     _spec = _ilu.find_spec("copy")
-    if _spec and "site-packages" not in (_spec.origin or "") and "dist-packages" not in (_spec.origin or ""):
-        # si el copy no viene de una ruta estandar, hay shadow module
-        pass
 except: pass
 
 
@@ -58,7 +53,7 @@ WALLET = "0xb0e1197098e6d427c01720f1631cad24ce740fa0"
 HOST_CLOB = "https://clob.polymarket.com"
 
 # Proxy en el PC del usuario (Tailscale 100.83.57.99:8888)
-# Las operaciones SE EJECUTAN a traves de este proxy para que salgan con
+# Las operaciones se ejecutan a traves de este proxy para que salgan con
 # la IP de tu PC (no la IP de Hetzner, que Polymarket rechaza).
 PROXY_URL = "http://100.83.57.99:8888"
 
@@ -66,11 +61,20 @@ ESTADO_FILE = "/opt/polymarket/combos_estado.json"
 BACKUP_FILE = "/opt/polymarket/combos_estado.bak.json"
 ENV_FILE = "/etc/polymarket.env"
 
-STAKE_POR_TRADE = 2.0
-MAX_TRADES_SIMULTANEOS = 3
-HORAS_RECIENTE = 24
-MODO_OPERACION = "AUTO"  # AUTO, SEMI, OFF — AUTO por defecto: opera al arrancar
-CHAT_ID = None  # se detecta al primer mensaje
+# ============================================
+# ESTRATEGIA — Combo simples automáticos
+# ============================================
+STAKE_POR_TRADE = 2.0            # $ por trade
+CUOTA_MIN = 1.20                 # cuota minima (probabilidad alta)
+CUOTA_MAX = 2.50                 # cuota maxima (sweet spot para simples)
+MAX_TRADES_SIMULTANEOS = 3       # maximo de operaciones a la vez
+HORAS_RECIENTE = 6               # ventana de trades (mas corto = mas fresco)
+INTERVALO_AUTO_S = 300           # cada cuanto revisa (5 min)
+PESO_MIN = 5                     # peso minimo del trader (top 6)
+
+# Estado (modo por defecto AUTO)
+MODO_OPERACION = "AUTO"           # AUTO, SEMI, OFF
+CHAT_ID = None                    # se detecta al primer mensaje
 
 TOP_TRADERS = [
     ("pleaseplease123",     "0x5e9458202b5817a72cf81105ec8a30e6f3705ba1", 10),
@@ -85,13 +89,17 @@ TOP_TRADERS = [
 ]
 
 DEPORTES_OK = ["MLB", "UFC", "NFL", "NBA", "tennis", "ATP", "soccer",
-               "EPL", "O/U", "Spread", "Moneyline", "Over/Under"]
+               "EPL", "O/U", "Spread", "Moneyline", "Over/Under",
+               "Bundesliga", "Serie A", "Ligue 1", "La Liga",
+               "NCAAF", "NCAAB", "WNBA", "MMA", "boxing"]
 EXCLUIR = ["Trump", "Biden", "Election", "President", "Congress",
            "Bitcoin", "Ethereum", "Crypto", "NFT",
-           "Fed", "rate", "inflation", "Russia", "Ukraine", "China"]
+           "Fed", "rate", "inflation", "Russia", "Ukraine", "China",
+           "Iran", "Israel", "WHO", "covid", "pandemic"]
 
-# cache de trades detectados
 TRADES_CACHE = {"ts": 0, "trades": []}
+ULTIMO_TRADE_EJECUTADO = 0  # timestamp ultimo trade para evitar duplicados
+
 
 # ============================================
 # TELEGRAM
@@ -107,21 +115,12 @@ def cargar_token():
                 return True
     return False
 
-def telegram_api(method, params=None, files=None):
+def telegram_api(method, params=None):
     if not TELEGRAM_TOKEN:
         return None
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/{method}"
     try:
-        if files:
-            boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
-            body = b""
-            for k, v in (params or {}).items():
-                body += f"--{boundary}\r\nContent-Disposition: form-data; name=\"{k}\"\r\n\r\n{v}\r\n".encode()
-            for k, (fn, data) in files.items():
-                body += f"--{boundary}\r\nContent-Disposition: form-data; name=\"{k}\"; filename=\"{fn}\"\r\nContent-Type: application/octet-stream\r\n\r\n".encode() + data + b"\r\n"
-            body += f"--{boundary}--\r\n".encode()
-            req = urllib.request.Request(url, data=body, headers={"Content-Type": f"multipart/form-data; boundary={boundary}"})
-        elif params:
+        if params:
             data = urllib.parse.urlencode(params).encode()
             req = urllib.request.Request(url, data=data)
         else:
@@ -132,19 +131,15 @@ def telegram_api(method, params=None, files=None):
         log(f"telegram_api error: {e}")
         return None
 
+
 # ============================================
 # PROXY (Tailscale → PC del usuario)
 # ============================================
-# Todas las llamadas HTTP del bot pasan por aqui para que las requests
-# salgan con la IP del PC del usuario, no de Hetzner.
-import ssl
 _proxy_ctx = None
 def _proxy_opener():
-    """Devuelve un opener configurado con el proxy del PC."""
     global _proxy_ctx
     if _proxy_ctx is None:
         _proxy_ctx = ssl.create_default_context()
-        # ser permisivos con certificados auto-firmados del proxy
         _proxy_ctx.check_hostname = False
         _proxy_ctx.verify_mode = ssl.CERT_NONE
     proxy_handler = urllib.request.ProxyHandler({
@@ -155,7 +150,6 @@ def _proxy_opener():
     return urllib.request.build_opener(proxy_handler, https_handler)
 
 def http_get(url, timeout=20):
-    """GET via proxy. Devuelve (status, body_str) o (None, error_str)."""
     try:
         opener = _proxy_opener()
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
@@ -164,19 +158,10 @@ def http_get(url, timeout=20):
     except Exception as e:
         return None, str(e)
 
-def http_post_json(url, payload, timeout=20):
-    """POST JSON via proxy. Devuelve (status, body_str)."""
-    try:
-        opener = _proxy_opener()
-        data = json.dumps(payload).encode("utf-8")
-        req = urllib.request.Request(url, data=data, method="POST",
-            headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"})
-        with opener.open(req, timeout=timeout) as r:
-            return r.status, r.read().decode("utf-8", errors="replace")
-    except Exception as e:
-        return None, str(e)
 
-# Teclado fijo SIEMPRE visible (debajo del cuadro de texto)
+# ============================================
+# TECLADO FIJO (siempre visible)
+# ============================================
 TECLADO_FIJO = {
     "keyboard": [
         [{"text": "📋 Trades"}, {"text": "💰 Saldo"}, {"text": "📂 Abiertas"}],
@@ -188,43 +173,18 @@ TECLADO_FIJO = {
     "persistent": True,
 }
 
-def enviar(chat_id, texto, reply_markup=None, always_keyboard=True):
-    """Envia mensaje. Por defecto incluye el teclado fijo siempre visible."""
+def enviar(chat_id, texto, reply_markup=None):
     params = {"chat_id": chat_id, "text": texto, "parse_mode": "Markdown"}
-    if reply_markup:
-        params["reply_markup"] = json.dumps(reply_markup)
-    elif always_keyboard:
+    # siempre anade el teclado fijo
+    if reply_markup is None:
         params["reply_markup"] = json.dumps(TECLADO_FIJO)
+    else:
+        params["reply_markup"] = json.dumps(reply_markup)
     return telegram_api("sendMessage", params)
 
-def enviar_trades_con_botones(chat_id, trades):
-    botones = []
-    for i, t in enumerate(trades, 1):
-        titulo_corto = t["titulo"][:30]
-        botones.append([{
-            "text": f"📋 Copiar {i}: {titulo_corto}",
-            "callback_data": f"copiar_{i}"
-        }])
-    botones.append([
-        {"text": "🔄 Auto: ON", "callback_data": "auto_on"},
-        {"text": "⏸ Auto: OFF", "callback_data": "auto_off"},
-    ])
-    botones.append([
-        {"text": "💰 Saldo", "callback_data": "saldo"},
-        {"text": "📂 Abiertas", "callback_data": "abiertas"},
-        {"text": "📋 Trades", "callback_data": "trades"},
-    ])
-    texto = f"*🎯 TRADES PARA COPIAR ({len(trades)})*\n"
-    texto += f"_Modo actual: {MODO_OPERACION}_\n\n"
-    for i, t in enumerate(trades, 1):
-        texto += f"*{i}. {t['titulo'][:50]}*\n"
-        texto += f"   Trader: `{t['trader']}` (peso {t['peso']})\n"
-        texto += f"   {t['side']} @ {t['price']:.2f} → cuota {t['cuota']:.2f}\n"
-        texto += f"   Tu stake: ${t['stake_sugerido']}\n\n"
-    return enviar(chat_id, texto, {"inline_keyboard": botones})
 
 # ============================================
-# POLYMARKET — CLIENTE CLOB
+# CREDENCIALES Y CLIENTE CLOB
 # ============================================
 def cargar_env():
     env = {}
@@ -240,24 +200,20 @@ def cargar_env():
     return env
 
 def get_clob_client():
-    """Crea el cliente CLOB usando las credenciales del env.
-    IMPORTANTE: el cliente se configura para usar el proxy del PC
-    (Tailscale 100.83.57.99:8888) en TODAS las llamadas HTTP.
-    """
+    """Crea el cliente CLOB forzando uso del proxy del PC."""
     try:
         from py_clob_client_v2.client import ClobClient
         from py_clob_client_v2.clob_types import ApiCreds
         from py_clob_client_v2 import SignatureTypeV2
     except ImportError:
-        log("ERROR: falta py-clob-client-v2. Instalar: pip install py-clob-client-v2")
+        log("ERROR: falta py-clob-client-v2")
         return None
     env = cargar_env()
     signer = env.get("POLY_PRIVATE_KEY", "").strip()
     if not signer:
-        log("ERROR: falta POLY_PRIVATE_KEY en /etc/polymarket.env")
+        log("ERROR: falta POLY_PRIVATE_KEY")
         return None
-    # Forzar proxy a nivel de entorno para que TODOS los requests (incluido
-    # el SDK) vayan por el PC del usuario
+    # Forzar proxy a nivel de entorno
     os.environ["HTTP_PROXY"] = PROXY_URL
     os.environ["HTTPS_PROXY"] = PROXY_URL
     os.environ["ALL_PROXY"] = PROXY_URL
@@ -271,130 +227,61 @@ def get_clob_client():
     kwargs["signature_type"] = int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA)
     try:
         client = ClobClient(HOST_CLOB, chain_id=137, key=signer, **kwargs)
-        # Forzar proxy tambien en el cliente httpx interno del SDK
         try:
             import httpx
-            # reemplazar el transport con uno que use proxy
             client.client = httpx.Client(
                 proxies={"http://": PROXY_URL, "https://": PROXY_URL},
                 verify=False, timeout=30)
         except Exception as e:
-            log(f"aviso: no se pudo parchar httpx client: {e}")
+            log(f"aviso httpx patch: {e}")
         if "creds" not in kwargs:
             try:
                 creds = client.derive_api_key()
                 client.set_api_creds(creds)
             except Exception as e:
                 log(f"aviso derive_api_key: {e}")
-        log(f"  cliente CLOB creado (proxy={PROXY_URL})")
         return client
     except Exception as e:
         log(f"ERROR creando cliente CLOB: {e}")
         return None
 
-def get_market_para_evento(titulo, asset):
-    """Busca un mercado por título o asset (token_id) y devuelve (token_id, side_target, current_price)."""
+
+# ============================================
+# RE-LECTURA DE CUOTA EN TIEMPO REAL
+# ============================================
+def get_precio_actual(token_id):
+    """Consulta el precio actual de un token (mid o best bid).
+    Usa el proxy del PC. Devuelve precio float o None.
+    """
     try:
-        # buscar el bin por titulo exacto
-        from urllib.parse import quote
-        url = f"https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=200"
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=20) as r:
-            markets = json.loads(r.read())
-        titulo_lower = titulo.lower()
-        for m in markets:
-            q = (m.get("question") or m.get("title") or "").lower()
-            if titulo_lower[:30] in q or q[:30] in titulo_lower:
-                tokens_str = m.get("clobTokenIds") or "[]"
-                try:
-                    tokens = json.loads(tokens_str)
-                except:
-                    continue
-                if not tokens:
-                    continue
-                # intentar identificar YES/NO por el titulo del mercado
-                if "no" in titulo_lower or "draw" in titulo_lower:
-                    return tokens[1] if len(tokens) > 1 else tokens[0], "NO", 0.5
-                return tokens[0], "YES", 0.5
-        # fallback: si el asset empieza con un id
-        if asset and str(asset).isdigit():
-            return str(asset), "YES", 0.5
+        url = f"{HOST_CLOB}/midpoint?token_id={token_id}"
+        status, body = http_get(url, timeout=10)
+        if status == 200:
+            data = json.loads(body)
+            mid = data.get("mid") or data.get("midpoint")
+            if mid:
+                return float(mid)
+        # fallback: book
+        url = f"{HOST_CLOB}/book?token_id={token_id}"
+        status, body = http_get(url, timeout=10)
+        if status == 200:
+            data = json.loads(body)
+            bids = data.get("bids", [])
+            asks = data.get("asks", [])
+            if asks:
+                return float(asks[0]["price"])  # best ask (precio de compra)
+            if bids:
+                return float(bids[0]["price"])
     except Exception as e:
-        log(f"error buscando mercado: {e}")
-    return None, None, 0.5
+        log(f"  get_precio_actual: {e}")
+    return None
 
-def ejecutar_trade_real(trade, chat_id=None):
-    """Ejecuta una orden REAL en CLOB."""
-    log(f"[REAL] ejecutando trade: {trade['titulo'][:50]}")
-    client = get_clob_client()
-    if not client:
-        return False, "cliente CLOB no disponible"
-    token_id, lado, _ = get_market_para_evento(trade["titulo"], trade.get("asset"))
-    if not token_id:
-        return False, f"no se encontró mercado para: {trade['titulo'][:50]}"
-    # traducir side del top trader a side nuestro
-    side_trader = trade.get("side", "BUY")
-    # si el trader compró YES, nosotros compramos YES
-    if "NO" in (trade["titulo"].upper()):
-        side = "BUY"
-    else:
-        side = "BUY" if side_trader == "BUY" else "SELL"
-    try:
-        # obtener precio actual del libro
-        from py_clob_client_v2.clob_types import OrderArgs
-        # si BUY a precio X, y el trader compró a precio mayor, usar precio del trader
-        # si SELL, usar el precio (será venta de shares)
-        precio = float(trade["price"])
-        if side == "BUY":
-            # comprar shares a este precio: size = stake / price
-            size_shares = round(STAKE_POR_TRADE / precio, 2)
-            if size_shares < 5:
-                return False, f"tamaño {size_shares} < 5 shares mínimo"
-            log(f"  BUY {size_shares} shares @ {precio:.3f} = ${STAKE_POR_TRADE}")
-            resp = client.create_and_post_order(
-                OrderArgs(token_id=token_id, price=precio, size=size_shares, side="BUY"))
-        else:
-            # SELL: el trader está vendiendo, no copiamos ventas
-            return False, "no copiamos ventas (solo compras nuevas)"
-        oid = resp.get("orderID") or resp.get("order_id")
-        if chat_id:
-            enviar(chat_id, f"✅ *ORDEN EJECUTADA*\n"
-                          f"  {trade['titulo'][:50]}\n"
-                          f"  BUY {size_shares} @ {precio:.3f}\n"
-                          f"  OrderID: `{str(oid)[:20]}`")
-        return True, oid
-    except Exception as e:
-        log(f"  ERROR enviando orden: {e}")
-        if chat_id:
-            enviar(chat_id, f"❌ *ERROR*\n  {str(e)[:200]}")
-        return False, str(e)
 
 # ============================================
-# ESTADO
-# ============================================
-def cargar_estado():
-    if not os.path.exists(ESTADO_FILE):
-        return {"modo": MODO_OPERACION, "trades_copiados": [], "historial": []}
-    try:
-        with open(ESTADO_FILE) as f:
-            d = json.load(f)
-        d.setdefault("modo", MODO_OPERACION)
-        d.setdefault("trades_copiados", [])
-        d.setdefault("historial", [])
-        return d
-    except:
-        return {"modo": MODO_OPERACION, "trades_copiados": [], "historial": []}
-
-def guardar_estado(estado):
-    if os.path.exists(ESTADO_FILE):
-        shutil.copy2(ESTADO_FILE, BACKUP_FILE)
-    with open(ESTADO_FILE, "w") as f:
-        json.dump(estado, f, indent=2, ensure_ascii=False)
-
-# ============================================
-# DETECCIÓN DE TRADES
+# DETECCIÓN Y FILTRADO DE TRADES
 # ============================================
 def detectar_trades():
+    """Detecta trades de top traders en las últimas HORAS_RECIENTE horas."""
     ahora = datetime.now().timestamp()
     candidatos = []
     for nombre, wallet, peso in TOP_TRADERS:
@@ -415,17 +302,23 @@ def detectar_trades():
                     continue
                 price = float(t.get("price", 0))
                 if price <= 0: continue
+                # filtro previo de cuota
+                cuota = round(1/price, 2)
+                if cuota < CUOTA_MIN or cuota > CUOTA_MAX:
+                    continue
                 candidatos.append({
                     "trader": nombre, "peso": peso, "titulo": titulo,
                     "side": t.get("side", "?"), "price": price,
                     "size": float(t.get("size", 0)),
                     "asset": t.get("asset", "?"),
-                    "timestamp": ts, "cuota": round(1/price, 2),
+                    "timestamp": ts, "cuota": cuota,
                     "stake_sugerido": STAKE_POR_TRADE,
                 })
         except Exception as e:
             log(f"error {nombre}: {e}")
+    # ordenar por peso del trader
     candidatos.sort(key=lambda x: -x["peso"])
+    # dedup por titulo
     vistos = set()
     finales = []
     for c in candidatos:
@@ -433,23 +326,170 @@ def detectar_trades():
         if key in vistos: continue
         vistos.add(key)
         finales.append(c)
-        if len(finales) >= MAX_TRADES_SIMULTANEOS:
+        if len(finales) >= MAX_TRADES_SIMULTANEOS * 2:
             break
     return finales
 
 def trades_refresh():
-    """Refresca el cache de trades si ha pasado más de 2 minutos."""
     ahora = time.time()
-    if ahora - TRADES_CACHE["ts"] > 120 or not TRADES_CACHE["trades"]:
+    if ahora - TRADES_CACHE["ts"] > 60 or not TRADES_CACHE["trades"]:
         TRADES_CACHE["ts"] = ahora
         TRADES_CACHE["trades"] = detectar_trades()
     return TRADES_CACHE["trades"]
 
+
 # ============================================
-# SALDO / POSICIONES
+# EJECUCIÓN DE TRADE
+# ============================================
+def buscar_token_por_titulo(titulo):
+    """Busca el token_id de un mercado por coincidencia de titulo.
+    Devuelve (token_id, side) o (None, None).
+    """
+    try:
+        url = "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=500"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            markets = json.loads(r.read())
+        titulo_lower = titulo.lower()
+        # buscar mejor coincidencia
+        mejor = None
+        mejor_score = 0
+        for m in markets:
+            q = (m.get("question") or m.get("title") or "").lower()
+            if not q: continue
+            # score simple: porcentaje de palabras del titulo que aparecen en q
+            palabras = set(titulo_lower.replace(":", " ").replace("vs.", " ").split())
+            palabras = {p for p in palabras if len(p) > 3}
+            if not palabras: continue
+            match = sum(1 for p in palabras if p in q)
+            score = match / len(palabras)
+            if score > mejor_score:
+                mejor_score = score
+                mejor = m
+        if mejor and mejor_score > 0.4:
+            tokens_str = mejor.get("clobTokenIds") or "[]"
+            try:
+                tokens = json.loads(tokens_str)
+            except:
+                tokens = []
+            if tokens:
+                # detectar YES/NO
+                side = "YES"
+                if "no" in titulo_lower and mejor_score < 0.7:
+                    side = "NO"
+                token_id = tokens[0] if side == "YES" else (tokens[1] if len(tokens) > 1 else tokens[0])
+                return token_id, side
+    except Exception as e:
+        log(f"  buscar_token error: {e}")
+    return None, None
+
+def ejecutar_trade(trade, chat_id=None):
+    """Ejecuta un trade simple (1 evento) automaticamente.
+    1. Re-lee el precio actual del libro
+    2. Si la cuota sigue en rango, envía la orden
+    3. Notifica a Telegram
+    """
+    titulo = trade["titulo"]
+    log(f"[REAL] {titulo[:50]}")
+    # 1. buscar el token del mercado
+    token_id, side = buscar_token_por_titulo(titulo)
+    if not token_id:
+        log(f"  SKIP: no encontre mercado para '{titulo[:40]}'")
+        return False, "no_encontrado"
+    # 2. re-leer precio en tiempo real
+    precio_actual = get_precio_actual(token_id)
+    if precio_actual is None:
+        log(f"  SKIP: no pude leer precio actual")
+        return False, "precio_no_disponible"
+    if precio_actual <= 0 or precio_actual >= 1:
+        log(f"  SKIP: precio invalido {precio_actual}")
+        return False, "precio_invalido"
+    cuota_actual = round(1 / precio_actual, 2)
+    if cuota_actual < CUOTA_MIN or cuota_actual > CUOTA_MAX:
+        log(f"  SKIP: cuota {cuota_actual} fuera de rango [{CUOTA_MIN}-{CUOTA_MAX}]")
+        return False, f"cuota_fuera_rango_{cuota_actual}"
+    # 3. verificar que no hayamos operado este mismo trade hace poco
+    global ULTIMO_TRADE_EJECUTADO
+    ahora = time.time()
+    if ahora - ULTIMO_TRADE_EJECUTADO < 30:
+        log(f"  SKIP: throttling (ultimo trade hace {ahora-ULTIMO_TRADE_EJECUTADO:.0f}s)")
+        return False, "throttle"
+    # 4. enviar la orden
+    client = get_clob_client()
+    if not client:
+        return False, "cliente_no_disponible"
+    try:
+        from py_clob_client_v2.clob_types import OrderArgs
+        size_shares = round(STAKE_POR_TRADE / precio_actual, 2)
+        if size_shares < 5:
+            log(f"  SKIP: {size_shares} shares < 5 (minimo)")
+            return False, f"size_{size_shares}_muy_pequeno"
+        log(f"  BUY {size_shares} shares @ {precio_actual:.3f} (cuota {cuota_actual})")
+        resp = client.create_and_post_order(
+            OrderArgs(token_id=token_id, price=precio_actual,
+                      size=size_shares, side="BUY"))
+        oid = resp.get("orderID") or resp.get("order_id") or "?"
+        ULTIMO_TRADE_EJECUTADO = ahora
+        # guardar en estado
+        estado = cargar_estado()
+        estado["trades_copiados"].append({
+            **trade,
+            "copiado_en": datetime.now().isoformat(),
+            "precio_ejecutado": precio_actual,
+            "cuota_ejecutada": cuota_actual,
+            "size_shares": size_shares,
+            "order_id": oid,
+            "token_id": token_id,
+            "side": side,
+            "status": "ejecutado",
+        })
+        guardar_estado(estado)
+        if chat_id:
+            enviar(chat_id, f"✅ *ORDEN EJECUTADA*\n"
+                          f"📌 {titulo[:55]}\n"
+                          f"💵 {size_shares} shares @ {precio_actual:.2f} (cuota {cuota_actual})\n"
+                          f"💰 Stake: ${size_shares * precio_actual:.2f}\n"
+                          f"👤 Trader: `{trade['trader']}`\n"
+                          f"🆔 `{str(oid)[:20]}`")
+        return True, oid
+    except Exception as e:
+        err = str(e)[:200]
+        log(f"  ERROR: {err}")
+        if chat_id:
+            enviar(chat_id, f"❌ *ERROR*\n{titulo[:50]}\n`{err}`")
+        return False, err
+
+
+# ============================================
+# ESTADO
+# ============================================
+def cargar_estado():
+    if not os.path.exists(ESTADO_FILE):
+        return {"modo": MODO_OPERACION, "stake": STAKE_POR_TRADE,
+                "trades_copiados": [], "historial": []}
+    try:
+        with open(ESTADO_FILE) as f:
+            d = json.load(f)
+        d.setdefault("modo", MODO_OPERACION)
+        d.setdefault("stake", STAKE_POR_TRADE)
+        d.setdefault("trades_copiados", [])
+        d.setdefault("historial", [])
+        return d
+    except:
+        return {"modo": MODO_OPERACION, "stake": STAKE_POR_TRADE,
+                "trades_copiados": [], "historial": []}
+
+def guardar_estado(estado):
+    if os.path.exists(ESTADO_FILE):
+        shutil.copy2(ESTADO_FILE, BACKUP_FILE)
+    with open(ESTADO_FILE, "w") as f:
+        json.dump(estado, f, indent=2, ensure_ascii=False)
+
+
+# ============================================
+# SALDO Y POSICIONES
 # ============================================
 def saldo_real():
-    """Consulta el saldo CLOB."""
     env = cargar_env()
     wallet = env.get("POLY_WALLET_ADDRESS", WALLET)
     rpcs = ["https://polygon-rpc.com", "https://1rpc.io/matic",
@@ -480,7 +520,8 @@ def saldo_real():
             except: continue
     return saldos
 
-def get_posiciones():
+def get_posiciones_api():
+    """Posiciones reales via API (mezcla con otros bots). Solo para enriquecer."""
     try:
         url = f"https://data-api.polymarket.com/positions?user={WALLET}&limit=500"
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
@@ -488,141 +529,91 @@ def get_posiciones():
             return json.loads(r.read())
     except: return []
 
+
 # ============================================
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"*🤖 POLY COMBOS BOT*\n\n"
-             f"Bot de copia de trades de los top traders de Polymarket Sports.\n\n"
-             f"*Modo actual: {MODO_OPERACION}* — stake ${STAKE_POR_TRADE:.2f}\n\n"
-             f"*👇 Usa los botones de abajo para navegar.*\n"
-             f"_El teclado queda fijo, solo pulsa._\n\n"
-             f"*Trades:* ver recomendaciones\n"
-             f"*Saldo:* tu balance real\n"
-             f"*Abiertas:* posiciones activas\n"
-             f"*Cerradas:* historial\n"
-             f"*Top:* leaderboard\n"
-             f"*Estado:* info del bot\n"
-             f"*AUTO/SEMI/OFF:* cambiar modo\n"
-             f"*Stake $1/$2/$5:* cambiar stake")
-    # sin inline_buttons, solo el teclado fijo abajo
+    estado = cargar_estado()
+    texto = (f"🤖 *POLY COMBOS BOT v5*\n\n"
+             f"Modo: *{estado.get('modo', MODO_OPERACION)}*\n"
+             f"Stake: *${estado.get('stake', STAKE_POR_TRADE):.2f}*\n"
+             f"Cuota objetivo: *{CUOTA_MIN:.2f} - {CUOTA_MAX:.2f}*\n"
+             f"Máx trades simultáneos: *{MAX_TRADES_SIMULTANEOS}*\n\n"
+             f"📌 *Estrategia*: Combo SIMPLES automáticos\n"
+             f"   1 evento por trade, cuota 1.20-2.50\n"
+             f"   Re-lectura de precio en tiempo real\n"
+             f"   Sin aprobación manual (modo AUTO)\n\n"
+             f"👇 Usa los botones de abajo.")
     return enviar(chat_id, texto)
 
 def cmd_trades(chat_id):
     trades = trades_refresh()
     if not trades:
-        return enviar(chat_id, "❌ No hay trades recomendados ahora mismo.")
-    return enviar_trades_con_botones(chat_id, trades)
-
-def cmd_copiar(chat_id, num):
-    global MODO_OPERACION
-    if MODO_OPERACION == "OFF":
-        return enviar(chat_id,
-                      "*🔴 MODO OFF — No se ejecutan operaciones*\n\n"
-                      "Cambia a 🟢 AUTO o 🟡 SEMI desde los botones de abajo.")
-    trades = trades_refresh()
-    if num < 1 or num > len(trades):
-        return enviar(chat_id, f"❌ Número inválido. Hay {len(trades)} trades disponibles.")
-    trade = trades[num - 1]
-    estado = cargar_estado()
-    estado["trades_copiados"].append({
-        **trade, "copiado_en": datetime.now().isoformat(),
-        "status": "ejecutando", "chat_id": chat_id,
-    })
-    guardar_estado(estado)
-    enviar(chat_id, f"⏳ *Ejecutando trade {num}...*\n  {trade['titulo'][:50]}")
-    ok, oid = ejecutar_trade_real(trade, chat_id)
-    estado = cargar_estado()
-    if estado["trades_copiados"]:
-        estado["trades_copiados"][-1]["status"] = "ok" if ok else "error"
-        estado["trades_copiados"][-1]["order_id"] = oid
-        guardar_estado(estado)
-    return ok
+        return enviar(chat_id, "❌ No hay trades con cuota 1.20-2.50 ahora mismo.")
+    texto = f"*🎯 TRADES DISPONIBLES ({len(trades)})*\n"
+    texto += f"_Cuota objetivo: {CUOTA_MIN}-{CUOTA_MAX}_\n\n"
+    for i, t in enumerate(trades, 1):
+        texto += f"*{i}. {t['titulo'][:55]}*\n"
+        texto += f"   {t['trader']} (peso {t['peso']}) | cuota {t['cuota']:.2f}\n"
+        texto += f"   Stake sugerido: ${t['stake_sugerido']}\n\n"
+    return enviar(chat_id, texto)
 
 def cmd_saldo(chat_id):
     saldos = saldo_real()
     cash = sum(saldos.values())
-    pos = get_posiciones()
+    pos = get_posiciones_api()
     val_pos = sum(float(p.get("currentValue", 0) or 0) for p in pos)
     total = cash + val_pos
-    texto = f"*💰 SALDO REAL*\n\n*Cash on-chain:* ${cash:.2f}\n"
+    texto = f"💰 *SALDO*\n\n*Cash on-chain:* ${cash:.2f}\n"
     for tok, val in saldos.items():
-        texto += f"  · {tok}: ${val:.2f}\n"
-    texto += f"\n*Posiciones:* ${val_pos:.2f}\n"
+        texto += f"   {tok}: ${val:.2f}\n"
+    texto += f"\n*Posiciones (total wallet):* ${val_pos:.2f}\n"
     texto += f"*TOTAL:* ${total:.2f}\n"
     texto += f"\n_PnL desde $500: ${total - 500:+.2f} ({(total-500)/500*100:+.1f}%)_"
-    botones = [[{"text": "🔙 Volver", "callback_data": "menu"}]]
-    return enviar(chat_id, texto, {"inline_keyboard": botones})
+    return enviar(chat_id, texto)
 
-def _posiciones_combos():
-    """Lee las posiciones que este bot de Combos ha copiado (estado local).
-    NO mezcla con las posiciones de otros bots (Elon/Zelensky) que usan la
-    misma wallet en Polymarket."""
+def _pos_combos():
+    """Lee las posiciones que este bot ha operado (estado local)."""
     estado = cargar_estado()
     return estado.get("trades_copiados", []), estado.get("historial", [])
 
 def cmd_abiertas(chat_id):
-    """Muestra SOLO las posiciones que este bot de Combos ha abierto.
-    Filtra por titulo o asset para no mostrar las de Elon/Zelensky."""
-    copiados, _ = _posiciones_combos()
-    # tokens/assets que el bot de combos ha operado
-    tokens_combos = set()
-    titulos_combos = set()
-    for t in copiados:
-        if t.get("status") == "ok":
-            titulos_combos.add((t.get("titulo") or "")[:30].lower())
-            for k in ("asset", "token_id", "order_id"):
-                v = t.get(k)
-                if v: tokens_combos.add(str(v))
-    if not titulos_combos and not tokens_combos:
+    copiados, _ = _pos_combos()
+    if not copiados:
         return enviar(chat_id,
                       "*📂 POSICIONES ABIERTAS DE COMBOS*\n\n"
-                      "_El bot de Combos aún no ha abierto ninguna posición._\n"
-                      "_Pulsa 🟢 AUTO si quieres que empiece ya._")
-    # leer API solo para enriquecer con PnL actual
-    pos = get_posiciones()
-    abiertas_combos = []
-    for p in pos:
-        if float(p.get("currentValue", 0) or 0) <= 0.001: continue
-        titulo = (p.get("title") or p.get("question") or "").lower()[:30]
-        asset = str(p.get("asset", ""))
-        if titulo in titulos_combos or asset in tokens_combos:
-            abiertas_combos.append(p)
-    if not abiertas_combos:
-        return enviar(chat_id,
-                      "*📂 POSICIONES ABIERTAS DE COMBOS*\n\n"
-                      "_No hay posiciones activas del bot de Combos._\n"
-                      f"_({len(copiados)} trade(s) copiado(s) en historial)_")
-    texto = f"*📂 POSICIONES ABIERTAS DE COMBOS ({len(abiertas_combos)})*\n\n"
-    total_pnl = 0
-    for p in abiertas_combos[:15]:
-        titulo = (p.get("title") or p.get("question", "?"))[:50]
-        outcome = p.get("outcome", "?")
-        cur = float(p.get("currentValue", 0) or 0)
-        pnl = float(p.get("cashPnl", 0) or 0)
-        total_pnl += pnl
-        ico = "🟢" if pnl >= 0 else "🔴"
-        texto += f"{ico} {titulo}\n   {outcome} | PnL: ${pnl:+.2f} (cur ${cur:.2f})\n\n"
-    texto += f"*Total PnL abierto: ${total_pnl:+.2f}*"
+                      "_El bot aún no ha abierto ninguna posición._\n"
+                      "_Pulsa 🟢 AUTO si quieres que empiece._")
+    # contar las ejecutadas
+    ejecutadas = [c for c in copiados if c.get("status") == "ejecutado"]
+    texto = f"*📂 OPERACIONES DE COMBOS ({len(ejecutadas)})*\n\n"
+    for c in ejecutadas[-15:]:
+        titulo = (c.get("titulo") or "?")[:55]
+        orden = c.get("order_id", "?")[:12]
+        precio = c.get("precio_ejecutado", 0)
+        cuota = c.get("cuota_ejecutada", 0)
+        stake = c.get("size_shares", 0) * precio
+        fecha = c.get("copiado_en", "")[:16]
+        texto += f"✅ {titulo}\n   ${stake:.2f} @ {precio:.2f} (cuota {cuota:.2f})\n   `{orden}` · {fecha}\n\n"
+    texto += f"\n_Usa 📊 Estado para ver el resumen._"
     return enviar(chat_id, texto)
 
 def cmd_cerradas(chat_id):
-    """Muestra SOLO las posiciones cerradas que este bot de Combos ha operado."""
-    _, historial = _posiciones_combos()
+    _, historial = _pos_combos()
     if not historial:
         return enviar(chat_id, "📭 El bot de Combos aún no tiene cerradas.")
     total = 0
     for h in historial:
-        try:
-            total += float(h.get("pnl", 0) or 0)
+        try: total += float(h.get("pnl", 0) or 0)
         except: pass
     texto = f"*✅ CERRADAS DE COMBOS ({len(historial)})*\n_PnL total: ${total:+.2f}_\n\n"
     for h in historial[-20:]:
-        titulo = (h.get("titulo") or h.get("title", "?"))[:50]
+        titulo = (h.get("titulo") or "?")[:55]
         pnl = float(h.get("pnl", 0) or 0)
         ico = "🟢" if pnl >= 0 else "🔴"
         cerrado = h.get("cerrado_en", h.get("copiado_en", "?"))[:16]
-        texto += f"{ico} {titulo}\n   ${pnl:+.2f} · {cerrado}\n\n"
+        texto += f"{ico} {titulo} → ${pnl:+.2f} ({cerrado})\n"
     return enviar(chat_id, texto)
 
 def cmd_top(chat_id):
@@ -635,18 +626,17 @@ def cmd_modo(chat_id, modo):
     global MODO_OPERACION
     modo = modo.upper()
     if modo not in ("AUTO", "SEMI", "OFF"):
-        return enviar(chat_id, "❌ Modos: AUTO, SEMI, OFF")
+        return enviar(chat_id, "❌ AUTO, SEMI, OFF")
     MODO_OPERACION = modo
     estado = cargar_estado()
     estado["modo"] = modo
     guardar_estado(estado)
-    desc = {"AUTO": "🟢 copia automáticamente los top trades",
-            "SEMI": "🟡 detecta y propone, espera tu aprobación",
-            "OFF": "🔴 solo informa, no opera"}[modo]
-    enviar(chat_id, f"*Modo cambiado a {modo}*\n_{desc}_")
-    # si es AUTO, lanzar una pasada inmediata
+    desc = {"AUTO": "🟢 ejecuta automáticamente",
+            "SEMI": "🟡 informa pero no opera",
+            "OFF": "🔴 solo informa"}[modo]
+    enviar(chat_id, f"*Modo: {modo}*\n_{desc}_")
     if modo == "AUTO":
-        threading.Thread(target=lambda: auto_pasada_inmediata(chat_id), daemon=True).start()
+        threading.Thread(target=lambda: auto_pasada(chat_id), daemon=True).start()
     return True
 
 def cmd_stake(chat_id, valor):
@@ -659,74 +649,83 @@ def cmd_stake(chat_id, valor):
         estado = cargar_estado()
         estado["stake"] = stake
         guardar_estado(estado)
-        return enviar(chat_id, f"*Stake cambiado a ${stake:.2f}*")
+        return enviar(chat_id, f"*Stake: ${stake:.2f}*")
     except:
-        return enviar(chat_id, "❌ Uso: /stake 2.5")
+        return enviar(chat_id, "❌ /stake 2.5")
 
 def cmd_status(chat_id):
     global CHAT_ID
     CHAT_ID = chat_id
     estado = cargar_estado()
+    ejecutadas = [c for c in estado.get("trades_copiados", []) if c.get("status") == "ejecutado"]
     texto = (f"*📊 ESTADO*\n\n"
              f"Modo: *{estado.get('modo', MODO_OPERACION)}*\n"
-             f"Stake: *${STAKE_POR_TRADE:.2f}*\n"
-             f"Trades copiados (sesión): {len(estado.get('trades_copiados', []))}\n"
-             f"Wallet: `{WALLET[:10]}...{WALLET[-4:]}`\n"
-             f"Última verificación: {datetime.now().strftime('%H:%M:%S')}")
-    botones = [[
-        {"text": "🟢 AUTO", "callback_data": "auto_on"},
-        {"text": "🟡 SEMI", "callback_data": "auto_semi"},
-        {"text": "🔴 OFF", "callback_data": "auto_off"},
-    ]]
-    return enviar(chat_id, texto, {"inline_keyboard": botones})
+             f"Stake: *${estado.get('stake', STAKE_POR_TRADE):.2f}*\n"
+             f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
+             f"Trades ejecutados: *{len(ejecutadas)}*\n"
+             f"Wallet: `{WALLET[:10]}…{WALLET[-4:]}`\n"
+             f"Proxy: `{PROXY_URL}`\n"
+             f"Hora: {datetime.now().strftime('%H:%M:%S')}")
+    return enviar(chat_id, texto)
+
 
 # ============================================
-# LOOP PRINCIPAL
+# AUTO LOOP — el corazón del bot
+# ============================================
+def auto_pasada(chat_id):
+    """Una pasada: detecta trades y ejecuta automaticamente los mejores."""
+    if MODO_OPERACION != "AUTO":
+        return
+    log(f"[AUTO] pasada (chat {chat_id})")
+    trades = trades_refresh()
+    if not trades:
+        enviar(chat_id, "🔄 *AUTO:* sin trades con cuota 1.20-2.50 ahora mismo.")
+        return
+    enviar(chat_id, f"🔄 *AUTO: {len(trades)} candidatos, ejecutando…*")
+    ejecutar = 0
+    saltados = 0
+    for t in trades[:MAX_TRADES_SIMULTANEOS * 2]:
+        if ejecutar >= MAX_TRADES_SIMULTANEOS:
+            break
+        # solo top traders (peso >= PESO_MIN)
+        if t["peso"] < PESO_MIN:
+            saltados += 1
+            continue
+        ok, motivo = ejecutar_trade(t, chat_id)
+        if ok:
+            ejecutar += 1
+        else:
+            saltados += 1
+            log(f"  saltado: {motivo}")
+    if ejecutar:
+        enviar(chat_id, f"✅ *AUTO: {ejecutar} trade(s) ejecutado(s), {saltados} saltado(s)*")
+    else:
+        enviar(chat_id, f"⚠️ *AUTO: 0 ejecuciones, {saltados} saltados*\n"
+                       f"_Prueba a cambiar a SEMI para ver los detalles._")
+
+def auto_loop():
+    """Loop cada INTERVALO_AUTO_S segundos."""
+    while True:
+        try:
+            if MODO_OPERACION == "AUTO" and CHAT_ID:
+                auto_pasada(CHAT_ID)
+        except Exception as e:
+            log(f"auto_loop error: {e}")
+        time.sleep(INTERVALO_AUTO_S)
+
+
+# ============================================
+# LOOP PRINCIPAL DE TELEGRAM
 # ============================================
 def procesar_update(update):
     global MODO_OPERACION, CHAT_ID
-    if "callback_query" in update:
-        cb = update["callback_query"]
-        chat_id = cb["message"]["chat"]["id"]
-        data = cb.get("data", "")
-        CHAT_ID = chat_id
-        if data.startswith("copiar_"):
-            try:
-                num = int(data.split("_")[1])
-                return cmd_copiar(chat_id, num)
-            except: pass
-        elif data == "trades":
-            return cmd_trades(chat_id)
-        elif data == "saldo":
-            return cmd_saldo(chat_id)
-        elif data == "abiertas":
-            return cmd_abiertas(chat_id)
-        elif data == "auto_on":
-            MODO_OPERACION = "AUTO"
-            return enviar(chat_id, "*🟢 Modo AUTO activado*\n_Copia automáticamente_")
-        elif data == "auto_semi":
-            MODO_OPERACION = "SEMI"
-            return enviar(chat_id, "*🟡 Modo SEMI*\n_Espera tu aprobación_")
-        elif data == "auto_off":
-            MODO_OPERACION = "OFF"
-            return enviar(chat_id, "*🔴 Modo OFF*\n_Solo informa_")
-        elif data == "menu":
-            return cmd_start(chat_id)
-        return
-
     if "message" not in update:
         return
     msg = update["message"]
     chat_id = msg["chat"]["id"]
     text = msg.get("text", "").strip()
     CHAT_ID = chat_id
-    # --- al recibir /start, forzar una pasada AUTO si esta en modo AUTO ---
-    if text == "/start" and MODO_OPERACION == "AUTO":
-        cmd_start(chat_id)
-        # ejecutar una pasada inmediata
-        threading.Thread(target=lambda: auto_pasada_inmediata(chat_id), daemon=True).start()
-        return
-    # --- botones del teclado fijo (texto) ---
+    # botones del teclado fijo
     if text == "📋 Trades":
         return cmd_trades(chat_id)
     elif text == "💰 Saldo":
@@ -750,16 +749,15 @@ def procesar_update(update):
             v = float(text.replace("💵 Stake $", "").strip())
             return cmd_stake(chat_id, str(v))
         except:
-            return enviar(chat_id, "❌ Stake no válido")
-    # --- comandos de texto ---
+            return enviar(chat_id, "❌")
+    # comandos
     if text == "/start":
-        return cmd_start(chat_id)
+        cmd_start(chat_id)
+        if MODO_OPERACION == "AUTO":
+            threading.Thread(target=lambda: auto_pasada(chat_id), daemon=True).start()
+        return
     elif text == "/trades":
         return cmd_trades(chat_id)
-    elif text.startswith("/copiar "):
-        try: num = int(text.split()[1])
-        except: return enviar(chat_id, "❌ /copiar N")
-        return cmd_copiar(chat_id, num)
     elif text == "/abiertas":
         return cmd_abiertas(chat_id)
     elif text == "/cerradas":
@@ -770,67 +768,19 @@ def procesar_update(update):
         return cmd_top(chat_id)
     elif text.startswith("/auto"):
         parts = text.split()
-        if len(parts) > 1:
-            return cmd_modo(chat_id, parts[1])
-        return cmd_status(chat_id)
+        return cmd_modo(chat_id, parts[1] if len(parts) > 1 else "AUTO")
     elif text.startswith("/stake"):
         parts = text.split()
-        if len(parts) > 1:
-            return cmd_stake(chat_id, parts[1])
-        return enviar(chat_id, f"*Stake actual: ${STAKE_POR_TRADE:.2f}*\n_Uso: /stake 2.5_")
+        return cmd_stake(chat_id, parts[1] if len(parts) > 1 else "2.0")
     elif text == "/status" or text == "/estado":
         return cmd_status(chat_id)
-
-def auto_loop():
-    """En modo AUTO, ejecuta los top trades nuevos cada 5 minutos.
-    La primera pasada es a los 30s de arrancar (para tener CHAT_ID)."""
-    ultimo_envio = 0
-    while True:
-        try:
-            if MODO_OPERACION == "AUTO" and CHAT_ID and time.time() - ultimo_envio > 300:
-                log(f"[AUTO] revisando trades (CHAT_ID={CHAT_ID})")
-                trades = trades_refresh()
-                if not trades:
-                    enviar(CHAT_ID, "🔄 *AUTO:* sin trades de deportes ahora mismo.")
-                else:
-                    enviar(CHAT_ID, f"🔄 *AUTO: {len(trades)} trades candidatos...*")
-                    ejecutar = 0
-                    for t in trades:
-                        # solo copiar los del top 3
-                        if t["peso"] < 5: continue
-                        ok, _ = ejecutar_trade_real(t, CHAT_ID)
-                        if ok: ejecutar += 1
-                    enviar(CHAT_ID, f"*AUTO: {ejecutar} trade(s) ejecutado(s)*")
-                ultimo_envio = time.time()
-        except Exception as e:
-            log(f"auto_loop error: {e}")
-        time.sleep(60)
-
-def auto_pasada_inmediata(chat_id):
-    """Ejecuta una pasada AUTO inmediatamente (al recibir /start o cambiar a AUTO)."""
-    global MODO_OPERACION
-    if MODO_OPERACION != "AUTO":
-        return
-    log(f"[AUTO-INMEDIATA] chat {chat_id}")
-    trades = trades_refresh()
-    if not trades:
-        enviar(chat_id, "🔄 *AUTO:* sin trades de deportes ahora mismo.")
-        return
-    enviar(chat_id, f"🔄 *AUTO: {len(trades)} trades candidatos...*")
-    ejecutar = 0
-    for t in trades:
-        if t["peso"] < 5: continue
-        ok, _ = ejecutar_trade_real(t, chat_id)
-        if ok: ejecutar += 1
-    enviar(chat_id, f"*AUTO: {ejecutar} trade(s) ejecutado(s)*")
 
 def bot_loop():
     log("Bot iniciado, esperando mensajes...")
     offset = 0
     while True:
         try:
-            params = {"timeout": 30, "offset": offset,
-                      "allowed_updates": '["message","callback_query"]'}
+            params = {"timeout": 30, "offset": offset}
             data = urllib.parse.urlencode(params).encode()
             req = urllib.request.Request(
                 f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/getUpdates",
@@ -843,10 +793,11 @@ def bot_loop():
                     try:
                         procesar_update(update)
                     except Exception as e:
-                        log(f"error procesando update: {e}")
+                        log(f"error update: {e}")
         except Exception as e:
             log(f"loop error: {e}")
             time.sleep(5)
+
 
 def main():
     if not cargar_token():
@@ -856,19 +807,18 @@ def main():
     log(f"Wallet: {WALLET}")
     log(f"Modo: {MODO_OPERACION}")
     log(f"Stake: ${STAKE_POR_TRADE}")
+    log(f"Cuota objetivo: {CUOTA_MIN}-{CUOTA_MAX}")
     log(f"Proxy PC: {PROXY_URL}")
-    # test rapido del proxy
+    # test proxy
     log("Test proxy...")
     status, body = http_get("https://api.telegram.org", timeout=10)
     if status:
         log(f"  Proxy OK (status {status})")
     else:
-        log(f"  PROXY NO RESPONDE: {body[:200]}")
-        log(f"  AVISO: las operaciones se enviarán DIRECTO desde Hetzner")
-    # arrancar auto loop en thread
+        log(f"  PROXY FALLO: {body[:100]}")
+    # arrancar auto loop
     t = threading.Thread(target=auto_loop, daemon=True)
     t.start()
-    # arrancar el loop principal
     bot_loop()
 
 if __name__ == "__main__":
