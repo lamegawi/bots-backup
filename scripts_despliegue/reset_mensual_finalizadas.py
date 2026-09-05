@@ -142,6 +142,12 @@ def main():
         log("=" * 70)
         log("MODO DRY-RUN: no se ha tocado nada")
         log(f"Para aplicar: {sys.argv[0]}")
+        # publicar el dry-run para que se pueda leer
+        pat = find_pat()
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        texto = f"Reset DRY-RUN - {ts}\n" + "\n".join(LOG)
+        ok = publicar(texto, f"diag_hetzner/reset_dry_{ts}.txt", pat)
+        log(f"  publicado dry-run: {ok}")
         return
 
     # backup
