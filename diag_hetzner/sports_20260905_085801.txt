@@ -1,0 +1,34 @@
+Listar partidos sports - 20260905_085801
+
+======================================================================
+LISTAR PARTIDOS POLYMARKET SPORTS · 2026-09-05T08:58:00.882431
+======================================================================
+
+[Probando] https://gamma-api.polymarket.com/events?active=true&closed=false&order=startDate...
+  ✓ 100 eventos encontrados
+
+[2/3] Filtrar eventos deportivos...
+  deportes: 9 de 100
+
+[3/3] Mostrando los próximos 30 eventos deportivos:
+
+  [ 1] Macron out by...?
+        fin: 2027-01-01T04:59:00Z
+  [ 2] NATO/EU troops fighting in Ukraine by...?
+        fin: 2027-01-01T04:59:00Z
+  [ 3] Will any country leave NATO by...?
+        fin: 2027-01-01T04:59:00Z
+  [ 4] Will Russia invade a NATO country by...?
+        fin: 2025-12-31T12:00:00Z
+  [ 5] US x Russia military clash by...?
+        fin: 2027-01-01T04:59:00Z
+  [ 6] Ballon d'Or Winner 2026
+        fin: 2026-10-31T00:00:00Z
+  [ 7] NATO x Russia military clash by...?
+        fin: 2027-01-01T04:59:00Z
+  [ 8] How many Fed rate cuts in 2026?
+        fin: 2026-12-31T00:00:00Z
+  [ 9] Lecornu out as French PM by...?
+        fin: 2027-01-01T04:59:00Z
+
+======================================================================
