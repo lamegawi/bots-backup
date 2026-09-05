@@ -461,7 +461,26 @@ def ejecutar_simple(trade, chat_id=None):
     # buscar mercado (usando el asset del trade directamente)
     token_id, side, q = buscar_token_por_titulo(trade["titulo"], asset_hint=trade.get("asset"))
     if not token_id:
+        log(f"  SKIP: no encontre mercado (asset={str(trade.get('asset'))[:20]})")
         return False, "no_encontrado", None
+    log(f"  token_id={token_id[:20]}... side={side}")
+    # re-leer precio
+    precio = get_precio_actual(token_id)
+    if not precio or precio <= 0 or precio >= 1:
+        log(f"  SKIP: no pude leer precio actual")
+        return False, "precio_no_disponible", None
+    log(f"  precio actual={precio:.3f} (cuota {1/precio:.2f})")
+    cuota = round(1/precio, 2)
+    if not (CUOTA_MIN_SIMPLE <= cuota <= CUOTA_MAX_SIMPLE):
+        log(f"  SKIP: cuota {cuota} fuera de rango [{CUOTA_MIN_SIMPLE}-{CUOTA_MAX_SIMPLE}]")
+        return False, f"cuota_{cuota}_fuera_rango", None
+    # enviar
+    log(f"  enviando orden...")
+    ok, resultado = enviar_orden(token_id, precio, STAKE_POR_TRADE, chat_id)
+    if not ok:
+        log(f"  ERROR: {resultado}")
+        return False, resultado, None
+    log(f"  OK orden={str(resultado.get('oid', '?'))[:18]}")
     # re-leer precio
     precio = get_precio_actual(token_id)
     if not precio or precio <= 0 or precio >= 1:
