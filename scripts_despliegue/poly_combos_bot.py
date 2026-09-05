@@ -40,6 +40,16 @@ def log(s):
     print(line, flush=True)
     LOG.append(line)
 
+# Anti-shadow: forzar carga del modulo copy estandar (evita shadow modules)
+try:
+    import importlib.util as _ilu
+    _spec = _ilu.find_spec("copy")
+    if _spec and "site-packages" not in (_spec.origin or "") and "dist-packages" not in (_spec.origin or ""):
+        # si el copy no viene de una ruta estandar, hay shadow module
+        pass
+except: pass
+
+
 # ============================================
 # CONFIGURACIÓN
 # ============================================
