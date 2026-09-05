@@ -1,0 +1,193 @@
+TRADES PARA COPIAR - 20260905_183842
+
+======================================================================
+DETECTAR TRADES PARA COPIAR · 2026-09-05T18:38:41.909800
+======================================================================
+Stake por trade: $2.0
+Max trades simultaneos: 3
+Ventana: ultimas 24 horas
+
+
+[pleaseplease123] peso=10
+  30 trades
+  · 22:00 | Washington Nationals vs. Los Angeles Dodgers: O/U  | BUY @ 0.54
+  · 22:00 | Washington Nationals vs. Los Angeles Dodgers: O/U  | BUY @ 0.54
+
+[ferrariChampions2026] peso=8
+  30 trades
+  · 18:33 | Villarreal CF vs. RC Deportivo A Coruña: O/U 2.5 | BUY @ 0.40
+  · 18:33 | CS Marítimo vs. Sport Lisboa e Benfica: O/U 2.5 | BUY @ 0.46
+  · 18:31 | Sporting CP vs. CD Nacional: O/U 3.5 | BUY @ 0.52
+  · 18:27 | Fenerbahçe SK vs. Beşiktaş JK: O/U 2.5 | BUY @ 0.41
+  · 18:26 | UFC Fight Night: Ryan Spann vs. Mario Pinto (Heavy | BUY @ 0.24
+  · 18:24 | US Open WTA: Iga Swiatek vs Marie Bouzkova | BUY @ 0.77
+  · 18:23 | AS Saint-Étienne vs. Montpellier HSC: O/U 2.5 | BUY @ 0.35
+  · 18:23 | FC Alverca vs. SC Braga: O/U 2.5 | BUY @ 0.15
+  · 18:23 | FC Alverca vs. SC Braga: O/U 3.5 | BUY @ 0.59
+  · 18:22 | Rayo Vallecano de Madrid vs. Real Racing Club: O/U | BUY @ 0.69
+  · 18:21 | Le Havre AC vs. Stade Brestois 29: O/U 2.5 | BUY @ 0.53
+  · 18:21 | Fenerbahçe SK vs. Beşiktaş JK: O/U 2.5 | BUY @ 0.35
+  · 18:18 | FC Schalke 04 vs. FC Bayern München: O/U 0.5 | BUY @ 0.78
+  · 18:18 | FC Schalke 04 vs. FC Bayern München: O/U 0.5 | BUY @ 0.76
+  · 18:16 | Hull City AFC vs. Aston Villa FC: O/U 0.5 | BUY @ 0.82
+  · 18:14 | FC Schalke 04 vs. FC Bayern München: O/U 0.5 | BUY @ 0.59
+  · 18:13 | Coastal Carolina vs. West Virginia: O/U 44.5 | BUY @ 0.42
+  · 18:10 | Hull City AFC vs. Aston Villa FC: O/U 0.5 | BUY @ 0.67
+  · 18:06 | Hull City AFC vs. Aston Villa FC: O/U 0.5 | BUY @ 0.58
+  · 18:04 | Hull City AFC vs. Aston Villa FC: O/U 0.5 | BUY @ 0.53
+
+[balthazar] peso=5
+  30 trades
+  · 18:27 | Rayo Vallecano de Madrid vs. Real Racing Club: O/U | BUY @ 0.93
+  · 18:22 | Rayo Vallecano de Madrid vs. Real Racing Club: O/U | BUY @ 0.70
+
+[Sassy-Bucket] peso=5
+  30 trades
+  · 18:30 | UFC Fight Night: Dan Hooker vs. Salahdine Parnasse | BUY @ 0.20
+  · 18:18 | UFC Fight Night: Ryan Spann vs. Mario Pinto (Heavy | BUY @ 0.23
+  · 18:11 | UFC Fight Night: Ryan Spann vs. Mario Pinto (Heavy | BUY @ 0.23
+  · 18:03 | UFC Fight Night: Modestas Bukauskas vs. Oumar Sy ( | BUY @ 0.31
+  · 18:03 | UFC Fight Night: Modestas Bukauskas vs. Oumar Sy ( | BUY @ 0.31
+  · 17:47 | UFC Fight Night: Modestas Bukauskas vs. Oumar Sy ( | BUY @ 0.30
+  · 17:37 | UFC Fight Night: Nathaniel Wood vs. Pavel Andrusca | BUY @ 0.30
+  · 16:47 | UFC Fight Night: Nora Cornolle vs. Klaudia Sygula  | BUY @ 0.47
+  · 16:47 | UFC Fight Night: Nora Cornolle vs. Klaudia Sygula  | BUY @ 0.47
+  · 16:39 | UFC Fight Night: Nora Cornolle vs. Klaudia Sygula  | BUY @ 0.46
+  · 16:20 | UFC Fight Night: Nathaniel Wood vs. Pavel Andrusca | BUY @ 0.29
+  · 00:13 | Toronto Blue Jays vs. Kansas City Royals: O/U 9.5 | SELL @ 0.39
+  · 00:00 | Tampa Bay Rays vs. Texas Rangers: O/U 8.5 | BUY @ 0.50
+
+[Jsram] peso=5
+  30 trades
+  · 18:35 | UFC Fight Night: Michael Page vs. Nursulton Ruzibo | BUY @ 0.65
+  · 11:41 | Manchester City FC vs. Coventry City FC: O/U 3.5 | BUY @ 0.49
+  · 09:20 | Spread: Manchester City FC (-2.5) | BUY @ 0.57
+  · 07:45 | Spread: Manchester City FC (-2.5) | BUY @ 0.55
+  · 07:44 | Manchester City FC vs. Coventry City FC: O/U 3.5 | BUY @ 0.47
+
+[Flaznorp] peso=5
+  30 trades
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+  · 18:35 | US Open WTA: Mirra Andreeva vs Nikola Bartunkova | BUY @ 0.96
+  · 18:35 | Spread: AS Roma (-2.5) | BUY @ 0.16
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+  · 18:35 | CD Castellón vs. Albacete Balompié: O/U 5.5 | BUY @ 0.08
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+  · 18:35 | 1st Half Spread: RC Deportivo A Coruña (-1.5) | BUY @ 0.97
+  · 18:35 | Willem II Tilburg vs. SBV Excelsior: O/U 2.5 | BUY @ 0.60
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+  · 18:35 | 1st Half Spread: RC Deportivo A Coruña (-1.5) | BUY @ 0.97
+  · 18:35 | Spread: Sporting CP (-2.5) | BUY @ 0.53
+
+[Talvez10] peso=4
+  30 trades
+  · 18:02 | San Francisco Giants vs. New York Mets: O/U 8.5 | BUY @ 0.46
+  · 15:20 | UFC Fight Night: Modestas Bukauskas vs. Oumar Sy ( | BUY @ 0.70
+  · 20:47 | Eugenio Suárez: Home Runs O/U 0.5 | BUY @ 0.19
+  · 20:46 | Coby Mayo: Home Runs O/U 0.5 | BUY @ 0.18
+  · 20:46 | Matt Olson: Home Runs O/U 0.5 | BUY @ 0.14
+  · 20:16 | San Francisco Giants vs. New York Mets: O/U 7.5 | BUY @ 0.52
+
+[GoalLineGhost] peso=3
+  30 trades
+  · 15:18 | SV Werder Bremen vs. RB Leipzig: O/U 3.5 | BUY @ 0.60
+  · 15:17 | Brentford FC vs. Sunderland AFC: O/U 0.5 | BUY @ 0.25
+  · 15:17 | Spread: BV Borussia 09 Dortmund (-1.5) | BUY @ 0.10
+  · 15:17 | Spread: BV Borussia 09 Dortmund (-1.5) | BUY @ 0.10
+  · 15:17 | Aberdeen FC vs. Kilmarnock FC: O/U 0.5 | BUY @ 0.32
+  · 15:17 | Dundee United FC vs. Falkirk FC: O/U 1.5 | BUY @ 0.25
+  · 15:17 | FK Haugesund vs. Sogndal Fotball: O/U 1.5 | BUY @ 0.16
+  · 15:17 | West Bromwich Albion FC vs. Watford FC: O/U 1.5 | BUY @ 0.29
+  · 15:16 | Spread: Millwall FC (-2.5) | BUY @ 0.92
+  · 15:16 | Spread: West Ham United FC (-1.5) | BUY @ 0.51
+  · 15:16 | Spread: Millwall FC (-1.5) | BUY @ 0.68
+  · 15:16 | Aberdeen FC vs. Kilmarnock FC: O/U 0.5 | BUY @ 0.31
+  · 15:16 | Brighton & Hove Albion FC vs. Leeds United FC: O/U | BUY @ 0.25
+  · 15:16 | FC Internazionale Milano vs. SSC Napoli: O/U 4.5 | BUY @ 0.13
+  · 15:16 | Burnley FC vs. Bristol City FC: O/U 2.5 | BUY @ 0.30
+  · 15:16 | SV Werder Bremen vs. RB Leipzig: O/U 3.5 | BUY @ 0.56
+  · 15:14 | Manchester City FC vs. Coventry City FC: O/U 2.5 | BUY @ 0.54
+  · 15:14 | Spread: West Ham United FC (-1.5) | BUY @ 0.49
+  · 15:14 | Brighton & Hove Albion FC vs. Leeds United FC: O/U | BUY @ 0.60
+
+[AV23IUa] peso=3
+  30 trades
+  · 13:43 | UFC Fight Night: Morgan Charrière vs. Felipe Lima  | BUY @ 0.66
+  · 13:43 | UFC Fight Night: Farés Ziam vs. Axel Sola (Lightwe | BUY @ 0.41
+  · 13:42 | UFC Fight Night: Michael Page vs. Nursulton Ruzibo | BUY @ 0.65
+  · 13:30 | US Open ATP: Zizou Bergs vs Botic van de Zandschul | BUY @ 0.66
+  · 13:29 | US Open ATP: Jakub Mensik vs Learner Tien | BUY @ 0.56
+  · 13:29 | US Open ATP: Luciano Darderi vs Dane Sweeny | BUY @ 0.24
+  · 13:29 | US Open ATP: Alexander Blockx vs Flavio Cobolli | BUY @ 0.50
+  · 00:22 | Spread: Manchester City FC (-1.5) | BUY @ 0.67
+
+======================================================================
+RECOMENDACIONES PARA COPIAR (3 trades)
+======================================================================
+
+1. Washington Nationals vs. Los Angeles Dodgers: O/U 8.5
+   Trader: pleaseplease123 (peso 10)
+   Lado: BUY @ 0.540 (cuota 1.85)
+   Stake del trader: 434 | TU stake: $2.0
+   Cuando: 2026-09-04 22:00
+
+2. Villarreal CF vs. RC Deportivo A Coruña: O/U 2.5
+   Trader: ferrariChampions2026 (peso 8)
+   Lado: BUY @ 0.400 (cuota 2.50)
+   Stake del trader: 8071 | TU stake: $2.0
+   Cuando: 2026-09-05 18:33
+
+3. CS Marítimo vs. Sport Lisboa e Benfica: O/U 2.5
+   Trader: ferrariChampions2026 (peso 8)
+   Lado: BUY @ 0.460 (cuota 2.17)
+   Stake del trader: 3935 | TU stake: $2.0
+   Cuando: 2026-09-05 18:33
+
+======================================================================
+
+JSON:
+[
+  {
+    "trader": "pleaseplease123",
+    "peso": 10,
+    "titulo": "Washington Nationals vs. Los Angeles Dodgers: O/U 8.5",
+    "side": "BUY",
+    "price": 0.54,
+    "size": 434.0,
+    "asset": "95952339111587815223",
+    "timestamp": 1788559234,
+    "cuota": 1.85,
+    "stake_sugerido": 2.0
+  },
+  {
+    "trader": "ferrariChampions2026",
+    "peso": 8,
+    "titulo": "Villarreal CF vs. RC Deportivo A Coruña: O/U 2.5",
+    "side": "BUY",
+    "price": 0.4,
+    "size": 8071.425,
+    "asset": "49206510301026259565",
+    "timestamp": 1788633238,
+    "cuota": 2.5,
+    "stake_sugerido": 2.0
+  },
+  {
+    "trader": "ferrariChampions2026",
+    "peso": 8,
+    "titulo": "CS Marítimo vs. Sport Lisboa e Benfica: O/U 2.5",
+    "side": "BUY",
+    "price": 0.46,
+    "size": 3935.130433,
+    "asset": "84020105007238079128",
+    "timestamp": 1788633180,
+    "cuota": 2.17,
+    "stake_sugerido": 2.0
+  }
+]
