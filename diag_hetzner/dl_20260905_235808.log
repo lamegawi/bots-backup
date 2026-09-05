@@ -1,0 +1,93 @@
+=== TEST DESCARGA - Sat Sep  5 11:58:08 PM UTC 2026 ===
+
+== 1. curl directo desde Hetzner ==
+HTTP: 200 | size: 4136
+
+== 2. Si se descargo, ejecutar ==
+OK descargado 4136 bytes
+==========================================
+ACTUALIZADOR COMBOS - Sat Sep  5 11:58:08 PM UTC 2026
+==========================================
+
+=== Paso 1: Detectar branch HEAD ===
+Branch HEAD: 0d7c701c
+
+=== Paso 2: Detener bot anterior ===
+OK
+
+=== Paso 3: Descargar nuevo codigo ===
+Descargado: 33888 bytes
+
+=== Paso 4: Verificar /opt/polymarket ===
+total 372
+drwxr-xr-x 14 1000 1000  4096 Sep  5 23:58 .
+drwxr-xr-x  3 root root  4096 Aug 17 20:24 ..
+-rw-r--r--  1 root root   465 Sep  5 23:58 apuestas_compartidas.json
+-rw-r--r--  1 root root   301 Aug 22 04:41 apuestas_compartidas.json.bak_20260822_044155
+drwxr-xr-x  8 root root  4096 Aug 19 17:47 _backup_motor_v1
+drwxr-xr-x  4 root root  4096 Aug 31 01:00 backup_trump_20260831_201030
+-rw-r--r--  1 root root   151 Aug 18 20:00 balance_bot.json
+drwxr-xr-x  6 1000 1000  4096 Sep  5 17:19 bot-polymarket-elon
+drwxr-xr-x  5 1000 1000  4096 Sep  2 09:00 bot-polymarket-elon-mensual
+
+=== Paso 5: Verificar /etc/polymarket.env ===
+OK env existe
+4
+
+=== Paso 6: Verificar token Telegram ===
+OK token existe
+
+=== Paso 7: Verificar servicio systemd ===
+OK servicio existe
+[Unit]
+Description=Poly Combos Bot (Telegram copy-trading)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/polymarket
+ExecStart=/usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+Restart=always
+RestartSec=10
+StandardOutput=append:/var/log/poly-combos-bot.log
+StandardError=append:/var/log/poly-combos-bot.log
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONPATH=/usr/lib/python3/dist-packages:/usr/local/lib/python3.12/dist-packages
+
+=== Paso 8: Iniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 23:58:11 UTC; 5s ago
+   Main PID: 926380 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 12.9M (peak: 13.3M)
+        CPU: 184ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─926380 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 9: Verificar log ===
+[23:56:31]   pagina 3: +50 mercados, 9 combos de deportes
+[23:56:31]   pagina 4: +50 mercados, 52 combos de deportes
+[23:56:31]   pagina 5: +50 mercados, 89 combos de deportes
+[23:56:31] [TRADE] US Open ATP: Michael Zheng vs Arthur Gea
+[23:56:32]   token real resuelto: 234333119502820491...
+[23:56:32]   precio=0.720 cuota=1.39 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[23:56:32]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[23:56:35] [TRADE] US Open ATP: Zizou Bergs vs Botic van de Zandschulp
+[23:56:36]   token real resuelto: 786246390407539017...
+[23:56:36]   SKIP: cuota 2.67 fuera de [1.2-2.5]
+[23:56:39] [TRADE] Spread: Philadelphia Union (-1.5)
+[23:56:39]   token real resuelto: 958718972036241424...
+[23:56:40]   precio=0.410 cuota=2.44 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[23:56:40]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[23:58:11] v10 cargado · modo=AUTO · stake=$5.0
+[23:58:11] Proxy: http://100.83.57.99:8888
+[23:58:12] Test proxy: 200
+[23:58:12] v10 iniciado
+
+=== FIN update ===
+(publicado en diag_hetzner/combos_update_20260905_235808.log)
