@@ -1,0 +1,40 @@
+=== VER CAMPOS COMBO - Sat Sep  5 11:19:24 PM UTC 2026 ===
+
+=== MARKET 1 ===
+  id: 665374
+  condition_id: 0x5db999fad322cea2914535aae5517060c3f80ad6d8c0231cde2124a434d16846
+  position_ids: [798559951534518479645224261511...] (2 items)
+  pending: True
+  slug: will-the-us-invade-iran-before-2027
+  title: Will the U.S. invade Iran before 2027?
+  outcomes: ['Yes', 'No']
+  outcome_prices: ['0.145', '0.855']
+  image: https://polymarket-upload.s3.us-east-2.amazonaws.com/will-the-us-invade-iran-in-...
+  volume: 64862931.801796
+  tags: ['politics', 'iran', 'trump', 'middle-east', 'israel', 'geopolitics', 'world', 'military-strikes']
+
+=== MARKET 2 ===
+  id: 567621
+  condition_id: 0xd9fb1184af0064e5e34b129f5b79afa5a17b7e32f2953ab05efed82315fee6d4
+  position_ids: [737627543131928977073597406197...] (2 items)
+  pending: True
+  slug: will-china-invade-taiwan-before-2027
+  title: Will China invade Taiwan by end of 2026?
+  outcomes: ['Yes', 'No']
+  outcome_prices: ['0.0375', '0.9625']
+  image: https://polymarket-upload.s3.us-east-2.amazonaws.com/china-invades-taiwan-in-202...
+  volume: 40644874.085232824
+  tags: ['politics', 'china', 'geopolitics', 'foreign-policy', 'world', 'earn-4']
+
+=== MARKET 3 ===
+  id: 1105754
+  condition_id: 0x831493dce463d9adcad78c492f2cbec6ecdac31f4e8c5a894fdac68c130549d4
+  position_ids: [114492657854697698972382718278...] (2 items)
+  pending: True
+  slug: will-richard-grenell-be-the-leader-of-venezuela-end-of-2026
+  title: Will Richard Grenell be the leader of Venezuela end of 2026?
+  outcomes: ['Yes', 'No']
+  outcome_prices: ['0.0005', '0.9995']
+  image: https://polymarket-upload.s3.us-east-2.amazonaws.com/venezuela-leader-end-of-202...
+  volume: 32790653.988845002
+  tags: ['politics', 'trump', 'venezuela', 'geopolitics', 'maduro', 'trump-machado', 'rewards-20-4pt5-50']
