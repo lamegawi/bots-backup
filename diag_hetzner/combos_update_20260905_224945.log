@@ -1,0 +1,61 @@
+==========================================
+ACTUALIZACION - Sat Sep  5 10:49:45 PM UTC 2026
+==========================================
+== Detener bot ==
+
+== Borrar archivo antiguo ==
+
+== Descargar nueva version ==
+Branch: dcaedea1
+raw: 31208 bytes
+Tamano final: 31208 bytes
+
+== Verificar sintaxis ==
+OK
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+
+== Reiniciar servicio ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 22:49:48 UTC; 8s ago
+   Main PID: 920784 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 12.7M (peak: 13.2M)
+        CPU: 172ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─920784 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 05 22:49:48 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+== Log reciente ==
+[22:41:12]   pagina 2: +50 total, 0 deportes
+[22:41:12]   pagina 3: +50 total, 0 deportes
+[22:41:13]   pagina 4: +50 total, 0 deportes
+[22:41:14]   pagina 5: +50 total, 0 deportes
+[22:42:31]   pagina 1: +50 total, 0 deportes
+[22:42:32]   pagina 2: +50 total, 0 deportes
+[22:42:33]   pagina 3: +50 total, 0 deportes
+[22:42:33]   pagina 4: +50 total, 0 deportes
+[22:42:34]   pagina 5: +50 total, 0 deportes
+[22:42:39] [AUTO] pasada
+[22:42:40]   pagina 1: +50 total, 0 deportes
+[22:42:40]   pagina 2: +50 total, 0 deportes
+[22:42:41]   pagina 3: +50 total, 0 deportes
+[22:42:42]   pagina 4: +50 total, 0 deportes
+[22:42:42]   pagina 5: +50 total, 0 deportes
+[22:45:40] [AUTO] pasada
+[22:45:41]   pagina 1: +50 total, 0 deportes
+[22:45:41]   pagina 2: +50 total, 0 deportes
+[22:45:42]   pagina 3: +50 total, 0 deportes
+[22:45:42]   pagina 4: +50 total, 0 deportes
+[22:45:43]   pagina 5: +50 total, 0 deportes
+[22:49:48] v9 cargado · modo=AUTO · stake=$2.0
+[22:49:48] Proxy: http://100.83.57.99:8888
+[22:49:48] Test proxy: 200
+[22:49:48] v9 iniciado
+
+==========================================
+FIN - Sat Sep  5 10:49:56 PM UTC 2026
+==========================================
