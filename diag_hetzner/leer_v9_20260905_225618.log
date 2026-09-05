@@ -1,0 +1,86 @@
+=== LEER LOG V9 - Sat Sep  5 10:56:18 PM UTC 2026 ===
+
+== 1. Status bot ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-05 22:49:48 UTC; 6min ago
+   Main PID: 920784 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 13.2M (peak: 13.7M)
+        CPU: 259ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─920784 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+== 2. Ultimas 40 lineas del log ==
+[22:37:59]   pagina 1: +50 total, 0 deportes
+[22:37:59]   pagina 2: +50 total, 0 deportes
+[22:38:00]   pagina 3: +50 total, 0 deportes
+[22:38:00]   pagina 4: +50 total, 0 deportes
+[22:38:01]   pagina 5: +50 total, 0 deportes
+[22:40:39] v7 cargado · modo=AUTO · stake=$2.0
+[22:40:39] Proxy: http://100.83.57.99:8888
+[22:40:40] Test proxy: 200
+[22:40:40] v7 iniciado
+[22:41:10] [AUTO] pasada
+[22:41:11]   pagina 1: +50 total, 0 deportes
+[22:41:12]   pagina 2: +50 total, 0 deportes
+[22:41:12]   pagina 3: +50 total, 0 deportes
+[22:41:13]   pagina 4: +50 total, 0 deportes
+[22:41:14]   pagina 5: +50 total, 0 deportes
+[22:42:31]   pagina 1: +50 total, 0 deportes
+[22:42:32]   pagina 2: +50 total, 0 deportes
+[22:42:33]   pagina 3: +50 total, 0 deportes
+[22:42:33]   pagina 4: +50 total, 0 deportes
+[22:42:34]   pagina 5: +50 total, 0 deportes
+[22:42:39] [AUTO] pasada
+[22:42:40]   pagina 1: +50 total, 0 deportes
+[22:42:40]   pagina 2: +50 total, 0 deportes
+[22:42:41]   pagina 3: +50 total, 0 deportes
+[22:42:42]   pagina 4: +50 total, 0 deportes
+[22:42:42]   pagina 5: +50 total, 0 deportes
+[22:45:40] [AUTO] pasada
+[22:45:41]   pagina 1: +50 total, 0 deportes
+[22:45:41]   pagina 2: +50 total, 0 deportes
+[22:45:42]   pagina 3: +50 total, 0 deportes
+[22:45:42]   pagina 4: +50 total, 0 deportes
+[22:45:43]   pagina 5: +50 total, 0 deportes
+[22:49:48] v9 cargado · modo=AUTO · stake=$2.0
+[22:49:48] Proxy: http://100.83.57.99:8888
+[22:49:48] Test proxy: 200
+[22:49:48] v9 iniciado
+[22:51:01] [AUTO] pasada
+[22:51:02]   combo-markets status None
+[22:54:48] [AUTO] pasada
+[22:54:49]   combo-markets status None
+
+== 3. Estado guardado ==
+{
+  "modo": "AUTO",
+  "trades_copiados": [
+    {
+      "trader": "pleaseplease123",
+      "peso": 10,
+      "titulo": "Washington Nationals vs. Los Angeles Dodgers: O/U 8.5",
+      "side": "BUY",
+      "price": 0.54,
+      "size": 434.0,
+      "asset": "95952339111587815223537791500571044605986864428829629834185439441029088171356",
+      "timestamp": 1788559234,
+      "cuota": 1.85,
+      "stake_sugerido": 2.0,
+      "copiado_en": "2026-09-05T19:00:01.832312",
+      "status": "error",
+      "chat_id": 250818720,
+      "order_id": "tamaño 3.7 < 5 shares mínimo"
+    }
+  ],
+  "historial": []
+}
+== 4. Verificar proxy ==
+<!DOCTYPE html>
+<html class="" data-theme="light">
+  <head>
+
+== 5. Test rapido endpoint combos ==
+ERROR: HTTP Error 404: Not Found
