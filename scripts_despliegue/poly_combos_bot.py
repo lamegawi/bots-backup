@@ -64,7 +64,7 @@ ENV_FILE = "/etc/polymarket.env"
 STAKE_POR_TRADE = 2.0
 MAX_TRADES_SIMULTANEOS = 3
 HORAS_RECIENTE = 24
-MODO_OPERACION = "AUTO"  # AUTO, SEMI, OFF
+MODO_OPERACION = "OFF"  # AUTO, SEMI, OFF — OFF por defecto, NUNCA opera solo
 CHAT_ID = None  # se detecta al primer mensaje
 
 TOP_TRADERS = [
@@ -127,10 +127,25 @@ def telegram_api(method, params=None, files=None):
         log(f"telegram_api error: {e}")
         return None
 
-def enviar(chat_id, texto, reply_markup=None):
+# Teclado fijo SIEMPRE visible (debajo del cuadro de texto)
+TECLADO_FIJO = {
+    "keyboard": [
+        [{"text": "📋 Trades"}, {"text": "💰 Saldo"}, {"text": "📂 Abiertas"}],
+        [{"text": "✅ Cerradas"}, {"text": "🏆 Top"}, {"text": "📊 Estado"}],
+        [{"text": "🟢 AUTO"}, {"text": "🟡 SEMI"}, {"text": "🔴 OFF"}],
+        [{"text": "💵 Stake $1"}, {"text": "💵 Stake $2"}, {"text": "💵 Stake $5"}],
+    ],
+    "resize_keyboard": True,
+    "persistent": True,
+}
+
+def enviar(chat_id, texto, reply_markup=None, always_keyboard=True):
+    """Envia mensaje. Por defecto incluye el teclado fijo siempre visible."""
     params = {"chat_id": chat_id, "text": texto, "parse_mode": "Markdown"}
     if reply_markup:
         params["reply_markup"] = json.dumps(reply_markup)
+    elif always_keyboard:
+        params["reply_markup"] = json.dumps(TECLADO_FIJO)
     return telegram_api("sendMessage", params)
 
 def enviar_trades_con_botones(chat_id, trades):
@@ -410,27 +425,21 @@ def get_posiciones():
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = """*🤖 POLY COMBOS BOT*
-
-Bot de copia de trades de los top traders de Polymarket Sports.
-
-*Comandos:*
-/trades — Ver trades para copiar
-/abiertas — Ver posiciones abiertas
-/cerradas — Historial cerradas
-/saldo — Saldo real
-/top — Leaderboard
-/auto ON/OFF/SEMI — Cambiar modo
-/stake N — Cambiar stake por trade
-/status — Estado del bot
-
-_Pulsa un botón en /trades para ejecutar._"""
-    botones = [[
-        {"text": "📋 Ver Trades", "callback_data": "trades"},
-        {"text": "💰 Saldo", "callback_data": "saldo"},
-        {"text": "📂 Abiertas", "callback_data": "abiertas"},
-    ]]
-    return enviar(chat_id, texto, {"inline_keyboard": botones})
+    texto = (f"*🤖 POLY COMBOS BOT*\n\n"
+             f"Bot de copia de trades de los top traders de Polymarket Sports.\n\n"
+             f"*Modo actual: {MODO_OPERACION}* — stake ${STAKE_POR_TRADE:.2f}\n\n"
+             f"*👇 Usa los botones de abajo para navegar.*\n"
+             f"_El teclado queda fijo, solo pulsa._\n\n"
+             f"*Trades:* ver recomendaciones\n"
+             f"*Saldo:* tu balance real\n"
+             f"*Abiertas:* posiciones activas\n"
+             f"*Cerradas:* historial\n"
+             f"*Top:* leaderboard\n"
+             f"*Estado:* info del bot\n"
+             f"*AUTO/SEMI/OFF:* cambiar modo\n"
+             f"*Stake $1/$2/$5:* cambiar stake")
+    # sin inline_buttons, solo el teclado fijo abajo
+    return enviar(chat_id, texto)
 
 def cmd_trades(chat_id):
     trades = trades_refresh()
@@ -440,6 +449,12 @@ def cmd_trades(chat_id):
 
 def cmd_copiar(chat_id, num):
     global MODO_OPERACION
+    if MODO_OPERACION == "OFF":
+        return enviar(chat_id,
+                      "*🔴 MODO OFF — No se ejecutan operaciones*\n\n"
+                      "Cambia a SEMI o AUTO desde los botones de abajo.\n"
+                      "🟡 SEMI → copias manualmente una a una\n"
+                      "🟢 AUTO → copia automáticamente las top 3")
     trades = trades_refresh()
     if num < 1 or num > len(trades):
         return enviar(chat_id, f"❌ Número inválido. Hay {len(trades)} trades disponibles.")
@@ -531,6 +546,9 @@ def cmd_stake(chat_id, valor):
         if stake < 0.5 or stake > 50:
             return enviar(chat_id, "❌ Stake entre $0.50 y $50")
         STAKE_POR_TRADE = stake
+        estado = cargar_estado()
+        estado["stake"] = stake
+        guardar_estado(estado)
         return enviar(chat_id, f"*Stake cambiado a ${stake:.2f}*")
     except:
         return enviar(chat_id, "❌ Uso: /stake 2.5")
@@ -592,6 +610,32 @@ def procesar_update(update):
     chat_id = msg["chat"]["id"]
     text = msg.get("text", "").strip()
     CHAT_ID = chat_id
+    # --- botones del teclado fijo (texto) ---
+    if text == "📋 Trades":
+        return cmd_trades(chat_id)
+    elif text == "💰 Saldo":
+        return cmd_saldo(chat_id)
+    elif text == "📂 Abiertas":
+        return cmd_abiertas(chat_id)
+    elif text == "✅ Cerradas":
+        return cmd_cerradas(chat_id)
+    elif text == "🏆 Top":
+        return cmd_top(chat_id)
+    elif text == "📊 Estado":
+        return cmd_status(chat_id)
+    elif text == "🟢 AUTO":
+        return cmd_modo(chat_id, "AUTO")
+    elif text == "🟡 SEMI":
+        return cmd_modo(chat_id, "SEMI")
+    elif text == "🔴 OFF":
+        return cmd_modo(chat_id, "OFF")
+    elif text.startswith("💵 Stake $"):
+        try:
+            v = float(text.replace("💵 Stake $", "").strip())
+            return cmd_stake(chat_id, str(v))
+        except:
+            return enviar(chat_id, "❌ Stake no válido")
+    # --- comandos de texto ---
     if text == "/start":
         return cmd_start(chat_id)
     elif text == "/trades":
