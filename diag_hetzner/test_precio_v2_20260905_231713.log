@@ -1,0 +1,39 @@
+=== TEST PRECIO v2 (multiples paginas) - Sat Sep  5 11:17:13 PM UTC 2026 ===
+
+  pagina 1: +50
+  pagina 2: +50
+  pagina 3: +50
+  pagina 4: +50
+  pagina 5: +50
+
+Total: 250
+Candidatos deportes (rango amplio): 83
+
+== Leyendo precio real de 3 candidatos ==
+
+--- Candidato 1: US Open ATP: Michael Zheng vs Arthur Gea ---
+  Token: 772457897626335888471054008844...
+  Precio en combos: 0.4000
+  Tags: ['sports', 'tennis', 'games']
+  /midpoint: ERROR HTTP Error 404: Not Found
+  /price?side=buy: ERROR HTTP Error 404: Not Found
+  /price?side=sell: ERROR HTTP Error 404: Not Found
+  /book: ERROR HTTP Error 404: Not Found
+
+--- Candidato 2: Russia x Ukraine Peace Combo ---
+  Token: 828163489210291766719740609184...
+  Precio en combos: 0.0950
+  Tags: ['sports', 'russia', 'ukraine', 'zelenskyy']
+  /midpoint: ERROR HTTP Error 404: Not Found
+  /price?side=buy: ERROR HTTP Error 404: Not Found
+  /price?side=sell: ERROR HTTP Error 404: Not Found
+  /book: ERROR HTTP Error 404: Not Found
+
+--- Candidato 3: US Open ATP: Zizou Bergs vs Botic van de Zandschulp ---
+  Token: 597948958724220905790310088787...
+  Precio en combos: 0.6250
+  Tags: ['sports', 'tennis', 'games']
+  /midpoint: ERROR HTTP Error 404: Not Found
+  /price?side=buy: ERROR HTTP Error 404: Not Found
+  /price?side=sell: ERROR HTTP Error 404: Not Found
+  /book: ERROR HTTP Error 404: Not Found
