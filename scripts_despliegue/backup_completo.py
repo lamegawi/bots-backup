@@ -112,11 +112,17 @@ for slug, nombre, fp in BOTS:
 log("")
 log("[2/3] Snapshot de codigo...")
 try:
-    r = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, timeout=5, cwd=None  # auto-detect en Hetzner)
+    # detectar el repo en Hetzner (varios paths posibles)
+    repo_cwd = None
+    for r in ["/root/bots-backup", "/opt/bots-backup", os.path.expanduser("~/bots-backup")]:
+        if os.path.exists(os.path.join(r, ".git")):
+            repo_cwd = r
+            break
+    r = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, timeout=5, cwd=repo_cwd)
     if r.returncode == 0:
         sha = r.stdout.strip()
         # leer el log
-        r2 = subprocess.run(["git", "log", "-1", "--format=%H %s %ai"], capture_output=True, text=True, timeout=5, cwd=None  # auto-detect en Hetzner)
+        r2 = subprocess.run(["git", "log", "-1", "--format=%H %s %ai"], capture_output=True, text=True, timeout=5, cwd=repo_cwd)
         log_git = r2.stdout.strip()
         # subirlo como texto
         contenido = f"git rev: {sha}\ncommit: {log_git}\nfecha: {datetime.now().isoformat()}\n"
