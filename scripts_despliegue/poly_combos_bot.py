@@ -268,43 +268,54 @@ def get_precio_actual(token_id):
 def buscar_token_por_titulo(titulo, asset_hint=None):
     """Busca el token_id de un mercado.
     Estrategia:
-      1. Si el asset_hint (token_id) viene en el trade, USARLO DIRECTO
-      2. Si no, buscar por titulo en gamma-api con score de palabras
+      1. Si el asset_hint parece válido (precio entre 0.01 y 0.99), usarlo
+      2. Si no, buscar en gamma-api con match mas flexible
     Devuelve (token_id, side, question) o (None, None, None).
     """
-    # 1. usar el asset directamente (ES el token_id)
+    # 1. verificar el asset_hint - si responde con precio válido, usarlo
     if asset_hint and str(asset_hint).isdigit() and len(str(asset_hint)) > 20:
-        return str(asset_hint), "YES", titulo
-    # 2. fallback: buscar por titulo
+        precio_test = get_precio_actual(str(asset_hint))
+        if precio_test and 0.01 < precio_test < 0.99:
+            return str(asset_hint), "YES", titulo
+        # si no, descartar
+    # 2. buscar por titulo en gamma-api con mejor matching
     try:
         url = "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=500"
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
         with urllib.request.urlopen(req, timeout=20) as r:
             markets = json.loads(r.read())
         titulo_lower = titulo.lower()
+        # equipos principales (palabras mas largas)
+        palabras = [p for p in titulo_lower.replace(":", " ").replace("vs.", " ").split() if len(p) > 3]
+        # quitar palabras comunes
+        STOP = {"over", "under", "spread", "moneyline", "win", "match", "fight", "night", "fight", "score", "total"}
+        palabras = [p for p in palabras if p not in STOP]
         mejor = None
         mejor_score = 0
         for m in markets:
             q = (m.get("question") or m.get("title") or "").lower()
             if not q: continue
-            palabras = set(titulo_lower.replace(":", " ").replace("vs.", " ").split())
-            palabras = {p for p in palabras if len(p) > 3}
-            if not palabras: continue
+            # contar matches exactos
             match = sum(1 for p in palabras if p in q)
+            if not palabras: continue
             score = match / len(palabras)
             if score > mejor_score:
                 mejor_score = score
                 mejor = m
-        if mejor and mejor_score > 0.4:
+        if mejor and mejor_score >= 0.5:  # al menos 50% de las palabras
             tokens_str = mejor.get("clobTokenIds") or "[]"
             try: tokens = json.loads(tokens_str)
             except: tokens = []
             if tokens:
+                # elegir YES o NO según el titulo
                 side = "YES"
-                if "no" in titulo_lower and mejor_score < 0.7:
+                if " no " in f" {titulo_lower} ":
                     side = "NO"
                 token_id = tokens[0] if side == "YES" else (tokens[1] if len(tokens) > 1 else tokens[0])
-                return token_id, side, mejor.get("question", "")
+                # verificar que el token tiene precio valido
+                precio_test = get_precio_actual(token_id)
+                if precio_test and 0.01 < precio_test < 0.99:
+                    return token_id, side, mejor.get("question", "")
     except Exception as e:
         log(f"  buscar_token error: {e}")
     return None, None, None
