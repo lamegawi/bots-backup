@@ -1,0 +1,21 @@
+Reset mensual - 20260905_083334
+======================================================================
+RESET MENSUAL FINALIZADAS · 2026-09-05T08:33:34.496823
+======================================================================
+  Hoy: 2026-09-05
+  Primer dia del mes: 2026-09-01
+  Nueva FECHA_INICIO: datetime(2026, 9, 1).date()
+  FECHA_INICIO actual: FECHA_INICIO = datetime(2026, 9, 1).date()
+  Cambiando a: FECHA_INICIO = datetime(2026, 9, 1).date()  # primer dia del mes actual
+
+Cambios:
+  - FECHA_INICIO = datetime(2026, 9, 1).date()  # primer dia del mes actual
+  + FECHA_INICIO = datetime(2026, 9, 1).date()  # primer dia del mes actual  # primer dia del mes actual
+  Backup: /opt/polymarket/posiciones_reales.py.bak.20260905_083334
+  Escrito: /opt/polymarket/posiciones_reales.py
+
+======================================================================
+OK: FECHA_INICIO actualizado. El bot mostrara solo finalizadas del mes.
+IMPORTANTE: reiniciar el bot de Telegram para que recargue el modulo:
+  systemctl restart poly-telegram-bot
+======================================================================
