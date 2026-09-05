@@ -1,0 +1,38 @@
+==========================================
+PROXY SETUP - Sat Sep  5 08:33:06 PM UTC 2026
+==========================================
+
+=== Verificar Tailscale en Hetzner ===
+100.77.186.117  bot-poly  lamegawi@  linux    -                                   
+100.82.235.16   bot-vm3   lamegawi@  linux    offline, last seen 19d ago          
+100.83.57.99    ferpc     lamegawi@  windows  idle, tx 1153967396 rx 12604335684  
+Tailscale: INSTALADO
+IP Hetzner tailscale: 100.77.186.117
+
+=== Probar candidatos de IP para el proxy ===
+
+Probando 100.64.0.1:8888 ...
+  ❌ cerrado o no alcanzable
+
+Probando 100.100.100.1:8888 ...
+  ❌ cerrado o no alcanzable
+
+Probando 192.168.1.1:8888 ...
+  ❌ cerrado o no alcanzable
+
+Probando 172.31.1.1:8888 ...
+  ❌ cerrado o no alcanzable
+
+Probando 127.0.0.53:8888 ...
+  ❌ cerrado o no alcanzable
+
+=== Estado actual de servicios ===
+root         803  0.5  1.8 1356064 73860 ?       Ssl  Aug26  78:43 /usr/sbin/tailscaled --state=/var/lib/tailscale/tailscaled.state --socket=/run/tailscale/tailscaled.sock --port=41641
+root      911112  0.0  0.0   5692  1988 pts/2    S+   20:33   0:00 tee -a /tmp/proxy_setup_20260905_203306.log
+
+=== Probar API Polymarket directo (sin proxy) ===
+{"data":[{"enable_order_book":false,"active":true,"closed":true,"archived":false,"accepting_orders":false,"accepting_order_timestamp":null,"minimum_order_size":5,"minimum_tick_size":0.01,"condition_id
+
+==========================================
+FIN - Sat Sep  5 08:33:18 PM UTC 2026
+==========================================
