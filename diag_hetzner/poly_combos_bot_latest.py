@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v9 — Combos (parlays) en tiempo real
-====================================================
+POLY COMBOS BOT v10 — Combos (parlays) en tiempo real
+=====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
   2. Cada combo = 2-10 legs, paga si TODOS aciertan
@@ -335,12 +335,14 @@ def listar_combos():
                 "condition_id": condition_id,
                 "question": titulo,
                 "slug": slug,
-                "yes_token": str(tokens[0]),
+                "yes_token": str(tokens[0]),  # position_id del endpoint combos (NO tradable)
                 "no_token": str(tokens[1]) if len(tokens) > 1 else str(tokens[0]),
                 "yes_price": yes_price,
                 "cuota": round(1/yes_price, 2) if yes_price > 0 else 0,
                 "volumen": vol,
                 "tags": tags,
+                # Estos se llenan despues via /markets/{condition_id}
+                "real_token": None,
             })
         log(f"  pagina {paginas + 1}: +{len(batch)} mercados, {len(combos)} combos de deportes")
         # siguiente pagina
@@ -377,6 +379,28 @@ def get_precio_actual(token_id):
     return None
 
 
+def resolver_token_real(condition_id):
+    """v10: dado el condition_id de un combo, devuelve el token_id real
+    tradable en el CLOB. None si falla."""
+    try:
+        url = f"{HOST_CLOB}/markets/{condition_id}"
+        status, body = http_get(url, timeout=10)
+        if status != 200:
+            return None
+        data = json.loads(body)
+        if not data.get("accepting_orders") or data.get("closed"):
+            return None
+        tokens = data.get("tokens", [])
+        if not tokens:
+            return None
+        # tokens[0] = YES, tokens[1] = NO
+        yes = tokens[0]
+        return yes.get("token_id")
+    except Exception as e:
+        log(f"  resolver_token_real err: {e}")
+        return None
+
+
 # ============================================
 # EJECUCIÓN DE TRADES
 # ============================================
@@ -404,11 +428,24 @@ def enviar_orden(token_id, precio, stake_dolares):
         return False, str(e)[:200]
 
 def ejecutar_trade(mercado, chat_id=None):
-    """Ejecuta un trade en un mercado activo (v9: combo)."""
+    """Ejecuta un trade en un mercado activo (v10: combo con token real)."""
     titulo = mercado["question"]
     log(f"[TRADE] {titulo[:60]}")
-    # re-leer precio actual
-    precio = get_precio_actual(mercado["yes_token"])
+    # v10: resolver token real desde condition_id
+    real_token = mercado.get("real_token")
+    if not real_token:
+        condition_id = mercado.get("condition_id", "")
+        if not condition_id:
+            log(f"  SKIP: no condition_id")
+            return False, "no_condition_id"
+        real_token = resolver_token_real(condition_id)
+        if not real_token:
+            log(f"  SKIP: no pude resolver token real de {condition_id[:10]}...")
+            return False, "token_real_no_resuelto"
+        mercado["real_token"] = real_token
+        log(f"  token real resuelto: {real_token[:18]}...")
+    # re-leer precio actual con el token real
+    precio = get_precio_actual(real_token)
     if not precio or precio <= 0 or precio >= 1:
         log(f"  SKIP: precio no disponible")
         return False, "precio_no_disponible"
@@ -421,7 +458,7 @@ def ejecutar_trade(mercado, chat_id=None):
         return False, f"cuota_{cuota}_fuera"
     # enviar
     log(f"  precio={precio:.3f} cuota={cuota:.2f} stake=${STAKE_POR_TRADE}")
-    ok, resultado = enviar_orden(mercado["yes_token"], precio, STAKE_POR_TRADE)
+    ok, resultado = enviar_orden(real_token, precio, STAKE_POR_TRADE)
     if not ok:
         log(f"  ERROR: {resultado}")
         return False, resultado
@@ -433,7 +470,7 @@ def ejecutar_trade(mercado, chat_id=None):
         "slug": mercado.get("slug"),
         "market_id": mercado.get("market_id", ""),
         "condition_id": mercado.get("condition_id", ""),
-        "yes_token": mercado["yes_token"],
+        "real_token": real_token,
         "precio_ejecutado": precio,
         "cuota_ejecutada": cuota,
         "size_shares": resultado["size"],
@@ -514,14 +551,15 @@ def calcular_stats():
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v9*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v10*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
-             f"📌 *Estrategia v9* (COMBOS):\n"
-             f"   · Lee COMBOS (parlays) activos de Polymarket\n"
+             f"📌 *Estrategia v10* (COMBOS):\n"
+             f"   · Lee COMBOS activos de Polymarket\n"
+             f"   · Resuelve token_id real via /markets/{condition_id}\n"
              f"   · Solo deportes: fútbol, MLB, NBA, UFC, etc.\n"
-             f"   · Cuota 1.20-2.50 (multiplicación de legs)\n"
+             f"   · Cuota 1.20-2.50\n"
              f"   · Automático cada 5 min\n\n"
              f"📊 *Stats* para ver estadísticas")
     return enviar(chat_id, texto)
@@ -674,7 +712,7 @@ def cmd_status(chat_id):
     global CHAT_ID
     CHAT_ID = chat_id
     s = calcular_stats()
-    texto = (f"📊 *ESTADO v9 (Combos)*\n\n"
+    texto = (f"📊 *ESTADO v10 (Combos)*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
@@ -788,7 +826,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v9 iniciado")
+    log("v10 iniciado")
     offset = 0
     while True:
         try:
@@ -812,7 +850,7 @@ def main():
     if not cargar_token():
         log("ERROR: no se encontró el token")
         return
-    log(f"v9 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v10 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
