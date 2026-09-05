@@ -1,0 +1,23 @@
+Verificacion matutina - 20260905_070938
+======================================================================
+VERIFICACION MATUTINA · 2026-09-05T07:09:38.148533
+======================================================================
+
+[1/3] Servicios:
+  Elon 48h: active
+  Zelenskyy sem: active
+  Trump mens: active
+
+[2/3] Operaciones activas:
+  Elon 48h: sin operacion activa
+     saldo JSON: $303.55  ops: 7
+  Zelenskyy sem: ACTIVA - bin 100-119 cuota 10.53 paso 3 stake $5.88
+     saldo JSON: $303.55  ops: 4
+  Trump mens: sin JSON
+
+[3/3] Filtros descartados (ultimas 24h):
+  Elon 48h: 0 apuestas descartadas
+  Zelenskyy sem: 0 apuestas descartadas
+  Trump mens: 173 apuestas descartadas
+
+======================================================================
