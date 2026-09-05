@@ -132,6 +132,7 @@ def main():
         f"No se incluyen tokens ni credenciales.\n"
     ).encode()
     github_put(f"{remote_dir}/informe_{ts}.txt", report, f"informe backup bolsa {ts}")
+    uploaded.append(f"{remote_dir}/informe_{ts}.txt")
     (local_dir / f"informe_{ts}.txt").write_bytes(report)
 
     print(f"BACKUP_BOLSA_LOCAL={local_dir}")
