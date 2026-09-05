@@ -1,0 +1,57 @@
+=== DIAG AMPLIO - Sat Sep  5 10:44:13 PM UTC 2026 ===
+
+== 1. Probar endpoint /events ==
+
+EVENTOS recibidos: 20
+  - Kraken IPO by ___ ? | cat=
+  - Macron out by...? | cat=
+  - UK election called by...? | cat=
+  - China x India military clash by...? | cat=
+  - NATO/EU troops fighting in Ukraine by...? | cat=
+  - Ukraine recognizes Russian sovereignty over its territory by...? | cat=
+  - Ukraine election called by...? | cat=
+  - Will any country leave NATO by...? | cat=
+  - Ukraine election held by...? | cat=
+  - Taylor Swift pregnant by...? | cat=
+  - Mike Johnson out as Speaker by...? | cat=
+  - Will OpenAI launch a consumer hardware product by...? | cat=
+  - US x Russia military clash by...? | cat=
+  - Will Russia invade a NATO country by...? | cat=
+  - Trump eliminates capital gains tax on crypto by ___? | cat=
+
+== 2. Cargar 500 mercados, offsets 0-450 ==
+  offset 0: +50
+  offset 50: +50
+  offset 100: +50
+  offset 150: +50
+  offset 200: +50
+  offset 250: +50
+  offset 300: +50
+  offset 350: +50
+  offset 400: +50
+  offset 450: +50
+
+Total recibidos: 500
+
+=== Buscando keywords de deportes en 500 mercados ===
+  nba: 1
+    - Will China unban Bitcoin by 2027?
+  inter: 1
+    - Will the International Court of Justice win the Nobel Peace Prize in 2
+  masters: 1
+    - Will Sung-Jae Im win the 2026 Masters tournament?
+
+Mercados unicos de deportes: 3
+
+=== Titulos que NO son politica/crypto (probablemente deportes u otros) ===
+  US recession by end of 2026?
+  Opensea FDV above $500M one day after launch?
+  Opensea FDV above $1B one day after launch?
+  Opensea FDV above $3B one day after launch?
+  Aziz Akhannouch out as Morocco Prime Minister by December 31, 2026?
+  Opensea FDV above $5B one day after launch?
+  Ink FDV above $500M one day after launch?
+  Ink FDV above $1B one day after launch?
+  OpenAI announces it has achieved AGI before 2027?
+  NATO article 5 before 2027?
+  Yoon out of custody before 2027?
