@@ -4,7 +4,7 @@
     "direction": "LONG",
     "entry": 7.08618,
     "contratos": 50,
-    "sl_algo_id": "3882563265133850624",
+    "sl_algo_id": "3895110767141761024",
     "state": "breakeven",
     "risk_usd": 10.0,
     "opened_at": 1788211802.1957707,
@@ -12,14 +12,15 @@
     "initial_sl": 6.985976,
     "tp_levels": [],
     "qty_vista": 50.0,
-    "sw_sl_px": 7.32156
+    "sw_sl_px": 7.32156,
+    "sl_v2": true
   },
   "XRP: SHORT": {
     "symbol": "XRP",
     "direction": "SHORT",
     "entry": 1.158,
     "contratos": 118,
-    "sl_algo_id": "3894224720220434432",
+    "sl_algo_id": "3895110787811291136",
     "state": "opened",
     "risk_usd": 10.0,
     "opened_at": 1788559341.6160855,
@@ -58,14 +59,15 @@
       }
     ],
     "sw_sl_px": 1.24294495,
-    "qty_vista": 118.0
+    "qty_vista": 118.0,
+    "sl_v2": true
   },
   "UNI: LONG": {
     "symbol": "UNI",
     "direction": "LONG",
     "entry": 6.748,
     "contratos": 26,
-    "sl_algo_id": "3894739204924026880",
+    "sl_algo_id": "3895110807339970560",
     "state": "opened",
     "risk_usd": 10.0,
     "opened_at": 1788574674.43099,
@@ -104,6 +106,7 @@
       }
     ],
     "sw_sl_px": 6.36228598,
-    "qty_vista": 26.0
+    "qty_vista": 26.0,
+    "sl_v2": true
   }
 }

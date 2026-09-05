@@ -29,6 +29,27 @@ BASE = "https://my.okx.com"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
 
+# === SLM_ARENA: SL con trigger MARK + ejecucion LIMITADA (anti-collision) ===
+# Dato: los SL en X-Perps delgados cerraban a media -1.70R (debia ser ~-1R):
+# el trigger "last" dispara con prints sueltos y la orden de mercado cruza el
+# spread entero. Ahora: trigger "mark" (estable, no dispara con ruido) y
+# ejecucion limite en trigger*(1∓SL_LIMIT_OFFSET) -> se rellena a mercado en
+# el trigger sin cruzar spread. Si el precio gapea por debajo de la limitada
+# (no rellena), el bot lo detecta (stale) y la cambia a mercado.
+SL_TRIGGER_PX_TYPE = "mark"   # trigger estable (volumen ponderado)
+SL_AS_LIMIT        = True     # SL ejecuta como limite (no cruza el spread)
+SL_LIMIT_OFFSET    = 0.001    # 0.1%: limite dentro del mercado al disparar
+TP_TRIGGER_PX_TYPE = "mark"   # los TPs tambien disparan por mark
+                             # (la ejecucion del TP sigue a mercado: lado ganancia)
+
+def _sl_limite(side_cierre, sl_px):
+    """Precio de la orden de ejecucion del SL (o '-1' = mercado)."""
+    if not SL_AS_LIMIT:
+        return "-1"
+    if side_cierre == "sell":
+        return str(sl_px * (1 - SL_LIMIT_OFFSET))
+    return str(sl_px * (1 + SL_LIMIT_OFFSET))
+
 
 class Cliente:
     def __init__(self, api_key, secret, passphrase, demo=False):
@@ -197,21 +218,26 @@ class Cliente:
         if tp_px is not None:
             body["tpTriggerPx"] = str(tp_px)
             body["tpOrdPx"] = "-1"
-            body["tpTriggerPxType"] = "last"
+            body["tpTriggerPxType"] = TP_TRIGGER_PX_TYPE
         if sl_px is not None:
             body["slTriggerPx"] = str(sl_px)
-            body["slOrdPx"] = "-1"
-            body["slTriggerPxType"] = "last"
+            body["slOrdPx"] = _sl_limite("sell" if side == "buy" else "buy", sl_px)
+            body["slTriggerPxType"] = SL_TRIGGER_PX_TYPE
         return self._check(self._post("/api/v5/trade/order", body), "order")
 
     # ------------------------------------------------ órdenes algo (SL / TP)
-    def orden_algo_sl(self, inst_id, side_cierre, sl_px, sz_contratos):
-        """SL: orden condicional que cierra a mercado al tocar sl_px."""
+    def orden_algo_sl(self, inst_id, side_cierre, sl_px, sz_contratos,
+                      sl_ord_px=None):
+        """SL: orden condicional. Disparo por SL_TRIGGER_PX_TYPE ("mark").
+        Ejecucion: por defecto LIMITADA en trigger*(1∓offset) (SL_AS_LIMIT)
+        para no cruzar el spread; si se pasa sl_ord_px="-1" ejecuta a mercado."""
+        if sl_ord_px is None:
+            sl_ord_px = _sl_limite(side_cierre, sl_px)
         body = {"instId": inst_id, "tdMode": "cross", "posSide": "net",
                 "side": side_cierre, "ordType": "conditional",
                 "sz": str(int(sz_contratos)),
-                "slTriggerPx": str(sl_px), "slTriggerPxType": "last",
-                "slOrdPx": "-1", "reduceOnly": "true"}
+                "slTriggerPx": str(sl_px), "slTriggerPxType": SL_TRIGGER_PX_TYPE,
+                "slOrdPx": str(sl_ord_px), "reduceOnly": "true"}
         r = self._check(self._post("/api/v5/trade/order-algo", body), "order-algo-sl")
         return (r.get("data") or [{}])[0].get("algoId")
 
@@ -220,7 +246,7 @@ class Cliente:
         body = {"instId": inst_id, "tdMode": "cross", "posSide": "net",
                 "side": side_cierre, "ordType": "conditional",
                 "sz": str(int(sz_contratos)),
-                "tpTriggerPx": str(tp_px), "tpTriggerPxType": "last",
+                "tpTriggerPx": str(tp_px), "tpTriggerPxType": TP_TRIGGER_PX_TYPE,
                 "tpOrdPx": "-1", "reduceOnly": "true"}
         r = self._check(self._post("/api/v5/trade/order-algo", body), "order-algo-tp")
         return (r.get("data") or [{}])[0].get("algoId")

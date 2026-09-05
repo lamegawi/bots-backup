@@ -31,7 +31,10 @@ import okx_client as OKX
 
 # ------------------------------------------------------------------ CONFIG
 RISK_USD       = float(os.environ.get("RISK_USD", "10.0"))
-MAX_OPS        = int(os.environ.get("MAX_OPS", "5"))
+# SLM7_ARENA: 6 (no 5) mientras la posicion fantasma de ORBS (sin liquidez
+# para cerrarla) ocupe un hueco: con 6 caben 5 operaciones reales.
+# Cuando ORBS se cierre o liquide, volver a 5 (aqui y en .okx_demo_env).
+MAX_OPS        = int(os.environ.get("MAX_OPS", "6"))
 LEVERAGE       = int(os.environ.get("LEVERAGE", "10"))
 SCAN_EVERY_SEC = int(os.environ.get("SCAN_EVERY_SEC", "900"))
 WATCH_EVERY_SEC = int(os.environ.get("WATCH_EVERY_SEC", "60"))
@@ -55,8 +58,11 @@ BREAKEVEN_ENABLED = True
 BREAKEVEN_BUFFER = 0.0015
 
 # Monedas base con X-Perp en DEMO (ctVal razonable). Se resuelven a su instId.
-SYMBOLS = ["DOGE", "ETH", "XRP", "FIL", "ID", "ZEC", "UNI", "AVAX", "NEAR",
-           "BCH", "ETC", "ONDO", "IOST", "ORBS", "HYPE", "GRASS", "IP", "KAITO"]
+# SLM10 (05/09): fuera ID, NEAR, ONDO e IP — volumen 24h CERO en el demo
+# (riesgo ORBS: se abre y no se puede cerrar). El universo se amplia al cerrar
+# el gate de validacion (09/09) con chequeo de liquidez real (ver TAREAS).
+SYMBOLS = ["DOGE", "ETH", "XRP", "FIL", "ZEC", "UNI", "AVAX",
+           "BCH", "ETC", "IOST", "ORBS", "HYPE", "GRASS", "KAITO"]
 
 DEMO_KEY = os.environ.get("OKX_DEMO_KEY", "").strip()
 DEMO_SECRET = os.environ.get("OKX_DEMO_SECRET", "").strip()
@@ -162,8 +168,13 @@ def get_klines(base, tf="1H", limit=200):
     return client.velas(inst_id, bar=tf, limit=limit)
 
 
-def get_klines_tf(base, tf):
-    return get_klines(base, tf=tf)
+# === SLM3_ARENA: el llamador _filt_kl pasaba 3 args (base, tf, limit) y esta
+# firma de 2 dejaba TODOS los filtros de calidad muertos (TypeError silencioso:
+# "[FILTRO] X: error get_klines_tf() takes 2 positional arguments...").
+# Con 3 params reviven: EMA20-4H, sobre-extension y confirmacion de vela,
+# y ademas el check de mercado comprimido (_rango_ok), que tenia el mismo bug.
+def get_klines_tf(base, tf="1H", limit=200):
+    return get_klines(base, tf=tf, limit=limit)
 
 
 def info_instr(base):
@@ -353,7 +364,10 @@ def open_position(plan):
     managed[f"{base}:{plan['direction']}"] = {
         "symbol": base, "direction": plan["direction"], "entry": plan["entry"],
         "contratos": plan["contratos"], "sl_algo_id": sl_id, "state": "opened",
-        "risk_usd": RISK_USD, "opened_at": time.time(),
+        # SLM8: riesgo REAL (si el tope de margen recorto los contratos, el
+        # riesgo es menor que RISK_USD; los umbrales BE/trailing usan este valor)
+        "risk_usd": plan["contratos"] * plan["ct_val"] * (plan["atr"] * ATR_MULT_SL),
+        "opened_at": time.time(),
         "dist": round((plan["atr"] * ATR_MULT_SL) / plan["entry"], 8),
         "initial_sl": plan["stop"],
         "tp_levels": tps_colocados,
@@ -383,6 +397,30 @@ TRAILING_CANCELAR_TPS = True # al activarse: SL y TPs fuera, manda el trailing
 # En modo software los TPs se conservan (no se cancelan).
 TRAILING_SW = True            # True = trailing por software (recomendado)
 TRAILING_SW_MIN_PCT = 0.002   # 0.2% de mejora minima para hacer un amend
+
+# === SLM2_ARENA: SL "mark + limitada" (anti-collision; los SL cerraban a
+# media -1.70R por trigger last + spread). (a) Migrated SLs existentes a la
+# nueva spec una sola vez (crear->verificar->cancelar, patron FIXBE2).
+# (b) stale fix: si el mark ya cruzo el precio de la limitada (gap sin
+# relleno), se cambia a SL de mercado. (c) WDOG: si el SL falta Y el precio
+# ya supero el nivel, se CIERRA la posicion (no tiene sentido recolocar).
+SLM_MIGRAR = True       # True = migrar SLs existentes al primer ciclo
+SLM_EPS    = 0.0005     # 0.05% de tolerancia para "nivel ya superado"
+
+
+def _sl_nivel_superado(direction, nivel, markp):
+    """True si el mark ya supero el nivel de stop (el stop 'ya hubiera salido')."""
+    try:
+        nivel = float(nivel)
+        markp = float(markp)
+    except (TypeError, ValueError):
+        return False
+    if nivel <= 0 or markp <= 0:
+        return False
+    if direction == "LONG":
+        return markp < nivel * (1 - SLM_EPS)
+    return markp > nivel * (1 + SLM_EPS)
+
 
 def manage_positions():
     positions = get_all_positions()
@@ -459,6 +497,21 @@ def manage_positions():
             if not _sl_vivo:
                 _nivel = m.get("sw_sl_px") or m.get("initial_sl")
                 if _nivel:
+                    # SLM2: si el precio YA supero el nivel, recolocar seria
+                    # ridiculo (dispararia al momento): se cierra la posicion.
+                    if _sl_nivel_superado(direction, _nivel, p.get("mark", 0)):
+                        try:
+                            client.cerrar(inst_id,
+                                          "long" if direction == "LONG" else "short")
+                            print("[WDOG] %s %s: SL ausente y el precio ya supero el nivel %.6g -> CERRADA a mercado"
+                                  % (base, direction, float(_nivel)))
+                            enviar("🚨 *[DEMO] %s %s*: el SL habia desaparecido con el precio YA mas alla del nivel -> cerrada a mercado"
+                                   % (base, direction))
+                        except Exception as _we2:
+                            print("[WDOG] %s: fallo al cerrar a mercado: %s"
+                                  % (base, str(_we2)[:100]))
+                        changed = True
+                        continue
                     try:
                         _nuevo = client.orden_algo_sl(
                             inst_id, "sell" if direction == "LONG" else "buy",
@@ -466,6 +519,7 @@ def manage_positions():
                         if _nuevo:
                             m["sl_algo_id"] = _nuevo
                             m["sw_sl_px"] = float(_nivel)
+                            m["sl_v2"] = True   # SLM2: el recolocado va a la spec nueva
                             changed = True
                             print("[WDOG] %s %s: SL ausente en el exchange -> recolocado @ %s (#%s)"
                                   % (base, direction, _nivel, _nuevo))
@@ -475,6 +529,97 @@ def manage_positions():
                             print("[WDOG] %s: sin algoId al recolocar (reintenta)" % base)
                     except Exception as _we:
                         print("[WDOG] %s: fallo al recolocar: %s" % (base, str(_we)[:100]))
+
+        # === SLM2_ARENA: (a) migrado one-shot de SLs existentes (market/last)
+        # a la spec mark+limitada; (b) stale fix: limitada ya no rellenable
+        # (mark la cruzo por un gap) -> SL de mercado. Patron FIXBE2 siempre:
+        # crear -> verificar vivo -> cancelar el antiguo; si falla, el viejo
+        # sigue intacto.
+        try:
+            if m.get("sl_algo_id"):
+                _sl_act = None
+                for _a in _pend_sl:
+                    if str(_a.get("algoId")) == str(m.get("sl_algo_id")):
+                        _sl_act = _a
+                        break
+                if _sl_act is not None:
+                    _st = _sl_act.get("slTriggerPxType") or "last"
+                    _so = _sl_act.get("slOrdPx") or "-1"
+                    _es_lim = _so not in ("-1", "", "None", None)
+                    _trig = _sl_act.get("slTriggerPx")
+                    _markp = float(p.get("mark", 0) or 0)
+                    _lado_cierre = "sell" if direction == "LONG" else "buy"
+                    if (SLM_MIGRAR and not m.get("sl_v2")
+                            and (_st != "mark" or not _es_lim)):
+                        _nivel = float(_trig or m.get("sw_sl_px")
+                                       or m.get("initial_sl") or 0)
+                        if _nivel > 0:
+                            if _sl_nivel_superado(direction, _nivel, _markp):
+                                try:
+                                    client.cerrar(inst_id,
+                                                  "long" if direction == "LONG" else "short")
+                                    print("[SLM] %s %s: nivel de SL ya superado (mark %.6g vs %.6g) -> CERRADA a mercado"
+                                          % (base, direction, _markp, _nivel))
+                                    enviar("🚨 *[DEMO] %s %s*: el nivel del SL ya estaba superado -> cerrada a mercado"
+                                           % (base, direction))
+                                except Exception as _we3:
+                                    print("[SLM] %s: fallo al cerrar: %s"
+                                          % (base, str(_we3)[:100]))
+                                changed = True
+                                continue
+                            _nuevo = client.orden_algo_sl(
+                                inst_id, _lado_cierre, _nivel, int(qty))
+                            _pend3 = client.algo_pendientes(inst_id) or []
+                            if any(str(_a.get("algoId")) == str(_nuevo)
+                                   for _a in _pend3):
+                                try:
+                                    client.cancelar_algo(inst_id,
+                                                         m.get("sl_algo_id"))
+                                except Exception:
+                                    pass
+                                m["sl_algo_id"] = _nuevo
+                                m["sl_v2"] = True
+                                changed = True
+                                print("[SLM] %s %s: SL migrado a mark+limitada @ %.6g (#%s)"
+                                      % (base, direction, _nivel, _nuevo))
+                                enviar("🔧 *%s %s (DEMO)*: SL migrado a trigger mark + ejecucion limitada @ %.6g"
+                                       % (base, direction, _nivel))
+                            else:
+                                print("[SLM] %s: nuevo SL no confirmado -> se cancela (se mantiene el viejo)" % base)
+                                try:
+                                    client.cancelar_algo(inst_id, _nuevo)
+                                except Exception:
+                                    pass
+                    else:
+                        if not m.get("sl_v2"):
+                            m["sl_v2"] = True
+                            changed = True
+                        # (b) stale: el mark ya cruzo el precio de la limitada.
+                        # Como limite = trigger*(1∓offset) < trigger, cruzar el
+                        # limite implica que el stop esta volado: la limitada no
+                        # puede rellenar (esta por encima del mercado). Accion
+                        # limpia: cerrar a mercado. (La orden limitada huerfana
+                        # la limpia el ciclo siguiente por "ausente".)
+                        if _es_lim:
+                            try:
+                                _lim = float(_so)
+                            except (TypeError, ValueError):
+                                _lim = 0.0
+                            if _lim > 0 and _sl_nivel_superado(direction, _lim, _markp):
+                                try:
+                                    client.cerrar(inst_id,
+                                                  "long" if direction == "LONG" else "short")
+                                    print("[SLSTALE] %s %s: SL limitada no rellenable (mark %.6g vs limite %.6g) -> CERRADA a mercado"
+                                          % (base, direction, _markp, _lim))
+                                    enviar("🚨 *%s %s (DEMO)*: el precio gapeo la SL limitada (no podia rellenar) -> cerrada a mercado"
+                                           % (base, direction))
+                                except Exception as _we4:
+                                    print("[SLSTALE] %s: fallo al cerrar: %s"
+                                          % (base, str(_we4)[:100]))
+                                changed = True
+                                continue
+        except Exception as _slme:
+            print("[SLM] error: " + str(_slme)[:100])
 
         # === FIXTS2_ARENA: trailing a SOFTWARE via amend-algos (ratchet) ===
         # El exchange no soporta move_order_stop en X-Perps (error 51155).
@@ -554,6 +699,7 @@ def manage_positions():
                     m["sl_algo_id"] = nuevo_sl
                     m["sw_sl_px"] = be_price
                     m["state"] = "breakeven"
+                    m["sl_v2"] = True   # SLM2: el SL de BE va a la spec nueva
                     changed = True
                     print(f"  [BE] {base} {direction} SL a BREAK-EVEN @ {be_price}")
                     enviar(f"🛡️ *{base} {direction} (DEMO)* — SL a break-even @ {be_price:.6g}")
@@ -598,9 +744,20 @@ def boton_estado():
             ic, pnl_txt = "⚪️", "0.00"
         linea = (f"{marca} {sym} {d} · {p['qty']:g} ct · ent {p['entry']:g} · "
                  f"mark {p['mark']:g} · P&L {ic} {pnl_txt} USD")
-        m = managed.get(f"{p['base']}:{d}")
+        m = managed.get(f"{p['base']}: {d}")   # SLM6: el key lleva espacio (FIXK)
         if m and m.get("state") == "breakeven":
             linea += " · 🔒 SL en BE"
+        # SLM6_ARENA: trailing por SOFTWARE (la unica viva en X-Perps; la de
+        # exchange muere en 51155). Mismo criterio que la linea del log:
+        # state breakeven/trailing con R >= TRAILING_DESDE_R.
+        _trail = ""
+        try:
+            if m and m.get("state") in ("breakeven", "trailing"):
+                _t = _tag_sl(m, pnl, p["qty"], p.get("entry", 0), sym)
+                if "trailing" in _t:
+                    _trail = _t.strip(" ·")
+        except Exception:
+            pass
         # FIXBE_ARENA: BE real segun el SL vivo del exchange (vale tambien para fantasmas)
         try:
             _g = globals()
@@ -613,10 +770,12 @@ def boton_estado():
                 _g["_FIXBE_TS"] = time.time()
             _slp = (_g.get("_FIXBE_SL") or {}).get(sym)
             if _slp and ((d == "LONG" and _slp >= p["entry"]) or (d == "SHORT" and _slp <= p["entry"])):
-                if "BE" not in linea:
+                if "BE" not in linea and not _trail:
                     linea += " | 🔒 BE"
         except Exception:
             pass
+        if _trail:
+            linea += " | " + _trail
         # FIXBET_ARENA: indicador de TRAILING (cajon move_order_stop, invisible para FIXBE)
         try:
             _g = globals()
@@ -702,6 +861,80 @@ def telegram_listener():
 
 
 # ------------------------------------------------------------------ MAIN
+# === SLM4_ARENA: indicador del regimen de SL en la linea de estado [DEMO] ===
+# Sin tag  = SL inicial vigente.  "BE"      = SL en break-even (trailing pendiente).
+# "trailing" = ratchet por software ACTIVO (estado breakeven/trailing con R>=1.5).
+# La cifra NO es el precio del SL: es la GANANCIA ASEGURADA por el SL actual
+# (lo que se llevaria si disparara AHORA). SLM8: se calcula con datos REALES
+# del exchange — (SL - entry) x qty x ctVal — porque sl_r x risk_usd fallaba
+# en posiciones legacy recortadas por tope de margen (AVAX: risk_usd=10 pero
+# 1R real ~5). entry_px = avgPx real si el llamador lo tiene. Fallback:
+# sl_r x risk_usd; ultimo recurso: precio del SL.
+_CTVAL_CACHE = {}   # SLM8: instId -> (ctVal, ts)  (endpooint publico, TTL 5 min)
+
+
+def _ctval(inst_id):
+    try:
+        now = time.time()
+        v, ts = _CTVAL_CACHE.get(inst_id, (0.0, 0.0))
+        if now - ts > 300:
+            info = client.info_instr(inst_id) or {}
+            v = float(info.get("ctVal", 0) or 0)
+            _CTVAL_CACHE[inst_id] = (v, now)
+        return v
+    except Exception:
+        return 0.0
+
+
+def _tag_sl(m, pnl, qty=None, entry_px=0.0, inst_id=""):
+    try:
+        if not m:
+            return ""
+        st = m.get("state")
+        if st not in ("breakeven", "trailing"):
+            return ""
+        try:
+            entry = float(m.get("entry", 0) or 0)
+            is0 = float(m.get("initial_sl", 0) or 0)
+            sl = float(m.get("sw_sl_px", 0) or 0)
+            riesgo = float(m.get("risk_usd", 0) or 0)
+            ctr = float(m.get("contratos", 0) or 0)
+        except (TypeError, ValueError):
+            entry = is0 = sl = riesgo = ctr = 0.0
+        try:
+            entry_px = float(entry_px or 0)
+        except (TypeError, ValueError):
+            entry_px = 0.0
+        if entry_px > 0:
+            entry = entry_px   # entry real del exchange (avgPx), no el de la senal
+        sufx = None
+        try:
+            _qty = float(qty or 0)
+        except (TypeError, ValueError):
+            _qty = 0.0
+        if entry > 0 and sl > 0 and _qty > 0:
+            ctv = _ctval(inst_id) if inst_id else 0.0
+            if ctv > 0:
+                s = -1.0 if m.get("direction") == "SHORT" else 1.0
+                sufx = " %+.2f USDC" % (s * (sl - entry) * _qty * ctv)
+        if sufx is None and entry > 0 and is0 > 0 and sl > 0 and riesgo > 0:
+            rng = entry - is0   # LONG: + (SL bajo la entrada) · SHORT: -
+            if abs(rng) > 1e-12:
+                sl_r = ((sl - entry) if rng > 0 else (entry - sl)) / abs(rng)
+                f = 1.0
+                if ctr > 0 and qty is not None and qty > 0:
+                    f = min(_qty / ctr, 1.0)
+                sufx = " %+.2f USDC" % (sl_r * riesgo * f)
+        if sufx is None:
+            sufx = (" SL %.6g" % sl) if sl > 0 else ""
+        rr = (pnl / riesgo) if riesgo > 0 else 0.0
+        if st == "trailing" or rr >= TRAILING_DESDE_R:
+            return " · 🎯trailing" + sufx
+        return " · 🛡BE" + sufx
+    except Exception:
+        return ""
+
+
 def main():
     global client
     if not (DEMO_KEY and DEMO_SECRET and DEMO_PASSPHRASE):
@@ -719,8 +952,15 @@ def main():
 
     last_scan = 0
     last_manage = 0
+    ultimo_dia_universo = ""
     while True:
         try:
+            # SLM11: chequeo diario de liquidez del universo (solo lectura, hilo aparte)
+            _hoy_u = datetime.now(MAD).strftime("%Y-%m-%d")
+            if _hoy_u != ultimo_dia_universo \
+                    and datetime.now(MAD).hour >= UNIVERSE_CHECK_HOUR:
+                ultimo_dia_universo = _hoy_u
+                threading.Thread(target=chequeo_universo, daemon=True).start()
             if time.time() - last_manage >= WATCH_EVERY_SEC:
                 last_manage = time.time()
                 manage_positions()
@@ -750,8 +990,12 @@ def main():
                             print(f"  [error] {cand['symbol']}: {e}")
 
             if open_positions:
+                _mg = load_managed()   # SLM4: snapshot solo para la etiqueta del estado
                 for p in open_positions:
-                    print(f"  [DEMO] {p['symbol']} {p['direction']} P&L={p['pnl']:+.2f}")
+                    _tag = _tag_sl(_mg.get(f"{p['base']}: {p['direction']}"),
+                                   p.get("pnl", 0), p.get("qty"),
+                                   p.get("entry", 0), p["symbol"])
+                    print(f"  [DEMO] {p['symbol']} {p['direction']} P&L={p['pnl']:+.2f}{_tag}")
         except KeyboardInterrupt:
             print("\nBot demo OKX detenido.")
             break
@@ -907,7 +1151,10 @@ def open_position(plan):
     managed[base + ": " + plan["direction"]] = {
         "symbol": base, "direction": plan["direction"], "entry": plan["entry"],
         "contratos": plan["contratos"], "sl_algo_id": sl_id, "state": "opened",
-        "risk_usd": RISK_USD, "opened_at": time.time(),
+        # SLM8: riesgo REAL (si el tope de margen recorto los contratos, el
+        # riesgo es menor que RISK_USD; los umbrales BE/trailing usan este valor)
+        "risk_usd": plan["contratos"] * plan["ct_val"] * (plan["atr"] * ATR_MULT_SL),
+        "opened_at": time.time(),
         "dist": round((plan["atr"] * ATR_MULT_SL) / plan["entry"], 8),
         "initial_sl": plan["stop"], "tp_levels": tps_colocados,
         "sw_sl_px": plan["stop"]}   # FIXTS2_ARENA: nivel SL actual (ratchet SW)
@@ -951,6 +1198,15 @@ def _journal_registrar_apertura(plan, res):
             sdp = round(abs(plan["entry"] - plan["stop"]) / plan["entry"] * 100, 3)
         except Exception:
             sdp = None
+        # SLM8: riesgo REAL de la posicion (si el tope de margen recorto los
+        # contratos, es menor que RISK_USD). El R del cierre se divide entre
+        # este valor, asi que debe ser el real o el R sale distorsionado.
+        try:
+            riesgo_real = float((res or {}).get("risk") or 0)
+        except (TypeError, ValueError):
+            riesgo_real = 0.0
+        if riesgo_real <= 0:
+            riesgo_real = float(RISK_USD)
         reg = {
             "id": int(time.time() * 1000),
             "ts_apertura": datetime.now(MAD).strftime("%Y-%m-%d %H:%M"),
@@ -959,7 +1215,7 @@ def _journal_registrar_apertura(plan, res):
             "direccion": plan["direction"],
             "entrada": plan["entry"],
             "contratos": plan["contratos"],
-            "riesgo_usd": RISK_USD,
+            "riesgo_usd": round(riesgo_real, 2),
             "score": _ULTIMO_SCORE.get(base),
             "atr": plan.get("atr"),
             "stop_dist_pct": sdp,
@@ -1231,6 +1487,91 @@ def filtros_diagnostico():
         except Exception as e:
             print("%-6s ERROR %s" % (base, str(e)[:60]))
     print("(LONG: precio>EMA20-4H, vela verde y sep<=max | SHORT: al reves)")
+
+
+# === SLM11: chequeo diario de liquidez del universo (05/09) ===
+# Una vez al dia (UNIVERSE_CHECK_HOUR, def 09h Madrid) mide el vol24h de TODOS los
+# XPERP live del demo y envia un informe SOLO LECTURA (no modifica el universo):
+#   - lista activa: 🟢 OK / 🟡 BAJO (<UNIVERSE_VOL_BAJO_USD) / 🔴 CERO (riesgo ORBS -> quitar)
+#   - candidatas fuera de la lista (top por volumen) -> ampliacion post-gate (TAREAS §6)
+# La decision de quitar/ampliar sigue siendo del usuario; esto solo informa.
+UNIVERSE_CHECK_HOUR = _filt_env_int("UNIVERSE_CHECK_HOUR", 9)
+UNIVERSE_VOL_BAJO   = _filt_env_float("UNIVERSE_VOL_BAJO_USD", 100000.0)
+
+
+def _vol24h_iid(c, iid):
+    """Vol24h en USD = volCcy24h × last de un instId. None si no hay dato (429...)."""
+    for intento in (0, 1):
+        try:
+            t = c.ticker(iid)
+            return float(t.get("volCcy24h", 0) or 0) * float(t.get("last", 0) or 0)
+        except Exception:
+            if intento == 0:
+                time.sleep(1.0)
+            else:
+                return None
+    return None
+
+
+def _fmt_usd(v):
+    if v is None:
+        return "s/d"
+    if v >= 1e6:
+        return f"{v/1e6:.1f}M"
+    if v >= 1e3:
+        return f"{v/1e3:.0f}k"
+    return f"{v:.0f}"
+
+
+def _chequeo_universo_texto(mapa_instr, base_activa, base_bl, vols):
+    """Funcion pura (testable): monta el mensaje del informe.
+    mapa_instr {base: instId} (live en el demo), base_activa set, base_bl set,
+    vols {base: usd|None}."""
+    def estado(v):
+        if v is None:
+            return "⚪ s/d"
+        if v <= 0:
+            return "🔴 CERO"
+        if v < UNIVERSE_VOL_BAJO:
+            return "🟡 BAJO"
+        return "🟢"
+    lineas = ["🌐 *Chequeo diario del universo (DEMO OKX)*", ""]
+    lineas.append(f"*En la lista del bot ({len(base_activa)}):*")
+    for b in sorted(base_activa):
+        v = vols.get(b)
+        nota = "  ⚠️ *quitar (ORBS: no se podria cerrar)*" if (v is not None and v <= 0) else ""
+        lineas.append(f"{estado(v)} {b}: {_fmt_usd(v)} USD/24h{nota}")
+    if base_bl:
+        lineas.append(f"⛔ blacklist: {', '.join(sorted(base_bl))}")
+    lineas.append("")
+    fuera = [b for b in mapa_instr if b not in base_activa and b not in base_bl]
+    orden = sorted(fuera, key=lambda b: (vols.get(b) is None, -(vols.get(b) or 0)))
+    lineas.append("*Fuera de la lista (top candidatas por volumen):*")
+    for b in orden[:8]:
+        v = vols.get(b)
+        lineas.append(f"{estado(v)} {b}: {_fmt_usd(v)} USD/24h")
+    lineas.append("")
+    lineas.append("Decision: 🔴 cero -> quitar de la lista. Post-gate (09/09): "
+                  "ampliar solo cripto con liquidez demo real + test de fills (TAREAS §6).")
+    return "\n".join(lineas)
+
+
+def chequeo_universo():
+    """Cada dia: mide vol24h de todos los XPERP live del demo y envia el informe.
+    Corre en su propio hilo (no bloquea el loop de gestion). Solo lectura."""
+    try:
+        mapa = client.instrumentos_xperp(refrescar=True)
+        base_activa = set(SYMBOLS)
+        base_bl = _bl_load() - base_activa
+        vols = {}
+        for b, iid in sorted(mapa.items()):
+            vols[b] = _vol24h_iid(client, iid)
+            time.sleep(0.25)
+        texto = _chequeo_universo_texto(mapa, base_activa, base_bl, vols)
+        print("[universo]\n" + texto)
+        enviar(texto)
+    except Exception as e:
+        print(f"  [error universo] {e}")
 
 
 if __name__ == "__main__":
