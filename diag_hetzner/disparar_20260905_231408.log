@@ -1,0 +1,16 @@
+=== DISPARAR Y LEER - Sat Sep  5 11:14:08 PM UTC 2026 ===
+
+== 1. Log ANTES ==
+Lineas antes: 477
+
+== 2. Disparar /start via curl a Telegram ==
+{"ok":true,"result":{"message_id":192,"from":{"id":8724334813,"is_bot":true,"first_name":"poly-combos-bot","username":"poly_combos_bot"},"chat":{"id":250818720,"first_name":"lamegawi","username":"lamegawi","type":"private"},"date":1788650048,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}}
+== 3. Esperar 15 segundos para que procese ==
+== 4. Log DESPUES ==
+Lineas despues: 477
+
+[23:12:18]   SKIP: precio no disponible
+[23:12:21] [TRADE] Will Columbus Crew win on 2026-09-05?
+[23:12:22]   SKIP: precio no disponible
+[23:12:25] [TRADE] Chicago Cubs vs. Miami Marlins
+[23:12:26]   SKIP: precio no disponible
