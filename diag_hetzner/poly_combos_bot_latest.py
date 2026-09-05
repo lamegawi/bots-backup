@@ -47,6 +47,7 @@ except: pass
 TELEGRAM_TOKEN = None
 WALLET = "0xb0e1197098e6d427c01720f1631cad24ce740fa0"
 HOST_CLOB = "https://clob.polymarket.com"
+COMBOS_API = "https://combos-rfq-api.polymarket.com"
 PROXY_URL = "http://100.83.57.99:8888"
 
 ESTADO_FILE = "/opt/polymarket/combos_estado.json"
@@ -275,7 +276,7 @@ def listar_combos():
     cursor = ""
     paginas = 0
     while paginas < 5:  # hasta 5 paginas
-        url = "https://clob.polymarket.com/v1/rfq/combo-markets?limit=50"
+        url = f"{COMBOS_API}/v1/rfq/combo-markets?limit=50"
         if cursor:
             url += f"&cursor={urllib.parse.quote(cursor)}"
         status, body = http_get(url, timeout=15)
