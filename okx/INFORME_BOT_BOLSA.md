@@ -149,7 +149,18 @@ La columna de cartera tiene botones para modificar el precio de compra, la canti
 
 `➖ Quitar` permite quitar una posición de cartera o un valor de seguimiento.
 
-## 8. Ficheros de datos
+## 8. Criptomonedas
+
+El bot también admite criptomonedas mediante Yahoo Finance, usando pares como `BTC-USD`, `ETH-USD` o `SOL-USD`.
+
+Desde `➕ Añadir` se puede elegir:
+
+- `₿ Cripto comprada`: solicita símbolo, cantidad y precio de compra.
+- `₿ Cripto seguimiento`: añade el símbolo a la lista de seguimiento.
+
+Las criptomonedas se guardan en los mismos ficheros de cartera y configuración, con `tipo: cripto`. Se identifican como `Cripto 24/7` y permanecen `ABIERTO`, incluidos fines de semana. Se integran con precios, saldo, seguimiento, análisis IA, alertas y modificación.
+
+## 10. Ficheros de datos
 
 En el servidor se utilizan estas rutas:
 
@@ -172,7 +183,7 @@ okx/INFORME_BOT_BOLSA.md
 
 Los ficheros de configuración y cartera pueden contener información financiera personal. El repositorio de backup debe mantenerse privado. Nunca deben subirse tokens de Telegram, claves API ni contraseñas.
 
-## 9. Operación y comprobaciones
+## 11. Operación y comprobaciones
 
 - El servicio se ejecuta como `bolsa-bot.service`.
 - Consulta alertas aproximadamente cada 300 segundos.
@@ -187,7 +198,7 @@ systemctl restart bolsa-bot
 systemctl status bolsa-bot --no-pager
 ```
 
-## 10. Backups
+## 12. Backups
 
 El servidor dispone del backup de OKX que se ejecuta con:
 
@@ -210,7 +221,7 @@ cp /root/bolsa_bot.py /root/bolsa_bot.py.bak_YYYYMMDD_HHMM
 
 El repositorio contiene además una copia versionada del código y de los datos de bolsa. Antes de instalar una versión nueva conviene verificar sintaxis, reiniciar el servicio y confirmar que permanece `active (running)`.
 
-## 11. Estado de esta entrega
+## 13. Estado de esta entrega
 
 - Código del bot versionado en la rama `arena/01a0587c-bots-backup`.
 - Informe añadido al repositorio.
