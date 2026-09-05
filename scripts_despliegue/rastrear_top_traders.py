@@ -20,10 +20,12 @@ def log(s):
     LOG.append(line)
 
 def find_pat():
-    for r in ["/root/diag_token.txt", os.path.expanduser("~/diag_token.txt"), "/tmp/diag_token.txt"):
+    paths = ["/root/diag_token.txt", os.path.expanduser("~/diag_token.txt"), "/tmp/diag_token.txt"]
+    for r in paths:
         if os.path.exists(r):
             t = open(r).read().strip()
-            if t.startswith("ghp_"): return t
+            if t.startswith("ghp_"):
+                return t
     return os.environ.get("GH_PAT", "")
 
 def publicar(texto, ruta, pat):
