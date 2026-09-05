@@ -1,0 +1,13 @@
+=== TEST SALUD PROXY - Sat Sep  5 11:51:27 PM UTC 2026 ===
+
+== 1. IP via proxy ==
+85.85.41.76
+
+== 2. IP directa (sin proxy) ==
+46.225.146.21
+
+== 3. CLOB via proxy ==
+HTTP: 200
+
+== 4. CLOB sin proxy (directo) ==
+HTTP: 200
