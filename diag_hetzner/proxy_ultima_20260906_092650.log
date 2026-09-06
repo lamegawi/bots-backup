@@ -1,0 +1,314 @@
+==========================================
+PROXY Y ULTIMA ORDEN POR BOT - Sun Sep  6 09:26:50 AM UTC 2026
+==========================================
+
+===== Variables de entorno (proxy) de cada servicio =====
+--- poly-elon ---
+Environment=
+EnvironmentFiles=/etc/polymarket.env (ignore_errors=no)
+--- poly-mensual ---
+Environment=
+EnvironmentFiles=/etc/polymarket.env (ignore_errors=no)
+--- poly-semanal ---
+Environment=
+EnvironmentFiles=/etc/polymarket.env (ignore_errors=no)
+--- poly-trump ---
+Environment=
+--- poly-zelenskyy ---
+Environment=
+EnvironmentFiles=/etc/polymarket.env (ignore_errors=no)
+
+===== Busqueda amplia de 'proxy' en todo el codigo de cada bot =====
+/opt/polymarket/bot-polymarket-elon/generar_excel_resultados.py:94:        ws["A5"].font = Font(italic=True, color="888888")
+/opt/polymarket/bot-polymarket-elon/operar_real.py:99:    FIRMAS SMART WALLET: si tu cuenta se creó por email (deposit/proxy
+/opt/polymarket/bot-polymarket-elon/operar_real.py:101:    usar signature_type=1 (POLY_PROXY) o 3 (POLY_1271). Por defecto se
+/opt/polymarket/bot-polymarket-elon/operar_real.py:102:    usa POLY_PROXY cuando hay wallet_address (funder); puedes forzarlo
+/opt/polymarket/bot-polymarket-elon/operar_real.py:127:        # auto: smart wallet (funder distinto del signer) → POLY_PROXY; EOA puro → EOA
+/opt/polymarket/bot-polymarket-elon/operar_real.py:128:        signature_type = int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA)
+/opt/polymarket/bot-polymarket-elon/probar_orden.py:74:    # tipos de firma de smart wallet en orden (POLY_PROXY → POLY_1271).
+/opt/polymarket/bot-polymarket-elon/probar_orden.py:81:        tipos += [int(SignatureTypeV2.POLY_PROXY), int(SignatureTypeV2.POLY_1271)]
+/opt/polymarket/bot-polymarket-elon/probar_orden.py:94:            print(f"  ✔ Orden enviada con signature_type={st} (POLY_PROXY=1, POLY_1271=3). orderID: {oid}")
+/opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py:99:    FIRMAS SMART WALLET: si tu cuenta se creó por email (deposit/proxy
+/opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py:101:    usar signature_type=1 (POLY_PROXY) o 3 (POLY_1271). Por defecto se
+/opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py:102:    usa POLY_PROXY cuando hay wallet_address (funder); puedes forzarlo
+/opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py:127:        # auto: smart wallet (funder distinto del signer) → POLY_PROXY; EOA puro → EOA
+/opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py:128:        signature_type = int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA)
+/opt/polymarket/bot-polymarket-elon-semanal/probar_orden_semanal.py:74:    # tipos de firma de smart wallet en orden (POLY_PROXY → POLY_1271).
+/opt/polymarket/bot-polymarket-elon-semanal/probar_orden_semanal.py:81:        tipos += [int(SignatureTypeV2.POLY_PROXY), int(SignatureTypeV2.POLY_1271)]
+/opt/polymarket/bot-polymarket-elon-semanal/probar_orden_semanal.py:94:            print(f"  ✔ Orden enviada con signature_type={st} (POLY_PROXY=1, POLY_1271=3). orderID: {oid}")
+/opt/polymarket/bot-polymarket-elon-mensual/operar_real_mensual.py:99:    FIRMAS SMART WALLET: si tu cuenta se creó por email (deposit/proxy
+/opt/polymarket/bot-polymarket-elon-mensual/operar_real_mensual.py:101:    usar signature_type=1 (POLY_PROXY) o 3 (POLY_1271). Por defecto se
+/opt/polymarket/bot-polymarket-elon-mensual/operar_real_mensual.py:102:    usa POLY_PROXY cuando hay wallet_address (funder); puedes forzarlo
+/opt/polymarket/bot-polymarket-elon-mensual/operar_real_mensual.py:127:        # auto: smart wallet (funder distinto del signer) → POLY_PROXY; EOA puro → EOA
+/opt/polymarket/bot-polymarket-elon-mensual/operar_real_mensual.py:128:        signature_type = int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA)
+/opt/polymarket/bot-polymarket-elon-mensual/probar_orden_mensual.py:63:    # tipos de firma de smart wallet en orden (POLY_PROXY → POLY_1271).
+/opt/polymarket/bot-polymarket-elon-mensual/probar_orden_mensual.py:70:        tipos += [int(SignatureTypeV2.POLY_PROXY), int(SignatureTypeV2.POLY_1271)]
+/opt/polymarket/bot-polymarket-elon-mensual/probar_orden_mensual.py:83:            print(f"  ✔ Orden enviada con signature_type={st} (POLY_PROXY=1, POLY_1271=3). orderID: {oid}")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:99:    FIRMAS SMART WALLET: si tu cuenta se creó por email (deposit/proxy
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:101:    usar signature_type=1 (POLY_PROXY) o 3 (POLY_1271). Por defecto se
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:102:    usa POLY_PROXY cuando hay wallet_address (funder); puedes forzarlo
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:127:        # auto: smart wallet (funder distinto del signer) → POLY_PROXY; EOA puro → EOA
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:128:        signature_type = int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA)
+/opt/polymarket/bot-polymarket-trump/probar_orden_semanal.py:74:    # tipos de firma de smart wallet en orden (POLY_PROXY → POLY_1271).
+/opt/polymarket/bot-polymarket-trump/probar_orden_semanal.py:81:        tipos += [int(SignatureTypeV2.POLY_PROXY), int(SignatureTypeV2.POLY_1271)]
+/opt/polymarket/bot-polymarket-trump/probar_orden_semanal.py:94:            print(f"  ✔ Orden enviada con signature_type={st} (POLY_PROXY=1, POLY_1271=3). orderID: {oid}")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:99:    FIRMAS SMART WALLET: si tu cuenta se creó por email (deposit/proxy
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:101:    usar signature_type=1 (POLY_PROXY) o 3 (POLY_1271). Por defecto se
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:102:    usa POLY_PROXY cuando hay wallet_address (funder); puedes forzarlo
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:127:        # auto: smart wallet (funder distinto del signer) → POLY_PROXY; EOA puro → EOA
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:128:        signature_type = int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA)
+/opt/polymarket/bot-polymarket-zelenskyy/probar_orden_semanal.py:74:    # tipos de firma de smart wallet en orden (POLY_PROXY → POLY_1271).
+/opt/polymarket/bot-polymarket-zelenskyy/probar_orden_semanal.py:81:        tipos += [int(SignatureTypeV2.POLY_PROXY), int(SignatureTypeV2.POLY_1271)]
+/opt/polymarket/bot-polymarket-zelenskyy/probar_orden_semanal.py:94:            print(f"  ✔ Orden enviada con signature_type={st} (POLY_PROXY=1, POLY_1271=3). orderID: {oid}")
+
+===== /etc/polymarket.env (credenciales compartidas?) =====
+POLY_PRIVATE_KEY=[oculto]
+POLY_WALLET_ADDRESS=0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+POLY_RELAYER_API_KEY=[oculto]
+POLY_RELAYER_API_KEY_ADDRESS=0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6
+REAL_CONFIRMADO=1
+# Proxy del PC (se añade al confirmar puerto)
+HTTP_PROXY=http://100.83.57.99:8888
+HTTPS_PROXY=http://100.83.57.99:8888
+ALL_PROXY=http://100.83.57.99:8888
+NO_PROXY=localhost,127.0.0.1,api.telegram.org,ntfy.sh
+LOCK_APUESTAS=/opt/polymarket/apuestas_compartidas.json
+TELEGRAM_BOT_TOKEN=8932364064:AAEE1iuyNX0beaVzFVcYMu_A4eNXCpEw8XE
+TELEGRAM_CHAT_ID=250818720
+8982773230:AAGfqqMxn3cgxcYDU_WAS2aWlkcl1UlGTxM
+TRUMP_BOT_TOKEN=8982773230:AAGfqqMxn3cgxcYDU_WAS2aWlkcl1UlGTxM
+
+===== Ultimas filas de cada CSV de resultados reales (fecha ultima orden) =====
+--- /opt/polymarket/bot-polymarket-elon/resultados_real.csv ---
+8c677c997237,2026-08-22,elon-musk-of-tweets-august-22-august-24-2026,90-114,YES,0.115,8.7,0.776,1,6.6,40-64,P,-6.6,517.74
+reconc,2026-08-30,elon-musk-of-tweets-august-29-august-31-2026,<40,YES,0.056,17.86,0.7143,2,9.9,vendido por el gestor,P,-9.9,507.84
+reconc,2026-08-30,elon-musk-of-tweets-august-29-august-31-2026,40-64,NO,0.28,3.57,0.1429,3,10.0,vendido/desaparecido (sin registro del gestor),P,-10.0,497.84
+reconc,2026-09-01,elon-musk-of-tweets-august-31-september-2-2026,40-64,NO,0.325,3.08,0.0,4,10.0,vendido/desaparecido (sin registro del gestor),P,-10.0,487.84
+7fabd7fc2966,2026-09-02,elon-musk-of-tweets-august-31-september-2-2026,40-64,NO,0.22,4.55,0.0,5,10.0,40-64,P,-10.0,477.84
+--- /opt/polymarket/bot-polymarket-elon-semanal/resultados_real_semanal.csv ---
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.007,142.86,0.1727,2,8.4,vendido por el gestor,P,-8.4,1171.01
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0055,181.82,0.1747,3,4.12,vendido por el gestor,P,-4.12,1166.89
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0035,285.71,0.1765,4,10.0,vendido por el gestor,P,-10.0,1156.89
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0055,181.82,0.177,5,10.0,vendido por el gestor,P,-10.0,1146.89
+21ec487f1602,2026-09-04,elon-musk-of-tweets-august-28-september-4-2026,220-239,NO,0.002,500.0,0.0,6,10.0,220-239,P,-10.0,1136.89
+--- /opt/polymarket/bot-polymarket-trump/datos_trump.csv ---
+2026-09-01,41
+2026-09-02,9
+2026-09-03,12
+2026-09-04,22
+2026-09-05,1
+--- /opt/polymarket/bot-polymarket-zelenskyy/resultados_real_zelen.csv ---
+reconc,2026-08-21,zelenskyy-of-tweets-august-21-august-28-2026,40-59,YES,0.249,4.02,0.6361,2,1.49,vendido/desaparecido (sin registro del gestor),P,-1.49,498.51
+reconc,2026-08-25,zelenskyy-of-tweets-august-25-september-1-2026,140-159,YES,0.036,27.78,0.4421,3,10.0,vendido por el gestor en positivo (+3.62 a nivel cuenta),G,267.8,766.31
+reconc,2026-08-26,zelenskyy-of-tweets-august-25-september-1-2026,200+,YES,0.172,5.81,1.0,1,6.0,vendido/desaparecido (sin registro del gestor),P,-6.0,760.31
+reconc,2026-08-28,zelenskyy-of-tweets-august-28-september-4-2026,160-179,YES,0.04,25.0,0.5236,2,8.4,vendido/desaparecido (sin registro del gestor),P,-0.35,759.96
+62bfc595fddd,2026-08-28,zelenskyy-of-tweets-august-28-september-4-2026,140-159,YES,0.046,21.74,0.4788,3,0.78,FIXWIN-anticipado @ 0.037 (p=0%<35% -> 40-59 p=68%),G,-0.0,759.96
+
+===== Ultimas 40 lineas de cada log (buscando cualquier intento de orden, exito o error) =====
+--- /opt/polymarket/bot-polymarket-elon/bot.log ---
+[2026-09-06 05:07:49 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-06 05:08:54 EDT]       · jina-tw: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-09-06 05:08:54 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:09:42 EDT]       · nitter: sin items
+[2026-09-06 05:09:42 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-06 05:09:42 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:10:01 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-06 05:10:01 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:10:01 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-06 05:10:01 EDT] 4/4 · Estado:
+[2026-09-06 05:10:01 EDT] Pasada completada en 131.5 s
+[2026-09-06 05:10:01 EDT] Próxima pasada en 5 min…
+[2026-09-06 05:15:01 EDT] ==============================================================
+[2026-09-06 05:15:01 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-06 05:15:01 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-06 05:15:01 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:15:01 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:15:42 EDT]       · nitter: sin items
+[2026-09-06 05:15:42 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-06 05:15:42 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:16:01 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-06 05:16:01 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:16:01 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-06 05:16:01 EDT] 4/4 · Estado:
+[2026-09-06 05:16:01 EDT] Pasada completada en 60.1 s
+[2026-09-06 05:16:01 EDT] Próxima pasada en 5 min…
+[2026-09-06 05:21:01 EDT] ==============================================================
+[2026-09-06 05:21:01 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-06 05:21:01 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-06 05:21:01 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:21:01 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:21:42 EDT]       · nitter: sin items
+[2026-09-06 05:21:42 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-06 05:21:42 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:22:01 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-06 05:22:01 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:22:01 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-06 05:22:01 EDT] 4/4 · Estado:
+[2026-09-06 05:22:01 EDT] Pasada completada en 60.3 s
+[2026-09-06 05:22:01 EDT] Próxima pasada en 5 min…
+--- /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.log ---
+[2026-09-06 05:07:50 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-06 05:08:54 EDT]       · jina-tw: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-09-06 05:08:54 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:09:42 EDT]       · nitter: sin items
+[2026-09-06 05:09:42 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-06 05:09:42 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:10:01 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-06 05:10:01 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:10:01 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal.xlsx (añadidas 0, total 17)
+[2026-09-06 05:10:01 EDT] 4/4 · Estado:
+[2026-09-06 05:10:01 EDT] Pasada completada en 131.3 s
+[2026-09-06 05:10:01 EDT] Próxima pasada en 5 min…
+[2026-09-06 05:15:01 EDT] ==============================================================
+[2026-09-06 05:15:01 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+[2026-09-06 05:15:01 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-06 05:15:01 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:15:01 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:15:42 EDT]       · nitter: sin items
+[2026-09-06 05:15:42 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-06 05:15:42 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:16:01 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-06 05:16:01 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:16:01 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal.xlsx (añadidas 0, total 17)
+[2026-09-06 05:16:01 EDT] 4/4 · Estado:
+[2026-09-06 05:16:01 EDT] Pasada completada en 60.1 s
+[2026-09-06 05:16:01 EDT] Próxima pasada en 5 min…
+[2026-09-06 05:21:01 EDT] ==============================================================
+[2026-09-06 05:21:01 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+[2026-09-06 05:21:01 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-06 05:21:01 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:21:01 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:21:43 EDT]       · nitter: sin items
+[2026-09-06 05:21:43 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-06 05:21:43 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:22:01 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-06 05:22:01 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:22:02 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal.xlsx (añadidas 0, total 17)
+[2026-09-06 05:22:02 EDT] 4/4 · Estado:
+[2026-09-06 05:22:02 EDT] Pasada completada en 60.6 s
+[2026-09-06 05:22:02 EDT] Próxima pasada en 5 min…
+--- /opt/polymarket/bot-polymarket-elon-mensual/bot_mensual.log ---
+[2026-09-06 05:07:49 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-06 05:08:54 EDT]       · jina-tw: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-09-06 05:08:54 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:09:42 EDT]       · nitter: sin items
+[2026-09-06 05:09:42 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-06 05:09:42 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:10:01 EDT]       · 6 mercados · 1 mensuales abiertos → mercado_activo.json
+[2026-09-06 05:10:01 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:10:01 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+[2026-09-06 05:10:01 EDT] 4/4 · Estado:
+[2026-09-06 05:10:01 EDT] Pasada completada en 131.5 s
+[2026-09-06 05:10:01 EDT] Próxima pasada en 5 min…
+[2026-09-06 05:15:01 EDT] ==============================================================
+[2026-09-06 05:15:01 EDT] PASADA COMPLETA (MENSUAL)  ·  MODO: REAL
+[2026-09-06 05:15:01 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-06 05:15:01 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:15:01 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:15:42 EDT]       · nitter: sin items
+[2026-09-06 05:15:42 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-06 05:15:42 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:16:01 EDT]       · 6 mercados · 1 mensuales abiertos → mercado_activo.json
+[2026-09-06 05:16:01 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:16:01 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+[2026-09-06 05:16:01 EDT] 4/4 · Estado:
+[2026-09-06 05:16:01 EDT] Pasada completada en 60.1 s
+[2026-09-06 05:16:01 EDT] Próxima pasada en 5 min…
+[2026-09-06 05:21:01 EDT] ==============================================================
+[2026-09-06 05:21:01 EDT] PASADA COMPLETA (MENSUAL)  ·  MODO: REAL
+[2026-09-06 05:21:01 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-06 05:21:01 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:21:01 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-06 05:21:42 EDT]       · nitter: sin items
+[2026-09-06 05:21:42 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-06 05:21:42 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:22:02 EDT]       · 6 mercados · 1 mensuales abiertos → mercado_activo.json
+[2026-09-06 05:22:02 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:22:02 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+[2026-09-06 05:22:02 EDT] 4/4 · Estado:
+[2026-09-06 05:22:02 EDT] Pasada completada en 61.0 s
+[2026-09-06 05:22:02 EDT] Próxima pasada en 5 min…
+--- /opt/polymarket/bot-polymarket-trump/bot_trump.log ---
+[2026-09-06 04:37:25 EDT]       · tweets únicos: 4807 (reposts 0) · CSV: 218 días (nuevos/mejorados: 0)
+[2026-09-06 04:37:25 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 04:37:32 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-06 04:37:32 EDT] 3/4 · Trading REAL…
+[2026-09-06 04:37:32 EDT] 4/4 · Estado:
+[2026-09-06 04:37:32 EDT] Pasada completada en 8.1 s
+[2026-09-06 04:37:32 EDT] Próxima pasada en 15 min…
+[2026-09-06 04:52:32 EDT] ==============================================================
+[2026-09-06 04:52:32 EDT] PASADA COMPLETA (TRUMP)  ·  MODO: REAL
+[2026-09-06 04:52:32 EDT] 1/4 · Recogiendo posts de @realDonaldTrump…
+[2026-09-06 04:52:33 EDT]       · xtracker: 4807 items
+[2026-09-06 04:52:33 EDT]       · tweets únicos: 4807 (reposts 0) · CSV: 218 días (nuevos/mejorados: 0)
+[2026-09-06 04:52:33 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 04:52:41 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-06 04:52:41 EDT] 3/4 · Trading REAL…
+[2026-09-06 04:52:41 EDT] 4/4 · Estado:
+[2026-09-06 04:52:41 EDT] Pasada completada en 8.6 s
+[2026-09-06 04:52:41 EDT] Próxima pasada en 15 min…
+[2026-09-06 05:07:41 EDT] ==============================================================
+[2026-09-06 05:07:41 EDT] PASADA COMPLETA (TRUMP)  ·  MODO: REAL
+[2026-09-06 05:07:41 EDT] 1/4 · Recogiendo posts de @realDonaldTrump…
+[2026-09-06 05:07:42 EDT]       · xtracker: 4807 items
+[2026-09-06 05:07:42 EDT]       · tweets únicos: 4807 (reposts 0) · CSV: 218 días (nuevos/mejorados: 0)
+[2026-09-06 05:07:42 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:07:49 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-06 05:07:49 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:07:49 EDT] 4/4 · Estado:
+[2026-09-06 05:07:49 EDT] Pasada completada en 7.7 s
+[2026-09-06 05:07:49 EDT] Próxima pasada en 15 min…
+[2026-09-06 05:22:49 EDT] ==============================================================
+[2026-09-06 05:22:49 EDT] PASADA COMPLETA (TRUMP)  ·  MODO: REAL
+[2026-09-06 05:22:49 EDT] 1/4 · Recogiendo posts de @realDonaldTrump…
+[2026-09-06 05:22:49 EDT]       · xtracker: 4807 items
+[2026-09-06 05:22:49 EDT]       · tweets únicos: 4807 (reposts 0) · CSV: 218 días (nuevos/mejorados: 0)
+[2026-09-06 05:22:49 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:22:57 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-06 05:22:57 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:22:57 EDT] 4/4 · Estado:
+[2026-09-06 05:22:57 EDT] Pasada completada en 8.2 s
+[2026-09-06 05:22:57 EDT] Próxima pasada en 15 min…
+--- /opt/polymarket/bot-polymarket-zelenskyy/bot_zelen.log ---
+[2026-09-06 05:09:08 EDT]       · Excel historial actualizado: Historial_Operaciones_Zelenskyy.xlsx (añadidas 0, total 5)
+[2026-09-06 05:09:08 EDT] 4/4 · Estado:
+[2026-09-06 05:09:08 EDT] Pasada completada en 20.6 s
+[2026-09-06 05:09:08 EDT] Próxima pasada en 5 min…
+[2026-09-06 05:14:08 EDT] ==============================================================
+[2026-09-06 05:14:08 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+[2026-09-06 05:14:08 EDT] 1/4 · Recogiendo posts de @ZelenskyyUa…
+[2026-09-06 05:14:09 EDT]       · xtracker: 2020 items
+[2026-09-06 05:14:09 EDT]       · tweets únicos: 2020 (reposts 0) · CSV: 170 días (nuevos/mejorados: 0)
+[2026-09-06 05:14:09 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:14:27 EDT]       · 3 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-06 05:14:27 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:14:28 EDT]       · Excel historial actualizado: Historial_Operaciones_Zelenskyy.xlsx (añadidas 0, total 5)
+[2026-09-06 05:14:28 EDT] 4/4 · Estado:
+[2026-09-06 05:14:28 EDT] Pasada completada en 20.0 s
+[2026-09-06 05:14:28 EDT] Próxima pasada en 5 min…
+[2026-09-06 05:19:28 EDT] ==============================================================
+[2026-09-06 05:19:28 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+[2026-09-06 05:19:28 EDT] 1/4 · Recogiendo posts de @ZelenskyyUa…
+[2026-09-06 05:19:29 EDT]       · xtracker: 2020 items
+[2026-09-06 05:19:29 EDT]       · tweets únicos: 2020 (reposts 0) · CSV: 170 días (nuevos/mejorados: 0)
+[2026-09-06 05:19:29 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:19:48 EDT]       · 3 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-06 05:19:48 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:19:49 EDT]       · Excel historial actualizado: Historial_Operaciones_Zelenskyy.xlsx (añadidas 0, total 5)
+[2026-09-06 05:19:49 EDT] 4/4 · Estado:
+[2026-09-06 05:19:49 EDT] Pasada completada en 21.0 s
+[2026-09-06 05:19:49 EDT] Próxima pasada en 5 min…
+[2026-09-06 05:24:49 EDT] ==============================================================
+[2026-09-06 05:24:49 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+[2026-09-06 05:24:49 EDT] 1/4 · Recogiendo posts de @ZelenskyyUa…
+[2026-09-06 05:24:50 EDT]       · xtracker: 2020 items
+[2026-09-06 05:24:50 EDT]       · tweets únicos: 2020 (reposts 0) · CSV: 170 días (nuevos/mejorados: 0)
+[2026-09-06 05:24:50 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-06 05:25:09 EDT]       · 3 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-06 05:25:09 EDT] 3/4 · Trading REAL…
+[2026-09-06 05:25:09 EDT]       · Excel historial actualizado: Historial_Operaciones_Zelenskyy.xlsx (añadidas 0, total 5)
+[2026-09-06 05:25:09 EDT] 4/4 · Estado:
+[2026-09-06 05:25:09 EDT] Pasada completada en 20.4 s
+[2026-09-06 05:25:09 EDT] Próxima pasada en 5 min…
+
+=== FIN ===
