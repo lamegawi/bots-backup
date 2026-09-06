@@ -1,0 +1,104 @@
+==========================================
+DIAGNOSTICO TODOS LOS BOTS - Sun Sep  6 09:22:20 AM UTC 2026
+==========================================
+
+== 1. Servicios systemd relacionados ==
+  poly-backup-cruzado.service                           loaded    inactive dead    Replica el backup de bot-poly a vm4
+  poly-backup-github.service                            loaded    inactive dead    Backup semanal del código a GitHub
+  poly-backup.service                                   loaded    inactive dead    Backup diario bot-poly
+  poly-combos-bot.service                               loaded    active   running Poly Combos Bot (Telegram copy-trading)
+  poly-elon.service                                     loaded    active   running Bot Polymarket Elon 48h (v1)
+  poly-fantasmas-trump.service                          loaded    inactive dead    Comprobación de posiciones fantasma de Trump (auto-reparación)
+  poly-fantasmas-zelen.service                          loaded    inactive dead    Comprobación de posiciones fantasma de Zelenskyy (auto-reparación)
+  poly-fantasmas.service                                loaded    inactive dead    Comprobación de posiciones fantasma de Polymarket (auto-reparación)
+  poly-gestor.service                                   loaded    active   running Gestor de cierre anticipado de posiciones Polymarket
+  poly-mensual.service                                  loaded    active   running Bot Polymarket Elon MENSUAL (v1)
+  poly-salud-diario.service                             loaded    inactive dead    Informe de salud diario Polymarket (08:00 y 22:00 Madrid)
+  poly-salud-trump.service                              loaded    inactive dead    Chequeo de salud Trump (bot-poly)
+  poly-salud-zelen.service                              loaded    inactive dead    Chequeo de salud Zelenskyy (bot-poly)
+  poly-salud.service                                    loaded    inactive dead    Chequeo de salud Polymarket (bot-poly)
+  poly-semanal.service                                  loaded    active   running Bot Polymarket Elon SEMANAL (v1)
+  poly-telegram-trump.service                           loaded    active   running Bot Telegram de Polymarket Trump (con botones)
+  poly-telegram-zelen.service                           loaded    active   running Bot Telegram de Polymarket Zelenskyy
+  poly-telegram.service                                 loaded    active   running Bot Telegram de Polymarket (Elon_polymarket_bot)
+  poly-test-diario-trump.service                        loaded    inactive dead    Test integral diario de Trump (detección y auto-reparación)
+  poly-test-diario-zelen.service                        loaded    inactive dead    Test integral diario de Zelenskyy (detección y auto-reparación)
+  poly-test-diario.service                              loaded    inactive dead    Test integral diario de Polymarket (detección y auto-reparación)
+  poly-trump.service                                    loaded    active   running Bot Polymarket Trump Truth Social posts
+  poly-zelenskyy.service                                loaded    active   running Bot Polymarket Zelenskyy SEMANAL
+
+== 2. Procesos python activos (todos) ==
+root         833  0.0  0.5 109696 23312 ?        Ssl  Aug26   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root      569424  0.0  1.5  72460 61632 ?        Ss   Sep02   0:05 /usr/bin/python3 /opt/polymarket/gestionar_posiciones.py --loop 5
+root      569425  0.0  2.5 221500 100500 ?       Ssl  Sep02   3:05 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+root      569426  0.0  2.6 224096 102948 ?       Ssl  Sep02   3:56 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root      569427  0.0  1.6  74300 63696 ?        Ss   Sep02   1:10 /usr/bin/python3 /opt/polymarket/poly_telegram_zelen.py
+root      710512  0.0  1.5  72132 60952 ?        Ss   Sep03   0:40 /usr/bin/python3 /opt/polymarket/poly_telegram_trump.py
+root      779031  0.0  2.3 214848 93784 ?        Ssl  Sep04   1:13 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+root      779032  0.0  1.7 189624 69112 ?        Ssl  Sep04   2:23 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root      779034  0.0  1.3  65404 53176 ?        Ss   Sep04   0:59 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+root      863757  0.0  1.5  72652 61716 ?        Ss   Sep05   0:18 /usr/bin/python3 /opt/polymarket/poly_telegram_bot.py
+root      926672  0.0  1.5 210744 61560 ?        Ssl  00:01   0:07 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+== 3. Crontab root ==
+0 9 * * 1 /usr/bin/python3 -u /root/seguimiento_semanal.py >> /root/semanal.log 2>&1
+1 0 1 * * /usr/bin/python3 -u /root/reset_mensual.py >> /root/reset.log 2>&1
+
+== 4. Buscar scripts de bots en el sistema ==
+/opt/polymarket/bot-polymarket-elon-semanal-v2/mercado_polymarket.py
+/opt/polymarket/bot-polymarket-elon-mensual-v2/mercado_polymarket.py
+/opt/polymarket/bot-polymarket-elon-mensual/mercado_polymarket.py
+/opt/polymarket/backup_trump_20260831_201030/mercado_polymarket.py
+/opt/polymarket/poly_telegram_bot.py
+/opt/polymarket/bot-polymarket-elon-v2/mercado_polymarket.py
+/opt/polymarket/bot-polymarket-elon/mercado_polymarket.py
+/opt/polymarket/bot-polymarket-elon-semanal/mercado_polymarket.py
+/opt/polymarket/poly_telegram_trump.py
+/opt/polymarket/poly_telegram_zelen.py
+/opt/polymarket/bot-polymarket-zelenskyy/mercado_polymarket.py
+/opt/polymarket/bot-polymarket-trump/mercado_polymarket.py
+/opt/polymarket/_backup_motor_v1/poly_telegram_bot.py
+/root/gh_backup/mercado_polymarket.py
+/root/ver_salud_trump.py
+/root/analisis_elon.py
+/root/bots-repo/poly/codigo/poly_telegram_bot.py
+/root/bots-repo/poly/codigo/poly_telegram_trump.py
+/root/bots-repo/poly/codigo/poly_telegram_zelen.py
+/root/bots-repo/poly/codigo/poly_combos_bot.py
+/tmp/diag-pub/poly/codigo/poly_telegram_bot.py
+/tmp/diag-pub/poly/codigo/poly_telegram_zelen.py
+/tmp/bots-backup/poly/codigo/poly_telegram_bot.py
+/tmp/bots-backup/poly/codigo/poly_telegram_zelen.py
+/tmp/repo-trump/poly/codigo/poly_telegram_bot.py
+/tmp/repo-trump/poly/codigo/poly_telegram_zelen.py
+
+== 5. Directorios candidatos ==
+total 12
+drwxr-xr-x  3 root root 4096 Aug 17 20:24 .
+drwxr-xr-x 23 root root 4096 Aug 26 16:10 ..
+drwxr-xr-x 13 1000 1000 4096 Sep  6 09:22 polymarket
+-rw-r--r--  1 root root    5816 Sep  4 14:45 analisis_elon.py
+-rw-r--r--  1 root root     144 Sep  5 04:30 backup_poly.log
+-rwx--x--x  1 root root    1240 Aug 28 18:49 backup_poly.sh
+drwxr-xr-x  5 root root    4096 Aug 28 14:14 bots-repo
+-rw-r--r--  1 root root    1771 Aug 30 17:49 crear_trump.txt
+-rw-r--r--  1 root root  184756 Aug 30 18:42 diagnostico_poly.txt
+-rw-r--r--  1 root root     788 Aug 28 09:01 enviar_poly.sh
+-rw-r--r--  1 root root    5882 Aug 30 17:43 explorar_trump.txt
+-rw-r--r--  1 root root    8687 Aug 30 18:11 instalar_trump_sistemas.sh
+-rw-r--r--  1 root root   14043 Aug 30 17:04 leer_bots_completo.txt
+-rw-r--r--  1 root root   17257 Aug 30 18:04 leer_sistemas_poly.txt
+-rw-------  1 root root      47 Sep  5 18:28 poly_combos_token.txt
+-rw-r--r--  1 root root    5437 Aug 30 18:12 recolector_poly.sh
+-rw-r--r--  1 root root     405 Aug 30 12:13 resultado_2h_poly.txt
+-rw-r--r--  1 root root    7749 Sep  3 20:04 salud_trump.log
+-rw-r--r--  1 root root    3720 Aug 30 18:25 test_trump.txt
+-rwxr-xr-x  1 root root      14 Aug 31 19:57 trump_hetzner.sh
+-rw-r--r--  1 root root    6187 Aug 30 17:57 trump_setup.txt
+-rw-r--r--  1 root root    1060 Aug 30 18:12 trump_sistemas.txt
+-rw-r--r--  1 root root    3435 Aug 30 17:58 trump_start.txt
+-rw-r--r--  1 root root    4136 Sep  4 15:02 verificar_filtros_3bots.py
+-rw-r--r--  1 root root    4542 Sep  4 15:05 verificar_filtros_3bots_v2.py
+-rw-r--r--  1 root root    5581 Sep  3 20:04 ver_salud_trump.py
+
+=== FIN PARTE 1 - descubrimiento ===
