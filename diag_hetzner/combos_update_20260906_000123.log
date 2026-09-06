@@ -1,0 +1,49 @@
+==========================================
+ACTUALIZADOR INLINE v10.5 - Sun Sep  6 12:01:23 AM UTC 2026
+==========================================
+
+=== Paso 1: Detener bot anterior ===
+OK
+
+=== Paso 2: Descargar codigo v10.5 desde GitHub ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/0d7c701c/scripts_despliegue/poly_combos_bot.py
+Descargado: 33888 bytes
+
+=== Paso 3: Verificar setup ===
+-rwxr-xr-x 1 root root 33888 Sep  6 00:01 /opt/polymarket/poly_combos_bot.py
+env: OK
+token: OK
+
+=== Paso 4: Verificar servicio systemd ===
+Servicio existe OK
+
+=== Paso 5: Iniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-06 00:01:26 UTC; 5s ago
+   Main PID: 926672 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 12.8M (peak: 13.1M)
+        CPU: 172ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─926672 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 6: Verificar log ===
+[00:00:57] [TRADE] US Open ATP: Zizou Bergs vs Botic van de Zandschulp
+[00:00:57]   SKIP: no pude resolver token real de 0x90dab25d...
+[00:01:00] [TRADE] Spread: Philadelphia Union (-1.5)
+[00:01:01]   SKIP: no pude resolver token real de 0x8a2e7737...
+[00:01:26] v10 cargado · modo=AUTO · stake=$5.0
+[00:01:26] Proxy: http://100.83.57.99:8888
+[00:01:26] Test proxy: 200
+[00:01:26] v10 iniciado
+[00:01:32] [AUTO] pasada
+[00:01:32]   pagina 1: +50 mercados, 0 combos de deportes
+[00:01:32]   pagina 2: +50 mercados, 1 combos de deportes
+[00:01:33]   pagina 3: +50 mercados, 11 combos de deportes
+[00:01:33]   pagina 4: +50 mercados, 52 combos de deportes
+[00:01:33]   pagina 5: +50 mercados, 91 combos de deportes
+[00:01:34] [TRADE] US Open ATP: Michael Zheng vs Arthur Gea
+
+=== FIN update ===
