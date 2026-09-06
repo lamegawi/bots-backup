@@ -1,0 +1,49 @@
+==========================================
+ACTUALIZADOR INLINE v10.5 - Sun Sep  6 12:00:32 AM UTC 2026
+==========================================
+
+=== Paso 1: Detener bot anterior ===
+OK
+
+=== Paso 2: Descargar codigo v10.5 desde GitHub ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/0d7c701c/scripts_despliegue/poly_combos_bot.py
+Descargado: 33888 bytes
+
+=== Paso 3: Verificar setup ===
+-rwxr-xr-x 1 root root 33888 Sep  6 00:00 /opt/polymarket/poly_combos_bot.py
+env: OK
+token: OK
+
+=== Paso 4: Verificar servicio systemd ===
+Servicio existe OK
+
+=== Paso 5: Iniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-06 00:00:34 UTC; 5s ago
+   Main PID: 926614 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 12.9M (peak: 13.3M)
+        CPU: 195ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─926614 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 6: Verificar log ===
+[23:56:36]   token real resuelto: 786246390407539017...
+[23:56:36]   SKIP: cuota 2.67 fuera de [1.2-2.5]
+[23:56:39] [TRADE] Spread: Philadelphia Union (-1.5)
+[23:56:39]   token real resuelto: 958718972036241424...
+[23:56:40]   precio=0.410 cuota=2.44 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[23:56:40]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[23:58:11] v10 cargado · modo=AUTO · stake=$5.0
+[23:58:11] Proxy: http://100.83.57.99:8888
+[23:58:12] Test proxy: 200
+[23:58:12] v10 iniciado
+[00:00:34] v10 cargado · modo=AUTO · stake=$5.0
+[00:00:34] Proxy: http://100.83.57.99:8888
+[00:00:35] Test proxy: 200
+[00:00:35] v10 iniciado
+
+=== FIN update ===
