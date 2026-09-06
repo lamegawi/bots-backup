@@ -12,54 +12,54 @@
     "initial_sl": 6.985976,
     "tp_levels": [],
     "qty_vista": 50.0,
-    "sw_sl_px": 7.3758799999999995,
+    "sw_sl_px": 7.49713,
     "sl_v2": true
   },
-  "UNI: LONG": {
-    "symbol": "UNI",
+  "DOGE: LONG": {
+    "symbol": "DOGE",
     "direction": "LONG",
-    "entry": 6.748,
-    "contratos": 26,
-    "sl_algo_id": "3896454077521375232",
-    "state": "breakeven",
-    "risk_usd": 10.0,
-    "opened_at": 1788574674.43099,
-    "dist": 0.05715975,
-    "initial_sl": 6.36228598,
+    "entry": 0.09076,
+    "contratos": 328,
+    "sl_algo_id": "3897141806877945856",
+    "state": "opened",
+    "risk_usd": 9.988671101238364,
+    "opened_at": 1788646277.5982814,
+    "dist": 0.03355362,
+    "initial_sl": 0.08771467,
     "tp_levels": [
       {
         "nivel": "1.0R",
-        "precio": 7.00514268,
-        "sz": 5,
-        "algoId": "3894739211500695552"
+        "precio": 0.09279022,
+        "sz": 66,
+        "algoId": "3897141813421060096"
       },
       {
         "nivel": "1.5R",
-        "precio": 7.13371402,
-        "sz": 5,
-        "algoId": "3894739217674711040"
+        "precio": 0.09380533,
+        "sz": 66,
+        "algoId": "3897141820568154112"
       },
       {
         "nivel": "2.0R",
-        "precio": 7.26228536,
-        "sz": 5,
-        "algoId": "3894739224016498688"
+        "precio": 0.09482044,
+        "sz": 66,
+        "algoId": "3897141827178377216"
       },
       {
         "nivel": "2.5R",
-        "precio": 7.39085671,
-        "sz": 5,
-        "algoId": "3894739230291177472"
+        "precio": 0.09583554,
+        "sz": 66,
+        "algoId": "3897141833620828160"
       },
       {
         "nivel": "3.0R",
-        "precio": 7.51942805,
-        "sz": 6,
-        "algoId": "3894739236733628416"
+        "precio": 0.09685065,
+        "sz": 64,
+        "algoId": "3897141840298160128"
       }
     ],
-    "sw_sl_px": 6.758122,
-    "qty_vista": 26.0,
-    "sl_v2": true
+    "sw_sl_px": 0.08771467,
+    "sl_v2": true,
+    "qty_vista": 328.0
   }
 }

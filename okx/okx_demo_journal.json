@@ -467,6 +467,25 @@
   "atr": 0.2571426821831821,
   "stop_dist_pct": 5.716,
   "apalancamiento": 3,
+  "estado": "cerrada",
+  "ts_cierre": "2026-09-06 02:20",
+  "pnl_usd": -18.0,
+  "r_resultado": -1.8,
+  "motivo": "SL"
+ },
+ {
+  "id": 1788646277600,
+  "ts_apertura": "2026-09-06 00:11",
+  "bot": "demo",
+  "moneda": "DOGE",
+  "direccion": "LONG",
+  "entrada": 0.09076,
+  "contratos": 328,
+  "riesgo_usd": 9.99,
+  "score": 4.765643698764372,
+  "atr": 0.0020302177035037322,
+  "stop_dist_pct": 3.355,
+  "apalancamiento": 5,
   "estado": "abierta"
  }
 ]
