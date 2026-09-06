@@ -1,0 +1,116 @@
+==========================================
+DIAGNOSTICO COMBOS BOT - Sun Sep  6 09:15:52 AM UTC 2026
+==========================================
+
+== 1. Salud del proxy (debe devolver tu IP de casa) ==
+85.85.41.76
+
+== 2. Servicio ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-06 00:01:26 UTC; 9h ago
+   Main PID: 926672 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 43.6M (peak: 44.1M)
+        CPU: 7.483s
+     CGroup: /system.slice/poly-combos-bot.service
+             └─926672 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+Sep 06 00:01:26 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+== 3. Version desplegada ==
+POLY COMBOS BOT v10 — Combos (parlays) en tiempo real
+aae770cf0baa8b35d5b7c175ebbe1168  /opt/polymarket/poly_combos_bot.py
+
+== 4. Proceso vivo ==
+root      926672  0.0  1.5 210744 61552 ?        Ssl  00:01   0:07 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+== 5. Intentos de orden recientes (confirma si llega bien a Polymarket) ==
+
+== 6. Ultimas 60 lineas del log ==
+[09:03:09]   pagina 5: +50 mercados, 97 combos de deportes
+[09:03:09] [TRADE] LoL: T1 vs Dplus KIA (BO5) - LCK Playoffs
+[09:03:09]   token real resuelto: 498997223577323473...
+[09:03:09]   precio=0.725 cuota=1.38 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[09:03:09]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[09:03:12] [TRADE] Counter-Strike: Spirit vs MOUZ (BO5) - BLAST Open Porto Play
+[09:03:13]   token real resuelto: 462140287561274792...
+[09:03:13]   precio=0.635 cuota=1.57 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[09:03:13]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[09:03:16] [TRADE] Will FC Barcelona win on 2026-09-06?
+[09:03:17]   token real resuelto: 332314417459917102...
+[09:03:17]   precio=0.765 cuota=1.31 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[09:03:17]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[09:08:20] [AUTO] pasada
+[09:08:21]   pagina 1: +50 mercados, 0 combos de deportes
+[09:08:21]   pagina 2: +50 mercados, 0 combos de deportes
+[09:08:21]   pagina 3: +50 mercados, 9 combos de deportes
+[09:08:22]   pagina 4: +50 mercados, 55 combos de deportes
+[09:08:22]   pagina 5: +50 mercados, 98 combos de deportes
+[09:08:22] [TRADE] LoL: T1 vs Dplus KIA (BO5) - LCK Playoffs
+[09:08:22]   token real resuelto: 498997223577323473...
+[09:08:23]   precio=0.715 cuota=1.40 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[09:08:28]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[09:08:31] [TRADE] Counter-Strike: Spirit vs MOUZ (BO5) - BLAST Open Porto Play
+[09:08:31]   token real resuelto: 462140287561274792...
+[09:08:32]   precio=0.635 cuota=1.57 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[09:08:32]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[09:08:35] [TRADE] Will FC Barcelona win on 2026-09-06?
+[09:08:35]   token real resuelto: 332314417459917102...
+[09:08:35]   precio=0.765 cuota=1.31 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[09:08:35]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[09:10:15] loop err: The read operation timed out
+[09:13:39] [AUTO] pasada
+[09:13:39]   pagina 1: +50 mercados, 0 combos de deportes
+[09:13:39]   pagina 2: +50 mercados, 0 combos de deportes
+[09:13:40]   pagina 3: +50 mercados, 9 combos de deportes
+[09:13:40]   pagina 4: +50 mercados, 55 combos de deportes
+[09:13:40]   pagina 5: +50 mercados, 97 combos de deportes
+[09:13:40] [TRADE] LoL: T1 vs Dplus KIA (BO5) - LCK Playoffs
+[09:13:41]   token real resuelto: 498997223577323473...
+[09:13:41]   precio=0.705 cuota=1.42 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[09:13:41]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[09:13:44] [TRADE] Counter-Strike: Spirit vs MOUZ (BO5) - BLAST Open Porto Play
+[09:13:45]   token real resuelto: 462140287561274792...
+[09:13:45]   precio=0.635 cuota=1.57 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[09:13:45]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[09:13:48] [TRADE] Will FC Barcelona win on 2026-09-06?
+[09:13:48]   token real resuelto: 332314417459917102...
+[09:13:49]   precio=0.765 cuota=1.31 stake=$5.0
+[py_clob_client_v2] request error status=403 url=https://clob.polymarket.com/order body={"error":"Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock"}
+[09:13:49]   ERROR: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[09:15:40] loop err: The read operation timed out
+
+== 7. Estado/trades guardados ==
+{
+  "modo": "AUTO",
+  "trades_copiados": [
+    {
+      "trader": "pleaseplease123",
+      "peso": 10,
+      "titulo": "Washington Nationals vs. Los Angeles Dodgers: O/U 8.5",
+      "side": "BUY",
+      "price": 0.54,
+      "size": 434.0,
+      "asset": "95952339111587815223537791500571044605986864428829629834185439441029088171356",
+      "timestamp": 1788559234,
+      "cuota": 1.85,
+      "stake_sugerido": 2.0,
+      "copiado_en": "2026-09-05T19:00:01.832312",
+      "status": "error",
+      "chat_id": 250818720,
+      "order_id": "tamaño 3.7 < 5 shares mínimo"
+    }
+  ],
+  "historial": [],
+  "stake": 5.0
+}
+=== FIN DIAGNOSTICO ===
