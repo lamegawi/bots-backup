@@ -1,0 +1,88 @@
+==========================================
+COMPARATIVA BOTS - Sun Sep  6 09:25:18 AM UTC 2026
+==========================================
+
+===== poly-elon =====
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon
+
+===== poly-mensual =====
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon-mensual
+
+===== poly-semanal =====
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon-semanal
+
+===== poly-trump =====
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+WorkingDirectory=/opt/polymarket/bot-polymarket-trump
+
+===== poly-zelenskyy =====
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+WorkingDirectory=/opt/polymarket/bot-polymarket-zelenskyy
+
+===== poly-combos-bot =====
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py ; ignore_errors=no ; start_time=[Sun 2026-09-06 00:01:26 UTC] ; stop_time=[n/a] ; pid=926672 ; code=(null) ; status=0/0 }
+WorkingDirectory=/opt/polymarket
+
+===== PROXY_URL configurado en cada bot =====
+/opt/polymarket/poly_combos_bot.py:51:PROXY_URL = "http://100.83.57.99:8888"
+/opt/polymarket/poly_combos_bot.py:166:        "http": PROXY_URL, "https": PROXY_URL,
+/opt/polymarket/poly_combos_bot.py:253:    os.environ["HTTP_PROXY"] = PROXY_URL
+/opt/polymarket/poly_combos_bot.py:254:    os.environ["HTTPS_PROXY"] = PROXY_URL
+/opt/polymarket/poly_combos_bot.py:255:    os.environ["http_proxy"] = PROXY_URL
+/opt/polymarket/poly_combos_bot.py:256:    os.environ["https_proxy"] = PROXY_URL
+/opt/polymarket/poly_combos_bot.py:257:    os.environ["ALL_PROXY"] = PROXY_URL
+/opt/polymarket/poly_combos_bot.py:744:             f"Proxy: `{PROXY_URL}`\n"
+/opt/polymarket/poly_combos_bot.py:877:    log(f"Proxy: {PROXY_URL}")
+
+===== WALLET configurada en cada bot =====
+/opt/polymarket/poly_combos_bot.py:48:WALLET = "0xb0e1197098e6d427c01720f1631cad24ce740fa0"
+/opt/polymarket/poly_combos_bot.py:263:    wallet = env.get("POLY_WALLET_ADDRESS", WALLET).strip()
+/opt/polymarket/poly_combos_bot.py:610:    wallet = env.get("POLY_WALLET_ADDRESS", WALLET)
+
+===== Ultimas ordenes/ejecuciones en logs de cada carpeta =====
+--- bot-polymarket-elon ---
+/opt/polymarket/bot-polymarket-elon/datos_elon.csv
+/opt/polymarket/bot-polymarket-elon/resultados_simulacion.csv
+/opt/polymarket/bot-polymarket-elon/resultados_real.csv
+/opt/polymarket/bot-polymarket-elon/Historial_Operaciones.xlsx
+/opt/polymarket/bot-polymarket-elon/bot.log
+/opt/polymarket/bot-polymarket-elon/datos_ejemplo.csv
+log: /opt/polymarket/bot-polymarket-elon/bot.log
+--- bot-polymarket-elon-semanal ---
+/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.log
+/opt/polymarket/bot-polymarket-elon-semanal/resultados_real_semanal.csv
+/opt/polymarket/bot-polymarket-elon-semanal/Historial_Operaciones_Semanal.xlsx
+/opt/polymarket/bot-polymarket-elon-semanal/datos_elon.csv
+log: /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.log
+--- bot-polymarket-elon-mensual ---
+/opt/polymarket/bot-polymarket-elon-mensual/datos_elon.csv
+/opt/polymarket/bot-polymarket-elon-mensual/bot_mensual.log
+/opt/polymarket/bot-polymarket-elon-mensual/Historial_Operaciones_Mensual.xlsx
+log: /opt/polymarket/bot-polymarket-elon-mensual/bot_mensual.log
+--- bot-polymarket-trump ---
+/opt/polymarket/bot-polymarket-trump/bot_trump.log
+/opt/polymarket/bot-polymarket-trump/datos_trump.csv
+log: /opt/polymarket/bot-polymarket-trump/bot_trump.log
+--- bot-polymarket-zelenskyy ---
+/opt/polymarket/bot-polymarket-zelenskyy/Historial_Operaciones_Zelenskyy.xlsx
+/opt/polymarket/bot-polymarket-zelenskyy/bot_zelen.log
+/opt/polymarket/bot-polymarket-zelenskyy/datos_zelen.csv
+/opt/polymarket/bot-polymarket-zelenskyy/resultados_real_zelen.csv
+log: /opt/polymarket/bot-polymarket-zelenskyy/bot_zelen.log
+
+===== journalctl reciente de cada servicio =====
+--- poly-elon ---
+[sin lineas relevantes]
+--- poly-mensual ---
+[sin lineas relevantes]
+--- poly-semanal ---
+[sin lineas relevantes]
+--- poly-trump ---
+[sin lineas relevantes]
+--- poly-zelenskyy ---
+[sin lineas relevantes]
+
+=== FIN COMPARATIVA ===
