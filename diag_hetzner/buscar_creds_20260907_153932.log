@@ -1,0 +1,109 @@
+=== BUSCAR CREDS ELON - Mon Sep  7 03:39:32 PM UTC 2026 ===
+
+== 1. Servicio poly-elon: EnvironmentFile y ExecStart ==
+# /etc/systemd/system/poly-elon.service
+[Unit]
+Description=Bot Polymarket Elon 48h (v1)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+Restart=always
+TimeoutStartSec=300
+RestartSec=30
+StandardOutput=append:/var/log/poly-elon.log
+StandardError=append:/var/log/poly-elon.log
+
+[Install]
+WantedBy=multi-user.target
+
+== 2. Servicio poly-semanal ==
+# /etc/systemd/system/poly-semanal.service
+[Unit]
+Description=Bot Polymarket Elon SEMANAL (v1)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon-semanal
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+Restart=always
+TimeoutStartSec=300
+RestartSec=30
+StandardOutput=append:/var/log/poly-semanal.log
+StandardError=append:/var/log/poly-semanal.log
+
+[Install]
+WantedBy=multi-user.target
+
+== 3. Servicio poly-mensual ==
+# /etc/systemd/system/poly-mensual.service
+[Unit]
+Description=Bot Polymarket Elon MENSUAL (v1)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon-mensual
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+Restart=always
+TimeoutStartSec=300
+RestartSec=30
+StandardOutput=append:/var/log/poly-mensual.log
+StandardError=append:/var/log/poly-mensual.log
+
+[Install]
+WantedBy=multi-user.target
+
+== 4. Buscar archivos .env o config_real en /opt/polymarket ==
+/opt/polymarket/bot-polymarket-elon-semanal-v2/config_real.json.example
+/opt/polymarket/bot-polymarket-elon-mensual-v2/config_real.json.example
+/opt/polymarket/bot-polymarket-elon-mensual/config_real.json.example
+/opt/polymarket/backup_trump_20260831_201030/config_real.json.example
+/opt/polymarket/bot-polymarket-elon-v2/config_real.json.example
+/opt/polymarket/bot-polymarket-elon/config_real.json.example
+/opt/polymarket/bot-polymarket-elon-semanal/config_real.json.example
+/opt/polymarket/bot-polymarket-zelenskyy/config_real.json.example
+/opt/polymarket/bot-polymarket-trump/config_real.json.example
+
+== 5. Variables POLY_ en el proceso de poly-elon ==
+PID poly-elon: 779031
+  POLY_PRIVATE_KEY: <len=66>
+  POLY_WALLET_ADDRESS: <len=42>
+  POLY_RELAYER_API_KEY: <len=36>
+  POLY_RELAYER_API_KEY_ADDRESS: <len=42>
+
+== 6. Variables POLY_ en el proceso de poly-combos-bot ==
+PID poly-combos-bot: 1081081
+
+== 7. /etc/polymarket.env ==
+-rw------- 1 root root 763 Sep  3 20:13 /etc/polymarket.env
+
+Contenido (vars encontradas):
+  POLY_PRIVATE_KEY: <len=66>
+  POLY_WALLET_ADDRESS: <len=42>
+  POLY_RELAYER_API_KEY: <len=36>
+  POLY_RELAYER_API_KEY_ADDRESS: <len=42>
+  REAL_CONFIRMADO: <len=1>
+  HTTP_PROXY: <len=24>
+  HTTPS_PROXY: <len=24>
+  ALL_PROXY: <len=24>
+  NO_PROXY: <len=44>
+  LOCK_APUESTAS: <len=41>
+  TELEGRAM_BOT_TOKEN: <len=46>
+  TELEGRAM_CHAT_ID: <len=9>
+  TRUMP_BOT_TOKEN: <len=46>
