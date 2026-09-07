@@ -1,0 +1,41 @@
+=== ACTUALIZADOR v10.6 HASH FIJO - Mon Sep  7 03:44:52 PM UTC 2026 ===
+HASH: ac4c912
+
+=== Paso 1: Detener bot ===
+
+=== Paso 2: Descargar v10.6 (HASH FIJO) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/ac4c912/scripts_despliegue/poly_combos_bot.py
+Descargado: 36281 bytes
+
+=== Paso 3: Verificar version ===
+POLY COMBOS BOT v10.7 — Combos (parlays) en tiempo real
+    # 2) Enviar la orden firmada via HTTP POST directo CON PROXY
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2026-09-07 15:44:54 UTC; 5s ago
+   Main PID: 1085892 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 13.0M (peak: 13.4M)
+        CPU: 172ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1085892 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log ===
+[15:41:37]   precio=0.635 cuota=1.57 stake=$5.0
+[15:41:37]   ERROR: sin_credenciales
+[15:41:40] [TRADE] US Open WTA: Mirra Andreeva vs Anastasia Potapova
+[15:41:41]   token real resuelto: 981793670138259096...
+[15:41:41]   precio=0.785 cuota=1.27 stake=$5.0
+[15:41:41]   ERROR: sin_credenciales
+[15:41:44] [TRADE] Counter-Strike: Nuclear TigeRES vs CYBERSHOKE Esports (BO3) 
+[15:41:44]   token real resuelto: 994168584266180032...
+[15:41:44]   precio=0.525 cuota=1.90 stake=$5.0
+[15:41:44]   ERROR: sin_credenciales
+[15:43:31] loop err: The read operation timed out
+[15:44:54] v10.7 cargado · modo=AUTO · stake=$5.0
+[15:44:54] Proxy: http://100.83.57.99:8888
+[15:44:57] Test proxy: 200
+[15:44:57] v10.7 iniciado
