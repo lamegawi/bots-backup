@@ -101,7 +101,22 @@ El bot usa `/etc/polymarket.env` que contiene:
 ### v10.6 → v10.7: derive_api_key con private key
 - **Problema**: `POLY_API_KEY` y `POLY_API_SECRET` no existen en `/etc/polymarket.env` → error `sin_credenciales`
 - **Solución**: usar `client.derive_api_key()` con la private key (igual que el bot de Elon)
-- **Resultado**: pendiente verificar que funciona
+- **Resultado**: ✅ FUNCIONA — log 16:36 UTC: "Creds derivadas automaticamente" + orden firmada `SignedOrderV2(...)`
+
+### v10.7 → v10.8: SignedOrderV2 no serializable
+- **Problema**: `json.dumps(signed_order)` → `Object of type SignedOrderV2 is not JSON serializable`
+- **Fix v10.8**: `signed_order.__dict__` — INSUFICIENTE (el problema real era otro, ver v10.9)
+
+### v10.8 → v10.9: el SDK usa HTTPX + envelope v2 + headers L2 (FIX DEFINITIVO)
+- **Investigación** (leyendo el source de `py_clob_client_v2==1.1.0`):
+  1. El SDK usa **httpx**, NO requests → los monkey-patch v10.2-10.4 parcheaban la librería equivocada
+  2. httpx crea su cliente **al importar el módulo**: `helpers._http_client = httpx.Client(http2=True)` → setear env vars después NO afecta al cliente ya creado
+  3. `POST /order` en la API v2 NO acepta el signed order crudo: espera el envelope `{"order":{salt:int, maker, signer, tokenId, makerAmount, takerAmount, side, expiration, signatureType, timestamp, metadata, builder, signature}, "owner":api_key, "orderType":"GTC", ...}` que construye `order_to_json_v2()`
+  4. Los headers L2 requieren `POLY_SIGNATURE` = base64(HMAC-SHA256(api_secret, timestamp+method+path+body_serializado_exacto)) — el POST manual v10.6-10.8 enviaba api_key/passphrase VACÍOS y sin firma HMAC → habría dado 401 aunque serializara bien
+- **Solución v10.9**:
+  1. `inyectar_proxy_sdk()`: reemplaza EXPLÍCITAMENTE `py_clob_client_v2.http_helpers.helpers._http_client` por `httpx.Client(http2=True, proxy=PROXY_URL)` (con fallbacks por versión de httpx)
+  2. `enviar_orden()` usa `client.create_and_post_order(OrderArgs(...))` NATIVO del SDK (patrón exacto del bot de Elon) → el SDK construye envelope + headers L2 con las creds derivadas
+- **Resultado**: probado en sandbox (GET/POST del SDK salen por proxy inyectado). Pendiente ejecutar en Hetzner
 
 ## 🔧 CÓDIGO CLAVE (v10.7)
 
@@ -279,8 +294,9 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - ✅ USAR `combos-rfq-api.polymarket.com/v1/rfq/combo-markets`
 - ❌ **NUNCA** usar `position_ids[0]` del endpoint combos (NO tradable)
 - ✅ USAR `tokens[0].token_id` de `clob.polymarket.com/markets/{condition_id}`
-- ❌ **NUNCA** enviar orden con `client.create_and_post_order()` (conecta directo, salta proxy, 403)
-- ✅ USAR `client.create_order()` para firmar + `urllib` con proxy para enviar
+- ❌ **NUNCA** enviar orden con POST manual de urllib: la API v2 espera el envelope de `order_to_json_v2()` + header `POLY_SIGNATURE` (HMAC sobre el body exacto) — imposible de replicar a mano con creds derivadas
+- ❌ **NUNCA** monkey-patchear `requests` para el proxy: el SDK usa **httpx**
+- ✅ USAR `inyectar_proxy_sdk()` (reemplaza `helpers._http_client` por `httpx.Client(proxy=...)`) + `client.create_and_post_order(OrderArgs(...))` nativo del SDK
 - ❌ **NUNCA** requerir `POLY_API_KEY` y `POLY_API_SECRET` (no existen)
 - ✅ USAR `client.derive_api_key()` con `POLY_PRIVATE_KEY`
 
@@ -298,8 +314,9 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - ✅ Endpoint correcto de combos
 - ✅ Token real tradable resuelto
 - ✅ HTTP POST con proxy
-- ✅ derive_api_key con private key
-- ⏳ **PENDIENTE**: confirmar primer trade ejecutado
+- ✅ derive_api_key con private key (confirmado en log 16:36 UTC)
+- ✅ v10.9: proxy inyectado en httpx del SDK + create_and_post_order nativo (fix definitivo del envío)
+- ⏳ **PENDIENTE**: desplegar v10.9 en Hetzner y confirmar primer trade ejecutado
 
 ## 🔗 URLs ÚTILES
 
@@ -339,3 +356,6 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - 7 sept 14:30 — v10.6 con HTTP POST directo + proxy (resolvió 403)
 - 7 sept 15:00 — v10.7 con `derive_api_key` (resolvió sin_credenciales)
 - 7 sept 15:30 — PENDIENTE confirmar ejecución de primer trade
+- 7 sept 16:36 — Log confirma: creds derivadas OK + orden firmada OK, pero `SignedOrderV2 is not JSON serializable` → v10.8 (__dict__)
+- 7 sept 16:41 — inspect falla: SignedOrderV2 NO está en clob_types (está en order_utils.model.order_data_v2)
+- 7 sept ~19:00 — Análisis del source del SDK (v1.1.0): usa httpx, envelope v2 y L2 HMAC → POST manual inviable → v10.9 con inyectar_proxy_sdk() + create_and_post_order nativo. PENDIENTE desplegar

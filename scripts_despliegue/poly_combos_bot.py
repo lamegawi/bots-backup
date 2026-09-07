@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v10.8 — Combos (parlays) en tiempo real
+POLY COMBOS BOT v10.9 — Combos (parlays) en tiempo real
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
   2. Cada combo = 2-10 legs, paga si TODOS aciertan
   3. Cuota objetivo 1.20-2.50 (multiplicacion de legs)
   4. Ejecuta automaticamente via CLOB
+
+FIX v10.9 (el SDK usa HTTPX, no requests):
+  · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
+    httpx.Client con proxy → TODAS las llamadas del SDK salen por el PC
+  · enviar_orden() usa create_and_post_order() NATIVO del SDK (patrón
+    bot de Elon): el SDK construye el envelope v2 {"order":..,"owner":..,
+    "orderType":..} y firma headers L2 (POLY_SIGNATURE HMAC con creds
+    derivadas). El POST manual v10.6-10.8 enviaba cuerpo+headers mal.
 
 ARCHIVOS:
   · /root/poly_combos_token.txt       - Token Telegram
@@ -249,12 +257,8 @@ def get_clob_client():
     if not signer:
         log("  sin POLY_PRIVATE_KEY")
         return None
-    # Setear env vars (el SDK las respeta)
-    os.environ["HTTP_PROXY"] = PROXY_URL
-    os.environ["HTTPS_PROXY"] = PROXY_URL
-    os.environ["http_proxy"] = PROXY_URL
-    os.environ["https_proxy"] = PROXY_URL
-    os.environ["ALL_PROXY"] = PROXY_URL
+    # v10.9: inyectar proxy en el cliente httpx del SDK (no basta el env)
+    inyectar_proxy_sdk()
 
     kwargs = {}
     if env.get("POLY_API_KEY") and env.get("POLY_API_SECRET") and env.get("POLY_API_PASSPHRASE"):
@@ -275,6 +279,46 @@ def get_clob_client():
     except Exception as e:
         log(f"cliente error: {e}")
         return None
+
+
+def inyectar_proxy_sdk(proxy_url=None):
+    """v10.9: fuerza que py_clob_client_v2 salga por el proxy del PC.
+
+    CLAVE: el SDK usa HTTPX (no requests). Su cliente se crea A NIVEL DE
+    MODULO al importar:  helpers._http_client = httpx.Client(http2=True)
+    → setear env vars despues de importar NO afecta al cliente ya creado,
+    y los monkey-patch de v10.2-10.4 parcheaban requests (libreria que el
+    SDK no usa). Aqui reemplazamos _http_client EXPLICITAMENTE por uno con
+    proxy, cubriendo varias versiones de httpx. Devuelve True si OK."""
+    proxy_url = proxy_url or PROXY_URL
+    if not proxy_url:
+        return False
+    # env vars tambien (por si algo re-importa/crea clientes nuevos)
+    for k in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY",
+              "http_proxy", "https_proxy", "all_proxy"):
+        os.environ[k] = proxy_url
+    try:
+        import httpx
+        from py_clob_client_v2.http_helpers import helpers as _hh
+        ultimo_err = None
+        for kwargs in (
+            {"http2": True, "proxy": proxy_url},                   # httpx >= 0.26
+            {"http2": True, "proxies": {"all://": proxy_url}},     # httpx 0.23-0.25
+            {"http2": True, "proxies": proxy_url},                 # httpx antiguos
+            {"proxy": proxy_url},                                  # sin paquete h2
+            {"proxies": {"all://": proxy_url}},
+        ):
+            try:
+                _hh._http_client = httpx.Client(**kwargs)
+                return True
+            except (TypeError, ImportError) as e:
+                ultimo_err = e
+                continue
+        log(f"  · aviso: proxy SDK no inyectado ({str(ultimo_err)[:80]})")
+        return False
+    except Exception as e:
+        log(f"  · aviso: proxy SDK fallo ({str(e)[:80]})")
+        return False
 
 
 # ============================================
@@ -425,8 +469,8 @@ def resolver_token_real(condition_id):
 # EJECUCIÓN DE TRADES
 # ============================================
 def enviar_orden(token_id, precio, stake_dolares):
-    """v10.6: Firma la orden con ClobClient, luego envia via HTTP directo
-    con proxy (como hace el bot de Elon con curl)."""
+    """v10.9: create_and_post_order() NATIVO del SDK (patrón bot de Elon)
+    con el cliente httpx del SDK forzado a salir por el proxy del PC."""
     global ULTIMO_TRADE_TS
     ahora = time.time()
     if ahora - ULTIMO_TRADE_TS < 10:
@@ -445,8 +489,18 @@ def enviar_orden(token_id, precio, stake_dolares):
     if not signer:
         return False, "sin_credenciales"
 
-    # 1) Crear cliente SOLO para firmar (no envia)
+    # 1) v10.9: cliente SDK con proxy INYECTADO en httpx + envío NATIVO.
+    #    El POST manual de v10.6-10.8 estaba doblemente roto:
+    #      a) el cuerpo no es el signed order crudo: la API v2 espera el
+    #         envelope {"order":{...},"owner":...,"orderType":...} que
+    #         construye order_to_json_v2() del SDK
+    #      b) los headers L2 iban vacíos (api_key/passphrase del env no
+    #         existen) y faltaba POLY_SIGNATURE (HMAC con el secret
+    #         derivado, calculado sobre el cuerpo EXACTO serializado)
+    #    Con create_and_post_order() el SDK hace todo eso solo; nosotros
+    #    solo garantizamos que su httpx salga por el proxy del PC.
     try:
+        proxy_ok = inyectar_proxy_sdk()
         from py_clob_client_v2.client import ClobClient
         from py_clob_client_v2.clob_types import ApiCreds, OrderArgs
         from py_clob_client_v2 import SignatureTypeV2
@@ -463,50 +517,38 @@ def enviar_orden(token_id, precio, stake_dolares):
             try:
                 creds = client.derive_api_key()
                 client.set_api_creds(creds)
-                log("  · Creds derivadas automaticamente")
+                log(f"  · Creds derivadas automaticamente (proxy_sdk={'OK' if proxy_ok else 'FALLO'})")
             except Exception as e:
-                log(f"  · No pude derivar creds: {e}")
-        # Crear la orden firmada (NO la posteamos)
+                return False, f"derive_error:{str(e)[:200]}"
+
         order_args = OrderArgs(token_id=token_id, price=precio,
                                 size=size_shares, side="BUY")
-        signed_order = client.create_order(order_args)
-        log(f"  orden firmada: {str(signed_order)[:120]}")
-    except Exception as e:
-        return False, f"firma_error:{str(e)[:200]}"
 
-    # 2) Enviar la orden firmada via HTTP POST directo CON PROXY
-    try:
-        # v10.8: convertir SignedOrderV2 a dict (no es JSON serializable)
-        if hasattr(signed_order, "__dict__"):
-            signed_order_dict = signed_order.__dict__
-        elif hasattr(signed_order, "to_dict"):
-            signed_order_dict = signed_order.to_dict()
-        else:
-            signed_order_dict = dict(signed_order)
-        body = json.dumps(signed_order_dict)
-        url = f"{HOST_CLOB}/order"
-        timestamp = str(int(time.time()))
-        # Headers L2 auth requeridos por Polymarket CLOB
-        headers = {
-            "Content-Type": "application/json",
-            "POLY_ADDRESS": wallet,
-            "POLY_API_KEY": api_key,
-            "POLY_PASSPHRASE": api_passphrase,
-            "POLY_TIMESTAMP": timestamp,
-        }
-        status, resp_body = http_post(url, body, headers)
-        log(f"  HTTP POST /order -> {status} {resp_body[:200]}")
-        if status in (200, 201):
+        # 2) v10.9: POST nativo del SDK (patrón exacto del bot de Elon)
+        log(f"  enviando orden via SDK (httpx+proxy)...")
+        resp = client.create_and_post_order(order_args)
+        if isinstance(resp, str):
             try:
-                data = json.loads(resp_body)
-            except:
-                data = {"raw": resp_body[:200]}
-            oid = data.get("orderID") or data.get("order_id") or data.get("id") or "?"
-            ULTIMO_TRADE_TS = ahora
-            return True, {"oid": oid, "size": size_shares, "precio": precio}
-        return False, f"http_{status}:{resp_body[:200]}"
+                resp = json.loads(resp)
+            except Exception:
+                pass
+        log(f"  SDK resp: {json.dumps(resp, default=str)[:220] if isinstance(resp, (dict, list)) else str(resp)[:220]}")
+        if isinstance(resp, dict):
+            if resp.get("success") is True or resp.get("orderID") or resp.get("orderId"):
+                oid = resp.get("orderID") or resp.get("orderId") or resp.get("id") or "?"
+                ULTIMO_TRADE_TS = ahora
+                return True, {"oid": oid, "size": size_shares, "precio": precio,
+                              "status": resp.get("status", "?")}
+            err = resp.get("errorMsg") or resp.get("error") or str(resp)[:150]
+            return False, f"api_rechazo:{str(err)[:200]}"
+        return False, f"resp_desconocida:{str(resp)[:150]}"
     except Exception as e:
-        return False, f"http_error:{str(e)[:200]}"
+        # PolyApiException trae status_code y error_msg reales de la API
+        status = getattr(e, "status_code", None)
+        errmsg = getattr(e, "error_msg", None)
+        if status is not None or errmsg is not None:
+            return False, f"PolyApi[{status}]:{str(errmsg)[:200]}"
+        return False, f"sdk_error:{str(e)[:200]}"
 
 def ejecutar_trade(mercado, chat_id=None):
     """Ejecuta un trade en un mercado activo (v10: combo con token real)."""
@@ -632,7 +674,7 @@ def calcular_stats():
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v10.8*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v10.9*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -907,7 +949,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v10.8 iniciado")
+    log("v10.9 iniciado")
     offset = 0
     while True:
         try:
@@ -931,7 +973,7 @@ def main():
     if not cargar_token():
         log("ERROR: no se encontró el token")
         return
-    log(f"v10.8 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v10.9 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
