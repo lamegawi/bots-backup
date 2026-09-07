@@ -1,0 +1,159 @@
+=== VER BOT ELON - Mon Sep  7 03:17:18 PM UTC 2026 ===
+
+== 1. Servicios ==
+  poly-elon: active
+  poly-semanal: active
+  poly-mensual: active
+  poly-telegram: active
+  poly-gestor: active
+
+== 2. Ultimo log del bot principal ==
+
+--- /var/log/poly-elon.log (ultimas 30 lineas) ---
+[2026-09-07 11:16:03 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+  nitter nitter.tiekoetter.com: sin items
+[2026-09-07 11:16:08 EDT]       · nitter: 21 items
+[2026-09-07 11:16:08 EDT]       · tweets únicos: 650 (reposts 403) · CSV: 43 días (nuevos/mejorados: 0)
+[2026-09-07 11:16:08 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-07 11:16:29 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-07 11:16:29 EDT] 3/4 · Trading REAL…
+[2026-09-07 11:16 EDT] Trading REAL  · saldo $303.55 · paso 6
+  (sin señal 48 h → no se abre apuesta real · paso 6)
+  Historial REAL: 7 apuestas · 1G/6P · beneficio $-22.16
+[2026-09-07 11:16:29 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-07 11:16:29 EDT] 4/4 · Estado:
+fecha        tweets
+2026-08-22       17
+2026-08-23       31
+2026-08-24       33
+2026-08-25       26
+2026-08-26       14
+2026-08-27       30
+2026-08-28        7
+2026-08-29       16
+2026-08-30        9
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+
+AVG7 = 12.71  V2 = 26  R = 1.022  ajuste = 1.011  λ48 = 25.7
+Días completos en CSV: 43
+[2026-09-07 11:16:29 EDT] Pasada completada en 25.4 s
+[2026-09-07 11:16:29 EDT] Próxima pasada en 5 min…
+
+--- /var/log/poly-semanal.log (ultimas 30 lineas) ---
+[2026-09-07 11:16:04 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-07 11:16:04 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+  nitter nitter.tiekoetter.com: sin items
+[2026-09-07 11:16:09 EDT]       · nitter: 21 items
+[2026-09-07 11:16:09 EDT]       · tweets únicos: 645 (reposts 400) · CSV: 41 días (nuevos/mejorados: 0)
+[2026-09-07 11:16:09 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-07 11:16:29 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-07 11:16:29 EDT] 3/4 · Trading REAL…
+[2026-09-07 11:16 EDT] Trading REAL SEMANAL  · saldo $1136.89 · paso 7
+  Historial REAL: 24 apuestas · 6G/18P · beneficio $+636.89
+[2026-09-07 11:16:29 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal.xlsx (añadidas 0, total 17)
+[2026-09-07 11:16:29 EDT] 4/4 · Estado:
+fecha        tweets
+2026-08-22       14
+2026-08-23       31
+2026-08-24       33
+2026-08-25       26
+2026-08-26       14
+2026-08-27       30
+2026-08-28        7
+2026-08-29       16
+2026-08-30        9
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+
+AVG7 = 12.71  V2 = 26  R = 1.022  ajuste = 1.011  λ48 = 25.7
+Días completos en CSV: 41
+[2026-09-07 11:16:29 EDT] Pasada completada en 25.6 s
+[2026-09-07 11:16:29 EDT] Próxima pasada en 5 min…
+
+--- /var/log/poly-mensual.log (ultimas 30 lineas) ---
+[2026-09-07 11:16:03 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+  nitter nitter.tiekoetter.com: sin items
+[2026-09-07 11:16:08 EDT]       · nitter: 21 items
+[2026-09-07 11:16:09 EDT]       · tweets únicos: 530 (reposts 343) · CSV: 41 días (nuevos/mejorados: 0)
+[2026-09-07 11:16:09 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-07 11:16:29 EDT]       · 6 mercados · 1 mensuales abiertos → mercado_activo.json
+[2026-09-07 11:16:29 EDT] 3/4 · Trading REAL…
+[2026-09-07 11:16 EDT] Trading REAL MENSUAL  · saldo $495.30 · paso 3
+  (sin señal mensual → no se abre apuesta real · paso 3)
+  Historial REAL: 2 apuestas · 0G/2P · beneficio $-4.70
+[2026-09-07 11:16:29 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+[2026-09-07 11:16:29 EDT] 4/4 · Estado:
+fecha        tweets
+2026-08-22       18
+2026-08-23       31
+2026-08-24       33
+2026-08-25       26
+2026-08-26       14
+2026-08-27       30
+2026-08-28        7
+2026-08-29       16
+2026-08-30        9
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+
+AVG7 = 12.71  V2 = 26  R = 1.022  ajuste = 1.011  λ48 = 25.7
+Días completos en CSV: 41
+[2026-09-07 11:16:29 EDT] Pasada completada en 25.5 s
+[2026-09-07 11:16:29 EDT] Próxima pasada en 5 min…
+
+== 3. Estado de /opt/polymarket ==
+total 368
+drwxr-xr-x 13 1000 1000  4096 Sep  7 15:16 .
+drwxr-xr-x  3 root root  4096 Aug 17 20:24 ..
+-rw-r--r--  1 root root   467 Sep  7 15:16 apuestas_compartidas.json
+-rw-r--r--  1 root root   301 Aug 22 04:41 apuestas_compartidas.json.bak_20260822_044155
+drwxr-xr-x  8 root root  4096 Aug 19 17:47 _backup_motor_v1
+drwxr-xr-x  4 root root  4096 Aug 31 01:00 backup_trump_20260831_201030
+-rw-r--r--  1 root root   151 Aug 18 20:00 balance_bot.json
+drwxr-xr-x  6 1000 1000  4096 Sep  7 09:28 bot-polymarket-elon
+drwxr-xr-x  5 1000 1000  4096 Sep  2 09:00 bot-polymarket-elon-mensual
+drwxr-xr-x  5 1000 1000  4096 Aug 30 08:30 bot-polymarket-elon-mensual-v2
+drwxr-xr-x  5 1000 1000  4096 Sep  2 09:00 bot-polymarket-elon-semanal
+drwxr-xr-x  5 1000 1000  4096 Aug 30 08:30 bot-polymarket-elon-semanal-v2
+drwxr-xr-x  5 1000 1000  4096 Aug 30 08:30 bot-polymarket-elon-v2
+drwxr-xr-x  4 root root  4096 Sep  4 17:00 bot-polymarket-trump
+
+== 4. Trades recientes (resultados_real*.csv) ==
+
+--- /opt/polymarket/bot-polymarket-elon/resultados_real.csv ---
+id,fecha,mercado,bin,lado,precio,cuota,p_modelo,paso,stake,real,resultado,beneficio,saldo
+9545c5c1841c,2026-08-18,elon-musk-of-tweets-august-17-august-19,<40,YES,0.23,4.35,0.9171,1,3.3,>40 (gestor vendió 18/08),P,-3.3,496.7
+reconc,2026-08-20,elon-musk-of-tweets-august-20-august-22,90-114,YES,0.212,4.72,0.6359,2,7.43,vendido por el gestor en positivo (+2.70 a nivel cuenta),G,27.64,524.34
+8c677c997237,2026-08-22,elon-musk-of-tweets-august-22-august-24-2026,90-114,YES,0.115,8.7,0.776,1,6.6,40-64,P,-6.6,517.74
+reconc,2026-08-30,elon-musk-of-tweets-august-29-august-31-2026,<40,YES,0.056,17.86,0.7143,2,9.9,vendido por el gestor,P,-9.9,507.84
+reconc,2026-08-30,elon-musk-of-tweets-august-29-august-31-2026,40-64,NO,0.28,3.57,0.1429,3,10.0,vendido/desaparecido (sin registro del gestor),P,-10.0,497.84
+reconc,2026-09-01,elon-musk-of-tweets-august-31-september-2-2026,40-64,NO,0.325,3.08,0.0,4,10.0,vendido/desaparecido (sin registro del gestor),P,-10.0,487.84
+7fabd7fc2966,2026-09-02,elon-musk-of-tweets-august-31-september-2-2026,40-64,NO,0.22,4.55,0.0,5,10.0,40-64,P,-10.0,477.84
+
+--- /opt/polymarket/bot-polymarket-elon-semanal/resultados_real_semanal.csv ---
+reconc,2026-08-30,elon-musk-of-tweets-august-25-september-1-2026,120-139,YES,0.0015,666.67,0.2908,1,6.0,vendido por el gestor,P,-6.0,697.55
+a91bb47465d6,2026-09-01,elon-musk-of-tweets-august-25-september-1-2026,160-179,NO,0.002,500.0,0.0,2,8.4,160-179,P,-8.4,689.15
+reconc,2026-09-02,elon-musk-of-tweets-september-1-september-8-2026,120-139,YES,0.034,29.41,0.1601,3,10.0,vendido por el gestor en positivo (+0.12 a nivel cuenta),G,284.1,973.25
+reconc,2026-09-02,elon-musk-of-tweets-september-1-september-8-2026,120-139,YES,0.0275,36.36,0.163,1,6.0,vendido por el gestor en positivo (+0.12 a nivel cuenta),G,212.16,1185.41
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.007,142.86,0.1725,1,6.0,vendido por el gestor,P,-6.0,1179.41
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.007,142.86,0.1727,2,8.4,vendido por el gestor,P,-8.4,1171.01
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0055,181.82,0.1747,3,4.12,vendido por el gestor,P,-4.12,1166.89
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0035,285.71,0.1765,4,10.0,vendido por el gestor,P,-10.0,1156.89
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0055,181.82,0.177,5,10.0,vendido por el gestor,P,-10.0,1146.89
+21ec487f1602,2026-09-04,elon-musk-of-tweets-august-28-september-4-2026,220-239,NO,0.002,500.0,0.0,6,10.0,220-239,P,-10.0,1136.89
+
+--- /opt/polymarket/bot-polymarket-elon-v2/resultados_real.csv ---
+id,fecha,mercado,bin,lado,precio,cuota,p_modelo,paso,stake,real,resultado,beneficio,saldo
+f3aa1a946b84,2026-08-18,elon-musk-of-tweets-august-17-august-19,<40,YES,0.23,4.35,0.9507,1,3.3,>40 (gestor vendió 18/08),P,-3.3,496.7
+
+== 5. Tailscale ==
+100.77.186.117  bot-poly  lamegawi@  linux    -                                                              
+100.82.235.16   bot-vm3   lamegawi@  linux    offline, last seen 21d ago                                     
+100.83.57.99    ferpc     lamegawi@  windows  active; direct 85.85.41.76:7339, tx 1466569680 rx 16212613672  
+
+== 6. IP via proxy ==
+85.85.41.76
