@@ -2,12 +2,12 @@
 
 ## 📋 RESUMEN
 
-Bot de Telegram que opera **Combos (parlays) de Polymarket** automáticamente. **OPERATIVO**: el 7 sept 2026 a las 17:30:30 UTC la v10.9 ejecutó el PRIMER TRADE REAL (Cagliari Calcio, cuota 1.40, stake $5, `success:true`, orderID `0x60beb7ef...`).
+Bot de Telegram que opera **Combos (parlays) de Polymarket** automáticamente. **OPERATIVO**: el 7 sept 2026 la v10.9 ejecutó el primer trade real vía CLOB (Cagliari, `success:true`). PERO se descubrió que operaba **LEGS SUELTOS** (el endpoint `combo-markets` es un catálogo de piernas, NO combos formados) y **sin deduplicación** (repitió Cagliari 4× = $20, confirmado en data-api). **v11.0**: combos REALES de 2-3 legs vía Requester API RFQ oficial + deduplicación + tope diario + `/testcombo` (gratis) + `/fills`.
 
 ## 🎯 OBJETIVO
 
 El bot debe:
-1. Leer **Combos activos** del endpoint público `https://combos-rfq-api.polymarket.com/v1/rfq/combo-markets`
+1. Leer el **catálogo de LEGS** (piernas combinables) del endpoint público `https://combos-rfq-api.polymarket.com/v1/rfq/combo-markets` y CONSTRUIR combos reales de 2-3 legs vía **Requester API RFQ** (`combos-rfq-gateway-requester-api.polymarket.com`)
 2. Filtrar **solo deportes** (fútbol, MLB, NBA, UFC, tennis, esports, etc.) por tags
 3. Filtrar por **cuota 1.20-2.50** (multiplicación de las probs de cada leg)
 4. Resolver el **token_id real** tradable (no el `position_id` del endpoint combos, que NO es tradable)
@@ -116,7 +116,22 @@ El bot usa `/etc/polymarket.env` que contiene:
 - **Solución v10.9**:
   1. `inyectar_proxy_sdk()`: reemplaza EXPLÍCITAMENTE `py_clob_client_v2.http_helpers.helpers._http_client` por `httpx.Client(http2=True, proxy=PROXY_URL)` (con fallbacks por versión de httpx)
   2. `enviar_orden()` usa `client.create_and_post_order(OrderArgs(...))` NATIVO del SDK (patrón exacto del bot de Elon) → el SDK construye envelope + headers L2 con las creds derivadas
-- **Resultado**: ✅ **PRIMER TRADE REAL EJECUTADO** 7 sept 17:30:30 UTC — `SDK resp: {"success": true, "orderID": "0x60beb7ef...", "status": "delayed"}`. Status `delayed` = orden aceptada y en cola de matching (sin fill inmediato); conviene verificar el fill después.
+- **Resultado**: ✅ **PRIMER TRADE REAL EJECUTADO** 7 sept 17:30:30 UTC — `SDK resp: {"success": true, "orderID": "0x60beb7ef...", "status": "delayed"}`. Verificado después en data-api: las órdenes `delayed` SÍ se llenaron.
+
+### v10.9 → v11.0: eran LEGS sueltos + sin deduplicación (FIX ACTUAL)
+- **Problema 1 (crítico)**: `/v1/rfq/combo-markets` es *"Catalog page of **combo-able** markets"* (docs oficiales) — devuelve **legs individuales**, no parlays. La v9-v10.9 compró piernas sueltas creyendo que eran combos (ej. "Will Cagliari win" solo).
+- **Problema 2 (crítico)**: `auto_pasada` no consultaba el historial → **recompraba el mismo mercado cada 5 min** (4 fills Cagliari ~$20 total, confirmado via `data-api.polymarket.com/trades?user=<wallet>`).
+- **Solución v11.0 — Requester API RFQ oficial** (docs.polymarket.com/trading/combos/requesters):
+  1. `POST {gateway}/v1/requester/rfq/requests` con `leg_position_ids` (2-3 YES position_ids del catálogo, = `position_ids[0]` de cada leg), `direction BUY`, `side YES`, `requested_size {unit:notional, value_e6}` → subasta entre market makers (400ms) → `quote` con `blended_price_e6`, `net_receive_e6`, `total_required_e6` (rate limit: 15 create/min)
+  2. Validar **cuota real** = 1/blended en [1.20-2.50] (si no, NO aceptar — expira solo, coste $0)
+  3. Firmar orden **Exchange v3** EIP-712: dominio `Polymarket CTF Exchange` v`3`, chainId 137, contrato `0xe3333700cA9d93003F00f0F71f8515005F6c00Aa`; `tokenId`=combo `yes_position_id`, `maker`=proxy wallet, `signer`=EOA, `side`=0, `signatureType`=1, `metadata`/`builder`=bytes32 cero; firma 65-byte con v∈{27,28} (eth_account)
+  4. `POST .../requests/{rfq_id}/accept` con `{quote_id, signed_order}` (ventana ~5s)
+  5. `GET .../requests/{rfq_id}` → poll hasta `FILLED` (con `tx_hash`) / `FAILED`/`EXPIRED`/`CANCELED`; timeout local ≠ fallo (re-consultar)
+  - Headers L2 en cada llamada: `POLY_ADDRESS`(EOA signer), `POLY_API_KEY`, `POLY_PASSPHRASE`, `POLY_TIMESTAMP`, `POLY_SIGNATURE`=base64url(HMAC-SHA256(b64decode(secret), ts+METHOD+path+body_exacto)) — reutiliza `py_clob_client_v2.signing.hmac.build_hmac_signature`
+- **Selección de legs**: deportes, yes_price 0.60-0.96, volumen ≥$20k, `pending=False`, fecha del slug ≥ hoy, **eventos distintos** (clave = slug hasta la fecha: `mlb-laa-bos-2026-09-07-total-8pt5` y `mlb-laa-bos-2026-09-07` son el mismo evento → no combinar), top-30 por volumen, pares preferidos sobre tríos, cuota estimada en rango
+- **Deduplicación**: huella sha1 de position_ids ordenados + cooldown por leg (6h) + tope 6 combos/día + 1 combo por pasada
+- **Nuevos comandos**: `/testcombo` (RFQ completo SIN aceptar, coste $0 — valida pipeline) y `/fills` (re-poll de RFQs pendientes + reconciliación data-api)
+- **Testeado en sandbox**: firma EIP-712 con recovery correcto del signer, headers L2, selección live (Udinese+Zverev cuota 1.84), dedup, tope diario
 
 ## 🔧 CÓDIGO CLAVE (v10.9)
 
@@ -199,9 +214,10 @@ def resolver_token_real(condition_id):
 
 ## 📊 ESTADO ACTUAL
 
-- **HEAD del repo**: `a6b91e5c` (v10.9 desplegado; puede haber commits de docs posteriores)
-- **Bot cargado**: `v10.9 iniciado` 17:24:52 UTC · servicio activo · Test proxy: 200
-- **PRIMER TRADE**: 17:30:30 UTC ✅ `success:true` orderID `0x60beb7ef...` status `delayed`
+- **HEAD del repo**: v11.0 (ver último commit de la rama)
+- **Bot en Hetzner**: v10.9 cargada pero en modo **OFF** (el user lo paró al detectar los trades duplicados de legs sueltos) — **PENDIENTE desplegar v11.0**
+- **Posiciones legacy**: ~4 fills Cagliari ($5 c/u, se resuelve 7 sept) vía CLOB single-leg
+- **PRIMER TRADE CLOB**: 17:30:30 UTC ✅ `success:true` orderID `0x60beb7ef...` status `delayed` → fill confirmado en data-api
 - **Lo que se ve en el log ahora**:
   - `[TRADE] ...` → `token real resuelto` → `precio/cuota/stake`
   - `  · Creds derivadas automaticamente (proxy_sdk=OK)`
@@ -254,6 +270,9 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 | Midpoint | `https://clob.polymarket.com/midpoint?token_id={id}` | Precio actual del token |
 | Order | `https://clob.polymarket.com/order` | POST con proxy (orden firmada) |
 | Gamma (markets individuales) | `https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=N&offset=M` | Markets individuales (mayoría son política) |
+| **RFQ Requester (v11)** | `https://combos-rfq-gateway-requester-api.polymarket.com/v1/requester/rfq/requests` | Crear/aceptar/consultar combos REALES (headers L2) |
+| **Data-API trades** | `https://data-api.polymarket.com/trades?user={wallet}&limit=N` | Fills reales de la wallet (público, sin auth) |
+| **Data-API positions** | `https://data-api.polymarket.com/positions?user={wallet}` | Posiciones abiertas (público) |
 
 ## ⚠️ RESTRICCIONES CRÍTICAS
 
@@ -278,6 +297,11 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - ❌ **NUNCA** enviar orden con POST manual de urllib: la API v2 espera el envelope de `order_to_json_v2()` + header `POLY_SIGNATURE` (HMAC sobre el body exacto) — imposible de replicar a mano con creds derivadas
 - ❌ **NUNCA** monkey-patchear `requests` para el proxy: el SDK usa **httpx**
 - ✅ USAR `inyectar_proxy_sdk()` (reemplaza `helpers._http_client` por `httpx.Client(proxy=...)`) + `client.create_and_post_order(OrderArgs(...))` nativo del SDK
+- ❌ **NUNCA** tratar las entradas de `combo-markets` como combos: son LEGS sueltos (catálogo de combinables)
+- ✅ Los combos reales se CREAN por RFQ combinando 2+ `leg_position_ids` (Requester API)
+- ❌ **NUNCA** ejecutar en AUTO sin deduplicación (la v10.9 repitió Cagliari 4×)
+- ✅ v11: huella de combo + cooldown por leg + tope diario + 1 combo/pasada
+- ❌ **NUNCA** combinar legs del mismo evento (correlacionados; clave = slug hasta la fecha)
 - ❌ **NUNCA** requerir `POLY_API_KEY` y `POLY_API_SECRET` (no existen)
 - ✅ USAR `client.derive_api_key()` con `POLY_PRIVATE_KEY`
 
@@ -297,8 +321,10 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - ✅ HTTP POST con proxy
 - ✅ derive_api_key con private key (confirmado en log 16:36 UTC)
 - ✅ v10.9: proxy inyectado en httpx del SDK + create_and_post_order nativo (fix definitivo del envío)
-- ✅ **PRIMER TRADE EJECUTADO** (v10.9 desplegado 17:24, trade 17:30:30 UTC 7 sept, success=true, status delayed)
-- ⏳ Pendientes: notificar/loggear trades AUTO, confirmar fills de órdenes delayed/live
+- ✅ **PRIMER TRADE EJECUTADO** (v10.9, CLOB single-leg — NO era combo real)
+- ✅ v11.0 escrita y testeada en sandbox: combos REALES via RFQ + dedup + /testcombo + /fills
+- ⏳ Pendientes: desplegar v11.0, probar /testcombo, activar AUTO, confirmar primer combo FILLED
+- 🔮 Fase 2 (propuesta user): replicar combos de grandes traders (data-api expone posiciones públicas)
 
 ## 🔗 URLs ÚTILES
 
@@ -310,14 +336,12 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 
 ## 📝 PRÓXIMOS PASOS INMEDIATOS
 
-1. **Monitorear**: `/trades`, `/abiertas`, `/stats` en Telegram · ver_v106.sh para logs
-2. **Confirmar fills**: status `delayed`/`live` puede no llenarse — verificar con GET `/order/{orderID}` (via proxy) o posiciones en data-api
-3. **Mejora v10.9.1 (pequeña, pendiente)**: en AUTO, loggear `✅ COMBO EJECUTADO` y notificar a Telegram (usar TELEGRAM_CHAT_ID cuando `chat_id=None`)
-4. **Mejoras futuras**:
-   - Verificación automática de fills + cancel/reintento de órdenes stale
-   - Añadir stop-loss
-   - Tracking de P&L en tiempo real
-   - Filtros de deportes más específicos
+1. **Desplegar v11.0** en Hetzner (actualizador con HASH nuevo) — el bot arranca en modo OFF (persistido)
+2. **Probar `/testcombo`** en Telegram → valida el pipeline RFQ completo a coste $0 (quote sin aceptar)
+3. **Activar 🟢 AUTO** → 1 combo real por pasada (5 min), máx 6/día, con notificación por trade
+4. **`/fills`** para confirmar fills (RFQ status + data-api)
+5. **Fase 2 — replicar grandes traders**: investigar posiciones en combo-tokens de top traders via data-api/leaderboard (`/positions?user=...`), detectar legs de sus combos y pedir quotes de los mismos
+6. **Mejoras futuras**: stop-loss, P&L tiempo real, venta de combos (direction SELL vía RFQ), filtros de deportes más específicos
 
 ## 💬 CONVERSACIÓN RESUMIDA
 
@@ -339,4 +363,7 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - 7 sept 16:41 — inspect falla: SignedOrderV2 NO está en clob_types (está en order_utils.model.order_data_v2)
 - 7 sept ~17:15 — Análisis del source del SDK (v1.1.0): usa httpx, envelope v2 y L2 HMAC → POST manual inviable → v10.9 con inyectar_proxy_sdk() + create_and_post_order nativo
 - 7 sept 17:24 — v10.9 desplegado en Hetzner (commit a6b91e5c), bot iniciado 17:24:52
-- 7 sept 17:30 — 🎉 PRIMER TRADE REAL: Cagliari cuota 1.40 stake $5, success=true, orderID 0x60beb7ef..., status delayed. BOT OPERATIVO
+- 7 sept 17:30 — 🎉 PRIMER TRADE REAL (CLOB): Cagliari cuota 1.40 stake $5, success=true, status delayed → fill confirmado
+- 7 sept ~19:45 — USER DETECTA: los trades NO son combos (legs sueltos) y repitió la misma línea 4× ($20). Pone el bot en OFF
+- 7 sept ~20:00 — Confirmado en data-api (fills Cagliari 17:30/17:35/17:41). Investigación: combo-markets = CATÁLOGO DE LEGS; descubierta la Requester API RFQ oficial para combos reales (quote → orden Exchange v3 → accept → FILLED con tx_hash)
+- 7 sept ~20:15 — v11.0 escrita: motor RFQ + selección 2-3 legs (eventos distintos, 0.60-0.96, vol≥20k, fecha≥hoy) + dedup (huella+cooldown 6h+tope 6/día) + /testcombo + /fills. Tests sandbox OK (firma EIP-712 con recovery, selección live, dedup). PENDIENTE desplegar

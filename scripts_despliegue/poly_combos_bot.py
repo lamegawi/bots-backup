@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v10.9 — Combos (parlays) en tiempo real
+POLY COMBOS BOT v11.0 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
   2. Cada combo = 2-10 legs, paga si TODOS aciertan
   3. Cuota objetivo 1.20-2.50 (multiplicacion de legs)
-  4. Ejecuta automaticamente via CLOB
+  4. v11.0: /v1/rfq/combo-markets es un CATALOGO DE LEGS (no combos formados).
+     Los combos reales se crean por la Requester API (RFQ):
+       POST combos-rfq-gateway-requester-api /v1/requester/rfq/requests
+       con 2-50 leg_position_ids → quote de market makers → firmar orden
+       Exchange v3 (EIP-712) → accept (<5s) → poll hasta FILLED (tx_hash)
+     Docs: https://docs.polymarket.com/trading/combos/requesters
 
 FIX v10.9 (el SDK usa HTTPX, no requests):
   · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
@@ -28,6 +33,10 @@ import json
 import time
 import shutil
 import base64
+import random
+import hashlib
+import re as _re
+import itertools
 import subprocess
 import urllib.request
 import urllib.parse
@@ -69,6 +78,20 @@ STAKE_POR_TRADE = 5.0
 MIN_SHARES = 5.0  # CLOB pide minimo 5 shares por orden
 CUOTA_MIN = 1.20
 CUOTA_MAX = 2.50
+
+# ---- v11.0: combos reales via RFQ (Requester API) ----
+RFQ_GATEWAY = "https://combos-rfq-gateway-requester-api.polymarket.com"
+RFQ_BASE = "/v1/requester/rfq"
+EXCHANGE_V3 = "0xe3333700cA9d93003F00f0F71f8515005F6c00Aa"
+DATA_API = "https://data-api.polymarket.com"
+LEGS_POR_COMBO = (2, 3)    # combinar 2 legs (preferido) o 3
+LEG_PRICE_MIN = 0.60       # yes_price mínimo por leg
+LEG_PRICE_MAX = 0.96       # yes_price máximo por leg
+LEG_VOL_MIN = 20000        # volumen mínimo ($) por leg
+POOL_TOP_N = 30            # considerar top-N legs por volumen
+MAX_COMBOS_DIA = 6         # tope de combos por día UTC
+COOLDOWN_LEG_H = 6.0       # horas sin reutilizar un leg ya operado
+RFQ_TIMEOUT_FILL_S = 45    # espera de FILLED tras aceptar
 MAX_TRADES_SIMULTANEOS = 3
 INTERVALO_AUTO_S = 300
 PESO_MIN = 5
@@ -176,12 +199,20 @@ def _proxy_opener():
     https_handler = urllib.request.HTTPSHandler(context=_proxy_ctx)
     return urllib.request.build_opener(proxy_handler, https_handler)
 
-def http_get(url, timeout=20):
+def http_get(url, timeout=20, headers=None):
     try:
         opener = _proxy_opener()
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        hdrs = {"User-Agent": "Mozilla/5.0"}
+        if headers:
+            hdrs.update(headers)
+        req = urllib.request.Request(url, headers=hdrs)
         with opener.open(req, timeout=timeout) as r:
-            return r.status, r.read().decode("utf-8", errors="replace")
+            return r.status, r.read().decode('utf-8', errors='replace')
+    except urllib.error.HTTPError as e:
+        try:
+            return e.code, e.read().decode('utf-8', errors='replace')
+        except Exception:
+            return e.code, str(e)
     except Exception as e:
         return None, str(e)
 
@@ -322,6 +353,483 @@ def inyectar_proxy_sdk(proxy_url=None):
 
 
 # ============================================
+# v11.0 — COMBOS REALES via RFQ (Requester API)
+# ============================================
+# Flujo oficial (docs.polymarket.com/trading/combos/requesters):
+#   1. POST {gateway}/v1/requester/rfq/requests   (leg_position_ids + notional)
+#      → subasta entre market makers (400ms) → mejor quote (blended_price_e6)
+#   2. Firmar orden Exchange v3 (EIP-712, contrato 0xe333...00Aa,
+#      tokenId = yes_position_id del combo, maker = proxy wallet, signer = EOA,
+#      signatureType=1 POLY_PROXY, builder/metadata = bytes32 cero)
+#   3. POST .../requests/{rfq_id}/accept  (ventana ~5s desde el quote)
+#   4. GET  .../requests/{rfq_id}  → poll hasta FILLED (tx_hash) / FAILED
+# Headers L2 en cada petición: POLY_ADDRESS (EOA signer), POLY_API_KEY,
+# POLY_PASSPHRASE, POLY_TIMESTAMP, POLY_SIGNATURE (HMAC-SHA256 del secret
+# derivado sobre ts+METHOD+path+body_exacto, base64url).
+_IDENTIDAD_RFQ = None
+
+def obtener_identidad_rfq(forzar=False):
+    """(creds CLOB derivadas, direccion EOA signer, proxy wallet, private key).
+    Cacheado por proceso. Todo via proxy (httpx del SDK inyectado)."""
+    global _IDENTIDAD_RFQ
+    if _IDENTIDAD_RFQ is not None and not forzar:
+        return _IDENTIDAD_RFQ
+    env = cargar_env()
+    pk = env.get("POLY_PRIVATE_KEY", "").strip()
+    wallet = env.get("POLY_WALLET_ADDRESS", WALLET).strip()
+    if not pk:
+        log("  RFQ: sin POLY_PRIVATE_KEY")
+        return None
+    if not inyectar_proxy_sdk():
+        log("  RFQ: aviso, proxy SDK no inyectado")
+    from py_clob_client_v2.client import ClobClient
+    from py_clob_client_v2 import SignatureTypeV2
+    from eth_account import Account
+    client = ClobClient(host=HOST_CLOB, chain_id=137, key=pk, funder=wallet,
+                        signature_type=int(SignatureTypeV2.POLY_PROXY))
+    creds = client.derive_api_key()
+    signer_addr = Account.from_key(pk).address
+    _IDENTIDAD_RFQ = (creds, signer_addr, wallet, pk)
+    log(f"  RFQ: identidad lista (signer {signer_addr[:10]}... maker {wallet[:10]}...)")
+    return _IDENTIDAD_RFQ
+
+
+def l2_headers_rfq(method, path, body_str, creds, signer_addr):
+    """Headers L2 para el gateway RFQ (mismo esquema HMAC que el CLOB)."""
+    from py_clob_client_v2.signing.hmac import build_hmac_signature
+    ts = str(int(time.time()))
+    sig = build_hmac_signature(creds.api_secret, ts, method.upper(), path, body_str)
+    return {
+        "Content-Type": "application/json",
+        "POLY_ADDRESS": signer_addr,
+        "POLY_SIGNATURE": sig,
+        "POLY_TIMESTAMP": ts,
+        "POLY_API_KEY": creds.api_key,
+        "POLY_PASSPHRASE": creds.api_passphrase,
+    }
+
+
+def crear_rfq(leg_position_ids, notional_usd, identidad):
+    creds, signer_addr, wallet, pk = identidad
+    body = {
+        "signer_address": signer_addr,
+        "maker_address": wallet,
+        "signature_type": 1,
+        "leg_position_ids": [str(x) for x in leg_position_ids],
+        "direction": "BUY",
+        "side": "YES",
+        "requested_size": {"unit": "notional",
+                           "value_e6": str(int(round(notional_usd * 1000000)))},
+    }
+    body_str = json.dumps(body, separators=(",", ":"))
+    path = f"{RFQ_BASE}/requests"
+    headers = l2_headers_rfq("POST", path, body_str, creds, signer_addr)
+    return http_post(RFQ_GATEWAY + path, body_str, headers, timeout=20)
+
+
+def firmar_orden_v3(req, quote, identidad):
+    """Firma EIP-712 de la orden Exchange v3 para aceptar el quote."""
+    creds, signer_addr, wallet, pk = identidad
+    from eth_account import Account
+    from eth_account.messages import encode_typed_data
+    msg = {
+        "salt": str(random.randint(1, 2**249)),
+        "maker": wallet,
+        "signer": signer_addr,
+        "tokenId": str(req.get("yes_position_id")),
+        "makerAmount": str(quote.get("maker_amount_e6")),
+        "takerAmount": str(quote.get("taker_amount_e6")),
+        "side": 0,
+        "signatureType": 1,
+        "timestamp": str(int(time.time())),
+        "metadata": "0x" + "00" * 32,
+        "builder": "0x" + "00" * 32,
+    }
+    typed = {
+        "domain": {"name": "Polymarket CTF Exchange", "version": "3",
+                   "chainId": 137, "verifyingContract": EXCHANGE_V3},
+        "types": {
+            "EIP712Domain": [
+                {"name": "name", "type": "string"},
+                {"name": "version", "type": "string"},
+                {"name": "chainId", "type": "uint256"},
+                {"name": "verifyingContract", "type": "address"},
+            ],
+            "Order": [
+                {"name": "salt", "type": "uint256"},
+                {"name": "maker", "type": "address"},
+                {"name": "signer", "type": "address"},
+                {"name": "tokenId", "type": "uint256"},
+                {"name": "makerAmount", "type": "uint256"},
+                {"name": "takerAmount", "type": "uint256"},
+                {"name": "side", "type": "uint8"},
+                {"name": "signatureType", "type": "uint8"},
+                {"name": "timestamp", "type": "uint256"},
+                {"name": "metadata", "type": "bytes32"},
+                {"name": "builder", "type": "bytes32"},
+            ],
+        },
+        "primaryType": "Order",
+        "message": {**msg,
+                    "salt": int(msg["salt"]),
+                    "tokenId": int(msg["tokenId"]),
+                    "makerAmount": int(msg["makerAmount"]),
+                    "takerAmount": int(msg["takerAmount"]),
+                    "timestamp": int(msg["timestamp"])},
+    }
+    acct = Account.from_key(pk)
+    firmado = acct.sign_message(encode_typed_data(full_message=typed))
+    sig = bytes(firmado.signature)
+    if sig[64] in (0, 1):           # normalizar v a 27/28
+        sig = sig[:64] + bytes([sig[64] + 27])
+    msg["signature"] = "0x" + sig.hex()
+    return msg
+
+
+def aceptar_rfq(rfq_id, quote_id, signed_order, identidad):
+    creds, signer_addr, wallet, pk = identidad
+    body = {"quote_id": str(quote_id), "signed_order": signed_order}
+    body_str = json.dumps(body, separators=(",", ":"))
+    path = f"{RFQ_BASE}/requests/{rfq_id}/accept"
+    headers = l2_headers_rfq("POST", path, body_str, creds, signer_addr)
+    return http_post(RFQ_GATEWAY + path, body_str, headers, timeout=20)
+
+
+def consultar_rfq(rfq_id, identidad):
+    creds, signer_addr, wallet, pk = identidad
+    path = f"{RFQ_BASE}/requests/{rfq_id}"
+    headers = l2_headers_rfq("GET", path, None, creds, signer_addr)
+    return http_get(RFQ_GATEWAY + path, timeout=15, headers=headers)
+
+
+def esperar_fill(rfq_id, identidad, timeout_s=RFQ_TIMEOUT_FILL_S):
+    """Poll del estado del RFQ. FILLED/CONFIRMED = éxito; FAILED/EXPIRED/
+    CANCELED = terminal; timeout local NO es fallo (seguir consultando luego)."""
+    fin = time.time() + timeout_s
+    ultimo = {}
+    while time.time() < fin:
+        status, resp = consultar_rfq(rfq_id, identidad)
+        try:
+            ultimo = json.loads(resp)
+        except Exception:
+            ultimo = {"status": f"http_{status}"}
+        st = ultimo.get("status", "")
+        if st in ("FILLED", "CONFIRMED"):
+            return st, ultimo
+        if st in ("FAILED", "EXPIRED", "CANCELED"):
+            return st, ultimo
+        time.sleep(3)
+    return ultimo.get("status") or "TIMEOUT_LOCAL", ultimo
+
+
+# ---- seleccion de legs y deduplicacion ----
+
+def evento_de(slug):
+    """Clave de evento: slug hasta la fecha incluida (mlb-laa-bos-2026-09-07-total-8pt5
+    y mlb-laa-bos-2026-09-07 son el MISMO evento → no combinar, correlacionados)."""
+    m = _re.match(r"^(.*?\d{4}-\d{2}-\d{2})", slug or "")
+    if m:
+        return m.group(1)
+    partes = (slug or "").split("-")
+    return "-".join(partes[:-1]) if len(partes) > 1 else (slug or "")
+
+
+def fecha_slug_ok(slug):
+    """Descarta legs con fecha pasada en el slug (partidos ya jugados)."""
+    m = _re.search(r"(\d{4}-\d{2}-\d{2})", slug or "")
+    if not m:
+        return True
+    try:
+        d = datetime.strptime(m.group(1), "%Y-%m-%d").date()
+    except Exception:
+        return True
+    return d >= datetime.now(timezone.utc).date()
+
+
+def huella_combo(pids):
+    return hashlib.sha1("|".join(sorted(str(x) for x in pids)).encode()).hexdigest()[:16]
+
+
+def leg_reciente(estado, pid):
+    ts = estado.get("combos_rfq", {}).get("legs", {}).get(str(pid))
+    if not ts:
+        return False
+    try:
+        t = datetime.fromisoformat(ts)
+        if t.tzinfo is None:
+            t = t.replace(tzinfo=timezone.utc)
+    except Exception:
+        return False
+    return (datetime.now(timezone.utc) - t).total_seconds() / 3600.0 < COOLDOWN_LEG_H
+
+
+def combos_hoy_count(estado):
+    hoy = datetime.now(timezone.utc).date().isoformat()
+    return sum(1 for r in estado.get("combos_rfq", {}).get("historial", [])
+               if str(r.get("fecha", "")).startswith(hoy))
+
+
+def seleccionar_combo(legs, estado):
+    """Elige la mejor combinación de 2-3 legs (eventos distintos, cuota estimada
+    en rango, sin legs en cooldown, combo no repetido). Top por volumen."""
+    if combos_hoy_count(estado) >= MAX_COMBOS_DIA:
+        log(f"  tope diario alcanzado ({MAX_COMBOS_DIA} combos)")
+        return None
+    pool = []
+    for c in legs:
+        p = c.get("yes_price") or 0
+        if not (LEG_PRICE_MIN <= p <= LEG_PRICE_MAX):
+            continue
+        if (c.get("volumen") or 0) < LEG_VOL_MIN:
+            continue
+        if c.get("pending"):
+            continue
+        if not fecha_slug_ok(c.get("slug")):
+            continue
+        if not c.get("yes_token"):
+            continue
+        if leg_reciente(estado, c.get("yes_token")):
+            continue
+        pool.append(c)
+    pool.sort(key=lambda x: -(x.get("volumen") or 0))
+    pool = pool[:POOL_TOP_N]
+    huellas = estado.get("combos_rfq", {}).get("huellas", {})
+    candidatos = []
+    for n in range(LEGS_POR_COMBO[0], LEGS_POR_COMBO[1] + 1):
+        if n > len(pool):
+            break
+        for sel in itertools.combinations(pool, n):
+            eventos = {evento_de(c.get("slug")) for c in sel}
+            if len(eventos) != n:
+                continue
+            pids = [str(c["yes_token"]) for c in sel]
+            if huella_combo(pids) in huellas:
+                continue
+            prod = 1.0
+            for c in sel:
+                prod *= c.get("yes_price") or 0
+            cuota = round(1 / prod, 2) if prod > 0 else 0
+            if not (CUOTA_MIN <= cuota <= CUOTA_MAX):
+                continue
+            vol_min = min(c.get("volumen") or 0 for c in sel)
+            candidatos.append((vol_min, cuota, list(sel)))
+        if candidatos:
+            break  # preferir combos de 2 legs
+    if not candidatos:
+        return None
+    candidatos.sort(key=lambda x: -x[0])
+    return candidatos[0][2]
+
+
+def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
+    """Flujo RFQ completo: crear → validar cuota real → firmar v3 → aceptar
+    → esperar FILLED → registrar + notificar. dry_run=True NO acepta (gratis)."""
+    pids = [str(c["yes_token"]) for c in sel]
+    titulo = " + ".join((c.get("question") or "")[:38] for c in sel)
+    prod = 1.0
+    for c in sel:
+        prod *= c.get("yes_price") or 0
+    cuota_est = round(1 / prod, 2) if prod > 0 else 0
+    log(f"[COMBO] {len(sel)} legs · cuota est. {cuota_est} · stake ${STAKE_POR_TRADE}")
+    for c in sel:
+        log(f"  · {(c.get('question') or '')[:56]} (p={c.get('yes_price'):.2f} vol=${(c.get('volumen') or 0)/1000:.0f}k)")
+    if chat_id:
+        enviar(chat_id, f"🎰 *COMBO {len(sel)} LEGS* (cuota est. ~{cuota_est})\n" +
+               "\n".join(f"· {(c.get('question') or '')[:55]} (p={c.get('yes_price'):.2f})" for c in sel))
+    identidad = obtener_identidad_rfq()
+    if not identidad:
+        return False, "sin_identidad"
+    status, resp = crear_rfq(pids, STAKE_POR_TRADE, identidad)
+    log(f"  RFQ create -> {status} {str(resp)[:160]}")
+    try:
+        d = json.loads(resp)
+    except Exception:
+        d = {}
+    if status != 200 or not isinstance(d, dict) or not d:
+        return False, f"rfq_http_{status}:{str(resp)[:150]}"
+    err = d.get("error")
+    if d.get("status") == "FAILED" or err:
+        code = err.get("code") if isinstance(err, dict) else str(err)
+        return False, f"rfq_{code or 'failed'}"
+    quote = d.get("quote") or {}
+    req = d.get("request") or {}
+    rfq_id = d.get("rfq_id")
+    quote_id = quote.get("quote_id")
+    try:
+        blended = int(quote.get("blended_price_e6", 0)) / 1e6
+        shares = int(quote.get("net_receive_e6", 0)) / 1e6
+        total_req = int(quote.get("total_required_e6", 0)) / 1e6
+    except Exception:
+        return False, f"quote_ilegible:{str(quote)[:120]}"
+    cuota_real = round(1 / blended, 2) if blended > 0 else 0
+    log(f"  quote: cuota={cuota_real} blended={blended:.3f} shares={shares:.2f} total=${total_req:.2f}")
+    if dry_run:
+        log("  dry-run: quote OK, NO se acepta (expira solo, coste 0)")
+        if chat_id:
+            enviar(chat_id, f"🧪 *TEST COMBO OK*\n💱 Cuota real: *{cuota_real}* · {shares:.2f} shares · ${total_req:.2f}\nNo aceptado (coste $0). rfq_id `{str(rfq_id)[:18]}`")
+        return True, {"dry_run": True, "cuota": cuota_real, "rfq_id": rfq_id}
+    if not (CUOTA_MIN <= cuota_real <= CUOTA_MAX):
+        log(f"  NO acepto: cuota real {cuota_real} fuera de [{CUOTA_MIN}-{CUOTA_MAX}]")
+        if chat_id:
+            enviar(chat_id, f"⚠️ Cuota real {cuota_real} fuera de rango — quote NO aceptado ($0)")
+        return False, f"cuota_real_{cuota_real}_fuera"
+    # firmar + aceptar RÁPIDO (ventana ~5s)
+    try:
+        signed = firmar_orden_v3(req, quote, identidad)
+    except Exception as e:
+        log(f"  firma v3 error: {e}")
+        return False, f"firma_v3:{str(e)[:150]}"
+    status, resp = aceptar_rfq(rfq_id, quote_id, signed, identidad)
+    log(f"  RFQ accept -> {status} {str(resp)[:160]}")
+    if status != 200:
+        return False, f"accept_http_{status}:{str(resp)[:150]}"
+    try:
+        da = json.loads(resp)
+    except Exception:
+        da = {}
+    if isinstance(da, dict) and da.get("status") == "FAILED":
+        err = da.get("error") or {}
+        return False, f"accept_{err.get('code') if isinstance(err, dict) else err}"
+    st, ultimo = esperar_fill(rfq_id, identidad)
+    tx = ultimo.get("tx_hash", "") if isinstance(ultimo, dict) else ""
+    log(f"  RFQ status final: {st} tx={str(tx)[:26]}")
+    ok = st in ("FILLED", "CONFIRMED")
+    pendiente = st in ("EXECUTING", "MINED", "RETRYING", "AWAITING_MAKER_CONFIRMATION", "TIMEOUT_LOCAL")
+    registro = {
+        "tipo": "combo_rfq",
+        "copiado_en": datetime.now(timezone.utc).isoformat(),
+        "question": titulo,
+        "n_legs": len(sel),
+        "legs": [{"question": c.get("question"), "slug": c.get("slug"),
+                  "yes_price": c.get("yes_price"), "position_id": str(c.get("yes_token")),
+                  "condition_id": c.get("condition_id")} for c in sel],
+        "rfq_id": rfq_id,
+        "quote_id": quote_id,
+        "combo_condition_id": req.get("condition_id"),
+        "combo_yes_position_id": req.get("yes_position_id"),
+        "precio_ejecutado": blended,
+        "cuota_ejecutada": cuota_real,
+        "cuota_estimada": cuota_est,
+        "size_shares": round(shares, 2),
+        "stake_dolares": round(total_req, 2),
+        "order_id": rfq_id,
+        "tx_hash": tx,
+        "status": "filled" if ok else ("pendiente" if pendiente else "fallido"),
+        "estado_rfq": st,
+        "slug": "", "market_id": "", "condition_id": req.get("condition_id", ""),
+        "real_token": req.get("yes_position_id"),
+        "volumen": min((c.get("volumen") or 0) for c in sel),
+        "tags": ["combo-rfq"],
+    }
+    estado = cargar_estado()
+    rfq = estado.setdefault("combos_rfq", {"huellas": {}, "legs": {}, "historial": []})
+    rfq.setdefault("huellas", {})
+    rfq.setdefault("legs", {})
+    rfq.setdefault("historial", [])
+    ahora_iso = datetime.now(timezone.utc).isoformat()
+    rfq["huellas"][huella_combo(pids)] = ahora_iso
+    for pid in pids:
+        rfq["legs"][pid] = ahora_iso
+    rfq["historial"].append({"fecha": ahora_iso, "rfq_id": rfq_id, "status": registro["status"],
+                             "cuota": cuota_real, "stake": registro["stake_dolares"],
+                             "legs": titulo})
+    estado.setdefault("trades_copiados", []).append(registro)
+    guardar_estado(estado)
+    if chat_id:
+        if ok:
+            enviar(chat_id, f"✅ *COMBO REAL LLENADO* 🎉\n📌 {titulo[:80]}\n"
+                            f"💵 {shares:.2f} shares @ {blended:.3f} (cuota {cuota_real})\n"
+                            f"💰 ${total_req:.2f}\n🔗 tx `{str(tx)[:24]}`")
+        elif pendiente:
+            enviar(chat_id, f"⏳ *COMBO ACEPTADO, esperando fill* ({st})\n📌 {titulo[:70]}\n"
+                            f"Consulta /fills para confirmar (timeout local ≠ fallo)")
+        else:
+            enviar(chat_id, f"❌ *COMBO {st}*\n📌 {titulo[:70]}\nrfq `{str(rfq_id)[:18]}`")
+    return ok, {"oid": rfq_id, "status": st, "cuota": cuota_real}
+
+
+def cmd_testcombo(chat_id):
+    """🧪 RFQ completo SIN aceptar: valida el pipeline a coste cero."""
+    def _run():
+        try:
+            legs = listar_combos()
+            if not legs:
+                return enviar(chat_id, "🧪 Sin legs disponibles ahora")
+            sel = seleccionar_combo(legs, cargar_estado())
+            if not sel:
+                return enviar(chat_id, "🧪 No hay combos viables ahora (cuota/cooldown/tope diario/eventos)")
+            ejecutar_combo_rfq(sel, chat_id, dry_run=True)
+        except Exception as e:
+            log(f"testcombo error: {e}")
+            enviar(chat_id, f"🧪 Error: {str(e)[:150]}")
+    threading.Thread(target=_run, daemon=True).start()
+    return enviar(chat_id, "🧪 Pidiendo quote de un combo real (sin aceptar, $0)...")
+
+
+def cmd_fills(chat_id):
+    """🔎 Rellena estados pendientes de RFQ + reconcilia fills con data-api."""
+    def _run():
+        try:
+            lineas = []
+            estado = cargar_estado()
+            cambiados = 0
+            identidad = None
+            for r in estado.get("trades_copiados", []):
+                if r.get("tipo") == "combo_rfq" and r.get("status") == "pendiente" and r.get("rfq_id"):
+                    if identidad is None:
+                        identidad = obtener_identidad_rfq()
+                    if not identidad:
+                        break
+                    st, ult = esperar_fill(r["rfq_id"], identidad, timeout_s=6)
+                    if st in ("FILLED", "CONFIRMED", "FAILED", "EXPIRED", "CANCELED"):
+                        r["status"] = "filled" if st in ("FILLED", "CONFIRMED") else "fallido"
+                        r["estado_rfq"] = st
+                        r["tx_hash"] = ult.get("tx_hash", r.get("tx_hash", ""))
+                        cambiados += 1
+            if cambiados:
+                guardar_estado(estado)
+                lineas.append(f"♻️ {cambiados} combo(s) pendiente(s) actualizado(s)")
+            url = f"{DATA_API}/trades?user={WALLET}&limit=40"
+            status, body = http_get(url, timeout=20)
+            try:
+                trades = json.loads(body) if status == 200 else []
+            except Exception:
+                trades = []
+            grupos = {}
+            for t in trades:
+                ts = t.get("timestamp") or 0
+                try:
+                    dia = datetime.fromtimestamp(int(ts), tz=timezone.utc).date().isoformat()
+                except Exception:
+                    dia = "?"
+                k = (dia, (t.get("title") or "?")[:42])
+                g = grupos.setdefault(k, {"n": 0, "usd": 0.0, "sh": 0.0})
+                g["n"] += 1
+                g["usd"] += float(t.get("size") or 0) * float(t.get("price") or 0)
+                g["sh"] += float(t.get("size") or 0)
+            ultimos = sorted(grupos.items(), key=lambda kv: kv[0][0], reverse=True)[:10]
+            if ultimos:
+                lineas.append("🔎 *Fills en la wallet (data-api)*")
+                for (dia, tit), g in ultimos:
+                    lineas.append(f"`{dia[5:]}` {tit} — {g['n']}x {g['sh']:.1f}sh ≈ ${g['usd']:.2f}")
+            hoy = datetime.now(timezone.utc).date().isoformat()
+            combos_h = [r for r in estado.get("combos_rfq", {}).get("historial", [])
+                        if str(r.get("fecha", "")).startswith(hoy)]
+            if combos_h:
+                lineas.append(f"\n🎰 *Combos RFQ hoy*: {len(combos_h)}")
+                for c in combos_h[-5:]:
+                    lineas.append(f"· {c.get('status')} cuota {c.get('cuota')} ${c.get('stake')}")
+            if not lineas:
+                lineas = ["Sin fills encontrados"]
+            enviar(chat_id, "\n".join(lineas))
+        except Exception as e:
+            log(f"fills error: {e}")
+            enviar(chat_id, f"🔎 Error: {str(e)[:150]}")
+    threading.Thread(target=_run, daemon=True).start()
+    return enviar(chat_id, "🔎 Consultando fills...")
+
+
+# ============================================
 # MERCADOS ACTIVOS EN TIEMPO REAL
 # ============================================
 def detectar_deporte_por_titulo(titulo):
@@ -333,9 +841,9 @@ def detectar_deporte_por_titulo(titulo):
     return None
 
 def listar_combos():
-    """Lee COMBOS ACTIVOS de Polymarket (endpoint publico RFQ).
-    Cada combo = 2-10 legs, paga si todos aciertan.
-    Cuota = multiplicacion de las probs de cada leg."""
+    """v11: el endpoint /v1/rfq/combo-markets devuelve el CATALOGO DE LEGS
+    (mercados simples 'combinables'), NO combos formados. Cada entrada es una
+    posible pata; los combos reales se construyen por RFQ (seccion v11)."""
     combos = []
     cursor = ""
     paginas = 0
@@ -380,7 +888,7 @@ def listar_combos():
                 yes_price = float(prices[0])
             except:
                 continue
-            if not (0.02 <= yes_price <= 0.95):
+            if not (0.02 <= yes_price <= 0.97):
                 continue
             # position_ids = [token_yes, token_no]
             try:
@@ -404,11 +912,12 @@ def listar_combos():
                 "yes_price": yes_price,
                 "cuota": round(1/yes_price, 2) if yes_price > 0 else 0,
                 "volumen": vol,
+                "pending": bool(m.get("pending")),
                 "tags": tags,
                 # Estos se llenan despues via /markets/{condition_id}
                 "real_token": None,
             })
-        log(f"  pagina {paginas + 1}: +{len(batch)} mercados, {len(combos)} combos de deportes")
+        log(f"  pagina {paginas + 1}: +{len(batch)} mercados, {len(combos)} legs de deportes")
         # siguiente pagina
         cursor = data.get("next_cursor", "")
         if not cursor:
@@ -674,17 +1183,19 @@ def calcular_stats():
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v10.9*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v11.0*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
-             f"📌 *Estrategia v10* (COMBOS):\n"
-             f"   · Lee COMBOS activos de Polymarket\n"
-             f"   · Resuelve token_id real via /markets/<condition_id>\n"
-             f"   · Solo deportes: fútbol, MLB, NBA, UFC, etc.\n"
-             f"   · Cuota 1.20-2.50\n"
-             f"   · Automático cada 5 min\n\n"
-             f"📊 *Stats* para ver estadísticas")
+             f"📌 *Estrategia v11* (COMBOS REALES):\n"
+             f"   · Construye parlays de 2-3 legs deportivos\n"
+             f"   · Pide quote a market makers (RFQ oficial)\n"
+             f"   · Solo acepta si la cuota real entra en rango\n"
+             f"   · Fill confirmado con tx_hash (FILLED)\n"
+             f"   · Sin repetir legs (cooldown {COOLDOWN_LEG_H:.0f}h) · max {MAX_COMBOS_DIA}/dia\n\n"
+             f"🧪 /testcombo — prueba gratis (quote sin aceptar)\n"
+             f"🔎 /fills — fills reales de la wallet\n"
+             f"📊 /stats — estadisticas")
     return enviar(chat_id, texto)
 
 def cmd_trades(chat_id):
@@ -850,32 +1361,32 @@ def cmd_status(chat_id):
 # AUTO LOOP
 # ============================================
 def auto_pasada(chat_id):
-    """Lee combos activos, filtra por cuota, ejecuta automaticamente."""
+    """v11: lee el CATALOGO DE LEGS, construye un combo real (2-3 piernas,
+    eventos distintos, cuota en rango, sin repetir legs recientes) y lo
+    ejecuta via RFQ (quote → firma Exchange v3 → accept → FILLED).
+    Max 1 combo por pasada + tope diario. La via CLOB de legs sueltos
+    (ejecutar_trade) queda DESACTIVADA en AUTO: no eran combos reales."""
     if MODO_OPERACION != "AUTO":
         return
-    log(f"[AUTO] pasada")
-    combos = listar_combos()
-    if not combos:
-        enviar(chat_id, "🔄 *AUTO:* sin combos activos ahora.")
+    log("[AUTO] pasada (combos RFQ v11)")
+    try:
+        legs = listar_combos()
+    except Exception as e:
+        log(f"  listar error: {e}")
         return
-    # filtrar por cuota objetivo
-    candidatos = [m for m in combos if CUOTA_MIN <= m["cuota"] <= CUOTA_MAX]
-    # ordenar por volumen
-    candidatos.sort(key=lambda x: -x["volumen"])
-    if not candidatos:
-        enviar(chat_id, f"🔄 *AUTO:* {len(combos)} combos activos pero ninguno en cuota {CUOTA_MIN}-{CUOTA_MAX}.")
+    if not legs:
+        log("  sin legs disponibles")
         return
-    enviar(chat_id, f"🔄 *AUTO: {len(candidatos)} combos en rango. Ejecutando...*")
-    ejecutar = 0
-    for m in candidatos[:MAX_TRADES_SIMULTANEOS]:
-        ok, motivo = ejecutar_trade(m, chat_id)
-        if ok:
-            ejecutar += 1
-        time.sleep(3)
-    if ejecutar:
-        enviar(chat_id, f"✅ *AUTO: {ejecutar} combo(s) ejecutado(s)*")
+    estado = cargar_estado()
+    sel = seleccionar_combo(legs, estado)
+    if not sel:
+        log("  sin combos viables esta pasada (eventos distintos, cuota, cooldown, tope)")
+        return
+    ok, res = ejecutar_combo_rfq(sel, chat_id)
+    if ok:
+        log(f"  ✅ combo OK: {str(res)[:110]}")
     else:
-        enviar(chat_id, f"⚠️ *AUTO: 0 ejecuciones*")
+        log(f"  ❌ combo: {str(res)[:130]}")
 
 def auto_loop():
     while True:
@@ -922,6 +1433,10 @@ def procesar_update(update):
             return cmd_stake(chat_id, str(v))
         except:
             return enviar(chat_id, "❌")
+    if text == "/testcombo":
+        return cmd_testcombo(chat_id)
+    elif text == "/fills":
+        return cmd_fills(chat_id)
     if text == "/start":
         cmd_start(chat_id)
         if MODO_OPERACION == "AUTO":
@@ -949,7 +1464,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v10.9 iniciado")
+    log("v11.0 iniciado")
     offset = 0
     while True:
         try:
@@ -973,7 +1488,7 @@ def main():
     if not cargar_token():
         log("ERROR: no se encontró el token")
         return
-    log(f"v10.9 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v11.0 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
