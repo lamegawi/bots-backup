@@ -1,0 +1,153 @@
+=== VERIFICAR TWEETS REALES ELON — 2026-09-07 19:50:46 UTC ===
+=== Hora local bot: 2026-09-07 15:50:46 EDT ===
+
+== 0. Proxy PC ==
+Proxy configurado: http://127.0.0.1:8888
+AVISO: proxy no responde. Las llamadas a jina/xcancel pueden fallar.
+
+== Bot: bot-polymarket-elon ==
+
+--- Una pasada de recoger_tweets.py (jina+xcancel, 60s timeout) ---
+fecha        tweets
+2026-08-20       85
+2026-08-21       52
+2026-08-22       17
+2026-08-23       31
+2026-08-24       33
+2026-08-25       26
+2026-08-26       14
+2026-08-27       30
+2026-08-28        7
+2026-08-29       16
+2026-08-30        9
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+
+AVG7 = 12.71  V2 = 26  R = 1.022  ajuste = 1.011  λ48 = 25.7
+Días completos en CSV: 43
+
+--- CSV actual (datos_elon.csv) — últimas 12 filas ---
+2026-08-22,17
+2026-08-23,31
+2026-08-24,33
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+
+--- mercado_activo.json (slug del mercado que sigue) ---
+actualizado: 2026-09-07T19:46:43.992220+00:00
+ - elon-musk-of-tweets-september-1-september-8-2026 | Elon Musk # tweets September 1 - September 8, 2026? | fin: 2026-09-08T12:00:00-04:00
+ - elon-musk-of-tweets-september-4-september-11-2026 | Elon Musk # tweets September 4 - September 11, 2026? | fin: 2026-09-11T12:00:00-04:00
+ - elon-musk-of-tweets-september-8-september-15-2026 | Elon Musk # tweets September 8 - September 15, 2026? | fin: 2026-09-15T12:00:00-04:00
+ - elon-musk-of-tweets-october-2026 | Elon Musk # tweets in October 2026? | fin: 2026-11-01T00:00:00-04:00
+ - elon-musk-of-tweets-february-21-february-23 | Elon Musk # tweets February 21 - February 23, 2026? | fin: 2026-02-23T12:00:00-05:00
+ - elon-musk-of-tweets-september-5-september-7-2026 | Elon Musk # tweets September 5 - September 7, 2026? | fin: 2026-09-07T12:00:00-04:00
+
+---------------------------------------------------------------
+
+== Bot: bot-polymarket-elon-semanal ==
+
+--- Una pasada de recoger_tweets.py (jina+xcancel, 60s timeout) ---
+fecha        tweets
+2026-08-20       85
+2026-08-21       52
+2026-08-22       14
+2026-08-23       31
+2026-08-24       33
+2026-08-25       26
+2026-08-26       14
+2026-08-27       30
+2026-08-28        7
+2026-08-29       16
+2026-08-30        9
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+
+AVG7 = 12.71  V2 = 26  R = 1.022  ajuste = 1.011  λ48 = 25.7
+Días completos en CSV: 41
+
+--- CSV actual (datos_elon.csv) — últimas 12 filas ---
+2026-08-22,14
+2026-08-23,31
+2026-08-24,33
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+
+--- mercado_activo.json (slug del mercado que sigue) ---
+actualizado: 2026-09-07T19:46:27.880455+00:00
+ - elon-musk-of-tweets-september-1-september-8-2026 | Elon Musk # tweets September 1 - September 8, 2026? | fin: 2026-09-08T12:00:00-04:00
+ - elon-musk-of-tweets-september-4-september-11-2026 | Elon Musk # tweets September 4 - September 11, 2026? | fin: 2026-09-11T12:00:00-04:00
+ - elon-musk-of-tweets-september-8-september-15-2026 | Elon Musk # tweets September 8 - September 15, 2026? | fin: 2026-09-15T12:00:00-04:00
+ - elon-musk-of-tweets-october-2026 | Elon Musk # tweets in October 2026? | fin: 2026-11-01T00:00:00-04:00
+ - elon-musk-of-tweets-february-21-february-23 | Elon Musk # tweets February 21 - February 23, 2026? | fin: 2026-02-23T12:00:00-05:00
+ - elon-musk-of-tweets-september-5-september-7-2026 | Elon Musk # tweets September 5 - September 7, 2026? | fin: 2026-09-07T12:00:00-04:00
+
+---------------------------------------------------------------
+
+== Bot: bot-polymarket-elon-mensual ==
+
+--- Una pasada de recoger_tweets.py (jina+xcancel, 60s timeout) ---
+fecha        tweets
+2026-08-20       85
+2026-08-21       48
+2026-08-22       18
+2026-08-23       31
+2026-08-24       33
+2026-08-25       26
+2026-08-26       14
+2026-08-27       30
+2026-08-28        7
+2026-08-29       16
+2026-08-30        9
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+
+AVG7 = 12.71  V2 = 26  R = 1.022  ajuste = 1.011  λ48 = 25.7
+Días completos en CSV: 41
+
+--- CSV actual (datos_elon.csv) — últimas 12 filas ---
+2026-08-22,18
+2026-08-23,31
+2026-08-24,33
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+
+--- mercado_activo.json (slug del mercado que sigue) ---
+actualizado: 2026-09-07T19:46:27.921442+00:00
+ - elon-musk-of-tweets-september-1-september-8-2026 | Elon Musk # tweets September 1 - September 8, 2026? | fin: 2026-09-08T12:00:00-04:00
+ - elon-musk-of-tweets-september-4-september-11-2026 | Elon Musk # tweets September 4 - September 11, 2026? | fin: 2026-09-11T12:00:00-04:00
+ - elon-musk-of-tweets-september-8-september-15-2026 | Elon Musk # tweets September 8 - September 15, 2026? | fin: 2026-09-15T12:00:00-04:00
+ - elon-musk-of-tweets-october-2026 | Elon Musk # tweets in October 2026? | fin: 2026-11-01T00:00:00-04:00
+ - elon-musk-of-tweets-february-21-february-23 | Elon Musk # tweets February 21 - February 23, 2026? | fin: 2026-02-23T12:00:00-05:00
+ - elon-musk-of-tweets-september-5-september-7-2026 | Elon Musk # tweets September 5 - September 7, 2026? | fin: 2026-09-07T12:00:00-04:00
+
+---------------------------------------------------------------
+
+
+== 4. Estado servicios ==
+  poly-elon : active
+  poly-semanal : active
+  poly-mensual : active
