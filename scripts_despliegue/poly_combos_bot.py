@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v10.7 — Combos (parlays) en tiempo real
+POLY COMBOS BOT v10.8 — Combos (parlays) en tiempo real
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -476,7 +476,14 @@ def enviar_orden(token_id, precio, stake_dolares):
 
     # 2) Enviar la orden firmada via HTTP POST directo CON PROXY
     try:
-        body = json.dumps(signed_order) if not isinstance(signed_order, str) else signed_order
+        # v10.8: convertir SignedOrderV2 a dict (no es JSON serializable)
+        if hasattr(signed_order, "__dict__"):
+            signed_order_dict = signed_order.__dict__
+        elif hasattr(signed_order, "to_dict"):
+            signed_order_dict = signed_order.to_dict()
+        else:
+            signed_order_dict = dict(signed_order)
+        body = json.dumps(signed_order_dict)
         url = f"{HOST_CLOB}/order"
         timestamp = str(int(time.time()))
         # Headers L2 auth requeridos por Polymarket CLOB
@@ -625,7 +632,7 @@ def calcular_stats():
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v10.7*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v10.8*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -900,7 +907,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v10.7 iniciado")
+    log("v10.8 iniciado")
     offset = 0
     while True:
         try:
@@ -924,7 +931,7 @@ def main():
     if not cargar_token():
         log("ERROR: no se encontró el token")
         return
-    log(f"v10.7 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v10.8 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
