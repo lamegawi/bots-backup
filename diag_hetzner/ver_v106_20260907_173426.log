@@ -1,0 +1,43 @@
+=== VER V10.6 - Mon Sep  7 05:34:26 PM UTC 2026 ===
+
+== Status ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2026-09-07 17:24:52 UTC; 9min ago
+   Main PID: 1093196 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 47.8M (peak: 48.4M)
+        CPU: 1.321s
+     CGroup: /system.slice/poly-combos-bot.service
+
+== Ultimas 30 lineas ==
+[17:25:28]   precio=0.715 cuota=1.40 stake=$5.0
+[17:25:28]   ERROR: throttle
+[17:25:31] [TRADE] LoL: Invictus Gaming vs LGD Gaming (BO5) - LPL Playoffs
+[17:25:32]   token real resuelto: 114602688616062054...
+[17:25:32]   precio=0.635 cuota=1.57 stake=$5.0
+[17:25:32]   ERROR: throttle
+[17:29:53] [AUTO] pasada
+[17:29:53]   pagina 1: +50 mercados, 0 combos de deportes
+[17:29:54]   pagina 2: +50 mercados, 2 combos de deportes
+[17:29:54]   pagina 3: +50 mercados, 13 combos de deportes
+[17:29:54]   pagina 4: +50 mercados, 56 combos de deportes
+[17:29:55]   pagina 5: +50 mercados, 92 combos de deportes
+[17:30:25] [TRADE] US Open WTA: Iga Swiatek vs Qinwen Zheng
+[17:30:25]   token real resuelto: 309782431174759537...
+[17:30:25]   SKIP: cuota 3.51 fuera de [1.2-2.5]
+[17:30:28] [TRADE] Will Cagliari Calcio win on 2026-09-07?
+[17:30:29]   token real resuelto: 190506342488530339...
+[17:30:29]   precio=0.715 cuota=1.40 stake=$5.0
+[17:30:29]   · Creds derivadas automaticamente (proxy_sdk=OK)
+[17:30:29]   enviando orden via SDK (httpx+proxy)...
+[17:30:30]   SDK resp: {"errorMsg": "", "orderID": "0x60beb7efb787c5f6e3098d363a0abdba1da7bffc62672817698d83e7a8765060", "takingAmount": "", "makingAmount": "", "status": "delayed", "success": true}
+[17:30:33] [TRADE] LoL: Invictus Gaming vs LGD Gaming (BO5) - LPL Playoffs
+[17:30:33]   token real resuelto: 114602688616062054...
+[17:30:34]   precio=0.635 cuota=1.57 stake=$5.0
+[17:30:34]   ERROR: throttle
+[17:32:36]   pagina 1: +50 mercados, 0 combos de deportes
+[17:32:36]   pagina 2: +50 mercados, 1 combos de deportes
+[17:32:37]   pagina 3: +50 mercados, 12 combos de deportes
+[17:32:37]   pagina 4: +50 mercados, 54 combos de deportes
+[17:32:37]   pagina 5: +50 mercados, 87 combos de deportes
