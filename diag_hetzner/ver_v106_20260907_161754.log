@@ -1,0 +1,43 @@
+=== VER V10.6 - Mon Sep  7 04:17:54 PM UTC 2026 ===
+
+== Status ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2026-09-07 15:44:54 UTC; 32min ago
+   Main PID: 1085892 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 43.4M (peak: 43.9M)
+        CPU: 1.413s
+     CGroup: /system.slice/poly-combos-bot.service
+
+== Ultimas 30 lineas ==
+[16:12:02]   ERROR: http_error:Object of type SignedOrderV2 is not JSON serializable
+[16:14:57] [AUTO] pasada
+[16:14:57]   pagina 1: +50 mercados, 0 combos de deportes
+[16:14:57]   pagina 2: +50 mercados, 0 combos de deportes
+[16:14:58]   pagina 3: +50 mercados, 12 combos de deportes
+[16:14:58]   pagina 4: +50 mercados, 56 combos de deportes
+[16:14:58]   pagina 5: +50 mercados, 98 combos de deportes
+[16:14:58] [TRADE] US Open WTA: Mirra Andreeva vs Anastasia Potapova
+[16:14:59]   token real resuelto: 981793670138259096...
+[16:14:59]   precio=0.715 cuota=1.40 stake=$5.0
+[16:14:59]   · Creds derivadas automaticamente
+[16:14:59]   orden firmada: SignedOrderV2(salt='8441634726', maker='0xb0E1197098E6d427c01720F1631cAD24CE740FA0', signer='0x8a22F798C20B0f542c38ABD69
+[16:14:59]   ERROR: http_error:Object of type SignedOrderV2 is not JSON serializable
+[16:15:02] [TRADE] Will Cagliari Calcio win on 2026-09-07?
+[16:15:03]   token real resuelto: 190506342488530339...
+[16:15:03]   precio=0.425 cuota=2.35 stake=$5.0
+[16:15:03]   · Creds derivadas automaticamente
+[16:15:03]   orden firmada: SignedOrderV2(salt='1555614074313', maker='0xb0E1197098E6d427c01720F1631cAD24CE740FA0', signer='0x8a22F798C20B0f542c38AB
+[16:15:03]   ERROR: http_error:Object of type SignedOrderV2 is not JSON serializable
+[16:15:06] [TRADE] LoL: Invictus Gaming vs LGD Gaming (BO5) - LPL Playoffs
+[16:15:07]   token real resuelto: 114602688616062054...
+[16:15:07]   precio=0.635 cuota=1.57 stake=$5.0
+[16:15:07]   · Creds derivadas automaticamente
+[16:15:07]   orden firmada: SignedOrderV2(salt='1582622420368', maker='0xb0E1197098E6d427c01720F1631cAD24CE740FA0', signer='0x8a22F798C20B0f542c38AB
+[16:15:07]   ERROR: http_error:Object of type SignedOrderV2 is not JSON serializable
+[16:16:03]   pagina 1: +50 mercados, 0 combos de deportes
+[16:16:04]   pagina 2: +50 mercados, 0 combos de deportes
+[16:16:04]   pagina 3: +50 mercados, 12 combos de deportes
+[16:16:05]   pagina 4: +50 mercados, 56 combos de deportes
+[16:16:05]   pagina 5: +50 mercados, 98 combos de deportes
