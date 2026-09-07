@@ -1,0 +1,358 @@
+=== VERIFICAR OPERACION 120-139 TWEETS - Mon Sep  7 07:43:09 PM UTC 2026 ===
+
+== 1. Estado del bot (CSV que cuenta) ==
+Ultimo parte del bot de Elon (48h, semanal, mensual):
+
+--- /var/log/poly-elon.log (ultimas 8 lineas) ---
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+
+AVG7 = 12.71  V2 = 26  R = 1.022  ajuste = 1.011  λ48 = 25.7
+Días completos en CSV: 43
+[2026-09-07 15:39:59 EDT] Pasada completada en 24.4 s
+[2026-09-07 15:39:59 EDT] Próxima pasada en 5 min…
+
+--- /var/log/poly-semanal.log (ultimas 8 lineas) ---
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+
+AVG7 = 12.71  V2 = 26  R = 1.022  ajuste = 1.011  λ48 = 25.7
+Días completos en CSV: 41
+[2026-09-07 15:40:00 EDT] Pasada completada en 24.5 s
+[2026-09-07 15:40:00 EDT] Próxima pasada en 5 min…
+
+--- /var/log/poly-mensual.log (ultimas 8 lineas) ---
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+
+AVG7 = 12.71  V2 = 26  R = 1.022  ajuste = 1.011  λ48 = 25.7
+Días completos en CSV: 41
+[2026-09-07 15:39:59 EDT] Pasada completada en 24.5 s
+[2026-09-07 15:39:59 EDT] Próxima pasada en 5 min…
+
+== 2. CSVs del bot ==
+
+--- /opt/polymarket/bot-polymarket-elon/datos_elon.csv (ultimas 15 lineas) ---
+2026-08-19,86
+2026-08-20,85
+2026-08-21,52
+2026-08-22,17
+2026-08-23,31
+2026-08-24,33
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+
+--- /opt/polymarket/bot-polymarket-elon-semanal/datos_elon.csv (ultimas 15 lineas) ---
+2026-08-19,76
+2026-08-20,85
+2026-08-21,52
+2026-08-22,14
+2026-08-23,31
+2026-08-24,33
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+
+--- /opt/polymarket/bot-polymarket-elon-mensual/datos_elon.csv (ultimas 15 lineas) ---
+2026-08-19,76
+2026-08-20,85
+2026-08-21,48
+2026-08-22,18
+2026-08-23,31
+2026-08-24,33
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+
+== 3. mercado_activo.json (prediccion actual del bot) ==
+
+--- /opt/polymarket/bot-polymarket-elon/mercado_activo.json ---
+{
+    "actualizado": "2026-09-07T19:39:59.630789+00:00",
+    "mercados": [
+        {
+            "id": "928969",
+            "titulo": "Elon Musk # tweets September 1 - September 8, 2026?",
+            "slug": "elon-musk-of-tweets-september-1-september-8-2026",
+            "cerrado": false,
+            "volumen": 1712071.0985589998,
+            "endDate": "2026-09-08T16:00:00Z",
+            "inicio_iso": "2026-09-01T12:00:00-04:00",
+            "fin_iso": "2026-09-08T12:00:00-04:00",
+            "duracion_h": 168.0,
+            "tipo": "semanal",
+            "bins": [
+                {
+                    "titulo": "<20",
+                    "lo": 0,
+                    "hi": 19,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 207.0
+                },
+                {
+                    "titulo": "20-39",
+                    "lo": 20,
+                    "hi": 39,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 1311.999
+                },
+                {
+                    "titulo": "40-59",
+                    "lo": 40,
+                    "hi": 59,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 2357.0
+                },
+                {
+                    "titulo": "60-79",
+                    "lo": 60,
+                    "hi": 79,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 29304.583
+                },
+                {
+                    "titulo": "80-99",
+                    "lo": 80,
+                    "hi": 99,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 60715.84846100001
+                },
+                {
+                    "titulo": "100-119",
+                    "lo": 100,
+                    "hi": 119,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 76703.810227
+                },
+                {
+                    "titulo": "120-139",
+                    "lo": 120,
+                    "hi": 139,
+                    "precio_yes": 0.0,
+
+--- /opt/polymarket/bot-polymarket-elon-semanal/mercado_activo.json ---
+{
+    "actualizado": "2026-09-07T19:39:59.799245+00:00",
+    "mercados": [
+        {
+            "id": "928969",
+            "titulo": "Elon Musk # tweets September 1 - September 8, 2026?",
+            "slug": "elon-musk-of-tweets-september-1-september-8-2026",
+            "cerrado": false,
+            "volumen": 1712071.0985589998,
+            "endDate": "2026-09-08T16:00:00Z",
+            "inicio_iso": "2026-09-01T12:00:00-04:00",
+            "fin_iso": "2026-09-08T12:00:00-04:00",
+            "duracion_h": 168.0,
+            "tipo": "semanal",
+            "bins": [
+                {
+                    "titulo": "<20",
+                    "lo": 0,
+                    "hi": 19,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 207.0
+                },
+                {
+                    "titulo": "20-39",
+                    "lo": 20,
+                    "hi": 39,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 1311.999
+                },
+                {
+                    "titulo": "40-59",
+                    "lo": 40,
+                    "hi": 59,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 2357.0
+                },
+                {
+                    "titulo": "60-79",
+                    "lo": 60,
+                    "hi": 79,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 29304.583
+                },
+                {
+                    "titulo": "80-99",
+                    "lo": 80,
+                    "hi": 99,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 60715.84846100001
+                },
+                {
+                    "titulo": "100-119",
+                    "lo": 100,
+                    "hi": 119,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 76703.810227
+                },
+                {
+                    "titulo": "120-139",
+                    "lo": 120,
+                    "hi": 139,
+                    "precio_yes": 0.0,
+
+--- /opt/polymarket/bot-polymarket-elon-mensual/mercado_activo.json ---
+{
+    "actualizado": "2026-09-07T19:39:59.633953+00:00",
+    "mercados": [
+        {
+            "id": "928969",
+            "titulo": "Elon Musk # tweets September 1 - September 8, 2026?",
+            "slug": "elon-musk-of-tweets-september-1-september-8-2026",
+            "cerrado": false,
+            "volumen": 1712071.0985589998,
+            "endDate": "2026-09-08T16:00:00Z",
+            "inicio_iso": "2026-09-01T12:00:00-04:00",
+            "fin_iso": "2026-09-08T12:00:00-04:00",
+            "duracion_h": 168.0,
+            "tipo": "semanal",
+            "bins": [
+                {
+                    "titulo": "<20",
+                    "lo": 0,
+                    "hi": 19,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 207.0
+                },
+                {
+                    "titulo": "20-39",
+                    "lo": 20,
+                    "hi": 39,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 1311.999
+                },
+                {
+                    "titulo": "40-59",
+                    "lo": 40,
+                    "hi": 59,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 2357.0
+                },
+                {
+                    "titulo": "60-79",
+                    "lo": 60,
+                    "hi": 79,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 29304.583
+                },
+                {
+                    "titulo": "80-99",
+                    "lo": 80,
+                    "hi": 99,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 60715.84846100001
+                },
+                {
+                    "titulo": "100-119",
+                    "lo": 100,
+                    "hi": 119,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 76703.810227
+                },
+                {
+                    "titulo": "120-139",
+                    "lo": 120,
+                    "hi": 139,
+                    "precio_yes": 0.0,
+
+== 4. Tweets del periodo (4 sept - ahora) segun el bot ==
+
+--- /opt/polymarket/bot-polymarket-elon/datos_elon.csv ---
+Total rows: 43
+Headers: dict_keys(['fecha', 'tweets'])
+Tweets del 4 al 11 sept: 26
+  2026-09-05: 5 tweets
+  2026-09-06: 21 tweets
+
+--- /opt/polymarket/bot-polymarket-elon-semanal/datos_elon.csv ---
+Total rows: 41
+Headers: dict_keys(['fecha', 'tweets'])
+Tweets del 4 al 11 sept: 26
+  2026-09-05: 5 tweets
+  2026-09-06: 21 tweets
+
+--- /opt/polymarket/bot-polymarket-elon-mensual/datos_elon.csv ---
+Total rows: 41
+Headers: dict_keys(['fecha', 'tweets'])
+Tweets del 4 al 11 sept: 26
+  2026-09-05: 5 tweets
+  2026-09-06: 21 tweets
