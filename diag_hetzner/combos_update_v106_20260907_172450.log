@@ -1,0 +1,40 @@
+=== ACTUALIZADOR v10.6 HASH FIJO - Mon Sep  7 05:24:50 PM UTC 2026 ===
+HASH: a6b91e5c
+
+=== Paso 1: Detener bot ===
+
+=== Paso 2: Descargar v10.6 (HASH FIJO) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/a6b91e5c/scripts_despliegue/poly_combos_bot.py
+Descargado: 39165 bytes
+
+=== Paso 3: Verificar version ===
+POLY COMBOS BOT v10.9 — Combos (parlays) en tiempo real
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2026-09-07 17:24:52 UTC; 5s ago
+   Main PID: 1093196 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 13.1M (peak: 13.5M)
+        CPU: 161ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1093196 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log ===
+[17:24:38]   · Creds derivadas automaticamente
+[17:24:38]   orden firmada: SignedOrderV2(salt='1527527228581', maker='0xb0E1197098E6d427c01720F1631cAD24CE740FA0', signer='0x8a22F798C20B0f542c38AB
+[17:24:38]   HTTP POST /order -> 400 {"error":"maker is required"}
+[17:24:38]   ERROR: http_400:{"error":"maker is required"}
+[17:24:41] [TRADE] LoL: Invictus Gaming vs LGD Gaming (BO5) - LPL Playoffs
+[17:24:42]   token real resuelto: 114602688616062054...
+[17:24:42]   precio=0.635 cuota=1.57 stake=$5.0
+[17:24:42]   · Creds derivadas automaticamente
+[17:24:42]   orden firmada: SignedOrderV2(salt='393633941577', maker='0xb0E1197098E6d427c01720F1631cAD24CE740FA0', signer='0x8a22F798C20B0f542c38ABD
+[17:24:43]   HTTP POST /order -> 400 {"error":"maker is required"}
+[17:24:43]   ERROR: http_400:{"error":"maker is required"}
+[17:24:52] v10.9 cargado · modo=AUTO · stake=$5.0
+[17:24:52] Proxy: http://100.83.57.99:8888
+[17:24:53] Test proxy: 200
+[17:24:53] v10.9 iniciado
