@@ -18,10 +18,12 @@ BOT30D=/opt/polymarket/bot-polymarket-elon-mensual
 TOK=$(cat /opt/polymarket/.gh_token 2>/dev/null || echo "")
 
 # Detectar proxy
+TS_IP=${TS_IP:-100.83.57.99}
+PROXY_URL="http://${TS_IP}:8888"
 PROXY_ON=0
-if curl -s --max-time 4 -x http://127.0.0.1:8888 https://api.ipify.org >/dev/null 2>&1; then
+if curl -s --max-time 4 -x "$PROXY_URL" https://api.ipify.org >/dev/null 2>&1; then
   PROXY_ON=1
-  IP_PROXY=$(curl -s --max-time 4 -x http://127.0.0.1:8888 https://api.ipify.org)
+  IP_PROXY=$(curl -s --max-time 4 -x "$PROXY_URL" https://api.ipify.org)
 fi
 IP_DIRECT=$(curl -s --max-time 4 https://api.ipify.org 2>/dev/null || echo "?")
 
@@ -29,6 +31,7 @@ IP_DIRECT=$(curl -s --max-time 4 https://api.ipify.org 2>/dev/null || echo "?")
 echo "=== VERIFICAR TWEETS REALES ELON v2 — ${TS_HUMAN} ==="
 echo
 echo "== Red =="
+echo "Proxy URL       : ${PROXY_URL}"
 echo "IP con proxy    : ${IP_PROXY:-NO RESPONDE}"
 echo "IP sin proxy    : ${IP_DIRECT}"
 if [ "$PROXY_ON" = "1" ]; then
@@ -58,10 +61,10 @@ for d in "$BOT48" "$BOT7D" "$BOT30D"; do
   export HTTP_PROXY=""
   export HTTPS_PROXY=""
   if [ "$PROXY_ON" = "1" ]; then
-    export http_proxy="http://127.0.0.1:8888"
-    export https_proxy="http://127.0.0.1:8888"
-    export HTTP_PROXY="http://127.0.0.1:8888"
-    export HTTPS_PROXY="http://127.0.0.1:8888"
+    export http_proxy="${PROXY_URL}"
+    export https_proxy="${PROXY_URL}"
+    export HTTP_PROXY="${PROXY_URL}"
+    export HTTPS_PROXY="${PROXY_URL}"
   fi
 
   echo
