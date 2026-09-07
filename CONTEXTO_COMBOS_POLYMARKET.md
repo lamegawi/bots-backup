@@ -2,7 +2,7 @@
 
 ## 📋 RESUMEN
 
-Bot de Telegram que opera **Combos (parlays) de Polymarket** automáticamente. Lleva 6+ horas en desarrollo y depuración. Está al 95% — solo falta confirmar que las credenciales se derivan correctamente y ejecuta el primer trade.
+Bot de Telegram que opera **Combos (parlays) de Polymarket** automáticamente. **OPERATIVO**: el 7 sept 2026 a las 17:30:30 UTC la v10.9 ejecutó el PRIMER TRADE REAL (Cagliari Calcio, cuota 1.40, stake $5, `success:true`, orderID `0x60beb7ef...`).
 
 ## 🎯 OBJETIVO
 
@@ -116,60 +116,40 @@ El bot usa `/etc/polymarket.env` que contiene:
 - **Solución v10.9**:
   1. `inyectar_proxy_sdk()`: reemplaza EXPLÍCITAMENTE `py_clob_client_v2.http_helpers.helpers._http_client` por `httpx.Client(http2=True, proxy=PROXY_URL)` (con fallbacks por versión de httpx)
   2. `enviar_orden()` usa `client.create_and_post_order(OrderArgs(...))` NATIVO del SDK (patrón exacto del bot de Elon) → el SDK construye envelope + headers L2 con las creds derivadas
-- **Resultado**: probado en sandbox (GET/POST del SDK salen por proxy inyectado). Pendiente ejecutar en Hetzner
+- **Resultado**: ✅ **PRIMER TRADE REAL EJECUTADO** 7 sept 17:30:30 UTC — `SDK resp: {"success": true, "orderID": "0x60beb7ef...", "status": "delayed"}`. Status `delayed` = orden aceptada y en cola de matching (sin fill inmediato); conviene verificar el fill después.
 
-## 🔧 CÓDIGO CLAVE (v10.7)
+## 🔧 CÓDIGO CLAVE (v10.9)
 
-### `enviar_orden()` — patrón del bot de Elon
+### `inyectar_proxy_sdk()` + `enviar_orden()` — v10.9 (DEFINITIVO)
 ```python
+def inyectar_proxy_sdk(proxy_url=None):
+    """El SDK usa HTTPX y crea su cliente AL IMPORTAR (helpers._http_client).
+    Hay que REEMPLAZARLO explícitamente por uno con proxy (env vars no bastan)."""
+    proxy_url = proxy_url or PROXY_URL  # http://100.83.57.99:8888
+    for k in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy"):
+        os.environ[k] = proxy_url
+    import httpx
+    from py_clob_client_v2.http_helpers import helpers as _hh
+    # con fallbacks por versión de httpx: proxy= (>=0.26), proxies={"all://":...}, sin http2
+    _hh._http_client = httpx.Client(http2=True, proxy=proxy_url)
+    return True
+
 def enviar_orden(token_id, precio, stake_dolares):
-    size_shares = round(stake_dolares / precio, 2)
-    if size_shares < MIN_SHARES:  # MIN_SHARES = 5.0
-        return False, "size_insuficiente"
-
-    env = cargar_env()
-    signer = env.get("POLY_PRIVATE_KEY", "").strip()
-    api_key = env.get("POLY_API_KEY", "").strip()
-    api_secret = env.get("POLY_API_SECRET", "").strip()
-    api_passphrase = env.get("POLY_API_PASSPHRASE", "").strip()
-    wallet = env.get("POLY_WALLET_ADDRESS", WALLET).strip()
-
-    # 1) Firmar la orden (NO envia)
-    from py_clob_client_v2.client import ClobClient
-    from py_clob_client_v2.clob_types import ApiCreds, OrderArgs
-    from py_clob_client_v2 import SignatureTypeV2
-
-    kwargs_client = {
-        "key": signer,
-        "funder": wallet,
-        "signature_type": int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA),
-    }
-    if api_key and api_secret and api_passphrase:
-        kwargs_client["creds"] = ApiCreds(api_key, api_secret, api_passphrase)
-    client = ClobClient(host=HOST_CLOB, chain_id=137, **kwargs_client)
-    if "creds" not in kwargs_client:
-        creds = client.derive_api_key()  # ← MAGIA: usa private key
-        client.set_api_creds(creds)
-
+    # ... size_shares, throttle 10s, cargar_env (solo POLY_PRIVATE_KEY) ...
+    proxy_ok = inyectar_proxy_sdk()
+    client = ClobClient(host=HOST_CLOB, chain_id=137, key=signer, funder=wallet,
+                        signature_type=int(SignatureTypeV2.POLY_PROXY))
+    creds = client.derive_api_key()          # ✅ funciona con solo la private key
+    client.set_api_creds(creds)
     order_args = OrderArgs(token_id=token_id, price=precio, size=size_shares, side="BUY")
-    signed_order = client.create_order(order_args)
-
-    # 2) HTTP POST con proxy
-    body = json.dumps(signed_order) if not isinstance(signed_order, str) else signed_order
-    url = f"{HOST_CLOB}/order"
-    headers = {
-        "Content-Type": "application/json",
-        "POLY_ADDRESS": wallet,
-        "POLY_API_KEY": api_key,
-        "POLY_PASSPHRASE": api_passphrase,
-        "POLY_TIMESTAMP": str(int(time.time())),
-    }
-    status, resp_body = http_post(url, body, headers)  # http_post usa proxy
-    if status in (200, 201):
-        data = json.loads(resp_body)
-        oid = data.get("orderID") or data.get("order_id")
-        return True, {"oid": oid, "size": size_shares, "precio": precio}
-    return False, f"http_{status}:{resp_body[:200]}"
+    resp = client.create_and_post_order(order_args)   # NATIVO del SDK (patrón Elon)
+    # El SDK construye el envelope {"order":{salt, maker, signer, tokenId, makerAmount,
+    # takerAmount, side, expiration, signatureType, timestamp, metadata, builder, signature},
+    # "owner": api_key, "orderType": "GTC"} y firma los headers L2
+    # (POLY_SIGNATURE = base64(HMAC-SHA256(api_secret, ts+method+path+body_exacto)))
+    if isinstance(resp, dict) and (resp.get("success") or resp.get("orderID")):
+        return True, {"oid": resp.get("orderID"), "status": resp.get("status"), ...}
+    # Errores: PolyApiException trae .status_code y .error_msg reales de la API
 ```
 
 ### `listar_combos()` — leer combos activos
@@ -219,15 +199,16 @@ def resolver_token_real(condition_id):
 
 ## 📊 ESTADO ACTUAL
 
-- **HEAD del repo**: `ac4c912` (v10.7)
-- **Bot cargado**: `v10.7 iniciado` a las 15:44:54 UTC
-- **Pasada AUTO próxima**: 15:49:54 UTC
-- **Lo que esperamos ver**:
-  - `[TRADE] ...`
-  - `  · Creds derivadas automaticamente` (si funciona)
-  - `  orden firmada: {...}`
-  - `  HTTP POST /order -> 200 {"orderID":"..."}`
-  - `✅ COMBO EJECUTADO 📌 ...`
+- **HEAD del repo**: `a6b91e5c` (v10.9 desplegado; puede haber commits de docs posteriores)
+- **Bot cargado**: `v10.9 iniciado` 17:24:52 UTC · servicio activo · Test proxy: 200
+- **PRIMER TRADE**: 17:30:30 UTC ✅ `success:true` orderID `0x60beb7ef...` status `delayed`
+- **Lo que se ve en el log ahora**:
+  - `[TRADE] ...` → `token real resuelto` → `precio/cuota/stake`
+  - `  · Creds derivadas automaticamente (proxy_sdk=OK)`
+  - `  enviando orden via SDK (httpx+proxy)...`
+  - `  SDK resp: {"success": true, "orderID": "0x...", "status": "delayed|live|matched"}`
+  - ⚠️ En AUTO el éxito NO se loggea ni notifica a Telegram (solo `if chat_id:`) — el trade SÍ se guarda en estado (`/abiertas` lo ve). Mejora pendiente v10.9.1
+  - `ERROR: throttle` = hubo otra orden <10s antes (normal: reintenta en la siguiente pasada)
 
 ## 🛠️ CÓMO CONTINUAR
 
@@ -316,7 +297,8 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - ✅ HTTP POST con proxy
 - ✅ derive_api_key con private key (confirmado en log 16:36 UTC)
 - ✅ v10.9: proxy inyectado en httpx del SDK + create_and_post_order nativo (fix definitivo del envío)
-- ⏳ **PENDIENTE**: desplegar v10.9 en Hetzner y confirmar primer trade ejecutado
+- ✅ **PRIMER TRADE EJECUTADO** (v10.9 desplegado 17:24, trade 17:30:30 UTC 7 sept, success=true, status delayed)
+- ⏳ Pendientes: notificar/loggear trades AUTO, confirmar fills de órdenes delayed/live
 
 ## 🔗 URLs ÚTILES
 
@@ -328,17 +310,14 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 
 ## 📝 PRÓXIMOS PASOS INMEDIATOS
 
-1. **Verificar que v10.7 funciona**:
-   - Ejecutar ver_v106.sh en Hetzner
-   - Ver log en diag-public
-   - Buscar "Creds derivadas automaticamente" + "HTTP POST /order -> 200"
-2. **Si funciona**: el bot ejecuta trades reales, monitorear con `/trades` en Telegram
-3. **Si no funciona**: diagnosticar el error específico (probablemente issue con `derive_api_key` o formato de orden firmada)
+1. **Monitorear**: `/trades`, `/abiertas`, `/stats` en Telegram · ver_v106.sh para logs
+2. **Confirmar fills**: status `delayed`/`live` puede no llenarse — verificar con GET `/order/{orderID}` (via proxy) o posiciones en data-api
+3. **Mejora v10.9.1 (pequeña, pendiente)**: en AUTO, loggear `✅ COMBO EJECUTADO` y notificar a Telegram (usar TELEGRAM_CHAT_ID cuando `chat_id=None`)
 4. **Mejoras futuras**:
+   - Verificación automática de fills + cancel/reintento de órdenes stale
    - Añadir stop-loss
    - Tracking de P&L en tiempo real
    - Filtros de deportes más específicos
-   - Notificaciones de trades en Telegram
 
 ## 💬 CONVERSACIÓN RESUMIDA
 
@@ -358,4 +337,6 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - 7 sept 15:30 — PENDIENTE confirmar ejecución de primer trade
 - 7 sept 16:36 — Log confirma: creds derivadas OK + orden firmada OK, pero `SignedOrderV2 is not JSON serializable` → v10.8 (__dict__)
 - 7 sept 16:41 — inspect falla: SignedOrderV2 NO está en clob_types (está en order_utils.model.order_data_v2)
-- 7 sept ~19:00 — Análisis del source del SDK (v1.1.0): usa httpx, envelope v2 y L2 HMAC → POST manual inviable → v10.9 con inyectar_proxy_sdk() + create_and_post_order nativo. PENDIENTE desplegar
+- 7 sept ~17:15 — Análisis del source del SDK (v1.1.0): usa httpx, envelope v2 y L2 HMAC → POST manual inviable → v10.9 con inyectar_proxy_sdk() + create_and_post_order nativo
+- 7 sept 17:24 — v10.9 desplegado en Hetzner (commit a6b91e5c), bot iniciado 17:24:52
+- 7 sept 17:30 — 🎉 PRIMER TRADE REAL: Cagliari cuota 1.40 stake $5, success=true, orderID 0x60beb7ef..., status delayed. BOT OPERATIVO
