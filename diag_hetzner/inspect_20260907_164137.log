@@ -1,0 +1,2 @@
+=== INSPECCIONAR SignedOrderV2 - Mon Sep  7 04:41:37 PM UTC 2026 ===
+Error importando: cannot import name 'SignedOrderV2' from 'py_clob_client_v2.clob_types' (/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/clob_types.py)
