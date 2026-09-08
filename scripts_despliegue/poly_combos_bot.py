@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v12.2 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v12.3 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -53,6 +53,15 @@ Estrategia nueva (vs v7):
    📋 Trades: un mensaje por combo con SU botón debajo. Estadísticas y
    contadores diarios separados por franja (las manuales NO consumen
    el tope AUTO).
+   v12.3: (1) AUTO SOLO CON PROBABILIDAD SUFICIENTE — cada candidato se
+   mide por su probabilidad (producto de legs); si no llega al nivel elegido
+   se DESCARTA y se pasa al siguiente. Niveles: alta ≥65% · media-alta ≥60%
+   (por defecto, elegida por el user) · media+ ≥50%; botón 🎯 Prob AUTO.
+   (2) 📂 ABIERTAS con el ESTADO A LA DERECHA de cada línea: ✅ verde si ya
+   terminó y salió positiva, ❌ roja si se perdió, ⏳ si sigue en juego.
+   (3) 🔒 CERRAR POSICIÓN REAL — botón por posición: combos vía RFQ con
+   direction=SELL (orden Exchange v3 side=1), simples vía orden CLOB SELL.
+   /testcerrar pide la cotización de venta SIN aceptarla (coste $0).
    v12.2: STAKE DINÁMICO $5-10 — el bot decide la apuesta según la CUOTA y
    CÓMO VA LA COMBINADA: cuota más baja ⇒ más stake, y la ventaja REAL del
    RFQ sobre los legs lo ajusta (si el RFQ no mejora el mercado ≥0.5%, AUTO
@@ -311,7 +320,7 @@ TECLADO_FIJO = {
         [{"text": "✅ Cerradas"}, {"text": "📊 Stats"}, {"text": "🏆 Top"}],
         [{"text": "🟢 AUTO"}, {"text": "🟡 SEMI"}, {"text": "🔴 OFF"}],
         [{"text": "💵 Stake AUTO"}, {"text": "💵 Stake $5"}],
-        [{"text": "🔢 Máx ops/día"}],
+        [{"text": "🔢 Máx ops/día"}, {"text": "🎯 Prob AUTO"}],
         [{"text": "⏱ 5m"}, {"text": "⏱ 10m"}, {"text": "⏱ 20m"}, {"text": "⏱ 30m"}, {"text": "⏱ 60m"}],
     ],
     "resize_keyboard": True,
@@ -502,14 +511,15 @@ def l2_headers_rfq(method, path, body_str, creds, signer_addr):
     }
 
 
-def crear_rfq(leg_position_ids, notional_usd, identidad):
+def crear_rfq(leg_position_ids, notional_usd, identidad, direction="BUY"):
+    """v12.3: direction='SELL' pide cotización para VENDER el combo (cerrar)."""
     creds, signer_addr, wallet, pk = identidad
     body = {
         "signer_address": signer_addr,
         "maker_address": wallet,
         "signature_type": 1,
         "leg_position_ids": [str(x) for x in leg_position_ids],
-        "direction": "BUY",
+        "direction": direction,
         "side": "YES",
         "requested_size": {"unit": "notional",
                            "value_e6": str(int(round(notional_usd * 1000000)))},
@@ -520,8 +530,9 @@ def crear_rfq(leg_position_ids, notional_usd, identidad):
     return http_post(RFQ_GATEWAY + path, body_str, headers, timeout=20)
 
 
-def firmar_orden_v3(req, quote, identidad):
-    """Firma EIP-712 de la orden Exchange v3 para aceptar el quote."""
+def firmar_orden_v3(req, quote, identidad, side=0):
+    """Firma EIP-712 de la orden Exchange v3 para aceptar el quote.
+    v12.3: side=0 COMPRA (BUY) · side=1 VENTA (SELL, para cerrar posición)."""
     creds, signer_addr, wallet, pk = identidad
     from eth_account import Account
     from eth_account.messages import encode_typed_data
@@ -532,7 +543,7 @@ def firmar_orden_v3(req, quote, identidad):
         "tokenId": str(req.get("yes_position_id")),
         "makerAmount": str(quote.get("maker_amount_e6")),
         "takerAmount": str(quote.get("taker_amount_e6")),
-        "side": 0,
+        "side": side,
         "signatureType": 1,
         "timestamp": str(int(time.time())),
         "metadata": "0x" + "00" * 32,
@@ -809,9 +820,11 @@ def hash8_sel(sel):
 
 def etiqueta_prob(p):
     """Etiqueta cualitativa: a más cuota, menos probabilidad."""
-    if p >= 0.65:
+    if p >= PROB_ALTA:
         return "alta 🟢"
-    if p >= 0.50:
+    if p >= PROB_MEDIA_ALTA:
+        return "media-alta 🟢"
+    if p >= PROB_MEDIA:
         return "media 🟡"
     return "baja 🔴"
 
@@ -1033,6 +1046,77 @@ def stake_menu(chat_id):
     return enviar(chat_id, txt, {"inline_keyboard": kb})
 
 
+# ============================================
+# v12.3: NIVEL DE PROBABILIDAD PARA AUTO + CIERRE REAL DE POSICIONES
+# ============================================
+PROB_ALTA = 0.65        # etiqueta "alta 🟢"
+PROB_MEDIA_ALTA = 0.60  # nivel por defecto de AUTO (elección del user)
+PROB_MEDIA = 0.50       # etiqueta "media 🟡"
+PROB_NIVELES = (PROB_ALTA, PROB_MEDIA_ALTA, PROB_MEDIA)
+PROB_MIN_AUTO = PROB_MEDIA_ALTA   # global vigente (persistido en estado)
+ABIERTAS_CACHE = {}     # h8 -> (ts, clave_grupo) para los botones 🔒
+
+def prob_nivel_txt(p):
+    """Nombre del nivel de probabilidad."""
+    if p >= PROB_ALTA:
+        return f"alta 🟢 ≥{int(PROB_ALTA * 100)}%"
+    if p >= PROB_MEDIA_ALTA:
+        return f"media-alta 🟢 ≥{int(PROB_MEDIA_ALTA * 100)}%"
+    return f"media+ 🟡 ≥{int(PROB_MEDIA * 100)}%"
+
+def prob_min_auto(estado=None):
+    """v12.3: probabilidad mínima que AUTO exige al combo entero."""
+    if estado is None:
+        estado = cargar_estado()
+    try:
+        v = float(estado.get("prob_min_auto", PROB_MIN_AUTO))
+    except Exception:
+        v = PROB_MIN_AUTO
+    if v not in PROB_NIVELES:
+        return PROB_MEDIA_ALTA
+    return v
+
+def set_prob_min_auto(chat_id, tanto_por_ciento):
+    """Fija el nivel de probabilidad de AUTO (65 / 60 / 50)."""
+    global PROB_MIN_AUTO
+    try:
+        pct = int(tanto_por_ciento)
+    except Exception:
+        return enviar(chat_id, "❌ Niveles: 65 (alta), 60 (media-alta) o 50 (media+)")
+    val = pct / 100.0
+    if val not in PROB_NIVELES:
+        return enviar(chat_id, "❌ Niveles: 65 (alta), 60 (media-alta) o 50 (media+)")
+    PROB_MIN_AUTO = val
+    estado = cargar_estado()
+    estado["prob_min_auto"] = val
+    guardar_estado(estado)
+    cuota_top = round(1 / val, 2)
+    log(f"prob AUTO -> {prob_nivel_txt(val)}")
+    return enviar(chat_id, f"🎯 *AUTO solo con probabilidad {prob_nivel_txt(val)}*\n"
+                           f"Cuota máxima equivalente: *{cuota_top}* (prob = 1/cuota)\n"
+                           f"Los candidatos que no lleguen se descartan y se pasa al siguiente.")
+
+def prob_menu(chat_id):
+    """🎯 Menú del nivel de probabilidad exigido a AUTO."""
+    estado = cargar_estado()
+    actual = prob_min_auto(estado)
+    kb = []
+    for v in PROB_NIVELES:
+        pct = int(round(v * 100))
+        mark = "✅ " if v == actual else ""
+        kb.append([{"text": f"{mark}{prob_nivel_txt(v)} · cuota ≤{1 / v:.2f}",
+                    "callback_data": f"pb:{pct}"}])
+    kb.append([{"text": "❌ Cerrar", "callback_data": "pb:x"}])
+    txt = (f"🎯 *PROBABILIDAD MÍNIMA PARA AUTO*\n\n"
+           f"Ahora: *{prob_nivel_txt(actual)}*\n\n"
+           f"AUTO solo ejecuta combos cuya probabilidad (producto de sus legs) llegue al nivel. "
+           f"Si no llega, *se descarta y se pasa al siguiente* candidato.\n"
+           f"_Probabilidad y cuota son dos caras de lo mismo: prob = 1/cuota. "
+           f"Exigir ≥65% limita la cuota a ≤1.54; ≥60% a ≤1.67; ≥50% a ≤2.00._\n"
+           f"🚀 Extendidas y 💥 Súper siguen siendo manuales (sin este filtro).")
+    return enviar(chat_id, txt, {"inline_keyboard": kb})
+
+
 def seleccionar_combo(legs, estado):
     """v12.0: elige la mejor combinación SOLO DE FRANJA BASE (la automática):
     2-3 legs, eventos distintos, cuota est. [CUOTA_MIN, CUOTA_MAX], prefiriendo
@@ -1061,6 +1145,8 @@ def seleccionar_combo(legs, estado):
     pool.sort(key=lambda x: -(x.get("volumen") or 0))
     pool = pool[:POOL_TOP_N]
     huellas = estado.get("combos_rfq", {}).get("huellas", {})
+    _pmin = prob_min_auto(estado)          # v12.3: solo probabilidad suficiente
+    descartados_prob = 0
     base = []
     for n in range(LEGS_POR_COMBO[0], LEGS_POR_COMBO[1] + 1):
         if n > len(pool):
@@ -1078,6 +1164,10 @@ def seleccionar_combo(legs, estado):
             cuota = round(1 / prod, 2) if prod > 0 else 0
             if not (CUOTA_MIN <= cuota <= CUOTA_MAX):
                 continue
+            # v12.3: probabilidad insuficiente -> se descarta y se pasa al siguiente
+            if prod < _pmin:
+                descartados_prob += 1
+                continue
             vol_min = min(c.get("volumen") or 0 for c in sel)
             base.append((vol_min, cuota, list(sel)))
     def _mejor(lst):
@@ -1089,6 +1179,8 @@ def seleccionar_combo(legs, estado):
     m3 = _mejor([c for c in base if len(c[2]) == 3])
     if m3:
         return m3[2]
+    if descartados_prob:
+        log(f"  {descartados_prob} candidato(s) descartados por probabilidad < {prob_nivel_txt(_pmin)}")
     return None
 
 
@@ -1695,6 +1787,70 @@ def enviar_orden(token_id, precio, stake_dolares):
             return False, f"PolyApi[{status}]:{str(errmsg)[:200]}"
         return False, f"sdk_error:{str(e)[:200]}"
 
+def vender_clob(token_id, precio, shares):
+    """v12.3: orden CLOB de VENTA (side=SELL) para cerrar una posición SIMPLE.
+    Mismo bootstrap que enviar_orden (SDK nativo + proxy del PC), pero con
+    side=SELL y el tamaño en shares que ya poseemos."""
+    env = cargar_env()
+    signer = env.get("POLY_PRIVATE_KEY", "").strip()
+    api_key = env.get("POLY_API_KEY", "").strip()
+    api_secret = env.get("POLY_API_SECRET", "").strip()
+    api_passphrase = env.get("POLY_API_PASSPHRASE", "").strip()
+    wallet = env.get("POLY_WALLET_ADDRESS", WALLET).strip()
+    if not signer:
+        return False, "sin_credenciales"
+    if not token_id:
+        return False, "sin_token"
+    if shares <= 0:
+        return False, "sin_shares"
+    if not (0.01 <= precio <= 0.99):
+        return False, f"precio_venta_{precio}_invalido"
+    try:
+        proxy_ok = inyectar_proxy_sdk()
+        from py_clob_client_v2.client import ClobClient
+        from py_clob_client_v2.clob_types import ApiCreds, OrderArgs
+        from py_clob_client_v2 import SignatureTypeV2
+        kwargs_client = {
+            "key": signer,
+            "funder": wallet,
+            "signature_type": int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA),
+        }
+        if api_key and api_secret and api_passphrase:
+            kwargs_client["creds"] = ApiCreds(api_key, api_secret, api_passphrase)
+        client = ClobClient(host=HOST_CLOB, chain_id=137, **kwargs_client)
+        if "creds" not in kwargs_client:
+            try:
+                creds = client.derive_api_key()
+                client.set_api_creds(creds)
+            except Exception as e:
+                return False, f"derive_error:{str(e)[:200]}"
+        order_args = OrderArgs(token_id=str(token_id), price=round(float(precio), 2),
+                               size=round(float(shares), 2), side="SELL")
+        log(f"  [VENTA] token={str(token_id)[:18]} size={shares} precio={precio} (proxy_sdk={'OK' if proxy_ok else 'FALLO'})")
+        resp = client.create_and_post_order(order_args)
+        if isinstance(resp, str):
+            try:
+                resp = json.loads(resp)
+            except Exception:
+                pass
+        log(f"  SDK resp venta: {json.dumps(resp, default=str)[:220] if isinstance(resp, (dict, list)) else str(resp)[:220]}")
+        if isinstance(resp, dict):
+            if resp.get("success") is True or resp.get("orderID") or resp.get("orderId"):
+                oid = resp.get("orderID") or resp.get("orderId") or resp.get("id") or "?"
+                return True, {"oid": oid, "size": round(float(shares), 2),
+                              "precio": round(float(precio), 2),
+                              "status": resp.get("status", "?")}
+            err = resp.get("errorMsg") or resp.get("error") or str(resp)[:150]
+            return False, f"api_rechazo:{str(err)[:200]}"
+        return False, f"resp_desconocida:{str(resp)[:150]}"
+    except Exception as e:
+        status = getattr(e, "status_code", None)
+        errmsg = getattr(e, "error_msg", None)
+        if status is not None or errmsg is not None:
+            return False, f"PolyApi[{status}]:{str(errmsg)[:200]}"
+        return False, f"sdk_error:{str(e)[:200]}"
+
+
 def ejecutar_trade(mercado, chat_id=None):
     """Ejecuta un trade en un mercado activo (v10: combo con token real)."""
     titulo = mercado["question"]
@@ -1778,6 +1934,7 @@ def cargar_estado():
         d.setdefault("stake", STAKE_POR_TRADE)
         d.setdefault("stake_mode", "AUTO")
         d.setdefault("max_ops_dia", MAX_COMBOS_DIA)
+        d.setdefault("prob_min_auto", PROB_MEDIA_ALTA)
         d.setdefault("trades_copiados", [])
         d.setdefault("historial", [])
         return d
@@ -2056,9 +2213,280 @@ def _din(d):
     return ("+$" if d >= 0 else "-$") + f"{abs(d):.2f}"
 
 
-def render_grupo(g):
+def clave_grupo(g):
+    """v12.3: clave identificativa de un grupo de ABIERTAS (misma regla que
+    agrupar_abiertas) — sirve para reencontrar la posición al pulsar 🔒."""
+    op0 = g["ops"][0]
+    legs = op0.get("legs") or []
+    if legs:
+        return ("combo", huella_combo(sorted(str(l.get("position_id")) for l in legs)))
+    return ("single", str(op0.get("real_token") or op0.get("condition_id") or op0.get("question")))
+
+
+def h8_clave(clave):
+    return hashlib.sha1(str(clave).encode()).hexdigest()[:8]
+
+
+def _prune_abiertas():
+    global ABIERTAS_CACHE
+    ahora = time.time()
+    ABIERTAS_CACHE = {k: v for k, v in ABIERTAS_CACHE.items() if ahora - v[0] < 3600}
+    if len(ABIERTAS_CACHE) > 60:
+        viejas = sorted(ABIERTAS_CACHE, key=lambda k: ABIERTAS_CACHE[k][0])
+        for k in viejas[:len(ABIERTAS_CACHE) - 60]:
+            ABIERTAS_CACHE.pop(k, None)
+
+
+def grupos_abiertos_actuales():
+    """v12.3: sincroniza y devuelve (estado, grupos) con los OBJETOS del estado
+    cargado (importante: el cierre archiva sobre esos mismos objetos)."""
+    try:
+        sincronizar_operaciones()
+    except Exception as e:
+        log(f"  [CIERRE] sync previo falló: {e}")
+    estado = cargar_estado()
+    ops = [o for o in estado.get("trades_copiados", [])
+           if o.get("status") != "fallido"
+           and str(o.get("question", "")).strip() not in ("", "?")
+           and (float(o.get("stake_dolares") or 0) > 0 or o.get("legs"))]
+    return estado, agrupar_abiertas(ops)
+
+
+def archivar_cierre(ops, neto, estado, motivo="cerrada_manual", tx=""):
+    """v12.3: mueve las ops cerradas manualmente de ABIERTAS a historial con
+    su PnL real. Una posición puede ser VARIOS fills (agrupados): la venta es
+    una sola, así que lo recibido se REPARTE proporcionalmente a las shares de
+    cada fill y el PnL de cada uno es (su parte - lo que pagó). Así la suma de
+    los PnL cuadra con el cierre conjunto y las estadísticas no cuentan doble.
+    → PnL conjunto."""
+    neto = float(neto)
+    stake_total = sum(float(o.get("stake_dolares") or 0) for o in ops)
+    shares_total = sum(float(o.get("size_shares") or 0) for o in ops)
+    pnl_conjunto = round(neto - stake_total, 2)
+    ids = {id(o) for o in ops}
+    quedan = [o for o in estado.get("trades_copiados", []) if id(o) not in ids]
+    ahora_iso = datetime.now(timezone.utc).isoformat()
+    repartido = 0.0
+    for i, o in enumerate(ops):
+        sh = float(o.get("size_shares") or 0)
+        if i == len(ops) - 1:
+            parte = round(neto - repartido, 2)      # el último se lleva el resto (sin descuadres)
+        elif shares_total > 0:
+            parte = round(neto * (sh / shares_total), 2)
+        else:
+            parte = round(neto / len(ops), 2)
+        repartido += parte
+        st_o = float(o.get("stake_dolares") or 0)
+        pnl_o = round(parte - st_o, 2)
+        o["status"] = "cerrado"
+        o["resultado"] = "ganada" if pnl_o >= 0 else "perdida"
+        o["pnl"] = pnl_o
+        o["cerrada_manual"] = True
+        o["motivo_cierre"] = motivo
+        o["neto_recibido"] = parte
+        o["cerrada_en_grupo"] = len(ops)
+        o["cerrado_en"] = ahora_iso
+        if tx:
+            o["tx_cierre"] = str(tx)[:66]
+    estado["trades_copiados"] = quedan
+    estado.setdefault("historial", []).extend(ops)
+    guardar_estado(estado)
+    log(f"  [CIERRE] archivada(s) {len(ops)} op(s) · recibido ${neto:.2f} · pagado ${stake_total:.2f} · PnL conjunto ${pnl_conjunto:+.2f}")
+    return pnl_conjunto
+
+
+def cerrar_grupo(g, chat_id=None, dry_run=False, estado=None):
+    """v12.3: CIERRA DE VERDAD una posición abierta.
+    · COMBO  → RFQ con direction=SELL + orden Exchange v3 side=1 (atómico).
+    · SIMPLE → orden CLOB SELL al precio actual.
+    dry_run=True pide la cotización de venta y NO la acepta (coste $0).
+    → (ok, detalle)."""
+    ops = g["ops"]
+    op0 = ops[0]
+    legs = op0.get("legs") or []
+    shares = sum(float(o.get("size_shares") or 0) for o in ops)
+    stake = sum(float(o.get("stake_dolares") or 0) for o in ops)
+    titulo = str(op0.get("question", "?"))
+    n = len(ops)
+    if shares <= 0:
+        return False, "sin_shares"
+    vivo = vivo_de(op0)
+    if not vivo or vivo <= 0:
+        log("  [CIERRE] sin precio vivo: no se puede dimensionar la venta")
+        if chat_id:
+            enviar(chat_id, "⚠️ No hay precio vivo de esta posición ahora mismo; no puedo dimensionar la venta. Inténtalo en unos minutos.")
+        return False, "sin_precio_vivo"
+    valor = round(shares * vivo, 2)
+    log(f"[CIERRE] {titulo[:70]} · {shares:.2f} sh · mid {vivo:.3f} · valor ${valor:.2f} · dry_run={dry_run}")
+
+    # ---------------- COMBO: RFQ SELL ----------------
+    if legs:
+        pids = [str(l.get("position_id")) for l in legs if l.get("position_id")]
+        if len(pids) < 2:
+            return False, "legs_insuficientes_para_sell"
+        identidad = obtener_identidad_rfq()
+        if not identidad:
+            if chat_id:
+                enviar(chat_id, "⚠️ Sin identidad RFQ (credenciales/proxy) — no se puede cerrar el combo.")
+            return False, "sin_identidad"
+        status, resp = crear_rfq(pids, valor, identidad, direction="SELL")
+        log(f"  RFQ sell create -> {status} {str(resp)[:160]}")
+        try:
+            d = json.loads(resp)
+        except Exception:
+            d = {}
+        if status != 200 or not isinstance(d, dict) or not d:
+            return False, f"rfq_sell_http_{status}:{str(resp)[:150]}"
+        err = d.get("error")
+        if d.get("status") == "FAILED" or err:
+            code = err.get("code") if isinstance(err, dict) else str(err)
+            return False, f"rfq_sell_{code or 'failed'}"
+        quote = d.get("quote") or {}
+        req = d.get("request") or {}
+        rfq_id = d.get("rfq_id")
+        quote_id = quote.get("quote_id")
+        try:
+            blended = int(quote.get("blended_price_e6", 0)) / 1e6
+            neto = int(quote.get("net_receive_e6", 0)) / 1e6
+            total_req = int(quote.get("total_required_e6", 0)) / 1e6
+        except Exception:
+            return False, f"quote_sell_ilegible:{str(quote)[:120]}"
+        if neto <= 0:
+            return False, f"neto_recibido_0:{str(quote)[:120]}"
+        precio_venta = neto / shares if shares else 0
+        pnl_est = round(neto - stake, 2)
+        log(f"  quote sell: neto=${neto:.2f} blended={blended:.3f} precio_venta={precio_venta:.3f} (mid {vivo:.3f}) total_req={total_req:.2f}")
+        # guarda: no regalar la posición por una cotización pésima
+        if precio_venta < 0.60 * vivo:
+            log(f"  NO acepto venta: {precio_venta:.3f} < 60% del mid {vivo:.3f}")
+            if chat_id:
+                enviar(chat_id, f"⚠️ *Cotización de venta demasiado baja*\n📌 {titulo[:80]}\nOfrecen ${precio_venta:.3f}/sh frente a un precio actual de {vivo:.3f} (<60%). No vendo: prueba en unos minutos.")
+            return False, f"precio_venta_bajo_{precio_venta:.3f}"
+        if dry_run:
+            log("  dry-run: quote de venta OK, NO se acepta (coste $0)")
+            if chat_id:
+                enviar(chat_id, f"🧪 *TEST CIERRE OK* (sin vender, $0)\n📌 {titulo[:90]}\n"
+                                f"📦 {shares:.2f} sh · precio actual {vivo:.3f} · valor ${valor:.2f}\n"
+                                f"💵 Recibirías: *${neto:.2f}* (${precio_venta:.3f}/sh)\n"
+                                f"💰 Pagaste ${stake:.2f} → PnL *${pnl_est:+.2f}*\n"
+                                f"rfq `{str(rfq_id)[:18]}`")
+            return True, {"dry_run": True, "neto": round(neto, 2), "pnl": pnl_est, "rfq_id": rfq_id}
+        try:
+            signed = firmar_orden_v3(req, quote, identidad, side=1)   # side 1 = SELL
+        except Exception as e:
+            log(f"  firma v3 (sell) error: {e}")
+            return False, f"firma_v3_sell:{str(e)[:150]}"
+        status, resp = aceptar_rfq(rfq_id, quote_id, signed, identidad)
+        log(f"  RFQ sell accept -> {status} {str(resp)[:160]}")
+        try:
+            da0 = json.loads(resp)
+        except Exception:
+            da0 = {}
+        code0 = (da0.get("error") or {}).get("code") if isinstance(da0, dict) else None
+        if status == 503 or code0 in ("PRE_EXECUTION_BALANCE_RESERVATION_FAILED",
+                                      "SERVICE_UNAVAILABLE", "TRADE_SUBMISSION_FAILED"):
+            log(f"  accept sell transitorio ({status}/{code0}): reintento único en 6s")
+            time.sleep(6)
+            status, resp = aceptar_rfq(rfq_id, quote_id, signed, identidad)
+            log(f"  RFQ sell accept retry -> {status} {str(resp)[:160]}")
+        if status != 200:
+            return False, f"accept_sell_http_{status}:{str(resp)[:150]}"
+        try:
+            da = json.loads(resp)
+        except Exception:
+            da = {}
+        if isinstance(da, dict) and da.get("status") == "FAILED":
+            e2 = da.get("error") or {}
+            return False, f"accept_sell_{e2.get('code') if isinstance(e2, dict) else e2}"
+        st, ultimo = esperar_fill(rfq_id, identidad)
+        tx = ultimo.get("tx_hash", "") if isinstance(ultimo, dict) else ""
+        log(f"  RFQ sell status final: {st} tx={str(tx)[:26]}")
+        if st not in ("FILLED", "CONFIRMED"):
+            if chat_id:
+                enviar(chat_id, f"⏳ *Cierre aceptado pero sin confirmar* ({st})\n📌 {titulo[:70]}\nConsulta /fills para confirmar.")
+            return False, f"cierre_pendiente_{st}"
+        if estado is None:
+            estado = cargar_estado()
+        pnl = archivar_cierre(ops, neto, estado, motivo="cerrada_rfq_sell", tx=tx)
+        if chat_id:
+            enviar(chat_id, f"🔒 *POSICIÓN CERRADA* {'🟢' if pnl >= 0 else '🔴'}\n📌 {titulo[:90]}\n"
+                            f"💵 Recibido ${neto:.2f} (${precio_venta:.3f}/sh × {shares:.2f})\n"
+                            f"💰 Pagaste ${stake:.2f} → PnL *${pnl:+.2f}*\n🔗 tx `{str(tx)[:24]}`")
+        return True, {"oid": rfq_id, "status": st, "neto": round(neto, 2), "pnl": pnl}
+
+    # ---------------- SIMPLE: orden CLOB SELL ----------------
+    token = op0.get("real_token") or op0.get("condition_id")
+    if not token:
+        return False, "sin_token_para_vender"
+    precio_venta = round(min(max(vivo - 0.01, 0.02), 0.98), 2)   # un tick por debajo del mid para que cruce
+    if dry_run:
+        neto_est = round(precio_venta * shares, 2)
+        pnl_est = round(neto_est - stake, 2)
+        log(f"  dry-run: venta CLOB simulada a {precio_venta} x {shares:.2f} sh = ${neto_est:.2f} (NO se envía)")
+        if chat_id:
+            enviar(chat_id, f"🧪 *TEST CIERRE OK* (simple, sin vender, $0)\n📌 {titulo[:90]}\n"
+                            f"📦 {shares:.2f} sh · precio actual {vivo:.3f} · valor ${valor:.2f}\n"
+                            f"💵 Recibirías ~*${neto_est:.2f}* (venta a ${precio_venta:.2f}/sh)\n"
+                            f"💰 Pagaste ${stake:.2f} → PnL *${pnl_est:+.2f}*")
+        return True, {"dry_run": True, "neto": neto_est, "pnl": pnl_est}
+    ok, res = vender_clob(token, precio_venta, shares)
+    if not ok:
+        log(f"  [CIERRE] venta CLOB rechazada: {res}")
+        if chat_id:
+            enviar(chat_id, f"❌ *No se pudo cerrar*\n📌 {titulo[:80]}\nMotivo: `{str(res)[:90]}`")
+        return False, str(res)
+    neto = round(precio_venta * shares, 2)
+    if estado is None:
+        estado = cargar_estado()
+    pnl = archivar_cierre(ops, neto, estado, motivo="cerrada_clob_sell", tx=str(res.get("oid", ""))[:66])
+    if chat_id:
+        enviar(chat_id, f"🔒 *POSICIÓN CERRADA (venta CLOB)* {'🟢' if pnl >= 0 else '🔴'}\n📌 {titulo[:90]}\n"
+                        f"💵 {shares:.2f} sh @ ${precio_venta:.2f} → ${neto:.2f}\n"
+                        f"💰 Pagaste ${stake:.2f} → PnL *${pnl:+.2f}*\n🆔 `{str(res.get('oid'))[:18]}`")
+    return True, {"oid": res.get("oid"), "neto": neto, "pnl": pnl}
+
+
+def cerrar_desde_boton(h8, chat_id, dry_run=False):
+    """v12.3: 🔒 del panel ABIERTAS → cierra esa posición. Hilo propio
+    SERIALIZADO con el auto_loop (PASADA_LOCK) para no pisar una pasada."""
+    hit = ABIERTAS_CACHE.get(h8)
+    if not hit or time.time() - hit[0] > 3600:
+        return enviar(chat_id, "⚠️ Panel caducado: pulsa 📂 Abiertas otra vez y vuelve a intentar el cierre.")
+    clave = hit[1]
+
+    def _run():
+        try:
+            with PASADA_LOCK:
+                estado, grupos = grupos_abiertos_actuales()
+                g = None
+                for x in grupos:
+                    if clave_grupo(x) == clave:
+                        g = x
+                        break
+                if not g:
+                    return enviar(chat_id, "ℹ️ Esa posición ya no está abierta (se resolvió o ya se cerró). Pulsa 📂 Abiertas para ver el estado actual.")
+                titulo = str(g["ops"][0].get("question", "?"))[:80]
+                if not dry_run:
+                    enviar(chat_id, f"🔒 *CERRANDO POSICIÓN*\n📌 {titulo}\n_Pidiendo cotización de venta…_")
+                ok, res = cerrar_grupo(g, chat_id=chat_id, dry_run=dry_run, estado=estado)
+                if not ok and not str(res).startswith("cierre_pendiente"):
+                    log(f"  [CIERRE] fallo: {str(res)[:120]}")
+                    if not dry_run:
+                        enviar(chat_id, f"❌ *Cierre no ejecutado*\n📌 {titulo}\nMotivo: `{str(res)[:90]}`")
+        except Exception as e:
+            log(f"[CIERRE] error: {e}")
+            try:
+                enviar(chat_id, f"❌ Error cerrando la posición: {str(e)[:90]}")
+            except Exception:
+                pass
+    threading.Thread(target=_run, daemon=True).start()
+
+
+def render_grupo(g, num=None):
     """v12.1: UNA línea por posición única: título entero, ×N si hay fills
-    duplicados, precio actual, probabilidad viva, valor vs pago y consejo."""
+    duplicados, precio actual, probabilidad viva, valor vs pago y consejo.
+    v12.3: el ESTADO va A LA DERECHA de cada línea (✅ ganada / ❌ perdida /
+    ⏳ en juego) y cada posición se numera (#1, #2…) para casar con los 🔒."""
     ops = g["ops"]
     op0 = ops[0]
     n = len(ops)
@@ -2069,9 +2497,16 @@ def render_grupo(g):
     fr = franja_of(op0)
     ico = {"extendida": "🚀🎫", "super": "💥🎫"}.get(fr, "🎫" if es_combo else "🎯")
     titulo = str(op0.get("question", "?"))[:240]
-    txt = f"{ico} {titulo}"
+    # v12.3: icono de estado A LA DERECHA de la línea de la apuesta
+    if r.get("resuelta"):
+        der = "  ✅" if r.get("ganada") else "  ❌"
+    else:
+        der = "  ⏳"
+    pref = f"#{num} · " if num else ""
+    txt = f"{ico} {pref}{titulo}"
     if n > 1:
         txt += f"  ×{n}"
+    txt += der
     txt += f"\n   ${stake:.2f}"
     cuota = op0.get("cuota_ejecutada") or 0
     if cuota:
@@ -2098,7 +2533,7 @@ def render_grupo(g):
     if es_combo:
         for q, gg in r.get("detalle", []):
             gi = "⏳" if gg is None else ("✅" if gg else "❌")
-            txt += f"   {gi} {str(q)[:160]}\n"
+            txt += f"   {str(q)[:160]} {gi}\n"
     if op0.get("status") == "pendiente":
         txt += "   ⏳ fill por confirmar (/fills)\n"
     return txt + "\n"
@@ -2131,7 +2566,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v12.2*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v12.3*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt()}*\n"
              f"🔢 Máx ops/día: *{max_ops()}*\n"
@@ -2146,6 +2581,8 @@ def cmd_start(chat_id):
              f"🚀 Extendidas (≤{CUOTA_MAX_EXT}) y 💥 Súper (≥{SUPER_CUOTA_MIN:.0f}): SOLO botones manuales, cupos {MAX_EXT_DIA}+{MAX_SUPER_DIA}/día, estadísticas aparte\n"
              f"💵 Stake AUTO ${STAKE_MIN_AUTO:.0f}-${STAKE_MAX_AUTO:.0f} — decide el bot según la cuota y cómo va la combinada (botones 💵 para fijarlo)\n"
              f"🔢 Máx ops/día ({max_ops()} ahora) — desde {OPS_PIN_DESDE} exige código de 4 cifras 🔐\n"
+             f"🎯 Prob AUTO ({prob_nivel_txt(prob_min_auto())} ahora) — si no llega, se descarta y pasa al siguiente\n"
+             f"🔒 Botones en 📂 Abiertas — cierran la posición DE VERDAD (combos por RFQ SELL, simples por CLOB) · /testcerrar = gratis\n"
              f"⏩ Botones ⏱ — intervalo entre pasadas ({INTERVALO_AUTO_S // 60} min ahora)\n"
              f"🧪 /testcombo — prueba gratis (quote sin aceptar)\n"
              f"🔎 /fills — fills reales de la wallet\n"
@@ -2294,9 +2731,74 @@ def cmd_abiertas(chat_id):
     grupos = agrupar_abiertas(abiertas)   # v12.1: sin duplicados
     extra = f" · {len(abiertas)} fills" if len(abiertas) != len(grupos) else ""
     texto = f"📂 *ABIERTAS ({len(grupos)} posiciones{extra})*"
-    for g in grupos[:12]:
-        texto += "\n\n" + render_grupo(g).rstrip("\n")
-    return enviar_largo(chat_id, texto)
+    for i, g in enumerate(grupos[:12], 1):
+        texto += "\n\n" + render_grupo(g, i).rstrip("\n")
+    texto += "\n\n_A la derecha de cada línea: ✅ ya terminó y salió positiva · ❌ perdida · ⏳ sigue en juego_"
+    enviar_largo(chat_id, texto)
+    # v12.3: un botón 🔒 por posición para CERRARLA de verdad
+    filas = []
+    for i, g in enumerate(grupos[:12], 1):
+        cl = clave_grupo(g)
+        h8 = h8_clave(cl)
+        ABIERTAS_CACHE[h8] = (time.time(), cl)
+        op0 = g["ops"][0]
+        sh = sum(float(o.get("size_shares") or 0) for o in g["ops"])
+        vivo = vivo_de(op0)
+        val = f" · ~${sh * vivo:.2f}" if vivo else ""
+        filas.append([{"text": f"🔒 #{i} · {str(op0.get('question', '?'))[:24]}{val}",
+                       "callback_data": f"cc:{h8}"}])
+    _prune_abiertas()
+    return enviar(chat_id, "🔒 *CERRAR POSICIÓN* — vende ya al mercado y cobras su valor actual:\n"
+                           "_Elige la línea que quieras cerrar (los números casan con el panel)_\n"
+                           "_🧪 /testcerrar N pide la cotización SIN vender ($0)_",
+                  {"inline_keyboard": filas})
+
+def cmd_testcerrar(chat_id, texto=""):
+    """🧪 v12.3: pide la cotización de VENTA de una posición abierta SIN
+    aceptarla (coste $0). Valida el cierre real antes de usar el botón 🔒."""
+    def _run():
+        try:
+            estado, grupos = grupos_abiertos_actuales()
+            if not grupos:
+                return enviar(chat_id, "🧪 No hay posiciones abiertas que cerrar.")
+            nums = "".join(ch for ch in str(texto) if ch.isdigit())
+            idx = 0
+            if nums:
+                idx = max(0, min(int(nums) - 1, len(grupos) - 1))
+            cerrar_grupo(grupos[idx], chat_id=chat_id, dry_run=True, estado=estado)
+        except Exception as e:
+            log(f"testcerrar error: {e}")
+            enviar(chat_id, f"🧪 Error: {str(e)[:150]}")
+    threading.Thread(target=_run, daemon=True).start()
+    return enviar(chat_id, "🧪 Pidiendo cotización de venta (sin aceptar, $0)…")
+
+
+def cmd_cerrar(chat_id, texto=""):
+    """🔒 v12.3: cierra DE VERDAD la posición nº N de 📂 Abiertas. Exige el
+    número para evitar cierres accidentales (también vale el botón 🔒)."""
+    nums = "".join(ch for ch in str(texto) if ch.isdigit())
+    if not nums:
+        return enviar(chat_id, "❌ Indica el número de la posición: */cerrar 1*\n"
+                               "_(los números salen en 📂 Abiertas, y también tienes el botón 🔒 debajo de cada línea)_")
+
+    def _run():
+        try:
+            with PASADA_LOCK:
+                estado, grupos = grupos_abiertos_actuales()
+                if not grupos:
+                    return enviar(chat_id, "ℹ️ No hay posiciones abiertas.")
+                idx = max(0, min(int(nums) - 1, len(grupos) - 1))
+                g = grupos[idx]
+                enviar(chat_id, f"🔒 *CERRANDO POSICIÓN #{idx + 1}*\n📌 {str(g['ops'][0].get('question', '?'))[:80]}\n_Pidiendo cotización de venta…_")
+                ok, res = cerrar_grupo(g, chat_id=chat_id, dry_run=False, estado=estado)
+                if not ok and not str(res).startswith("cierre_pendiente"):
+                    enviar(chat_id, f"❌ *Cierre no ejecutado*\nMotivo: `{str(res)[:90]}`")
+        except Exception as e:
+            log(f"cerrar error: {e}")
+            enviar(chat_id, f"❌ Error cerrando: {str(e)[:120]}")
+    threading.Thread(target=_run, daemon=True).start()
+    return enviar(chat_id, f"🔒 Cerrando la posición nº {nums}…")
+
 
 def cmd_cerradas(chat_id):
     """✅ v11.5: cerradas con 🟢/🔴 y PnL; sincroniza en vivo primero."""
@@ -2384,11 +2886,12 @@ def cmd_status(chat_id):
     _est = cargar_estado()
     _mx = max_ops(_est)
     _hoy = ops_pagadas_hoy(_est)
-    texto = (f"📊 *ESTADO v12.2 (Combos)*\n\n"
+    texto = (f"📊 *ESTADO v12.3 (Combos)*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt(_est)}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
              f"🔢 Máx ops/día: *{_mx}* (hoy {_hoy})\n"
+             f"🎯 Prob AUTO: *{prob_nivel_txt(prob_min_auto(_est))}*\n"
              f"Trades: *{s['total']}*\n"
              f"PnL: *${s['pnl']:+.2f}*\n"
              f"Proxy: `{PROXY_URL}`\n"
@@ -2566,6 +3069,17 @@ def procesar_callback(cbq):
             log(f"stake -> FIJO {_sf}")
             return enviar(cid, f"💵 *Stake FIJO ${_sf:.2f}*\n_Cámbialo con /stake 7 · vuelve al dinámico con /stake auto_")
         return
+    if data.startswith("pb:") and cid:
+        telegram_api("answerCallbackQuery", {"callback_query_id": cbid})
+        acc = data.split(":", 1)[1]
+        if acc == "x":
+            return
+        if acc == "menu":
+            return prob_menu(cid)
+        return set_prob_min_auto(cid, acc)
+    if data.startswith("cc:") and cid:
+        telegram_api("answerCallbackQuery", {"callback_query_id": cbid, "text": "Cerrando posición…"})
+        return cerrar_desde_boton(data.split(":", 1)[1], cid)
     telegram_api("answerCallbackQuery", {"callback_query_id": cbid})
 
 
@@ -2626,10 +3140,18 @@ def procesar_update(update):
             return enviar(chat_id, "❌")
     elif text == "🔢 Máx ops/día":
         return max_combos_menu(chat_id)
+    elif text == "🎯 Prob AUTO":
+        return prob_menu(chat_id)
     if text.startswith("⏱"):
         return cmd_intervalo(chat_id, text)
     if _re.match(r"^\d{1,2}\s*(min|minutos|m|minutes?)\b$", text, _re.IGNORECASE):
         return cmd_intervalo(chat_id, text)   # v11.4: texto manual "30 minutos"
+    if text == "/prob":
+        return prob_menu(chat_id)
+    if text.startswith("/testcerrar"):
+        return cmd_testcerrar(chat_id, text)
+    if text.startswith("/cerrar"):
+        return cmd_cerrar(chat_id, text.replace("/cerrar", "", 1))
     if text == "/testcombo":
         return cmd_testcombo(chat_id)
     elif text == "/fills":
@@ -2661,7 +3183,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v12.2 iniciado")
+    log("v12.3 iniciado")
     offset = 0
     while True:
         try:
@@ -2685,7 +3207,7 @@ def main():
     if not cargar_token():
         log("ERROR: no se encontró el token")
         return
-    global INTERVALO_AUTO_S, CHAT_ID, NEXT_PASADA_TS, STAKE_MODE, MAX_OPS_DIA
+    global INTERVALO_AUTO_S, CHAT_ID, NEXT_PASADA_TS, STAKE_MODE, MAX_OPS_DIA, PROB_MIN_AUTO
     _est0 = cargar_estado()
     _im = _est0.get("intervalo_min")
     if _im in INTERVALOS_MIN:
@@ -2694,7 +3216,8 @@ def main():
     # v12.2: stake dinámico y tope diario persistidos
     set_stake_mode(_est0.get("stake_mode", "AUTO"))
     MAX_OPS_DIA = max_ops(_est0)
-    log(f"stake={STAKE_MODE} · max ops/día={MAX_OPS_DIA}")
+    PROB_MIN_AUTO = prob_min_auto(_est0)
+    log(f"stake={STAKE_MODE} · max ops/día={MAX_OPS_DIA} · prob AUTO ≥{int(PROB_MIN_AUTO * 100)}%")
     restaurar_horario()
     try:
         _ab, _nu, _es = sincronizar_operaciones()   # v11.5: cierra resueltas al arrancar
@@ -2702,7 +3225,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v12.2 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día")
+    log(f"v12.3 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
