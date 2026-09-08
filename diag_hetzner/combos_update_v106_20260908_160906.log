@@ -1,0 +1,40 @@
+=== ACTUALIZADOR v10.6 HASH FIJO - Tue Sep  8 04:09:06 PM UTC 2026 ===
+HASH: 7f17f54b
+
+=== Paso 1: Detener bot ===
+
+=== Paso 2: Descargar v10.6 (HASH FIJO) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/7f17f54b/scripts_despliegue/poly_combos_bot.py
+Descargado: 88272 bytes
+
+=== Paso 3: Verificar version ===
+POLY COMBOS BOT v11.9 — COMBOS REALES (parlays multi-leg) via RFQ
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Tue 2026-09-08 16:09:08 UTC; 5s ago
+   Main PID: 1191095 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 16.4M (peak: 16.7M)
+        CPU: 261ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1191095 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log ===
+[15:48:17]   sin combos viables esta pasada (eventos distintos, cuota, cooldown, tope)
+[15:56:12] loop err: The read operation timed out
+[16:04:58]   pagina 1: +50 mercados, 0 legs de deportes
+[16:04:58]   pagina 2: +50 mercados, 1 legs de deportes
+[16:04:58]   pagina 3: +50 mercados, 10 legs de deportes
+[16:04:59]   pagina 4: +50 mercados, 57 legs de deportes
+[16:04:59]   pagina 5: +50 mercados, 100 legs de deportes
+[16:09:09] intervalo AUTO restaurado: 30 min
+[16:09:09]   horario restaurado: próxima pasada en 9 min
+[16:09:09]   sync: 1 op(s) cerradas (0 ganadas, PnL $-5.00)
+[16:09:09]   sync inicial: 1 op(s) cerradas (0 ganadas)
+[16:09:09] v11.9 cargado · modo=AUTO · stake=$5.0
+[16:09:09] Proxy: http://100.83.57.99:8888
+[16:09:10] Test proxy: 200
+[16:09:10] v11.9 iniciado
