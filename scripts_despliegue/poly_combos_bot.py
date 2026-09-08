@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v12.3 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v12.4 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -53,6 +53,13 @@ Estrategia nueva (vs v7):
    📋 Trades: un mensaje por combo con SU botón debajo. Estadísticas y
    contadores diarios separados por franja (las manuales NO consumen
    el tope AUTO).
+   v12.4: CÓDIGO PIN FIJO ELEGIDO POR EL USER — el código de 4 cifras que
+   confirma los topes ≥10 ops/día ya NO se genera aleatoriamente: es el que
+   fijó el user (constante PIN_FIJO_OPS). Se teclea SIEMPRE con el teclado
+   numérico que saca el bot al elegir 10/20/30/50 en 🔢 Máx ops/día (o
+   escribiendo las 4 cifras). Override sin tocar código: env POLY_PIN_OPS.
+   El archivo antiguo /opt/polymarket/codigo_pin.txt queda SIN efecto (se
+   puede borrar). El PIN NUNCA se escribe en el log (el log se publica).
    v12.3: (1) AUTO SOLO CON PROBABILIDAD SUFICIENTE — cada candidato se
    mide por su probabilidad (producto de legs); si no llega al nivel elegido
    se DESCARTA y se pasa al siguiente. Niveles: alta ≥65% · media-alta ≥60%
@@ -66,9 +73,10 @@ Estrategia nueva (vs v7):
    CÓMO VA LA COMBINADA: cuota más baja ⇒ más stake, y la ventaja REAL del
    RFQ sobre los legs lo ajusta (si el RFQ no mejora el mercado ≥0.5%, AUTO
    no apuesta); botones 💵 Stake AUTO/$5.
-   🔢 MÁX OPERACIONES/DÍA (5/10/20/30/50): desde 10 exige un CÓDIGO PIN de
-   4 cifras (teclado numérico, se muestra con 👁). El tope cuenta TODAS las
-   ops del día (AUTO 🤖 + manuales 🚀/💥).
+   🔢 MÁX OPERACIONES/DÍA (5/10/20/30/50): desde 10 exige el CÓDIGO PIN de
+   4 cifras FIJO del user (teclado numérico que saca el bot; también vale
+   escribirlo; se puede ver con 👁). El tope cuenta TODAS las ops del día
+   (AUTO 🤖 + manuales 🚀/💥).
    v12.1: 📂 ABIERTAS SIN DUPLICADOS — los fills repetidos de la misma
    apuesta/conjunta se agrupan en UNA línea (×N, stake y shares totales);
    títulos ENTEROS (sin cortar); y por cada posición: PRECIO ACTUAL en
@@ -847,7 +855,8 @@ STAKE_MAX_AUTO = 10.0   # techo del stake dinámico
 STAKE_KELLY_PCT = 25.0  # % de la ventaja (edge) que se suma al stake base
 OPS_MAX_VALORES = (5, 10, 20, 30, 50)   # topes diarios elegibles
 OPS_PIN_DESDE = 10      # desde este tope se exige código de 4 cifras
-PIN_ARCHIVO = "/opt/polymarket/codigo_pin.txt"
+PIN_ARCHIVO = "/opt/polymarket/codigo_pin.txt"   # v12.2: ya SIN efecto (v12.4)
+PIN_FIJO_OPS = "0667"   # v12.4: código de 4 cifras ELEGIDO POR EL USER
 STAKE_MODE = "AUTO"     # "AUTO" = dinámico $5-10 | "FIJO" = STAKE_POR_TRADE
 MAX_OPS_DIA = MAX_COMBOS_DIA   # tope diario vigente (persistido en estado)
 PIN_ESPERA = None       # {"max": int, "digits": str} mientras se teclea el PIN
@@ -893,28 +902,17 @@ def ops_pagadas_hoy(estado):
                and r.get("status") in ("filled", "pendiente"))
 
 def codigo_pin():
-    """v12.2: código de 4 cifras para confirmar topes ≥10 ops/día. Se genera
-    una sola vez y se guarda en PIN_ARCHIVO (solo root); se puede ver en el
-    menú con 👁. Para regenerarlo: borrar el archivo y pulsar 👁 otra vez."""
+    """v12.4: código de 4 cifras para confirmar topes ≥10 ops/día. Es el
+    FIJO elegido por el user (PIN_FIJO_OPS) — ya no se genera aleatoriamente
+    ni se lee/escribe PIN_ARCHIVO (ese archivo de la v12.2 queda sin efecto;
+    se puede borrar del servidor). Se puede cambiar sin tocar el código con
+    la variable de entorno POLY_PIN_OPS (4 cifras), que tiene prioridad.
+    IMPORTANTE: no escribir NUNCA el código en el log (el log se publica en
+    diag-public)."""
     tok = os.environ.get("POLY_PIN_OPS", "").strip()
     if tok.isdigit() and len(tok) == 4:
         return tok
-    try:
-        with open(PIN_ARCHIVO) as f:
-            tok = f.read().strip()
-        if tok.isdigit() and len(tok) == 4:
-            return tok
-    except Exception:
-        pass
-    tok = str(random.randint(1000, 9999))
-    try:
-        os.makedirs(os.path.dirname(PIN_ARCHIVO), exist_ok=True)
-        with open(PIN_ARCHIVO, "w") as f:
-            f.write(tok + "\n")
-        os.chmod(PIN_ARCHIVO, 0o600)
-    except Exception:
-        pass
-    return tok
+    return PIN_FIJO_OPS
 
 def set_stake_mode(modo):
     global STAKE_MODE
@@ -984,7 +982,7 @@ def max_combos_menu(chat_id):
     txt = (f"🔢 *MÁXIMO DE OPERACIONES/DÍA*\n\n"
            f"Ahora: *{m}/día* · hoy ya hay *{hoy}* pagadas (AUTO 🤖 + manuales 🚀/💥)\n"
            f"Para *{OPS_PIN_DESDE} o más* hay que confirmar con un *código de 4 cifras* 🔐\n"
-           f"_(el código se ve aquí con 👁; se genera una vez y se guarda en el servidor)_")
+           f"_(es tu código fijo de 4 cifras; se ve aquí con 👁 y se teclea con el teclado numérico)_")
     return enviar(chat_id, txt, {"inline_keyboard": kb})
 
 def pin_menu(chat_id):
@@ -2566,7 +2564,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v12.3*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v12.4*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt()}*\n"
              f"🔢 Máx ops/día: *{max_ops()}*\n"
@@ -2886,7 +2884,7 @@ def cmd_status(chat_id):
     _est = cargar_estado()
     _mx = max_ops(_est)
     _hoy = ops_pagadas_hoy(_est)
-    texto = (f"📊 *ESTADO v12.3 (Combos)*\n\n"
+    texto = (f"📊 *ESTADO v12.4 (Combos)*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt(_est)}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
@@ -3183,7 +3181,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v12.3 iniciado")
+    log("v12.4 iniciado")
     offset = 0
     while True:
         try:
@@ -3217,7 +3215,7 @@ def main():
     set_stake_mode(_est0.get("stake_mode", "AUTO"))
     MAX_OPS_DIA = max_ops(_est0)
     PROB_MIN_AUTO = prob_min_auto(_est0)
-    log(f"stake={STAKE_MODE} · max ops/día={MAX_OPS_DIA} · prob AUTO ≥{int(PROB_MIN_AUTO * 100)}%")
+    log(f"stake={STAKE_MODE} · max ops/día={MAX_OPS_DIA} · prob AUTO ≥{int(PROB_MIN_AUTO * 100)}% · PIN ops fijo (4 cifras)")
     restaurar_horario()
     try:
         _ab, _nu, _es = sincronizar_operaciones()   # v11.5: cierra resueltas al arrancar
@@ -3225,7 +3223,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v12.3 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
+    log(f"v12.4 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
