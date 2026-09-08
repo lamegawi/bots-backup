@@ -1,0 +1,40 @@
+=== ACTUALIZADOR v10.6 HASH FIJO - Tue Sep  8 08:49:47 PM UTC 2026 ===
+HASH: ef9d7912
+
+=== Paso 1: Detener bot ===
+
+=== Paso 2: Descargar v10.6 (HASH FIJO) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/ef9d7912/scripts_despliegue/poly_combos_bot.py
+Descargado: 145071 bytes
+
+=== Paso 3: Verificar version ===
+POLY COMBOS BOT v12.4 — COMBOS REALES (parlays multi-leg) via RFQ
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Tue 2026-09-08 20:49:49 UTC; 5s ago
+   Main PID: 1213741 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 19.5M (peak: 19.9M)
+        CPU: 186ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1213741 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log ===
+[20:43:30]   pagina 1: +50 mercados, 2 legs de deportes
+[20:43:30]   pagina 2: +50 mercados, 5 legs de deportes
+[20:43:31]   pagina 3: +50 mercados, 11 legs de deportes
+[20:43:31]   pagina 4: +50 mercados, 39 legs de deportes
+[20:43:32]   pagina 5: +50 mercados, 68 legs de deportes
+[20:45:13] loop err: The read operation timed out
+[20:48:12] [CIERRE] Genoa: Thiago Seyboth Wild vs Francesco Ferrari · 19.63 sh · mid 0.558 · valor $10.96 · dry_run=True
+[20:48:12]   dry-run: venta CLOB simulada a 0.55 x 19.63 sh = $10.80 (NO se envía)
+[20:49:49] intervalo AUTO restaurado: 30 min
+[20:49:49] stake=AUTO · max ops/día=6 · prob AUTO ≥60% · PIN ops fijo (4 cifras)
+[20:49:49]   horario restaurado: próxima pasada en 22 min
+[20:49:49] v12.4 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 6/día · prob ≥60%
+[20:49:49] Proxy: http://100.83.57.99:8888
+[20:49:50] Test proxy: 200
+[20:49:50] v12.4 iniciado
