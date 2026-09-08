@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v11.5 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v11.6 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -29,6 +29,10 @@ Estrategia nueva (vs v7):
    CLOB público: las ops resueltas pasan automáticamente de ABIERTAS a
    CERRADAS con 🟢/🔴 y PnL; los combos muestran estado por leg y la
    HORA DE FIN (Madrid) de cada combo; sync también al arrancar.
+   v11.6: 📋 Trades vuelve a ser SOLO INFORMATIVO — top 1-10 del catálogo
+   de combos por VOLUMEN EN $ (mayor primero), dentro del rango de cuota;
+   las operaciones viven únicamente en 📂 Abiertas / ✅ Cerradas; se
+   filtran los registros basura (sin pregunta/stake).
 
 FIX v10.9 (el SDK usa HTTPX, no requests):
   · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
@@ -1534,7 +1538,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v11.5*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v11.6*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -1551,32 +1555,25 @@ def cmd_start(chat_id):
     return enviar(chat_id, texto)
 
 def cmd_trades(chat_id):
-    """📋 v11.5: panel completo — ABIERTAS (con 🏁 fin Madrid) + CERRADAS
-    🟢/🔴 con PnL + totales. Sincroniza en vivo contra CLOB antes de pintar."""
-    try:
-        abiertas, _, estado = sincronizar_operaciones()
-    except Exception as e:
-        log(f"cmd_trades sync error: {e}")
-        estado = cargar_estado()
-        abiertas = estado.get("trades_copiados", [])
-    hist = estado.get("historial", [])
-    abiertas = [o for o in abiertas if o.get("status") != "fallido"]
-    if not abiertas and not hist:
-        return enviar(chat_id, "📭 Sin operaciones aún.")
-    texto = f"📂 *ABIERTAS ({len(abiertas)})*\n"
-    if abiertas:
-        for op in abiertas[-8:]:
-            texto += render_abierta(op)
-    else:
-        texto += "_Ninguna — todas resueltas_\n\n"
-    if hist:
-        total = sum(float(h.get("pnl", 0) or 0) for h in hist)
-        gan = sum(1 for h in hist if float(h.get("pnl", 0) or 0) > 0)
-        texto += f"✅ *CERRADAS ({len(hist)})* — 🟢 {gan} / 🔴 {len(hist) - gan}\n_PnL: ${total:+.2f}_\n"
-        for h in hist[-10:]:
-            pnl = float(h.get("pnl", 0) or 0)
-            ico = "🟢" if pnl >= 0 else "🔴"
-            texto += f"{ico} {str(h.get('question', '?'))[:52]} → ${pnl:+.2f}\n"
+    """📋 v11.6: SOLO INFORMATIVO — top 1-10 del catálogo de combos por
+    volumen en $ (mayor primero), dentro del rango de cuota que buscamos.
+    Las operaciones están en 📂 Abiertas / ✅ Cerradas."""
+    combos = listar_combos()
+    if not combos:
+        return enviar(chat_id, "❌ No hay catálogo de combos disponible ahora mismo.")
+    en_rango = [m for m in combos if CUOTA_MIN <= m.get("cuota", 0) <= CUOTA_MAX
+                and str(m.get("question", "")).strip() not in ("", "?")]
+    en_rango.sort(key=lambda m: float(m.get("volumen") or 0), reverse=True)
+    if not en_rango:
+        return enviar(chat_id, f"📋 *CATÁLOGO COMBOS*\n_Ninguno en cuota {CUOTA_MIN}-{CUOTA_MAX} ahora mismo._\n\n"
+                               f"ℹ️ Informativo · tus operaciones: 📂 Abiertas / ✅ Cerradas")
+    texto = (f"📋 *TOP {min(10, len(en_rango))} COMBOS POR VOLUMEN $* 🎰\n"
+             f"_cuota {CUOTA_MIN}-{CUOTA_MAX} · solo informativo_\n\n")
+    for i, m in enumerate(en_rango[:10], 1):
+        texto += (f"{i}. {str(m['question'])[:56]}\n"
+                  f"   💵 ${float(m.get('volumen') or 0):,.0f} · cuota {m['cuota']:.2f}"
+                  f" · p={float(m.get('yes_price') or 0):.2f}\n\n")
+    texto += "📂 Abiertas / ✅ Cerradas → tus operaciones"
     return enviar(chat_id, texto)
 
 def cmd_saldo(chat_id):
@@ -1641,7 +1638,9 @@ def cmd_abiertas(chat_id):
         abiertas, _, _ = sincronizar_operaciones()
     except Exception:
         abiertas = cargar_estado().get("trades_copiados", [])
-    abiertas = [o for o in abiertas if o.get("status") != "fallido"]
+    abiertas = [o for o in abiertas if o.get("status") != "fallido"
+                and str(o.get("question", "")).strip() not in ("", "?")
+                and (float(o.get("stake_dolares") or 0) > 0 or o.get("legs"))]
     if not abiertas:
         return enviar(chat_id, "📭 Sin operaciones abiertas (las resueltas pasan a ✅ Cerradas).")
     texto = f"📂 *ABIERTAS ({len(abiertas)})*\n\n"
@@ -1850,7 +1849,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v11.5 iniciado")
+    log("v11.6 iniciado")
     offset = 0
     while True:
         try:
@@ -1886,7 +1885,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v11.5 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v11.6 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
