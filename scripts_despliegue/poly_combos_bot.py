@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v11.7 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v11.8 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -36,6 +36,10 @@ Estrategia nueva (vs v7):
    v11.7: 📋 Trades muestra COMBOS CANDIDATOS REALES (2-3 legs de eventos
    distintos, cuota estimada en rango) generados con la misma lógica de
    selección del bot, ordenados por volumen $ — no líneas sueltas.
+   v11.8: cada combo del catálogo lleva su PROBABILIDAD DE ACIERTO
+   (producto de precios de legs, etiqueta alta/media/baja) y un BOTÓN
+   INLINE ▶️ que ejecuta ESE combo en Polymarket (RFQ real, $5) con
+   anti-duplicados y serializado con el auto_loop (PASADA_LOCK).
 
 FIX v10.9 (el SDK usa HTTPX, no requests):
   · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
@@ -653,6 +657,33 @@ def generar_combos_catalogo(legs, max_combos=10):
             candidatos.append((vol_min, cuota, list(sel)))
     candidatos.sort(key=lambda x: -x[0])
     return candidatos[:max_combos]
+
+
+CATALOGO_CACHE = {}   # v11.8: hash8 -> (ts, sel) para los botones ▶️
+
+
+def hash8_sel(sel):
+    pids = sorted(str(c.get("yes_token")) for c in sel)
+    return hashlib.sha1("|".join(pids).encode()).hexdigest()[:8]
+
+
+def etiqueta_prob(p):
+    """Etiqueta cualitativa: a más cuota, menos probabilidad."""
+    if p >= 0.65:
+        return "alta 🟢"
+    if p >= 0.50:
+        return "media 🟡"
+    return "baja 🔴"
+
+
+def _prune_catalogo():
+    global CATALOGO_CACHE
+    ahora = time.time()
+    CATALOGO_CACHE = {k: v for k, v in CATALOGO_CACHE.items() if ahora - v[0] < 3600}
+    if len(CATALOGO_CACHE) > 60:
+        viejas = sorted(CATALOGO_CACHE, key=lambda k: CATALOGO_CACHE[k][0])
+        for k in viejas[:len(CATALOGO_CACHE) - 60]:
+            CATALOGO_CACHE.pop(k, None)
 
 
 def seleccionar_combo(legs, estado):
@@ -1579,7 +1610,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v11.7*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v11.8*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -1607,14 +1638,26 @@ def cmd_trades(chat_id):
         return enviar(chat_id, f"📋 *COMBOS POSIBLES*\n_Ahora mismo ningún combo de {LEGS_POR_COMBO[0]}-{LEGS_POR_COMBO[1]} legs"
                                f" cae en cuota {CUOTA_MIN}-{CUOTA_MAX}._\n\nℹ️ Informativo · tus operaciones: 📂 Abiertas / ✅ Cerradas")
     texto = (f"📋 *TOP {len(cands)} COMBOS POSIBLES* 🎰\n"
-             f"_{LEGS_POR_COMBO[0]}-{LEGS_POR_COMBO[1]} legs · cuota {CUOTA_MIN}-{CUOTA_MAX} · por volumen $ · informativo_\n\n")
+             f"_{LEGS_POR_COMBO[0]}-{LEGS_POR_COMBO[1]} legs · cuota {CUOTA_MIN}-{CUOTA_MAX} · por volumen $_\n\n")
+    botones = []
     for i, (vol, cuota, sel) in enumerate(cands, 1):
-        texto += f"{i}. 🎫 cuota ~{cuota:.2f} · 💵 ${vol:,.0f}\n"
+        prod = 1.0
+        for c in sel:
+            prod *= float(c.get("yes_price") or 0)
+        texto += (f"{i}. 🎫 cuota ~{cuota:.2f} · 💵 ${vol:,.0f}\n"
+                  f"   🎯 prob ~{prod * 100:.0f}% — {etiqueta_prob(prod)}\n")
         for c in sel:
             texto += f"   · {str(c['question'])[:52]} (p={c.get('yes_price', 0):.2f})\n"
         texto += "\n"
-    texto += "_Cuota estimada: la real la da el RFQ al operar_\n📂 Abiertas / ✅ Cerradas → tus operaciones"
-    return enviar(chat_id, texto)
+        h8 = hash8_sel(sel)
+        CATALOGO_CACHE[h8] = (time.time(), sel)
+        botones.append([{"text": f"▶️ #{i} · ${STAKE_POR_TRADE:.0f} · cuota ~{cuota:.2f}",
+                         "callback_data": f"ej:{i}:{h8}"}])
+    _prune_catalogo()
+    texto += ("_Prob = producto de precios (implícita del mercado): a más cuota, menos probabilidad._\n"
+              "▶️ *Botón* = ejecutar ESE combo ya vía RFQ (anti-duplicados activo)\n"
+              "📂 Abiertas / ✅ Cerradas → tus operaciones")
+    return enviar(chat_id, texto, {"inline_keyboard": botones})
 
 def cmd_saldo(chat_id):
     env = cargar_env()
@@ -1815,8 +1858,70 @@ def auto_loop():
 # ============================================
 # LOOP TELEGRAM
 # ============================================
+def lanzar_combo_manual(chat_id, sel):
+    """v11.8: ejecuta un combo elegido por botón. Hilo propio pero SERIALIZADO
+    con el auto_loop (PASADA_LOCK) y con check anti-duplicados dentro del lock."""
+    pids = [str(c.get("yes_token")) for c in sel]
+    titulo = " + ".join(str(c.get("question", "?"))[:38] for c in sel)
+
+    def _run():
+        try:
+            with PASADA_LOCK:
+                estado = cargar_estado()
+                if huella_combo(pids) in estado.get("combos_rfq", {}).get("huellas", {}):
+                    return enviar(chat_id, f"⛔ *Combo ya operado* (anti-duplicados):\n{titulo[:80]}")
+                log(f"[MANUAL] botón ▶️: {titulo[:70]}")
+                enviar(chat_id, f"▶️ *EJECUTANDO COMBO MANUAL*\n📌 {titulo[:80]}\n"
+                                f"💵 ${STAKE_POR_TRADE} · pidiendo quote RFQ…")
+                ok, res = ejecutar_combo_rfq(sel, chat_id=chat_id)
+                if not ok:
+                    enviar(chat_id, f"❌ *Combo manual no ejecutado*\n📌 {titulo[:70]}\nMotivo: `{str(res)[:60]}`")
+        except Exception as e:
+            log(f"[MANUAL] error: {e}")
+            try:
+                enviar(chat_id, f"❌ Error lanzando combo manual: {str(e)[:80]}")
+            except Exception:
+                pass
+    threading.Thread(target=_run, daemon=True).start()
+
+
+def procesar_callback(cbq):
+    """v11.8: botones inline ▶️ del catálogo (callback_query)."""
+    msg = cbq.get("message") or {}
+    cid = (msg.get("chat") or {}).get("id") or (cbq.get("from") or {}).get("id")
+    cbid = cbq.get("id")
+    data = str(cbq.get("data") or "")
+    if cid:
+        global CHAT_ID
+        if cid != CHAT_ID:
+            CHAT_ID = cid
+            try:
+                _est = cargar_estado()
+                _est["chat_id"] = cid
+                guardar_estado(_est)
+            except Exception:
+                pass
+    if data.startswith("ej:") and cid:
+        h8 = data.split(":")[-1]
+        hit = CATALOGO_CACHE.get(h8)
+        if not hit or time.time() - hit[0] > 3600:
+            telegram_api("answerCallbackQuery", {"callback_query_id": cbid,
+                         "text": "Catálogo caducado: pulsa 📋 Trades otra vez", "show_alert": True})
+            return
+        telegram_api("answerCallbackQuery", {"callback_query_id": cbid, "text": "Lanzando combo…"})
+        lanzar_combo_manual(cid, hit[1])
+        return
+    telegram_api("answerCallbackQuery", {"callback_query_id": cbid})
+
+
 def procesar_update(update):
     global CHAT_ID
+    if "callback_query" in update:
+        try:
+            return procesar_callback(update["callback_query"])
+        except Exception as e:
+            log(f"callback error: {e}")
+            return
     if "message" not in update:
         return
     msg = update["message"]
@@ -1889,7 +1994,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v11.7 iniciado")
+    log("v11.8 iniciado")
     offset = 0
     while True:
         try:
@@ -1925,7 +2030,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v11.7 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v11.8 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
