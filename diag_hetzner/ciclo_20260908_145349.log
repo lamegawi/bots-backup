@@ -1,0 +1,12 @@
+=== Chequeo 2026-09-08 14:53:49 UTC ===
+
+Pos: restante=230.8  no_cub=0  bankroll=$20  dry_run=1
+Decision final: ninguna
+Posicion:
+{
+  "shares_yes": 230.8,
+  "precio_entrada": 0.0260,
+  "vendido_yes": 0,
+  "shares_no_cubierta": 0,
+  "ultima_accion": null
+}
