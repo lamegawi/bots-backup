@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v11.1 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v11.2 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -15,6 +15,9 @@ Estrategia nueva (vs v7):
      Docs: https://docs.polymarket.com/trading/combos/requesters
    v11.1: botones ⏱ 5/10/20/30/60 min para elegir el intervalo entre
    pasadas AUTO (persistido en combos_estado.json, efecto inmediato).
+   v11.2: pre-check de saldo CLOB antes de firmar + reintento único
+   idempotente si el accept falla por reserva transitoria (503 /
+   PRE_EXECUTION_BALANCE_RESERVATION_FAILED) + aviso 💸 por Telegram.
 
 FIX v10.9 (el SDK usa HTTPX, no requests):
   · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
@@ -371,6 +374,7 @@ def inyectar_proxy_sdk(proxy_url=None):
 # POLY_PASSPHRASE, POLY_TIMESTAMP, POLY_SIGNATURE (HMAC-SHA256 del secret
 # derivado sobre ts+METHOD+path+body_exacto, base64url).
 _IDENTIDAD_RFQ = None
+_CLOB_CLIENT_RMQ = None   # cliente CLOB cacheado (para /balance-allowance)
 
 def obtener_identidad_rfq(forzar=False):
     """(creds CLOB derivadas, direccion EOA signer, proxy wallet, private key).
@@ -392,10 +396,31 @@ def obtener_identidad_rfq(forzar=False):
     client = ClobClient(host=HOST_CLOB, chain_id=137, key=pk, funder=wallet,
                         signature_type=int(SignatureTypeV2.POLY_PROXY))
     creds = client.derive_api_key()
+    client.set_api_creds(creds)
     signer_addr = Account.from_key(pk).address
+    global _CLOB_CLIENT_RMQ
+    _CLOB_CLIENT_RMQ = client
     _IDENTIDAD_RFQ = (creds, signer_addr, wallet, pk)
     log(f"  RFQ: identidad lista (signer {signer_addr[:10]}... maker {wallet[:10]}...)")
     return _IDENTIDAD_RFQ
+
+
+def saldo_disponible_clob():
+    """Colateral (pUSD, 6 decimales) visible por el CLOB via /balance-allowance.
+    None si no se pudo consultar (en ese caso NO se bloquea el trade)."""
+    global _CLOB_CLIENT_RMQ
+    if _CLOB_CLIENT_RMQ is None:
+        if not obtener_identidad_rfq():
+            return None
+    try:
+        from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
+        r = _CLOB_CLIENT_RMQ.get_balance_allowance(
+            BalanceAllowanceParams(asset_type=AssetType.COLLATERAL))
+        if isinstance(r, dict) and r.get("balance") is not None:
+            return int(r["balance"]) / 1e6
+    except Exception as e:
+        log(f"  balance-allowance error: {str(e)[:120]}")
+    return None
 
 
 def l2_headers_rfq(method, path, body_str, creds, signer_addr):
@@ -677,6 +702,15 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
         if chat_id:
             enviar(chat_id, f"⚠️ Cuota real {cuota_real} fuera de rango — quote NO aceptado ($0)")
         return False, f"cuota_real_{cuota_real}_fuera"
+    # v11.2: saldo CLOB antes de firmar (evita accepts que fallan por reserva)
+    saldo = saldo_disponible_clob()
+    if saldo is not None and saldo + 0.01 < total_req:
+        log(f"  saldo CLOB insuficiente: {saldo:.2f} < {total_req:.2f}")
+        if chat_id:
+            enviar(chat_id, f"💸 *Saldo CLOB insuficiente*: ${saldo:.2f} disponibles < ${total_req:.2f} del quote. Se omite este combo.")
+        return False, f"saldo_insuficiente_{saldo:.2f}"
+    if saldo is not None:
+        log(f"  saldo CLOB ok: ${saldo:.2f} >= ${total_req:.2f}" )
     # firmar + aceptar RÁPIDO (ventana ~5s)
     try:
         signed = firmar_orden_v3(req, quote, identidad)
@@ -685,6 +719,18 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
         return False, f"firma_v3:{str(e)[:150]}"
     status, resp = aceptar_rfq(rfq_id, quote_id, signed, identidad)
     log(f"  RFQ accept -> {status} {str(resp)[:160]}")
+    # v11.2: fallo transitorio de reserva → reintento único (idempotente por rfq_id)
+    try:
+        da0 = json.loads(resp)
+    except Exception:
+        da0 = {}
+    code0 = (da0.get("error") or {}).get("code") if isinstance(da0, dict) else None
+    if status == 503 or code0 in ("PRE_EXECUTION_BALANCE_RESERVATION_FAILED",
+                                  "SERVICE_UNAVAILABLE", "TRADE_SUBMISSION_FAILED"):
+        log(f"  accept transitorio ({status}/{code0}): reintento único en 6s")
+        time.sleep(6)
+        status, resp = aceptar_rfq(rfq_id, quote_id, signed, identidad)
+        log(f"  RFQ accept retry -> {status} {str(resp)[:160]}")
     if status != 200:
         return False, f"accept_http_{status}:{str(resp)[:150]}"
     try:
@@ -1212,7 +1258,7 @@ def calcular_stats():
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v11.1*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v11.2*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -1502,7 +1548,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v11.1 iniciado")
+    log("v11.2 iniciado")
     offset = 0
     while True:
         try:
@@ -1531,7 +1577,7 @@ def main():
     if _im in INTERVALOS_MIN:
         INTERVALO_AUTO_S = _im * 60
         log(f"intervalo AUTO restaurado: {_im} min")
-    log(f"v11.1 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v11.2 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
