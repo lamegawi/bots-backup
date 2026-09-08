@@ -1,0 +1,40 @@
+=== ACTUALIZADOR v10.6 HASH FIJO - Tue Sep  8 05:03:41 PM UTC 2026 ===
+HASH: 1632dbd8
+
+=== Paso 1: Detener bot ===
+
+=== Paso 2: Descargar v10.6 (HASH FIJO) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/1632dbd8/scripts_despliegue/poly_combos_bot.py
+Descargado: 94933 bytes
+
+=== Paso 3: Verificar version ===
+POLY COMBOS BOT v12.0 — COMBOS REALES (parlays multi-leg) via RFQ
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Tue 2026-09-08 17:03:44 UTC; 5s ago
+   Main PID: 1194886 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 16.7M (peak: 17.0M)
+        CPU: 239ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1194886 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log ===
+[16:48:06]   RFQ status final: CONFIRMED tx=0xfbb3ee00a27c27526ef952cc
+[16:48:18] [AUTO] pasada (combos RFQ v11)
+[16:48:18]   pagina 1: +50 mercados, 1 legs de deportes
+[16:48:19]   pagina 2: +50 mercados, 4 legs de deportes
+[16:48:19]   pagina 3: +50 mercados, 10 legs de deportes
+[16:48:20]   pagina 4: +50 mercados, 55 legs de deportes
+[16:48:20]   pagina 5: +50 mercados, 97 legs de deportes
+[16:48:20]   tope diario alcanzado (6 combos)
+[16:48:20]   sin combos viables esta pasada (eventos distintos, cuota, cooldown, tope)
+[17:03:44] intervalo AUTO restaurado: 30 min
+[17:03:44]   horario restaurado: próxima pasada en 14 min
+[17:03:44] v12.0 cargado · modo=AUTO · stake=$5.0
+[17:03:44] Proxy: http://100.83.57.99:8888
+[17:03:45] Test proxy: 200
+[17:03:45] v12.0 iniciado
