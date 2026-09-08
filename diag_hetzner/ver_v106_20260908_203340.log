@@ -1,0 +1,43 @@
+=== VER V10.6 - Tue Sep  8 08:33:40 PM UTC 2026 ===
+
+== Status ==
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Tue 2026-09-08 20:29:37 UTC; 4min 3s ago
+   Main PID: 1212060 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 18.8M (peak: 19.3M)
+        CPU: 282ms
+     CGroup: /system.slice/poly-combos-bot.service
+
+== Ultimas 30 lineas ==
+[20:25:51]   pagina 3: +50 mercados, 12 legs de deportes
+[20:25:51]   pagina 4: +50 mercados, 46 legs de deportes
+[20:25:51]   pagina 5: +50 mercados, 80 legs de deportes
+[20:25:51]   tope diario alcanzado (8/6 ops)
+[20:25:51]   sin combos viables esta pasada (eventos distintos, cuota, cooldown, tope)
+[20:26:36] loop err: The read operation timed out
+[20:27:11] telegram_api error: HTTP Error 400: Bad Request
+[20:27:11] [AUTO] pasada (combos RFQ v11)
+[20:27:12]   pagina 1: +50 mercados, 2 legs de deportes
+[20:27:12]   pagina 2: +50 mercados, 4 legs de deportes
+[20:27:13]   pagina 3: +50 mercados, 12 legs de deportes
+[20:27:13]   pagina 4: +50 mercados, 46 legs de deportes
+[20:27:13]   pagina 5: +50 mercados, 80 legs de deportes
+[20:27:13]   tope diario alcanzado (8/6 ops)
+[20:27:13]   sin combos viables esta pasada (eventos distintos, cuota, cooldown, tope)
+[20:29:37] intervalo AUTO restaurado: 30 min
+[20:29:37] stake=AUTO · max ops/día=6
+[20:29:37]   horario restaurado: próxima pasada en 27 min
+[20:29:37] v12.2 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 6/día
+[20:29:37] Proxy: http://100.83.57.99:8888
+[20:29:37] Test proxy: 200
+[20:29:37] v12.2 iniciado
+[20:33:03] [AUTO] pasada (combos RFQ v11)
+[20:33:03]   pagina 1: +50 mercados, 2 legs de deportes
+[20:33:03]   pagina 2: +50 mercados, 5 legs de deportes
+[20:33:04]   pagina 3: +50 mercados, 12 legs de deportes
+[20:33:04]   pagina 4: +50 mercados, 45 legs de deportes
+[20:33:05]   pagina 5: +50 mercados, 76 legs de deportes
+[20:33:05]   tope diario alcanzado (8/6 ops)
+[20:33:05]   sin combos viables esta pasada (eventos distintos, cuota, cooldown, tope)
