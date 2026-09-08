@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v11.2 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v11.3 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -18,6 +18,10 @@ Estrategia nueva (vs v7):
    v11.2: pre-check de saldo CLOB antes de firmar + reintento único
    idempotente si el accept falla por reserva transitoria (503 /
    PRE_EXECUTION_BALANCE_RESERVATION_FAILED) + aviso 💸 por Telegram.
+   v11.3: ANTI-DUPLICIDAD de pasadas: un único ejecutor (auto_loop con
+   lock); /start y 🟢 AUTO solo reprograman NEXT_PASADA_TS (ya no lanzan
+   hilos paralelos); huella del combo RESERVADA en estado antes de crear
+   el RFQ (y liberada si el intento falla terminalmente).
 
 FIX v10.9 (el SDK usa HTTPX, no requests):
   · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
@@ -100,6 +104,7 @@ RFQ_TIMEOUT_FILL_S = 45    # espera de FILLED tras aceptar
 MAX_TRADES_SIMULTANEOS = 3
 INTERVALO_AUTO_S = 300
 NEXT_PASADA_TS = 0.0   # v11.1: próxima pasada programada (epoch); 0 = ya
+PASADA_LOCK = threading.Lock()   # v11.3: una pasada a la vez
 PESO_MIN = 5
 MAX_MERCADOS_A_REVISAR = 100  # limita para no saturar
 
@@ -650,6 +655,40 @@ def seleccionar_combo(legs, estado):
     return candidatos[0][2]
 
 
+def reservar_combo(pids):
+    """v11.3: marca la huella y los legs COMO OPERADOS antes de crear el RFQ,
+    para que ninguna otra pasada (ni un reintento) elija el mismo combo
+    mientras este intento está en vuelo."""
+    estado = cargar_estado()
+    rfq = estado.setdefault("combos_rfq", {"huellas": {}, "legs": {}, "historial": []})
+    ahora = datetime.now(timezone.utc).isoformat()
+    rfq.setdefault("huellas", {})[huella_combo(pids)] = ahora
+    legs = rfq.setdefault("legs", {})
+    for pid in pids:
+        legs[str(pid)] = ahora
+    guardar_estado(estado)
+
+
+def liberar_combo(pids):
+    """v11.3: deshace la reserva si el intento falló de forma terminal
+    (para que el combo pueda reintentarse en pasadas futuras)."""
+    estado = cargar_estado()
+    rfq = estado.get("combos_rfq", {})
+    rfq.get("huellas", {}).pop(huella_combo(pids), None)
+    legs = rfq.get("legs", {})
+    for pid in pids:
+        legs.pop(str(pid), None)
+    guardar_estado(estado)
+
+
+def programar_pasada_ahora():
+    """v11.3: pide una pasada inmediata SIN lanzar un hilo paralelo: el
+    auto_loop (único ejecutor) la recoge en ≤5s vía NEXT_PASADA_TS."""
+    global NEXT_PASADA_TS
+    if NEXT_PASADA_TS > time.time():
+        NEXT_PASADA_TS = time.time()
+
+
 def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
     """Flujo RFQ completo: crear → validar cuota real → firmar v3 → aceptar
     → esperar FILLED → registrar + notificar. dry_run=True NO acepta (gratis)."""
@@ -665,8 +704,10 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
     if chat_id:
         enviar(chat_id, f"🎰 *COMBO {len(sel)} LEGS* (cuota est. ~{cuota_est})\n" +
                "\n".join(f"· {(c.get('question') or '')[:55]} (p={c.get('yes_price'):.2f})" for c in sel))
+    reservar_combo(pids)   # v11.3: anti-duplicidad (antes de cualquier red)
     identidad = obtener_identidad_rfq()
     if not identidad:
+        liberar_combo(pids)
         return False, "sin_identidad"
     status, resp = crear_rfq(pids, STAKE_POR_TRADE, identidad)
     log(f"  RFQ create -> {status} {str(resp)[:160]}")
@@ -675,9 +716,11 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
     except Exception:
         d = {}
     if status != 200 or not isinstance(d, dict) or not d:
+        liberar_combo(pids)
         return False, f"rfq_http_{status}:{str(resp)[:150]}"
     err = d.get("error")
     if d.get("status") == "FAILED" or err:
+        liberar_combo(pids)
         code = err.get("code") if isinstance(err, dict) else str(err)
         return False, f"rfq_{code or 'failed'}"
     quote = d.get("quote") or {}
@@ -689,10 +732,12 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
         shares = int(quote.get("net_receive_e6", 0)) / 1e6
         total_req = int(quote.get("total_required_e6", 0)) / 1e6
     except Exception:
+        liberar_combo(pids)
         return False, f"quote_ilegible:{str(quote)[:120]}"
     cuota_real = round(1 / blended, 2) if blended > 0 else 0
     log(f"  quote: cuota={cuota_real} blended={blended:.3f} shares={shares:.2f} total=${total_req:.2f}")
     if dry_run:
+        liberar_combo(pids)   # el test no debe bloquear el combo real
         log("  dry-run: quote OK, NO se acepta (expira solo, coste 0)")
         if chat_id:
             enviar(chat_id, f"🧪 *TEST COMBO OK*\n💱 Cuota real: *{cuota_real}* · {shares:.2f} shares · ${total_req:.2f}\nNo aceptado (coste $0). rfq_id `{str(rfq_id)[:18]}`")
@@ -701,10 +746,12 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
         log(f"  NO acepto: cuota real {cuota_real} fuera de [{CUOTA_MIN}-{CUOTA_MAX}]")
         if chat_id:
             enviar(chat_id, f"⚠️ Cuota real {cuota_real} fuera de rango — quote NO aceptado ($0)")
+        liberar_combo(pids)
         return False, f"cuota_real_{cuota_real}_fuera"
     # v11.2: saldo CLOB antes de firmar (evita accepts que fallan por reserva)
     saldo = saldo_disponible_clob()
     if saldo is not None and saldo + 0.01 < total_req:
+        liberar_combo(pids)
         log(f"  saldo CLOB insuficiente: {saldo:.2f} < {total_req:.2f}")
         if chat_id:
             enviar(chat_id, f"💸 *Saldo CLOB insuficiente*: ${saldo:.2f} disponibles < ${total_req:.2f} del quote. Se omite este combo.")
@@ -715,6 +762,7 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
     try:
         signed = firmar_orden_v3(req, quote, identidad)
     except Exception as e:
+        liberar_combo(pids)
         log(f"  firma v3 error: {e}")
         return False, f"firma_v3:{str(e)[:150]}"
     status, resp = aceptar_rfq(rfq_id, quote_id, signed, identidad)
@@ -732,12 +780,14 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
         status, resp = aceptar_rfq(rfq_id, quote_id, signed, identidad)
         log(f"  RFQ accept retry -> {status} {str(resp)[:160]}")
     if status != 200:
+        liberar_combo(pids)
         return False, f"accept_http_{status}:{str(resp)[:150]}"
     try:
         da = json.loads(resp)
     except Exception:
         da = {}
     if isinstance(da, dict) and da.get("status") == "FAILED":
+        liberar_combo(pids)
         err = da.get("error") or {}
         return False, f"accept_{err.get('code') if isinstance(err, dict) else err}"
     st, ultimo = esperar_fill(rfq_id, identidad)
@@ -745,6 +795,8 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
     log(f"  RFQ status final: {st} tx={str(tx)[:26]}")
     ok = st in ("FILLED", "CONFIRMED")
     pendiente = st in ("EXECUTING", "MINED", "RETRYING", "AWAITING_MAKER_CONFIRMATION", "TIMEOUT_LOCAL")
+    if not ok and not pendiente:
+        liberar_combo(pids)   # fallo terminal: el combo queda reintentable
     registro = {
         "tipo": "combo_rfq",
         "copiado_en": datetime.now(timezone.utc).isoformat(),
@@ -1258,7 +1310,7 @@ def calcular_stats():
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v11.2*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v11.3*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -1402,7 +1454,7 @@ def cmd_modo(chat_id, modo):
     guardar_estado(estado)
     enviar(chat_id, f"*Modo: {modo}*")
     if modo == "AUTO":
-        threading.Thread(target=lambda: auto_pasada(chat_id), daemon=True).start()
+        programar_pasada_ahora()   # v11.3: sin hilo paralelo
 
 def cmd_stake(chat_id, valor):
     global STAKE_POR_TRADE
@@ -1474,7 +1526,8 @@ def auto_loop():
             ahora = time.time()
             if MODO_OPERACION == "AUTO" and CHAT_ID and ahora >= NEXT_PASADA_TS:
                 NEXT_PASADA_TS = ahora + INTERVALO_AUTO_S
-                auto_pasada(CHAT_ID)
+                with PASADA_LOCK:
+                    auto_pasada(CHAT_ID)
         except Exception as e:
             log(f"auto_loop error: {e}")
         time.sleep(5)
@@ -1524,7 +1577,7 @@ def procesar_update(update):
     if text == "/start":
         cmd_start(chat_id)
         if MODO_OPERACION == "AUTO":
-            threading.Thread(target=lambda: auto_pasada(chat_id), daemon=True).start()
+            programar_pasada_ahora()   # v11.3: sin hilo paralelo
         return
     elif text == "/trades":
         return cmd_trades(chat_id)
@@ -1548,7 +1601,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v11.2 iniciado")
+    log("v11.3 iniciado")
     offset = 0
     while True:
         try:
@@ -1577,7 +1630,7 @@ def main():
     if _im in INTERVALOS_MIN:
         INTERVALO_AUTO_S = _im * 60
         log(f"intervalo AUTO restaurado: {_im} min")
-    log(f"v11.2 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v11.3 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")

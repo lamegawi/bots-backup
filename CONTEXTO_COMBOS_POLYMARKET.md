@@ -2,7 +2,7 @@
 
 ## 📋 RESUMEN
 
-Bot de Telegram que opera **Combos (parlays) de Polymarket** automáticamente. **OPERATIVO**: el 7 sept 2026 la v10.9 ejecutó el primer trade real vía CLOB (Cagliari, `success:true`). PERO se descubrió que operaba **LEGS SUELTOS** (el endpoint `combo-markets` es un catálogo de piernas, NO combos formados) y **sin deduplicación** (repitió Cagliari 4× = $20, confirmado en data-api). **v11.0**: combos REALES de 2-3 legs vía Requester API RFQ oficial + deduplicación + tope diario + `/testcombo` (gratis) + `/fills`. 🏆 **PRIMER COMBO REAL CONFIRMADO ON-CHAIN**: 8 sept 14:06:59 UTC — CS2 G2-Astralis Map1 (0.61) + WTA Sabalenka-Noskova (0.71), cuota real 1.71, $5.00, 8.38 shares, tx `0x23a0de4decb5b79b81a1900f`. **v11.1**: botones ⏱ 5/10/20/30/60 min en el teclado fijo para elegir el intervalo entre pasadas AUTO (persistido en estado, efecto inmediato). **v11.2**: pre-check de saldo CLOB (`/balance-allowance`) antes de firmar + reintento único idempotente del accept ante 503/`PRE_EXECUTION_BALANCE_RESERVATION_FAILED` + aviso 💸 por Telegram.
+Bot de Telegram que opera **Combos (parlays) de Polymarket** automáticamente. **OPERATIVO**: el 7 sept 2026 la v10.9 ejecutó el primer trade real vía CLOB (Cagliari, `success:true`). PERO se descubrió que operaba **LEGS SUELTOS** (el endpoint `combo-markets` es un catálogo de piernas, NO combos formados) y **sin deduplicación** (repitió Cagliari 4× = $20, confirmado en data-api). **v11.0**: combos REALES de 2-3 legs vía Requester API RFQ oficial + deduplicación + tope diario + `/testcombo` (gratis) + `/fills`. 🏆 **PRIMER COMBO REAL CONFIRMADO ON-CHAIN**: 8 sept 14:06:59 UTC — CS2 G2-Astralis Map1 (0.61) + WTA Sabalenka-Noskova (0.71), cuota real 1.71, $5.00, 8.38 shares, tx `0x23a0de4decb5b79b81a1900f`. **v11.1**: botones ⏱ 5/10/20/30/60 min en el teclado fijo para elegir el intervalo entre pasadas AUTO (persistido en estado, efecto inmediato). **v11.2**: pre-check de saldo CLOB (`/balance-allowance`) antes de firmar + reintento único idempotente del accept ante 503/`PRE_EXECUTION_BALANCE_RESERVATION_FAILED (v11.2)` + aviso 💸 por Telegram. **v11.3 (ANTI-DUPLICIDAD)**: tras el incidente de las 14:15 (dos pasadas concurrentes —la del auto_loop y un hilo de `/start`— eligieron y ejecutaron el MISMO combo: 2×$5), ahora hay un ÚNICO ejecutor de pasadas (auto_loop con lock), `/start` y 🟢 solo reprograman `NEXT_PASADA_TS`, y la huella del combo se RESERVA en estado antes de crear el RFQ (se libera solo si el intento falla terminalmente).
 
 ## 🎯 OBJETIVO
 
@@ -304,6 +304,8 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - ❌ **NUNCA** ejecutar en AUTO sin deduplicación (la v10.9 repitió Cagliari 4×)
 - ✅ v11: huella de combo + cooldown por leg + tope diario + 1 combo/pasada
 - ❌ **NUNCA** combinar legs del mismo evento (correlacionados; clave = slug hasta la fecha)
+- ❌ **NUNCA** lanzar hilos de pasada desde `/start`/cmd_modo: con AUTO activo y una pasada en vuelo, dos hilos concurrentes leen el mismo estado y duplican el combo (incidente 14:15, 2×$5 al mismo parlay)
+- ✅ v11.3: único ejecutor (auto_loop + PASADA_LOCK) + `programar_pasada_ahora()` + reserva de huella pre-RFQ
 - ❌ **NUNCA** requerir `POLY_API_KEY` y `POLY_API_SECRET` (no existen)
 - ✅ USAR `client.derive_api_key()` con `POLY_PRIVATE_KEY`
 
@@ -377,4 +379,6 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - 8 sept 14:06 — 🏆 PRIMER COMBO REAL CONFIRMADO ON-CHAIN: pasada AUTO v11 → CS2 G2-Astralis Map1 + WTA Sabalenka-Noskova → RFQ create 200 → quote cuota 1.71 → accept 200 EXECUTING → **CONFIRMED** tx 0x23a0de4decb5b79b81a1900f. Pipeline RFQ completo en producción
 - 8 sept ~14:15 — v11.1 desplegada: botones ⏱ 5/10/20/30/60 min (teclado fijo); auto_loop tick 5s + NEXT_PASADA_TS; intervalo persistido y restaurado al arrancar
 - 8 sept 14:12 — INCIDENTE: 2º combo (Genoa Seyboth Wild p=0.61 + RMA-Inter O/U 1.5 p=0.86) → quote cuota 1.77 OK → accept 200 pero status FAILED `PRE_EXECUTION_BALANCE_RESERVATION_FAILED` (reserva transitoria del gateway; saldo on-chain verificado: 238.62 pUSD libres en la proxy wallet vía eth_call a pUSD 0xC011a7...2DFB → NO es falta de fondos; pérdida $0 porque falló pre-ejecución)
+- 8 sept 14:15 — INCIDENTE DUPLICIDAD: pasada del auto_loop + hilo de /start concurrentes → mismo combo ejecutado 2 veces (rfq-0b766b6d cuota 1.75 CONFIRMED + rfq-d2ecb6c9 cuota 1.76 CONFIRMED, 2×$5 al mismo parlay). Sin pérdida extra: es la misma posición duplicada
+- 8 sept 14:15:37 — user prueba botones ⏱: `intervalo AUTO -> 30 min` persistido y restaurado tras reinicio ✓
 - 8 sept ~14:35 — v11.2: `saldo_disponible_clob()` (SDK get_balance_allowance COLLATERAL) antes de firmar; si saldo < total_req → skip con aviso 💸; accept con reintento único idempotente (6s) ante 503/SERVICE_UNAVAILABLE/TRADE_SUBMISSION_FAILED/PRE_EXECUTION_BALANCE_RESERVATION_FAILED
