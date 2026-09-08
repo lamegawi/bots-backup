@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v11.4 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v11.5 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -25,6 +25,10 @@ Estrategia nueva (vs v7):
    v11.4: HORARIO PERSISTENTE — proximo_paso_ts y chat_id se guardan en
    estado; los reinicios/despliegues respetan el intervalo programado y
    YA NO provocan pasada inmediata al primer mensaje.
+   v11.5: PANEL DE OPERACIONES EN VIVO — 📋/📂/✅ sincronizan contra el
+   CLOB público: las ops resueltas pasan automáticamente de ABIERTAS a
+   CERRADAS con 🟢/🔴 y PnL; los combos muestran estado por leg y la
+   HORA DE FIN (Madrid) de cada combo; sync también al arrancar.
 
 FIX v10.9 (el SDK usa HTTPX, no requests):
   · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
@@ -1345,10 +1349,192 @@ def calcular_stats():
 
 
 # ============================================
+# v11.5: OPERACIONES EN VIVO (CLOB público)
+# ============================================
+CLOB_PUB = "https://clob.polymarket.com"
+_MERCADO_CACHE = {}   # condition_id -> (ts, datos)
+
+
+def _madrid(iso_utc):
+    """ISO UTC -> 'DD/MM HH:MM' en hora de Madrid."""
+    try:
+        dt = datetime.fromisoformat(str(iso_utc).replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        try:
+            from zoneinfo import ZoneInfo
+            dt = dt.astimezone(ZoneInfo("Europe/Madrid"))
+        except Exception:
+            from datetime import timedelta
+            dt = dt.astimezone(timezone(timedelta(hours=2)))
+        return dt.strftime("%d/%m %H:%M")
+    except Exception:
+        return None
+
+
+def mercado_clob(cid):
+    """GET público clob.polymarket.com/markets/<cid> (sin auth), cache 5 min.
+    Devuelve {closed, tokens:[{token_id,outcome,winner,price}], end_date_iso}."""
+    cid = str(cid or "")
+    if not cid.startswith("0x"):
+        return None
+    ahora = time.time()
+    hit = _MERCADO_CACHE.get(cid)
+    if hit and ahora - hit[0] < 300:
+        return hit[1]
+    data = None
+    try:
+        req = urllib.request.Request(f"{CLOB_PUB}/markets/{cid}",
+                                     headers={"User-Agent": "poly-combos-bot"})
+        with urllib.request.urlopen(req, timeout=12) as r:
+            data = json.loads(r.read().decode())
+    except Exception:
+        data = None
+    _MERCADO_CACHE[cid] = (ahora, data)
+    return data
+
+
+def mercado_por_slug(slug):
+    """Fallback gamma para registros antiguos sin condition_id."""
+    try:
+        req = urllib.request.Request(f"https://gamma-api.polymarket.com/markets?slug={slug}",
+                                     headers={"User-Agent": "poly-combos-bot"})
+        with urllib.request.urlopen(req, timeout=12) as r:
+            arr = json.loads(r.read().decode())
+        if not arr:
+            return None
+        m = arr[0]
+        prices = m.get("outcomePrices") or []
+        if isinstance(prices, str):
+            prices = json.loads(prices or "[]")
+        toks = m.get("clobTokenIds") or []
+        if isinstance(toks, str):
+            toks = json.loads(toks or "[]")
+        tokens = [{"token_id": str(t),
+                   "winner": (i < len(prices) and float(prices[i]) >= 0.999)}
+                  for i, t in enumerate(toks)]
+        return {"closed": bool(m.get("closed")), "tokens": tokens,
+                "end_date_iso": m.get("endDate")}
+    except Exception:
+        return None
+
+
+def resolver_operacion(op):
+    """Estado en vivo de un registro. → {"resuelta", "ganada", "pnl", "fin",
+    "detalle":[(question, None|True|False)]}. Combos: se resuelven por LEGS
+    (el token combo no está en CLOB); single: por su condition_id/token."""
+    shares = float(op.get("size_shares") or 0)
+    stake = float(op.get("stake_dolares") or 0)
+    legs = op.get("legs") or []
+    out = {"resuelta": False, "ganada": None, "pnl": None, "fin": None, "detalle": []}
+    fines = []
+    if legs:
+        ganadas = cerradas = 0
+        for lg in legs:
+            m = mercado_clob(lg.get("condition_id"))
+            q = lg.get("question", "?")
+            if not m:
+                out["detalle"].append((q, None))
+                continue
+            win_tok = None
+            for tk in m.get("tokens", []):
+                if tk.get("winner"):
+                    win_tok = str(tk.get("token_id"))
+            if m.get("end_date_iso"):
+                fines.append(m["end_date_iso"])
+            closed = bool(m.get("closed"))
+            g = None
+            if closed:
+                cerradas += 1
+                g = bool(win_tok and str(lg.get("position_id") or "") == win_tok)
+                if g:
+                    ganadas += 1
+            out["detalle"].append((q, g))
+        if fines:
+            out["fin"] = _madrid(max(fines))
+        if cerradas and ganadas < cerradas:
+            out.update(resuelta=True, ganada=False, pnl=round(-stake, 2))   # leg perdida → combo perdido
+        elif cerradas == len(legs):
+            out.update(resuelta=True, ganada=True, pnl=round(shares - stake, 2))
+        return out
+    m = mercado_clob(op.get("condition_id"))
+    if not m and op.get("slug"):
+        m = mercado_por_slug(op.get("slug"))
+    if not m:
+        return out
+    if m.get("end_date_iso"):
+        out["fin"] = _madrid(m["end_date_iso"])
+    if m.get("closed"):
+        win_tok = None
+        for tk in m.get("tokens", []):
+            if tk.get("winner"):
+                win_tok = str(tk.get("token_id"))
+        mio = str(op.get("real_token") or "")
+        g = bool(win_tok and mio and win_tok == mio)
+        out.update(resuelta=True, ganada=g,
+                   pnl=round(shares - stake, 2) if g else round(-stake, 2))
+    return out
+
+
+def sincronizar_operaciones():
+    """Mueve las ops resueltas de trades_copiados a historial con pnl/resultado.
+    → (abiertas, nuevas_cerradas, estado)."""
+    estado = cargar_estado()
+    ops = estado.get("trades_copiados", [])
+    if not ops:
+        return [], [], estado
+    quedan, nuevas = [], []
+    for op in ops:
+        if op.get("status") == "fallido":
+            quedan.append(op)
+            continue
+        r = resolver_operacion(op)
+        if r["resuelta"]:
+            op["status"] = "cerrado"
+            op["resultado"] = "ganada" if r["ganada"] else "perdida"
+            op["pnl"] = r["pnl"]
+            op["fin_real"] = r.get("fin")
+            op["cerrado_en"] = datetime.now(timezone.utc).isoformat()
+            nuevas.append(op)
+        else:
+            if r.get("fin"):
+                op["fin_previsto"] = r["fin"]
+            quedan.append(op)
+    if nuevas:
+        estado["trades_copiados"] = quedan
+        estado.setdefault("historial", []).extend(nuevas)
+        guardar_estado(estado)
+        log(f"  sync: {len(nuevas)} op(s) cerradas ({sum(1 for o in nuevas if o['resultado'] == 'ganada')} ganadas, "
+            f"PnL ${sum(o['pnl'] for o in nuevas):+.2f})")
+    return quedan, nuevas, estado
+
+
+def render_abierta(op):
+    """Una línea de operación abierta con detalle de legs y hora de fin."""
+    r = resolver_operacion(op)
+    stake = float(op.get("stake_dolares") or 0)
+    cuota = op.get("cuota_ejecutada") or 0
+    es_combo = bool(op.get("legs"))
+    txt = f"{'🎫' if es_combo else '🎯'} {str(op.get('question', '?'))[:58]}\n   ${stake:.2f}"
+    if cuota:
+        txt += f" · cuota {float(cuota):.2f}"
+    if r.get("fin"):
+        txt += f" · 🏁 fin {r['fin']}"
+    txt += "\n"
+    if es_combo:
+        for q, g in r.get("detalle", []):
+            gi = "⏳" if g is None else ("✅" if g else "❌")
+            txt += f"   {gi} {str(q)[:48]}\n"
+    if op.get("status") == "pendiente":
+        txt += "   ⏳ fill por confirmar (/fills)\n"
+    return txt + "\n"
+
+
+# ============================================
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v11.4*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v11.5*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -1365,21 +1551,32 @@ def cmd_start(chat_id):
     return enviar(chat_id, texto)
 
 def cmd_trades(chat_id):
-    combos = listar_combos()
-    if not combos:
-        return enviar(chat_id, "❌ No hay combos activos ahora mismo.")
-    # filtrar por cuota
-    filtrados = [m for m in combos if CUOTA_MIN <= m["cuota"] <= CUOTA_MAX]
-    if not filtrados:
-        texto = f"📋 *COMBOS ACTIVOS ({len(combos)})*\n_Ninguno en cuota {CUOTA_MIN}-{CUOTA_MAX}_\n\n"
-        for m in combos[:8]:
-            tags_str = ", ".join(m.get("tags", [])[:3])
-            texto += f"· {m['question'][:50]} (cuota {m['cuota']:.2f}) [{tags_str}]\n"
-        return enviar(chat_id, texto)
-    texto = f"📋 *COMBOS EN RANGO ({len(filtrados)})*\n"
-    for i, m in enumerate(filtrados[:10], 1):
-        tags_str = ", ".join(m.get("tags", [])[:3])
-        texto += f"{i}. {m['question'][:50]}\n   cuota {m['cuota']:.2f} · vol ${m['volumen']:.0f} · {tags_str}\n\n"
+    """📋 v11.5: panel completo — ABIERTAS (con 🏁 fin Madrid) + CERRADAS
+    🟢/🔴 con PnL + totales. Sincroniza en vivo contra CLOB antes de pintar."""
+    try:
+        abiertas, _, estado = sincronizar_operaciones()
+    except Exception as e:
+        log(f"cmd_trades sync error: {e}")
+        estado = cargar_estado()
+        abiertas = estado.get("trades_copiados", [])
+    hist = estado.get("historial", [])
+    abiertas = [o for o in abiertas if o.get("status") != "fallido"]
+    if not abiertas and not hist:
+        return enviar(chat_id, "📭 Sin operaciones aún.")
+    texto = f"📂 *ABIERTAS ({len(abiertas)})*\n"
+    if abiertas:
+        for op in abiertas[-8:]:
+            texto += render_abierta(op)
+    else:
+        texto += "_Ninguna — todas resueltas_\n\n"
+    if hist:
+        total = sum(float(h.get("pnl", 0) or 0) for h in hist)
+        gan = sum(1 for h in hist if float(h.get("pnl", 0) or 0) > 0)
+        texto += f"✅ *CERRADAS ({len(hist)})* — 🟢 {gan} / 🔴 {len(hist) - gan}\n_PnL: ${total:+.2f}_\n"
+        for h in hist[-10:]:
+            pnl = float(h.get("pnl", 0) or 0)
+            ico = "🟢" if pnl >= 0 else "🔴"
+            texto += f"{ico} {str(h.get('question', '?'))[:52]} → ${pnl:+.2f}\n"
     return enviar(chat_id, texto)
 
 def cmd_saldo(chat_id):
@@ -1439,32 +1636,37 @@ def cmd_stats(chat_id):
     return enviar(chat_id, texto)
 
 def cmd_abiertas(chat_id):
-    estado = cargar_estado()
-    ejecutadas = [c for c in estado.get("trades_copiados", []) if c.get("status") == "ejecutado"]
-    if not ejecutadas:
-        return enviar(chat_id, "📭 Sin operaciones aún.")
-    texto = f"📂 *COMBOS ABIERTOS ({len(ejecutadas)})*\n\n"
-    for op in ejecutadas[-10:]:
-        titulo = op.get("question", "?")[:50]
-        oid = str(op.get("order_id", ""))[:10]
-        precio = op.get("precio_ejecutado", 0)
-        stake = op.get("stake_dolares", 0)
-        tipo = op.get("tipo", "combo")
-        texto += f"✅ {titulo}\n   ${stake:.2f} @ {precio:.2f} ({tipo}) `{oid}`\n\n"
+    """📂 v11.5: abiertas reales (single + combos) con hora de fin; sincroniza."""
+    try:
+        abiertas, _, _ = sincronizar_operaciones()
+    except Exception:
+        abiertas = cargar_estado().get("trades_copiados", [])
+    abiertas = [o for o in abiertas if o.get("status") != "fallido"]
+    if not abiertas:
+        return enviar(chat_id, "📭 Sin operaciones abiertas (las resueltas pasan a ✅ Cerradas).")
+    texto = f"📂 *ABIERTAS ({len(abiertas)})*\n\n"
+    for op in abiertas[-10:]:
+        texto += render_abierta(op)
     return enviar(chat_id, texto)
 
 def cmd_cerradas(chat_id):
-    estado = cargar_estado()
+    """✅ v11.5: cerradas con 🟢/🔴 y PnL; sincroniza en vivo primero."""
+    try:
+        _, nuevas, estado = sincronizar_operaciones()
+    except Exception:
+        nuevas, estado = [], cargar_estado()
     historial = estado.get("historial", [])
     if not historial:
         return enviar(chat_id, "📭 Sin cerradas.")
     total = sum(float(h.get("pnl", 0) or 0) for h in historial)
-    texto = f"✅ *CERRADAS ({len(historial)})*\n_PnL: ${total:+.2f}_\n\n"
+    gan = sum(1 for h in historial if float(h.get("pnl", 0) or 0) > 0)
+    texto = f"✅ *CERRADAS ({len(historial)})* — 🟢 {gan} / 🔴 {len(historial) - gan}\n_PnL: ${total:+.2f}_\n\n"
+    if nuevas:
+        texto += f"_Recién cerradas en este chequeo: {len(nuevas)}_\n\n"
     for h in historial[-15:]:
-        titulo = h.get("question", "?")[:50]
         pnl = float(h.get("pnl", 0) or 0)
         ico = "🟢" if pnl >= 0 else "🔴"
-        texto += f"{ico} {titulo} → ${pnl:+.2f}\n"
+        texto += f"{ico} {str(h.get('question', '?'))[:48]} → ${pnl:+.2f}\n"
     return enviar(chat_id, texto)
 
 def cmd_top(chat_id):
@@ -1648,7 +1850,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v11.4 iniciado")
+    log("v11.5 iniciado")
     offset = 0
     while True:
         try:
@@ -1678,7 +1880,13 @@ def main():
         INTERVALO_AUTO_S = _im * 60
         log(f"intervalo AUTO restaurado: {_im} min")
     restaurar_horario()
-    log(f"v11.4 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    try:
+        _ab, _nu, _es = sincronizar_operaciones()   # v11.5: cierra resueltas al arrancar
+        if _nu:
+            log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
+    except Exception as e:
+        log(f"  sync inicial error: {e}")
+    log(f"v11.5 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
