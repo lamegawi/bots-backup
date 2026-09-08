@@ -2,7 +2,7 @@
 
 ## 📋 RESUMEN
 
-Bot de Telegram que opera **Combos (parlays) de Polymarket** automáticamente. **OPERATIVO**: el 7 sept 2026 la v10.9 ejecutó el primer trade real vía CLOB (Cagliari, `success:true`). PERO se descubrió que operaba **LEGS SUELTOS** (el endpoint `combo-markets` es un catálogo de piernas, NO combos formados) y **sin deduplicación** (repitió Cagliari 4× = $20, confirmado en data-api). **v11.0**: combos REALES de 2-3 legs vía Requester API RFQ oficial + deduplicación + tope diario + `/testcombo` (gratis) + `/fills`.
+Bot de Telegram que opera **Combos (parlays) de Polymarket** automáticamente. **OPERATIVO**: el 7 sept 2026 la v10.9 ejecutó el primer trade real vía CLOB (Cagliari, `success:true`). PERO se descubrió que operaba **LEGS SUELTOS** (el endpoint `combo-markets` es un catálogo de piernas, NO combos formados) y **sin deduplicación** (repitió Cagliari 4× = $20, confirmado en data-api). **v11.0**: combos REALES de 2-3 legs vía Requester API RFQ oficial + deduplicación + tope diario + `/testcombo` (gratis) + `/fills`. 🏆 **PRIMER COMBO REAL CONFIRMADO ON-CHAIN**: 8 sept 14:06:59 UTC — CS2 G2-Astralis Map1 (0.61) + WTA Sabalenka-Noskova (0.71), cuota real 1.71, $5.00, 8.38 shares, tx `0x23a0de4decb5b79b81a1900f`.
 
 ## 🎯 OBJETIVO
 
@@ -215,7 +215,9 @@ def resolver_token_real(condition_id):
 ## 📊 ESTADO ACTUAL
 
 - **HEAD del repo**: v11.0 (ver último commit de la rama)
-- **Bot en Hetzner**: v10.9 cargada pero en modo **OFF** (el user lo paró al detectar los trades duplicados de legs sueltos) — **PENDIENTE desplegar v11.0**
+- **Bot en Hetzner**: **v11.0 desplegada y OPERANDO** (8 sept 14:01:44 UTC, hash `f93ce31b`, modo AUTO, proxy 200)
+- **PRIMER COMBO REAL**: 14:06:59 UTC ✅ `rfq-56e1ce29e6a77b0edd57bffd` status **CONFIRMED** tx `0x23a0de4decb5b79b81a1900f` — 2 legs (CS2 G2-Astralis Map1 p=0.61 $291k + WTA Sabalenka-Noskova p=0.71 $217k), cuota est. 2.27 → cuota REAL del quote 1.71 (blended 0.584), 8.38 shares, $5.00
+- **Ojo margen MM**: el quote del market maker empeora la cuota estimada (~25% en este caso); la cuota que manda es la REAL (blended). Opcional: filtro `cuota_real >= cuota_est*0.75`
 - **Posiciones legacy**: ~4 fills Cagliari ($5 c/u, se resuelve 7 sept) vía CLOB single-leg
 - **PRIMER TRADE CLOB**: 17:30:30 UTC ✅ `success:true` orderID `0x60beb7ef...` status `delayed` → fill confirmado en data-api
 - **Lo que se ve en el log ahora**:
@@ -323,7 +325,8 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - ✅ v10.9: proxy inyectado en httpx del SDK + create_and_post_order nativo (fix definitivo del envío)
 - ✅ **PRIMER TRADE EJECUTADO** (v10.9, CLOB single-leg — NO era combo real)
 - ✅ v11.0 escrita y testeada en sandbox: combos REALES via RFQ + dedup + /testcombo + /fills
-- ⏳ Pendientes: desplegar v11.0, probar /testcombo, activar AUTO, confirmar primer combo FILLED
+- ✅ **PRIMER COMBO REAL CONFIRMED** (v11.0 en producción, 8 sept 14:06:59 UTC, tx on-chain)
+- ⏳ Pendientes/propuestas: SEMI con botones de aprobación (v11.1), filtro de margen MM, fase 2 copy-trading de combos
 - 🔮 Fase 2 (propuesta user): replicar combos de grandes traders (data-api expone posiciones públicas)
 
 ## 🔗 URLs ÚTILES
@@ -336,10 +339,12 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 
 ## 📝 PRÓXIMOS PASOS INMEDIATOS
 
-1. **Desplegar v11.0** en Hetzner (actualizador con HASH nuevo) — el bot arranca en modo OFF (persistido)
-2. **Probar `/testcombo`** en Telegram → valida el pipeline RFQ completo a coste $0 (quote sin aceptar)
-3. **Activar 🟢 AUTO** → 1 combo real por pasada (5 min), máx 6/día, con notificación por trade
-4. **`/fills`** para confirmar fills (RFQ status + data-api)
+1. ✅ **v11.0 desplegada y AUTO activo** (8 sept 14:01-14:07): primer combo real CONFIRMED a las 14:06:59
+2. ✅ `/testcombo` disponible (validación gratis sin aceptar quote)
+3. ✅ `/fills` para confirmar fills (RFQ status + reconciliación data-api)
+4. **Observar margen de MM**: cuota est. 2.27 → real 1.71; opcional filtro `cuota_real >= cuota_est * 0.75` para descartar quotes caros
+5. **v11.1 propuesta**: modo SEMI = propone el combo con botones ✅/❌ y solo ejecuta con aprobación
+6. **Fase 2**: replicar combos de grandes traders (posiciones públicas via data-api)
 5. **Fase 2 — replicar grandes traders**: investigar posiciones en combo-tokens de top traders via data-api/leaderboard (`/positions?user=...`), detectar legs de sus combos y pedir quotes de los mismos
 6. **Mejoras futuras**: stop-loss, P&L tiempo real, venta de combos (direction SELL vía RFQ), filtros de deportes más específicos
 
@@ -366,4 +371,6 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - 7 sept 17:30 — 🎉 PRIMER TRADE REAL (CLOB): Cagliari cuota 1.40 stake $5, success=true, status delayed → fill confirmado
 - 7 sept ~19:45 — USER DETECTA: los trades NO son combos (legs sueltos) y repitió la misma línea 4× ($20). Pone el bot en OFF
 - 7 sept ~20:00 — Confirmado en data-api (fills Cagliari 17:30/17:35/17:41). Investigación: combo-markets = CATÁLOGO DE LEGS; descubierta la Requester API RFQ oficial para combos reales (quote → orden Exchange v3 → accept → FILLED con tx_hash)
-- 7 sept ~20:15 — v11.0 escrita: motor RFQ + selección 2-3 legs (eventos distintos, 0.60-0.96, vol≥20k, fecha≥hoy) + dedup (huella+cooldown 6h+tope 6/día) + /testcombo + /fills. Tests sandbox OK (firma EIP-712 con recovery, selección live, dedup). PENDIENTE desplegar
+- 7 sept ~20:15 — v11.0 escrita: motor RFQ + selección 2-3 legs (eventos distintos, 0.60-0.96, vol≥20k, fecha≥hoy) + dedup (huella+cooldown 6h+tope 6/día) + /testcombo + /fills. Tests sandbox OK
+- 8 sept 14:01 — v11.0 desplegada en Hetzner (hash f93ce31b, modo AUTO persistido, proxy 200)
+- 8 sept 14:06 — 🏆 PRIMER COMBO REAL CONFIRMADO ON-CHAIN: pasada AUTO v11 → CS2 G2-Astralis Map1 + WTA Sabalenka-Noskova → RFQ create 200 → quote cuota 1.71 → accept 200 EXECUTING → **CONFIRMED** tx 0x23a0de4decb5b79b81a1900f. Pipeline RFQ completo en producción
