@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v11.3 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v11.4 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -22,6 +22,9 @@ Estrategia nueva (vs v7):
    lock); /start y 🟢 AUTO solo reprograman NEXT_PASADA_TS (ya no lanzan
    hilos paralelos); huella del combo RESERVADA en estado antes de crear
    el RFQ (y liberada si el intento falla terminalmente).
+   v11.4: HORARIO PERSISTENTE — proximo_paso_ts y chat_id se guardan en
+   estado; los reinicios/despliegues respetan el intervalo programado y
+   YA NO provocan pasada inmediata al primer mensaje.
 
 FIX v10.9 (el SDK usa HTTPX, no requests):
   · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
@@ -681,6 +684,41 @@ def liberar_combo(pids):
     guardar_estado(estado)
 
 
+def programar_paso(ts):
+    """v11.4: fija NEXT_PASADA_TS y lo PERSISTE (proximo_paso_ts) para que
+    reinicios/despliegues respeten el horario en vez de empezar a 0."""
+    global NEXT_PASADA_TS
+    NEXT_PASADA_TS = ts
+    try:
+        estado = cargar_estado()
+        estado["proximo_paso_ts"] = ts
+        guardar_estado(estado)
+    except Exception:
+        pass
+
+
+def restaurar_horario():
+    """v11.4: al arrancar, recupera chat_id y la próxima pasada programada.
+    Si el horario caducó o no existe → now + intervalo (NUNCA inmediata)."""
+    global CHAT_ID, NEXT_PASADA_TS
+    estado = cargar_estado()
+    cid = estado.get("chat_id")
+    if cid:
+        CHAT_ID = cid
+    ts = estado.get("proximo_paso_ts") or 0
+    try:
+        ts = float(ts)
+    except Exception:
+        ts = 0.0
+    if ts > time.time():
+        NEXT_PASADA_TS = ts
+        log(f"  horario restaurado: próxima pasada en {int((ts - time.time()) // 60)} min")
+    else:
+        NEXT_PASADA_TS = time.time() + INTERVALO_AUTO_S
+        log(f"  horario inicial: próxima pasada en {INTERVALO_AUTO_S // 60} min")
+    return NEXT_PASADA_TS
+
+
 def programar_pasada_ahora():
     """v11.3: pide una pasada inmediata SIN lanzar un hilo paralelo: el
     auto_loop (único ejecutor) la recoge en ≤5s vía NEXT_PASADA_TS."""
@@ -864,7 +902,7 @@ def cmd_intervalo(chat_id, texto):
     if mins not in INTERVALOS_MIN:
         return enviar(chat_id, f"❌ Intervalos disponibles: {', '.join(str(m) for m in INTERVALOS_MIN)} min")
     INTERVALO_AUTO_S = mins * 60
-    NEXT_PASADA_TS = time.time() + INTERVALO_AUTO_S   # siguiente lectura en X min desde ahora
+    programar_paso(time.time() + INTERVALO_AUTO_S)   # v11.4: persistido
     estado = cargar_estado()
     estado["intervalo_min"] = mins
     guardar_estado(estado)
@@ -1310,7 +1348,7 @@ def calcular_stats():
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v11.3*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v11.4*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -1525,7 +1563,7 @@ def auto_loop():
         try:
             ahora = time.time()
             if MODO_OPERACION == "AUTO" and CHAT_ID and ahora >= NEXT_PASADA_TS:
-                NEXT_PASADA_TS = ahora + INTERVALO_AUTO_S
+                programar_paso(ahora + INTERVALO_AUTO_S)
                 with PASADA_LOCK:
                     auto_pasada(CHAT_ID)
         except Exception as e:
@@ -1543,7 +1581,14 @@ def procesar_update(update):
     msg = update["message"]
     chat_id = msg["chat"]["id"]
     text = msg.get("text", "").strip()
-    CHAT_ID = chat_id
+    if chat_id != CHAT_ID:
+        CHAT_ID = chat_id
+        try:   # v11.4: persistir chat para que AUTO continúe tras reinicios
+            _est = cargar_estado()
+            _est["chat_id"] = chat_id
+            guardar_estado(_est)
+        except Exception:
+            pass
     if text == "📋 Trades":
         return cmd_trades(chat_id)
     elif text == "💰 Saldo":
@@ -1570,6 +1615,8 @@ def procesar_update(update):
             return enviar(chat_id, "❌")
     if text.startswith("⏱"):
         return cmd_intervalo(chat_id, text)
+    if _re.match(r"^\d{1,2}\s*(min|minutos|m|minutes?)\b$", text, _re.IGNORECASE):
+        return cmd_intervalo(chat_id, text)   # v11.4: texto manual "30 minutos"
     if text == "/testcombo":
         return cmd_testcombo(chat_id)
     elif text == "/fills":
@@ -1601,7 +1648,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v11.3 iniciado")
+    log("v11.4 iniciado")
     offset = 0
     while True:
         try:
@@ -1625,12 +1672,13 @@ def main():
     if not cargar_token():
         log("ERROR: no se encontró el token")
         return
-    global INTERVALO_AUTO_S
+    global INTERVALO_AUTO_S, CHAT_ID, NEXT_PASADA_TS
     _im = cargar_estado().get("intervalo_min")
     if _im in INTERVALOS_MIN:
         INTERVALO_AUTO_S = _im * 60
         log(f"intervalo AUTO restaurado: {_im} min")
-    log(f"v11.3 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    restaurar_horario()
+    log(f"v11.4 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
