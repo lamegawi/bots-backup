@@ -1,0 +1,40 @@
+=== ACTUALIZADOR v10.6 HASH FIJO - Tue Sep  8 03:45:36 PM UTC 2026 ===
+HASH: f28dfcba
+
+=== Paso 1: Detener bot ===
+
+=== Paso 2: Descargar v10.6 (HASH FIJO) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/f28dfcba/scripts_despliegue/poly_combos_bot.py
+Descargado: 85020 bytes
+
+=== Paso 3: Verificar version ===
+POLY COMBOS BOT v11.8 — COMBOS REALES (parlays multi-leg) via RFQ
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Tue 2026-09-08 15:45:38 UTC; 5s ago
+   Main PID: 1189195 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 16.2M (peak: 16.6M)
+        CPU: 238ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1189195 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log ===
+[15:36:16] Test proxy: 200
+[15:36:16] v11.7 iniciado
+[15:36:24]   pagina 1: +50 mercados, 0 legs de deportes
+[15:36:25]   pagina 2: +50 mercados, 1 legs de deportes
+[15:36:25]   pagina 3: +50 mercados, 9 legs de deportes
+[15:36:26]   pagina 4: +50 mercados, 53 legs de deportes
+[15:36:26]   pagina 5: +50 mercados, 96 legs de deportes
+[15:45:38] intervalo AUTO restaurado: 30 min
+[15:45:38]   horario restaurado: próxima pasada en 2 min
+[15:45:39]   sync: 1 op(s) cerradas (0 ganadas, PnL $-5.00)
+[15:45:39]   sync inicial: 1 op(s) cerradas (0 ganadas)
+[15:45:39] v11.8 cargado · modo=AUTO · stake=$5.0
+[15:45:39] Proxy: http://100.83.57.99:8888
+[15:45:40] Test proxy: 200
+[15:45:40] v11.8 iniciado
