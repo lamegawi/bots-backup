@@ -246,8 +246,15 @@ def resolver_token_real(condition_id):
    cd /home/user/bots-backup
    git add scripts_despliegue/poly_combos_bot.py
    git -c user.email="lamegawi@users.noreply.github.com" -c user.name="lamegawi" commit -m "descripcion"
-   git push --force origin arena/01a058fe-bots-backup
+   git push origin arena/01a058fe-bots-backup        # SIN --force: la rama la comparte otra sesión Arena
    ```
+   ⚠️ El `.git/config` del clon del sandbox es VOLÁTIL (se pierde entre turnos) y ha llegado a quedar
+   apuntando a `Albina15/bots-backup`, que **no existe** (404). El repo correcto es
+   **`lamegawi/bots-backup`**: `git -c remote.origin.url="https://x-access-token:<PAT>@github.com/lamegawi/bots-backup.git" push origin arena/01a058fe-bots-backup`.
+   El PAT caduca/se revoca (avisa al user para que lo revoque tras el arranque) → si el push responde
+   `Invalid username or token`, hace falta pedir un PAT NUEVO (fine-grained, repo lamegawi/bots-backup,
+   permiso Contents: Read and write). Verificar que el push llegó con
+   `curl -sI https://raw.githubusercontent.com/lamegawi/bots-backup/<HASH>/scripts_despliegue/poly_combos_bot.py` → 200.
 3. Obtener HEAD: `gh api repos/lamegawi/bots-backup/commits/arena/01a058fe-bots-backup -q '.sha[:8]'`
 4. Ejecutar en Hetzner:
    ```
