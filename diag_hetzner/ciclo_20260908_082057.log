@@ -1,0 +1,20 @@
+=== Chequeo 2026-09-08 08:20:57 UTC ===
+
+== jina scrap ==
+CONTAJE 0
+MD_HEAD Title: Elon Musk # tweets September 4 - September 11, 2026? — Market Context||URL Source: https://polymarket.com/event/elon-musk-of-tweets-september-4-september-11-2026||Published Time: 2026-09-01T04:00:34Z||Markdown Content:|This market will resolve according to the number of times Elon Musk (@elonmusk), posts on X from September 4 12:00 PM ET to September 11, 2026 12:00 PM ET. For the purposes of this market, only main feed posts, quote posts and reposts will count. Replies will NOT count towards the total - however, replies on the main feed such as https://x.com/elonmusk/status/1786073478711353576 will be counted by the tracker. Deleted posts will count as long as they remain available long enough to be captured by the tracker (~5 minutes). Community reposts which are not counted by the tracker not count toward the total. The resolution source for this market is the 'Post Counter' figure for posts found at https://xtracker.polymarket.com. Individual posts can be viewed by clicking "Export Data". If the tracker does not update correctly in accordance with the rules, X itself may be used as a secondary resolution source.Recent posting patterns have anchored trader sentiment for Elon Musk’s September 4–11 tweet count, with the two leading brackets—180-199 at 26.5% and 160-179 at 25.5%—reflecting a tight contest around his established moderate-to-high weekly rhythm. Trackers show recent full-week totals settling in the 160-230 range, punctuated by a sharp dip below 40 posts ov
+
+== clob probe ==
+CONDITION_ID: NONE
+
+Pos: restante=230.8  no_cub=0  bankroll=$20  dry_run=1
+
+Decision final: ninguna
+Posicion:
+{
+  "shares_yes": 230.8,
+  "precio_entrada": 0.0260,
+  "vendido_yes": 0,
+  "shares_no_cubierta": 0,
+  "ultima_accion": null
+}
