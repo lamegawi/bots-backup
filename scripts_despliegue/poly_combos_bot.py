@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v12.1 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v12.2 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -53,6 +53,13 @@ Estrategia nueva (vs v7):
    📋 Trades: un mensaje por combo con SU botón debajo. Estadísticas y
    contadores diarios separados por franja (las manuales NO consumen
    el tope AUTO).
+   v12.2: STAKE DINÁMICO $5-10 — el bot decide la apuesta según la CUOTA y
+   CÓMO VA LA COMBINADA: cuota más baja ⇒ más stake, y la ventaja REAL del
+   RFQ sobre los legs lo ajusta (si el RFQ no mejora el mercado ≥0.5%, AUTO
+   no apuesta); botones 💵 Stake AUTO/$5.
+   🔢 MÁX OPERACIONES/DÍA (5/10/20/30/50): desde 10 exige un CÓDIGO PIN de
+   4 cifras (teclado numérico, se muestra con 👁). El tope cuenta TODAS las
+   ops del día (AUTO 🤖 + manuales 🚀/💥).
    v12.1: 📂 ABIERTAS SIN DUPLICADOS — los fills repetidos de la misma
    apuesta/conjunta se agrupan en UNA línea (×N, stake y shares totales);
    títulos ENTEROS (sin cortar); y por cada posición: PRECIO ACTUAL en
@@ -303,7 +310,8 @@ TECLADO_FIJO = {
         [{"text": "💥 SúperCombos"}],
         [{"text": "✅ Cerradas"}, {"text": "📊 Stats"}, {"text": "🏆 Top"}],
         [{"text": "🟢 AUTO"}, {"text": "🟡 SEMI"}, {"text": "🔴 OFF"}],
-        [{"text": "💵 Stake $1"}, {"text": "💵 Stake $2"}, {"text": "💵 Stake $5"}],
+        [{"text": "💵 Stake AUTO"}, {"text": "💵 Stake $5"}],
+        [{"text": "🔢 Máx ops/día"}],
         [{"text": "⏱ 5m"}, {"text": "⏱ 10m"}, {"text": "⏱ 20m"}, {"text": "⏱ 30m"}, {"text": "⏱ 60m"}],
     ],
     "resize_keyboard": True,
@@ -781,8 +789,9 @@ def enviar_catalogo(chat_id, cands, prefijo, cabecera, cierre=None):
             texto += f"· {str(c['question'])[:54]} (p={c.get('yes_price', 0):.2f})\n"
         h8 = hash8_sel(sel)
         CATALOGO_CACHE[h8] = (time.time(), sel, franja)
+        _stq = stake_txt()
         boton = {"inline_keyboard": [[
-            {"text": f"▶️ {ico}#{i} · ${STAKE_POR_TRADE:.0f} · cuota ~{cuota:.2f}",
+            {"text": f"▶️ {ico}#{i} · {_stq} · cuota ~{cuota:.2f}",
              "callback_data": f"{prefijo}:{i}:{h8}"}]]}
         enviar(chat_id, texto, boton)
     _prune_catalogo()
@@ -817,13 +826,221 @@ def _prune_catalogo():
             CATALOGO_CACHE.pop(k, None)
 
 
+# ============================================
+# v12.2: STAKE DINÁMICO ($5-$10) + TOPE DIARIO CONFIGURABLE (PIN ≥10)
+# ============================================
+STAKE_MIN_AUTO = 5.0    # suelo del stake dinámico (petición user: $5-$10)
+STAKE_MAX_AUTO = 10.0   # techo del stake dinámico
+STAKE_KELLY_PCT = 25.0  # % de la ventaja (edge) que se suma al stake base
+OPS_MAX_VALORES = (5, 10, 20, 30, 50)   # topes diarios elegibles
+OPS_PIN_DESDE = 10      # desde este tope se exige código de 4 cifras
+PIN_ARCHIVO = "/opt/polymarket/codigo_pin.txt"
+STAKE_MODE = "AUTO"     # "AUTO" = dinámico $5-10 | "FIJO" = STAKE_POR_TRADE
+MAX_OPS_DIA = MAX_COMBOS_DIA   # tope diario vigente (persistido en estado)
+PIN_ESPERA = None       # {"max": int, "digits": str} mientras se teclea el PIN
+
+def stake_para(cuota_real, cuota_est, manual=False):
+    """v12.2: stake DINÁMICO entre $5 y $10 según CUOTA y CÓMO VA LA COMBINADA.
+    base por cuota: 1.2→$10 (techo) · 2.0→$8 · 2.5→$7.4 · 5→$6.2 · 10→$5.6.
+    ventaja real = precio implícito de los legs (1/cuota_est) menos el precio
+    REAL del RFQ (1/cuota_real): si el maker mejora el mercado, se suma
+    (25% de la ventaja); si el RFQ sale ≥0.5% PEOR que comprar los legs por
+    separado, AUTO devuelve 0.0 = NO apostar (un botón manual siempre opera,
+    con el suelo $5)."""
+    try:
+        cr = float(cuota_real or 0)
+        ce = float(cuota_est or 0)
+    except Exception:
+        cr, ce = 0.0, 0.0
+    if cr <= 1 or ce <= 1:
+        return STAKE_MIN_AUTO if manual else 0.0
+    edge = (1.0 / ce) - (1.0 / cr)
+    if edge < -0.005 and not manual:
+        return 0.0                      # RFQ peor que el mercado → AUTO pasa
+    base = 5.0 + 6.0 / cr
+    stake = round(base + edge * STAKE_KELLY_PCT, 2)
+    return min(max(stake, STAKE_MIN_AUTO), STAKE_MAX_AUTO)
+
+def max_ops(estado=None):
+    """v12.2: tope diario vigente (5/10/20/30/50, persistido)."""
+    if estado is None:
+        estado = cargar_estado()
+    try:
+        m = int(estado.get("max_ops_dia", MAX_OPS_DIA) or MAX_OPS_DIA)
+    except Exception:
+        m = MAX_OPS_DIA
+    return m if m in OPS_MAX_VALORES else MAX_COMBOS_DIA
+
+def ops_pagadas_hoy(estado):
+    """v12.2: operaciones de hoy que han costado dinero (filled/pendiente),
+    TODAS las franjas: el tope diario cuenta AUTO + manuales 🚀/💥."""
+    hoy = datetime.now(timezone.utc).date().isoformat()
+    return sum(1 for r in estado.get("combos_rfq", {}).get("historial", [])
+               if str(r.get("fecha", "")).startswith(hoy)
+               and r.get("status") in ("filled", "pendiente"))
+
+def codigo_pin():
+    """v12.2: código de 4 cifras para confirmar topes ≥10 ops/día. Se genera
+    una sola vez y se guarda en PIN_ARCHIVO (solo root); se puede ver en el
+    menú con 👁. Para regenerarlo: borrar el archivo y pulsar 👁 otra vez."""
+    tok = os.environ.get("POLY_PIN_OPS", "").strip()
+    if tok.isdigit() and len(tok) == 4:
+        return tok
+    try:
+        with open(PIN_ARCHIVO) as f:
+            tok = f.read().strip()
+        if tok.isdigit() and len(tok) == 4:
+            return tok
+    except Exception:
+        pass
+    tok = str(random.randint(1000, 9999))
+    try:
+        os.makedirs(os.path.dirname(PIN_ARCHIVO), exist_ok=True)
+        with open(PIN_ARCHIVO, "w") as f:
+            f.write(tok + "\n")
+        os.chmod(PIN_ARCHIVO, 0o600)
+    except Exception:
+        pass
+    return tok
+
+def set_stake_mode(modo):
+    global STAKE_MODE
+    STAKE_MODE = "AUTO" if str(modo).upper().startswith("A") else "FIJO"
+
+def stake_txt(estado=None):
+    """Texto del stake vigente para paneles/mensajes."""
+    if estado is None:
+        estado = cargar_estado()
+    if str(estado.get("stake_mode", "AUTO")).upper() == "AUTO":
+        return f"AUTO ${STAKE_MIN_AUTO:.0f}-${STAKE_MAX_AUTO:.0f} (según cuota/ventaja)"
+    try:
+        _sf = float(estado.get("stake", STAKE_POR_TRADE) or STAKE_POR_TRADE)
+    except Exception:
+        _sf = float(STAKE_POR_TRADE)
+    return f"FIJO ${_sf:.2f}"
+
+def stake_operacion(estado, cuota_real, cuota_est, manual=False):
+    """Stake final de una operación: FIJO si el user lo fijó; AUTO dinámico."""
+    if str(estado.get("stake_mode", "AUTO")).upper() != "AUTO":
+        try:
+            return float(estado.get("stake", STAKE_POR_TRADE) or STAKE_POR_TRADE)
+        except Exception:
+            return float(STAKE_POR_TRADE)
+    return stake_para(cuota_real, cuota_est, manual=manual)
+
+def set_max_ops_dia(chat_id, valor, pendiente=False):
+    """v12.2: guarda el tope diario. Con pendiente=True exige el PIN de 4
+    cifras antes (topes ≥10): abre el teclado numérico y espera el código."""
+    global PIN_ESPERA, MAX_OPS_DIA
+    try:
+        v = int(valor)
+    except Exception:
+        return enviar(chat_id, "❌ Topes disponibles: 5, 10, 20, 30 o 50 operaciones/día")
+    if v not in OPS_MAX_VALORES:
+        return enviar(chat_id, "❌ Topes disponibles: 5, 10, 20, 30 o 50 operaciones/día")
+    if pendiente:
+        PIN_ESPERA = {"max": v, "digits": ""}
+        return None
+    MAX_OPS_DIA = v
+    PIN_ESPERA = None
+    estado = cargar_estado()
+    estado["max_ops_dia"] = v
+    guardar_estado(estado)
+    hoy = ops_pagadas_hoy(estado)
+    log(f"max ops/día -> {v}")
+    pinnota = ""
+    if v >= OPS_PIN_DESDE:
+        pinnota = "\n🔐 Confirmado con código de 4 cifras"
+    return enviar(chat_id, f"🔢 *Máximo {v} operaciones/día*{pinnota}\n"
+                           f"Hoy ya hay {hoy} operación(es) pagadas.\n"
+                           f"Cuenta TODO: AUTO 🤖 + manuales 🚀/💥")
+
+def max_combos_menu(chat_id):
+    """🔢 Menú del tope diario: botones 5/10/20/30/50 (desde 10, con PIN)."""
+    estado = cargar_estado()
+    m = max_ops(estado)
+    hoy = ops_pagadas_hoy(estado)
+    kb = []
+    fila = []
+    for v in OPS_MAX_VALORES:
+        mark = "✅ " if v == m else ""
+        fila.append({"text": f"{mark}{v}/día", "callback_data": f"mx:{v}"})
+    kb.append(fila)
+    kb.append([{"text": "👁 Ver código", "callback_data": "mxp:v"},
+               {"text": "❌ Cerrar", "callback_data": "mxp:x"}])
+    txt = (f"🔢 *MÁXIMO DE OPERACIONES/DÍA*\n\n"
+           f"Ahora: *{m}/día* · hoy ya hay *{hoy}* pagadas (AUTO 🤖 + manuales 🚀/💥)\n"
+           f"Para *{OPS_PIN_DESDE} o más* hay que confirmar con un *código de 4 cifras* 🔐\n"
+           f"_(el código se ve aquí con 👁; se genera una vez y se guarda en el servidor)_")
+    return enviar(chat_id, txt, {"inline_keyboard": kb})
+
+def pin_menu(chat_id):
+    """Teclado numérico de 4 cifras para confirmar topes ≥10."""
+    global PIN_ESPERA
+    if not isinstance(PIN_ESPERA, dict):
+        return enviar(chat_id, "❌ Primero elige el tope (10/20/30/50) en 🔢 Máx ops/día")
+    kb = [[{"text": str(d), "callback_data": f"pn:{d}"} for d in (1, 2, 3)],
+          [{"text": str(d), "callback_data": f"pn:{d}"} for d in (4, 5, 6)],
+          [{"text": str(d), "callback_data": f"pn:{d}"} for d in (7, 8, 9)],
+          [{"text": "👁 Código", "callback_data": "pn:v"}, {"text": "0", "callback_data": "pn:0"},
+           {"text": "⌫ Borrar", "callback_data": "pn:b"}],
+          [{"text": "❌ Cancelar", "callback_data": "pn:x"}]]
+    d = PIN_ESPERA.get("digits", "")
+    return enviar(chat_id, f"🔐 *CÓDIGO DE 4 CIFRAS* — para *{PIN_ESPERA.get('max')}/día*\n"
+                           f"Llevas: `{d or '· · · ·'}` ({len(d)}/4)\n_Tecla las 4 cifras del código_",
+                  {"inline_keyboard": kb})
+
+def pin_tecla(chat_id, d):
+    """Procesa una tecla del PIN: dígitos, borrar, ver código, cancelar."""
+    global PIN_ESPERA
+    if not isinstance(PIN_ESPERA, dict):
+        return enviar(chat_id, "❌ No hay ningún código pendiente")
+    if d == "x":
+        mx = PIN_ESPERA.get("max")
+        PIN_ESPERA = None
+        return enviar(chat_id, f"❌ Cancelado — el tope sigue en {max_ops(cargar_estado())}/día (no se cambió a {mx})")
+    if d == "v":
+        return enviar(chat_id, f"👁 Tu código de 4 cifras: `{codigo_pin()}`\n_Tecléalo con los botones numéricos_")
+    if d == "b":
+        PIN_ESPERA["digits"] = str(PIN_ESPERA.get("digits", ""))[:-1]
+        return pin_menu(chat_id)
+    if not str(d).isdigit():
+        return
+    digs = str(PIN_ESPERA.get("digits", "")) + str(d)
+    if len(digs) < 4:
+        PIN_ESPERA["digits"] = digs
+        return pin_menu(chat_id)
+    mx = PIN_ESPERA.get("max")
+    if digs == codigo_pin():
+        return set_max_ops_dia(chat_id, mx, pendiente=False)
+    PIN_ESPERA["digits"] = ""
+    return enviar(chat_id, "❌ *Código incorrecto* — el máximo NO se ha cambiado.\n"
+                           "Intenta otra vez (👁 para ver el código) o ❌ Cancelar en 🔢 Máx ops/día")
+
+def stake_menu(chat_id):
+    """💵 Menú de stake: AUTO $5-10 (decide el bot) o FIJO manual."""
+    estado = cargar_estado()
+    modo = str(estado.get("stake_mode", "AUTO")).upper()
+    kb = [[{"text": ("✅ " if modo == "AUTO" else "") + f"AUTO ${STAKE_MIN_AUTO:.0f}-${STAKE_MAX_AUTO:.0f}",
+            "callback_data": "st:auto"},
+           {"text": ("✅ " if modo != "AUTO" else "") + f"FIJO ${STAKE_POR_TRADE:.0f}",
+            "callback_data": "st:fijo"}]]
+    txt = (f"💵 *STAKE POR OPERACIÓN*\n\nAhora: *{stake_txt(estado)}*\n\n"
+           f"*AUTO ${STAKE_MIN_AUTO:.0f}-{STAKE_MAX_AUTO:.0f}* — decide el bot según la *cuota* y *cómo va la combinada*: "
+           f"cuota más baja ⇒ más stake (1.2⇒${STAKE_MAX_AUTO:.0f} · 2.0⇒$8 · 2.5⇒$7.4 · 5⇒$6.2), "
+           f"y la ventaja REAL del RFQ sobre los legs lo ajusta; si el RFQ no mejora el mercado, AUTO no apuesta ($0).\n"
+           f"*FIJO ${STAKE_POR_TRADE:.2f}* — siempre igual (cámbialo con /stake 7).")
+    return enviar(chat_id, txt, {"inline_keyboard": kb})
+
+
 def seleccionar_combo(legs, estado):
     """v12.0: elige la mejor combinación SOLO DE FRANJA BASE (la automática):
     2-3 legs, eventos distintos, cuota est. [CUOTA_MIN, CUOTA_MAX], prefiriendo
     2 legs. Las franjas 🚀 extendida y 💥 súper son MANUALES (botones) y no
     se eligen aquí."""
-    if combos_hoy_count(estado) >= MAX_COMBOS_DIA:
-        log(f"  tope diario alcanzado ({MAX_COMBOS_DIA} combos)")
+    _mx = max_ops(estado)
+    if ops_pagadas_hoy(estado) >= _mx:
+        log(f"  tope diario alcanzado ({ops_pagadas_hoy(estado)}/{_mx} ops)")
         return None
     pool = []
     for c in legs:
@@ -944,18 +1161,32 @@ def programar_pasada_ahora():
         NEXT_PASADA_TS = time.time()
 
 
-def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, franja="base"):
+def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, franja="base", stake=None, manual=False):
     """Flujo RFQ completo: crear → validar cuota real → firmar v3 → aceptar
     → esperar FILLED → registrar + notificar. dry_run=True NO acepta (gratis).
     franja (v12.0): 'base' | 'extendida' 🚀 | 'super' 💥 — cada una con su
-    ventana de cuota real y su etiquetado en estado/estadísticas."""
+    ventana de cuota real y su etiquetado en estado/estadísticas.
+    stake (v12.2): None = lo decide el bot — inicial según la cuota est.,
+    definitivo tras la cotización con la cuota REAL y la ventaja (AUTO
+    $5-10; omitido si el RFQ no mejora el mercado); un número fuerza ese
+    stake exacto. manual=True (botón ▶️) siempre opera, mínimo $5."""
     pids = [str(c["yes_token"]) for c in sel]
     titulo = " + ".join((c.get("question") or "")[:38] for c in sel)
     prod = 1.0
     for c in sel:
         prod *= c.get("yes_price") or 0
     cuota_est = round(1 / prod, 2) if prod > 0 else 0
-    log(f"[COMBO] {len(sel)} legs · cuota est. {cuota_est} · stake ${STAKE_POR_TRADE}")
+    # v12.2: stake DINÁMICO $5-10 — inicial según la cuota (para pedir el
+    # quote); tras la cotización se reajusta con la cuota REAL y la ventaja
+    _est_st = cargar_estado()
+    _auto = str(_est_st.get("stake_mode", "AUTO")).upper() == "AUTO"
+    _stake_forzado = stake is not None
+    if stake is None:
+        if _auto:
+            stake = round(min(max(5.0 + 6.0 / cuota_est, STAKE_MIN_AUTO), STAKE_MAX_AUTO), 2) if cuota_est > 1 else STAKE_MIN_AUTO
+        else:
+            stake = stake_operacion(_est_st, cuota_est, cuota_est)
+    log(f"[COMBO] {len(sel)} legs · cuota est. {cuota_est} · stake ${stake} ({'AUTO' if _auto else 'FIJO'})")
     for c in sel:
         log(f"  · {(c.get('question') or '')[:56]} (p={c.get('yes_price'):.2f} vol=${(c.get('volumen') or 0)/1000:.0f}k)")
     if chat_id:
@@ -966,7 +1197,7 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, franja="base"):
     if not identidad:
         liberar_combo(pids)
         return False, "sin_identidad"
-    status, resp = crear_rfq(pids, STAKE_POR_TRADE, identidad)
+    status, resp = crear_rfq(pids, stake, identidad)
     log(f"  RFQ create -> {status} {str(resp)[:160]}")
     try:
         d = json.loads(resp)
@@ -1012,6 +1243,18 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, franja="base"):
             enviar(chat_id, f"⚠️ Cuota real {cuota_real} fuera de rango {banda} — quote NO aceptado ($0)")
         liberar_combo(pids)
         return False, f"cuota_real_{cuota_real}_fuera"
+    # v12.2: stake definitivo con la cuota REAL y la ventaja sobre los legs
+    if _auto and not _stake_forzado:
+        _nuevo = stake_para(cuota_real, cuota_est, manual=manual)
+        if _nuevo <= 0:
+            liberar_combo(pids)
+            log(f"  stake AUTO 0: RFQ {cuota_real} sin ventaja vs legs (est {cuota_est}) — NO se acepta ($0)")
+            if chat_id:
+                enviar(chat_id, f"⏭ *Combo omitido* ($0)\nCuota real {cuota_real} vs legs ~{cuota_est}: el RFQ no mejora el mercado, no compensa apostar.")
+            return False, "stake_auto_0_sin_margen"
+        if abs(_nuevo - stake) > 0.005:
+            log(f"  stake AUTO ajustado con cuota real: ${stake} -> ${_nuevo}")
+        stake = _nuevo
     # v11.2: saldo CLOB antes de firmar (evita accepts que fallan por reserva)
     saldo = saldo_disponible_clob()
     if saldo is not None and saldo + 0.01 < total_req:
@@ -1526,17 +1769,21 @@ def ejecutar_trade(mercado, chat_id=None):
 def cargar_estado():
     if not os.path.exists(ESTADO_FILE):
         return {"modo": MODO_OPERACION, "stake": STAKE_POR_TRADE,
+                "stake_mode": "AUTO", "max_ops_dia": MAX_COMBOS_DIA,
                 "trades_copiados": [], "historial": []}
     try:
         with open(ESTADO_FILE) as f:
             d = json.load(f)
         d.setdefault("modo", MODO_OPERACION)
         d.setdefault("stake", STAKE_POR_TRADE)
+        d.setdefault("stake_mode", "AUTO")
+        d.setdefault("max_ops_dia", MAX_COMBOS_DIA)
         d.setdefault("trades_copiados", [])
         d.setdefault("historial", [])
         return d
     except:
         return {"modo": MODO_OPERACION, "stake": STAKE_POR_TRADE,
+                "stake_mode": "AUTO", "max_ops_dia": MAX_COMBOS_DIA,
                 "trades_copiados": [], "historial": []}
 
 def guardar_estado(estado):
@@ -1821,7 +2068,7 @@ def render_grupo(g):
     es_combo = bool(op0.get("legs"))
     fr = franja_of(op0)
     ico = {"extendida": "🚀🎫", "super": "💥🎫"}.get(fr, "🎫" if es_combo else "🎯")
-    titulo = str(op0.get("question", "?"))[:160]
+    titulo = str(op0.get("question", "?"))[:240]
     txt = f"{ico} {titulo}"
     if n > 1:
         txt += f"  ×{n}"
@@ -1851,7 +2098,7 @@ def render_grupo(g):
     if es_combo:
         for q, gg in r.get("detalle", []):
             gi = "⏳" if gg is None else ("✅" if gg else "❌")
-            txt += f"   {gi} {str(q)[:120]}\n"
+            txt += f"   {gi} {str(q)[:160]}\n"
     if op0.get("status") == "pendiente":
         txt += "   ⏳ fill por confirmar (/fills)\n"
     return txt + "\n"
@@ -1884,18 +2131,21 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v12.1*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v12.2*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
-             f"Stake: *${STAKE_POR_TRADE}*\n"
+             f"Stake: *{stake_txt()}*\n"
+             f"🔢 Máx ops/día: *{max_ops()}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
              f"📌 *Estrategia v11* (COMBOS REALES):\n"
              f"   · Construye parlays de 2-3 legs deportivos\n"
              f"   · Pide quote a market makers (RFQ oficial)\n"
              f"   · Solo acepta si la cuota real entra en rango\n"
              f"   · Fill confirmado con tx_hash (FILLED)\n"
-             f"   · Sin repetir legs (cooldown {COOLDOWN_LEG_H:.0f}h) · max {MAX_COMBOS_DIA}/dia\n\n"
-             f"🤖 AUTO = solo base ({CUOTA_MIN}-{CUOTA_MAX}, {MAX_COMBOS_DIA}/día)\n"
+             f"   · Sin repetir legs (cooldown {COOLDOWN_LEG_H:.0f}h) · tope {max_ops()}/día (🔢)\n\n"
+             f"🤖 AUTO = solo base ({CUOTA_MIN}-{CUOTA_MAX}) · el tope 🔢 cuenta todas las ops\n"
              f"🚀 Extendidas (≤{CUOTA_MAX_EXT}) y 💥 Súper (≥{SUPER_CUOTA_MIN:.0f}): SOLO botones manuales, cupos {MAX_EXT_DIA}+{MAX_SUPER_DIA}/día, estadísticas aparte\n"
+             f"💵 Stake AUTO ${STAKE_MIN_AUTO:.0f}-${STAKE_MAX_AUTO:.0f} — decide el bot según la cuota y cómo va la combinada (botones 💵 para fijarlo)\n"
+             f"🔢 Máx ops/día ({max_ops()} ahora) — desde {OPS_PIN_DESDE} exige código de 4 cifras 🔐\n"
              f"⏩ Botones ⏱ — intervalo entre pasadas ({INTERVALO_AUTO_S // 60} min ahora)\n"
              f"🧪 /testcombo — prueba gratis (quote sin aceptar)\n"
              f"🔎 /fills — fills reales de la wallet\n"
@@ -1913,13 +2163,19 @@ def cmd_trades(chat_id):
         return enviar(chat_id, f"📋 *COMBOS POSIBLES*\n_Ahora mismo ningún combo cae en cuota {CUOTA_MIN}-{CUOTA_MAX_EXT}._\n\n"
                                f"💥 SúperCombos (cuota ≥{SUPER_CUOTA_MIN:.0f}) → su botón\n📂/✅ → tus operaciones")
     cabecera = (f"📋 *TOP {len(cands)} COMBOS POSIBLES* 🎰\n"
-                f"_🤖 base {CUOTA_MIN}-{CUOTA_MAX} (auto {MAX_COMBOS_DIA}/día) · 🚀 extendida ≤{CUOTA_MAX_EXT} (manual {MAX_EXT_DIA}/día) · por volumen $_\n"
+                f"_🤖 base {CUOTA_MIN}-{CUOTA_MAX} · 🚀 extendida ≤{CUOTA_MAX_EXT} (manual {MAX_EXT_DIA}/día) · tope {max_ops()}/día · por volumen $_\n"
                 f"_Un mensaje por combo, con su botón ▶️ debajo_")
     cierre = ("_Prob = producto de precios (implícita): a más cuota, menos probabilidad._\n"
-              "▶️ Botón = ejecutar ESE combo ya vía RFQ ($5, anti-duplicados)\n"
+              f"▶️ Botón = ejecutar ESE combo ya vía RFQ (stake {stake_txt()}, anti-duplicados)\n"
               f"💥 SúperCombos (cuota ≥{SUPER_CUOTA_MIN:.0f}) → su botón\n"
               "📂 Abiertas / ✅ Cerradas → tus operaciones")
     enviar_catalogo(chat_id, cands, "ej", cabecera, cierre)
+    # v12.2: ajustes rápidos — stake y tope diario
+    _kb = {"inline_keyboard": [[
+        {"text": "💵 Stake: " + ("AUTO $5-10" if str(cargar_estado().get("stake_mode", "AUTO")).upper() == "AUTO" else f"FIJO ${STAKE_POR_TRADE:.0f}"),
+         "callback_data": "st:menu"},
+        {"text": f"🔢 Máx/día: {max_ops()}", "callback_data": "mx:menu"}]]}
+    enviar(chat_id, "⚙️ _Ajustes rápidos:_", _kb)
 
 
 def cmd_super(chat_id):
@@ -1935,7 +2191,7 @@ def cmd_super(chat_id):
     cabecera = (f"💥 *TOP {len(cands)} SÚPERCOMBOS* 🎰\n"
                 f"_cuota ≥{SUPER_CUOTA_MIN:.0f} · {SUPER_LEGS[0]}-{SUPER_LEGS[1]} legs · prob ~{100 / SUPER_CUOTA_MAX:.0f}-{100 / SUPER_CUOTA_MIN:.0f}% · por volumen $_\n"
                 f"_SOLO MANUALES (no entran en AUTO) · cupo {MAX_SUPER_DIA}/día · estadísticas aparte_")
-    cierre = ("⚠️ Cuota muy alta = probabilidad baja (lotería de $5)\n"
+    cierre = (f"⚠️ Cuota muy alta = probabilidad baja (lotería de {stake_txt()})\n"
               "▶️ Botón = ejecutar ESE súper combo ya vía RFQ")
     enviar_catalogo(chat_id, cands, "sp", cabecera, cierre)
 
@@ -2000,6 +2256,30 @@ def cmd_stats(chat_id):
         texto += "\n_Aún no hay operaciones. Espera la próxima pasada AUTO._"
     return enviar(chat_id, texto)
 
+def enviar_largo(chat_id, texto, limite=3900):
+    """v12.2: Telegram corta mensajes >4096 chars — los paneles largos se
+    dividen en varios mensajes para que los títulos salgan ENTEROS."""
+    if len(texto) <= limite:
+        return enviar(chat_id, texto)
+    bloques = texto.split("\n\n")
+    partes = []
+    cur = ""
+    for b in bloques:
+        cand = (cur + "\n\n" + b) if cur else b
+        if len(cand) <= limite:
+            cur = cand
+        else:
+            if cur:
+                partes.append(cur)
+            cur = b
+    if cur:
+        partes.append(cur)
+    total = len(partes)
+    for i, p in enumerate(partes, 1):
+        cab = f"_{i}/{total}_" if total > 1 else ""
+        enviar(chat_id, (cab + "\n" + p) if cab else p)
+
+
 def cmd_abiertas(chat_id):
     """📂 v11.5: abiertas reales (single + combos) con hora de fin; sincroniza."""
     try:
@@ -2013,10 +2293,10 @@ def cmd_abiertas(chat_id):
         return enviar(chat_id, "📭 Sin operaciones abiertas (las resueltas pasan a ✅ Cerradas).")
     grupos = agrupar_abiertas(abiertas)   # v12.1: sin duplicados
     extra = f" · {len(abiertas)} fills" if len(abiertas) != len(grupos) else ""
-    texto = f"📂 *ABIERTAS ({len(grupos)} posiciones{extra})*\n\n"
+    texto = f"📂 *ABIERTAS ({len(grupos)} posiciones{extra})*"
     for g in grupos[:12]:
-        texto += render_grupo(g)
-    return enviar(chat_id, texto)
+        texto += "\n\n" + render_grupo(g).rstrip("\n")
+    return enviar_largo(chat_id, texto)
 
 def cmd_cerradas(chat_id):
     """✅ v11.5: cerradas con 🟢/🔴 y PnL; sincroniza en vivo primero."""
@@ -2044,8 +2324,9 @@ def cmd_cerradas(chat_id):
     for h in historial[-15:]:
         pnl = float(h.get("pnl", 0) or 0)
         ico = "🟢" if pnl >= 0 else "🔴"
-        texto += f"{ico} {FRANJA_ICO.get(franja_of(h), '')}{str(h.get('question', '?'))[:46]} → ${pnl:+.2f}\n"
-    return enviar(chat_id, texto)
+        titulo_h = str(h.get("question", "?"))[:240]
+        texto += f"\n{ico} {FRANJA_ICO.get(franja_of(h), '')}{titulo_h} → ${pnl:+.2f}"
+    return enviar_largo(chat_id, texto)
 
 def cmd_top(chat_id):
     texto = ("*🏆 TOP TRADERS POLYMARKET*\n\n"
@@ -2076,26 +2357,38 @@ def cmd_modo(chat_id, modo):
 
 def cmd_stake(chat_id, valor):
     global STAKE_POR_TRADE
+    if str(valor).strip().lower() in ("auto", "dinamico", "dinámico"):
+        set_stake_mode("AUTO")
+        estado = cargar_estado()
+        estado["stake_mode"] = "AUTO"
+        guardar_estado(estado)
+        return enviar(chat_id, f"💵 *Stake AUTO ${STAKE_MIN_AUTO:.0f}-${STAKE_MAX_AUTO:.0f}*\n_Decide el bot según la cuota y cómo va la combinada (cuota baja ⇒ más stake; la ventaja real del RFQ ajusta)_")
     try:
         stake = float(valor)
-        if stake < 0.5 or stake > 50:
-            return enviar(chat_id, "❌ $0.50-$50")
+        if stake < STAKE_MIN_AUTO or stake > 50:
+            return enviar(chat_id, f"❌ Stake fijo entre ${STAKE_MIN_AUTO:.0f} y $50 (o /stake auto)")
         STAKE_POR_TRADE = stake
+        set_stake_mode("FIJO")
         estado = cargar_estado()
         estado["stake"] = stake
+        estado["stake_mode"] = "FIJO"
         guardar_estado(estado)
-        return enviar(chat_id, f"*Stake: ${stake:.2f}*")
+        return enviar(chat_id, f"*Stake FIJO: ${stake:.2f}*\n_Para volver al dinámico: /stake auto_")
     except:
-        return enviar(chat_id, "❌ /stake 2.5")
+        return enviar(chat_id, "❌ /stake auto · o /stake 7 (fijo $5-$50)")
 
 def cmd_status(chat_id):
     global CHAT_ID
     CHAT_ID = chat_id
     s = calcular_stats()
-    texto = (f"📊 *ESTADO v10 (Combos)*\n\n"
+    _est = cargar_estado()
+    _mx = max_ops(_est)
+    _hoy = ops_pagadas_hoy(_est)
+    texto = (f"📊 *ESTADO v12.2 (Combos)*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
-             f"Stake: *${STAKE_POR_TRADE}*\n"
+             f"Stake: *{stake_txt(_est)}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
+             f"🔢 Máx ops/día: *{_mx}* (hoy {_hoy})\n"
              f"Trades: *{s['total']}*\n"
              f"PnL: *${s['pnl']:+.2f}*\n"
              f"Proxy: `{PROXY_URL}`\n"
@@ -2166,16 +2459,28 @@ def lanzar_combo_manual(chat_id, sel, franja="base"):
         try:
             with PASADA_LOCK:
                 estado = cargar_estado()
+                _mx = max_ops(estado)
+                _hoy = ops_pagadas_hoy(estado)
+                if _hoy >= _mx:
+                    return enviar(chat_id, f"⛔ *Tope diario alcanzado* ({_hoy}/{_mx} ops pagadas hoy)\nCámbialo en 🔢 Máx ops/día (desde {OPS_PIN_DESDE} pide código 🔐).")
                 if franja == "extendida" and extendidas_hoy_count(estado) >= MAX_EXT_DIA:
                     return enviar(chat_id, f"⛔ *Cupo de extendidas agotado hoy* ({MAX_EXT_DIA}/{MAX_EXT_DIA}) 🚀\nMañana más.")
                 if franja == "super" and supers_hoy_count(estado) >= MAX_SUPER_DIA:
                     return enviar(chat_id, f"⛔ *Cupo de súper combos agotado hoy* ({MAX_SUPER_DIA}/{MAX_SUPER_DIA}) 💥\nMañana más.")
                 if huella_combo(pids) in estado.get("combos_rfq", {}).get("huellas", {}):
                     return enviar(chat_id, f"⛔ *Combo ya operado* (anti-duplicados):\n{titulo[:80]}")
-                log(f"[MANUAL{' ' + mk if mk else ''}] botón ▶️: {titulo[:70]}")
+                _prod = 1.0
+                for _c in sel:
+                    _prod *= float(_c.get("yes_price") or 0)
+                _cest = round(1 / _prod, 2) if _prod > 0 else 0
+                _stake = stake_operacion(estado, _cest, _cest, manual=True)
+                log(f"[MANUAL{' ' + mk if mk else ''}] botón ▶️: {titulo[:70]} · stake ${_stake}")
+                _stxt = (f"AUTO ${_stake} (cuota ~{_cest})"
+                         if str(estado.get("stake_mode", "AUTO")).upper() == "AUTO"
+                         else f"FIJO ${_stake}")
                 enviar(chat_id, f"▶️ *EJECUTANDO COMBO MANUAL*{' ' + mk if mk else ''}\n📌 {titulo[:80]}\n"
-                                f"💵 ${STAKE_POR_TRADE} · pidiendo quote RFQ…")
-                ok, res = ejecutar_combo_rfq(sel, chat_id=chat_id, franja=franja)
+                                f"💵 {_stxt} · pidiendo quote RFQ…")
+                ok, res = ejecutar_combo_rfq(sel, chat_id=chat_id, franja=franja, stake=_stake)
                 if not ok:
                     enviar(chat_id, f"❌ *Combo manual no ejecutado*\n📌 {titulo[:70]}\nMotivo: `{str(res)[:60]}`")
         except Exception as e:
@@ -2213,6 +2518,54 @@ def procesar_callback(cbq):
         telegram_api("answerCallbackQuery", {"callback_query_id": cbid, "text": "Lanzando combo…"})
         lanzar_combo_manual(cid, hit[1], hit[2] if len(hit) > 2 else "base")
         return
+    if data.startswith("mx:") and cid:
+        acc = data.split(":", 1)[1]
+        telegram_api("answerCallbackQuery", {"callback_query_id": cbid})
+        if acc == "menu":
+            return max_combos_menu(cid)
+        try:
+            v = int(acc)
+        except Exception:
+            return
+        if v not in OPS_MAX_VALORES:
+            return enviar(cid, "❌ Topes disponibles: 5, 10, 20, 30 o 50")
+        if v >= OPS_PIN_DESDE:
+            return set_max_ops_dia(cid, v, pendiente=True) or pin_menu(cid)
+        return set_max_ops_dia(cid, v)
+    if data == "mxp:v" and cid:
+        telegram_api("answerCallbackQuery", {"callback_query_id": cbid})
+        return enviar(cid, f"👁 Tu código de 4 cifras: `{codigo_pin()}`\n_Se pide al fijar un máximo de {OPS_PIN_DESDE} o más operaciones/día_")
+    if data == "mxp:x" and cid:
+        telegram_api("answerCallbackQuery", {"callback_query_id": cbid})
+        return
+    if data.startswith("pn:") and cid:
+        telegram_api("answerCallbackQuery", {"callback_query_id": cbid})
+        return pin_tecla(cid, data.split(":", 1)[1])
+    if data.startswith("st:") and cid:
+        telegram_api("answerCallbackQuery", {"callback_query_id": cbid})
+        acc = data.split(":", 1)[1]
+        if acc == "menu":
+            return stake_menu(cid)
+        if acc == "auto":
+            set_stake_mode("AUTO")
+            est = cargar_estado()
+            est["stake_mode"] = "AUTO"
+            guardar_estado(est)
+            log("stake -> AUTO 5-10")
+            return enviar(cid, f"💵 *Stake AUTO ${STAKE_MIN_AUTO:.0f}-${STAKE_MAX_AUTO:.0f}*\n_Decide el bot según la cuota y cómo va la combinada: cuota 1.2 ⇒ ${STAKE_MAX_AUTO:.0f} · 2.0 ⇒ $8 · 2.5 ⇒ $7.4 · 5 ⇒ $6.2; la ventaja real del RFQ lo ajusta y si no mejora el mercado, no apuesta_")
+        if acc == "fijo":
+            set_stake_mode("FIJO")
+            est = cargar_estado()
+            est["stake_mode"] = "FIJO"
+            try:
+                _sf = float(est.get("stake", STAKE_POR_TRADE) or STAKE_POR_TRADE)
+            except Exception:
+                _sf = float(STAKE_POR_TRADE)
+            est["stake"] = _sf
+            guardar_estado(est)
+            log(f"stake -> FIJO {_sf}")
+            return enviar(cid, f"💵 *Stake FIJO ${_sf:.2f}*\n_Cámbialo con /stake 7 · vuelve al dinámico con /stake auto_")
+        return
     telegram_api("answerCallbackQuery", {"callback_query_id": cbid})
 
 
@@ -2237,6 +2590,12 @@ def procesar_update(update):
             guardar_estado(_est)
         except Exception:
             pass
+    if isinstance(PIN_ESPERA, dict) and _re.match(r"^\d{1,4}$", text):
+        for ch in text:
+            pin_tecla(chat_id, ch)
+            if not isinstance(PIN_ESPERA, dict):
+                break
+        return
     if text == "📋 Trades":
         return cmd_trades(chat_id)
     elif text == "💥 SúperCombos":
@@ -2257,12 +2616,16 @@ def procesar_update(update):
         return cmd_modo(chat_id, "SEMI")
     elif text == "🔴 OFF":
         return cmd_modo(chat_id, "OFF")
+    elif text == "💵 Stake AUTO":
+        return cmd_stake(chat_id, "auto")
     elif text.startswith("💵 Stake $"):
         try:
             v = float(text.replace("💵 Stake $", "").strip())
             return cmd_stake(chat_id, str(v))
         except:
             return enviar(chat_id, "❌")
+    elif text == "🔢 Máx ops/día":
+        return max_combos_menu(chat_id)
     if text.startswith("⏱"):
         return cmd_intervalo(chat_id, text)
     if _re.match(r"^\d{1,2}\s*(min|minutos|m|minutes?)\b$", text, _re.IGNORECASE):
@@ -2298,7 +2661,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v12.1 iniciado")
+    log("v12.2 iniciado")
     offset = 0
     while True:
         try:
@@ -2322,11 +2685,16 @@ def main():
     if not cargar_token():
         log("ERROR: no se encontró el token")
         return
-    global INTERVALO_AUTO_S, CHAT_ID, NEXT_PASADA_TS
-    _im = cargar_estado().get("intervalo_min")
+    global INTERVALO_AUTO_S, CHAT_ID, NEXT_PASADA_TS, STAKE_MODE, MAX_OPS_DIA
+    _est0 = cargar_estado()
+    _im = _est0.get("intervalo_min")
     if _im in INTERVALOS_MIN:
         INTERVALO_AUTO_S = _im * 60
         log(f"intervalo AUTO restaurado: {_im} min")
+    # v12.2: stake dinámico y tope diario persistidos
+    set_stake_mode(_est0.get("stake_mode", "AUTO"))
+    MAX_OPS_DIA = max_ops(_est0)
+    log(f"stake={STAKE_MODE} · max ops/día={MAX_OPS_DIA}")
     restaurar_horario()
     try:
         _ab, _nu, _es = sincronizar_operaciones()   # v11.5: cierra resueltas al arrancar
@@ -2334,7 +2702,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v12.1 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v12.2 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
