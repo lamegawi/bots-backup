@@ -263,12 +263,25 @@ def resolver_token_real(condition_id):
    bash /tmp/v.sh
    ```
 
-### Test rápido
+### Test rápido (test_salud.sh — creado el 8 sept, ya existe en el repo)
 ```
 ssh root@46.225.146.21
-curl -sL -o /tmp/test.sh https://raw.githubusercontent.com/lamegawi/bots-backup/<HASH>/scripts_despliegue/test_salud.sh && bash /tmp/test.sh
+cd /opt/polymarket/scripts_despliegue
+curl -sL -o test_salud.sh "https://raw.githubusercontent.com/lamegawi/bots-backup/arena/01a058fe-bots-backup/scripts_despliegue/test_salud.sh"
+bash test_salud.sh
 ```
-Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
+Comprueba 9 bloques y **publica el informe en `diag-public/diag_hetzner/salud_combos_<TS>.log`**
+(usa `/root/diag_token.txt`), así que se puede leer sin SSH:
+1. servicio (`is-active`, PID, memoria) · 2. código (tamaño, md5, banner, `py_compile`,
+contador de menciones v12.3/v12.4) · 3. `combos_estado.json` (max_ops_dia, prob_min_auto,
+stake_mode, fills de hoy, próxima pasada) · 4. **proxy Tailscale** (IP de salida debe ser
+`85.85.41.76`) · 5. APIs públicas (gamma, catálogo combos, data-api, **midpoint con un
+token REAL de la wallet** — con un token inventado da 404 y sería un falso fallo; gateway
+RFQ sin credenciales L2 responde 400/401/403/404/405 = vivo) · 6. wallet (posiciones y
+últimos fills; **en data-api `size` son SHARES, el coste en $ = size × price**) ·
+7. recursos (disco, memoria, tamaño del log) · 8. errores/tracebacks del log (el
+`read operation timed out` es ruido benigno) · 9. últimas 25 líneas. Termina con
+`RESULTADO: ✅ SALUD OK` o `⚠️ N FALLO(S)`.
 
 ## 📚 ENDPOINTS CLAVE
 
@@ -400,6 +413,7 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - 8 sept 17:03 — v12.0 desplegada y verificada (hash 1632dbd8, horario restaurado 14 min)
 - 8 sept ~17:15 — user (con panel de 6 abiertas pegado): quitar duplicados de ABIERTAS (Seyboth ×2 y combo ×2 aparecen dobles), títulos enteros, y añadir por línea precio actual + probabilidad viva + consejo cerrar/mantener → v12.1: agrupar_abiertas + render_grupo + precio_mid (midpoint CLOB) + consejo 💰/🟢/🔴; tests con el escenario exacto del user OK + smoke real
 - 8 sept ~17:30 — user confirma despliegue v12.1 (log 171644 'v12.1 iniciado') y pide v12.2: quitar botones stake $1/$2/$5 → stake decidido por el bot ENTRE $5 Y $10 según cuota y cómo vaya la combinada; y botones de MÁXIMO DE OPERACIONES/DÍA 5/10/20/30/50 con CÓDIGO de 4 cifras obligatorio para ≥10 → implementado (stake_para dinámico con reajuste post-quote, PIN persistido en /opt/polymarket/codigo_pin.txt, tope cuenta todas las franjas, títulos enteros 240 + enviar_largo anti-corte de Telegram); tests sandbox exhaustivos OK
+- 8 sept 23:23 (Madrid) — **CIERRE DE SESIÓN NOCTURNA (limpieza + backups + test de salud)**: el user se va a descansar. (1) **v12.4 empujada y verificada en GitHub** (`ef9d7912` bot, `82716622` actualizador, raw 200, md5 `bf92fb2f643beea011354edfaf798de0`, SYNTAX_OK) pero **SIN desplegar** — el servidor sigue con **v12.3** (`active` desde 20:37 UTC). (2) **Backup local** en `/home/user/backups/2026-09-08_noche/`: bot v12.2/v12.3/v12.4 + CONTEXTO + actualizar/ver + `backup_completo.py` + `MANIFIESTO.md` (inventario con md5, git, pendientes) + `TEST_SALUD_sandbox.md`. (3) **Limpieza**: borrados los ficheros de trabajo del sandbox (`patch_v124.py`, `servir_v123/`, `__pycache__`, temporales); árbol git limpio; sin procesos en segundo plano. (4) **`test_salud.sh` CREADO y commiteado** (la doc lo citaba pero nunca existió): 9 bloques + publicación en diag-public; corregidos dos falsos positivos descubiertos al validarlo contra las APIs reales (midpoint con token inventado → 404; gateway RFQ sin L2 → 404, no 401) y un bug de `grep -c` (`|| echo 0` producía "0\n0" y rompía la comparación aritmética). (5) **`backup_completo.py` RECUPERADO** a la rama desde el commit histórico `01bcaa8` (estaba perdido: no aparecía en ninguna rama del remoto). (6) **Test de salud desde el sandbox**: integridad del código en GitHub (3 refs → mismo md5), sintaxis OK, APIs públicas OK, wallet 40 posiciones ≈$18 (la mayoría ajenas al bot de combos), sin fills desde ~18:20 UTC (tope diario 8/6), smoke test de v12.4 (PIN fijo, teclado numérico, prob 60%, funciones de cierre, `direction`/`side`) y **fórmula del stake validada con 20.000 casos aleatorios** (20000/20000, invariantes [5,10] y skip con RFQ ≥0,5% peor). ACLARACIÓN: en data-api `size` = SHARES, no dólares (el fill "de $21.93" eran 21,93 sh × 0,2194 = **$4.81**); y `stake_para(cuota_REAL, cuota_EST)` lleva REAL primero — dos aserciones de test mías estaban mal, el código era correcto. PENDIENTE MAÑANA: desplegar v12.4 → `test_salud.sh` en el servidor → `/testcerrar 1` antes del primer cierre real.
 - 8 sept 22:47 (Madrid) — user pide **v12.4**: que el código de 4 cifras para cambiar el tope diario (desde 10 ops) sea **el que él elija** y lo introduzca él mismo, y que el bot le saque el **teclado numérico**. Implementado como `PIN_FIJO_OPS` (constante en el código) + `codigo_pin()` sin generación aleatoria ni archivo; teclado numérico y flujo sin cambios respecto a v12.2; PIN fuera de los logs. Testeado en sandbox (botones, texto, PIN malo, ⌫, ❌, persistencia, override env, archivo viejo ignorado). Pendiente de push + despliegue.
 - 8 sept 20:37 — **v12.3 DESPLEGADA Y VERIFICADA** en Hetzner (bot `f21c4627`, rama HEAD `a0e4121`, log `combos_update_v106_20260908_203717.log`): HASH f21c4627, 144528 bytes descargados, `POLY COMBOS BOT v12.3`, servicio active (running) 20:37:20 UTC (PID 1212692, 19.6 MB), arranque con `intervalo AUTO restaurado: 30 min` + **`stake=AUTO · max ops/día=6 · prob AUTO ≥60%`** + `v12.3 cargado … prob ≥60%`, `Test proxy: 200`, `v12.3 iniciado`, horario respetado (próxima pasada en 28 min, sin pasada inmediata). Sin traceback. En las pasadas AUTO sigue saliendo `tope diario alcanzado (8/6 ops)` → hoy ya no abrirá nada (el contador se resetea a medianoche UTC).
 - 8 sept 20:20-20:33 — **INCIDENTE DE DESPLIEGUE (resuelto)**: di las instrucciones de v12.3 ANTES de que los commits estuvieran en GitHub (el push había fallado). El actualizador paró el bot (Paso 1), descargó una página 404 de 14 bytes y su guarda de tamaño abortó sin reiniciar → bot parado y `/opt/polymarket/poly_combos_bot.py` corrupto. Causa del push fallido: el `.git/config` del sandbox (volátil) apuntaba a `Albina15/bots-backup`, que NO existe (el repo bueno es `lamegawi/bots-backup`), y la copia del PAT venía truncada del resumen de sesión. Se restauró la v12.2 desde `/root/bot_v122.bak.py` (md5 `a61a8517e0d472ba266db50aac89c3ec`, idéntico al de GitHub) y el bot volvió a estar `active` a las 20:29:37 con `v12.2 cargado`. **LECCIÓN: NUNCA dar la Parte 2 sin haber confirmado antes `curl -sI raw.githubusercontent.com/…/<HASH>/…` → 200; y si el actualizador falla a medias, el bot queda PARADO (para antes de descargar) → tener siempre a mano el bloque de rescate (backup + restart).**
