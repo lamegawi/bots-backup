@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v11.9 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v12.0 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -45,6 +45,14 @@ Estrategia nueva (vs v7):
    0.75 el techo matemático sería 2.37 y la franja no existiría), máximo
    2 extendidos/día, cuota real aceptada hasta 3.2, etiquetados en estado
    y paneles para poder medir resultados por separado.
+   v12.0: TRES FRANJAS INDEPENDIENTES (petición user) —
+   🤖 BASE (cuota 1.2-2.5): la ÚNICA automática (tope 6/día).
+   🚀 EXTENDIDA (2.5-3.0, legs ≥0.70): SOLO MANUAL (botón), cupo 2/día.
+   💥 SÚPER (cuota ≥5, 3-5 legs, p ≥0.55): SOLO MANUAL, nuevo botón
+   💥 SúperCombos (top 10 informativo), cupo 2/día.
+   📋 Trades: un mensaje por combo con SU botón debajo. Estadísticas y
+   contadores diarios separados por franja (las manuales NO consumen
+   el tope AUTO).
 
 FIX v10.9 (el SDK usa HTTPX, no requests):
   · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
@@ -122,6 +130,15 @@ CUOTA_MAX_EXT = 3.0        # techo de cuota ESTIMADA extendida
 CUOTA_REAL_MAX_EXT = 3.2   # techo de cuota REAL aceptable en extendidos
 LEG_P_MIN_EXT = 0.70       # probabilidad mínima de CADA leg en extendidos
 MAX_EXT_DIA = 2            # combos extendidos máximos por día
+# ---- v12.0: franja SÚPER 💥 (manual, informativa, cuentas aparte) ----
+SUPER_CUOTA_MIN = 5.0      # cuota estimada mínima de un súper combo
+SUPER_CUOTA_MAX = 15.0     # techo (por debajo, probabilidad ~7%)
+SUPER_LEGS = (3, 5)        # 3-5 legs (con 3 legs p≥0.60 no llega a 5)
+SUPER_P_MIN = 0.55         # probabilidad mínima por leg en súper
+SUPER_POOL_N = 20          # top-N legs por volumen para generar súper
+SUPER_REAL_MIN = 3.5       # cuota REAL mínima aceptable en súper
+SUPER_REAL_MAX = 18.0      # cuota REAL máxima aceptable en súper
+MAX_SUPER_DIA = 2          # súper combos máximos por día
 LEG_PRICE_MIN = 0.60       # yes_price mínimo por leg
 LEG_PRICE_MAX = 0.96       # yes_price máximo por leg
 LEG_VOL_MIN = 20000        # volumen mínimo ($) por leg
@@ -278,6 +295,7 @@ def http_post(url, data, headers=None, timeout=30):
 TECLADO_FIJO = {
     "keyboard": [
         [{"text": "📋 Trades"}, {"text": "💰 Saldo"}, {"text": "📂 Abiertas"}],
+        [{"text": "💥 SúperCombos"}],
         [{"text": "✅ Cerradas"}, {"text": "📊 Stats"}, {"text": "🏆 Top"}],
         [{"text": "🟢 AUTO"}, {"text": "🟡 SEMI"}, {"text": "🔴 OFF"}],
         [{"text": "💵 Stake $1"}, {"text": "💵 Stake $2"}, {"text": "💵 Stake $5"}],
@@ -625,17 +643,39 @@ def leg_reciente(estado, pid):
     return (datetime.now(timezone.utc) - t).total_seconds() / 3600.0 < COOLDOWN_LEG_H
 
 
+def franja_of(op):
+    """v12.0: franja de una operación — 'base' | 'extendida' | 'super'.
+    Compatible con registros antiguos (campo 'extendida' o sin franja)."""
+    f = op.get("franja")
+    if f in ("base", "extendida", "super"):
+        return f
+    if op.get("super"):
+        return "super"
+    if op.get("extendida"):
+        return "extendida"
+    return "base"
+
+
 def combos_hoy_count(estado):
+    """v12.0: SOLO franja base — las manuales 🚀/💥 no consumen el tope AUTO."""
     hoy = datetime.now(timezone.utc).date().isoformat()
     return sum(1 for r in estado.get("combos_rfq", {}).get("historial", [])
-               if str(r.get("fecha", "")).startswith(hoy))
+               if str(r.get("fecha", "")).startswith(hoy) and franja_of(r) == "base")
 
 
 def extendidas_hoy_count(estado):
     """v11.9: extendidos de hoy que consumieron dinero (filled/pendiente)."""
     hoy = datetime.now(timezone.utc).date().isoformat()
     return sum(1 for r in estado.get("combos_rfq", {}).get("historial", [])
-               if r.get("extendida") and str(r.get("fecha", "")).startswith(hoy)
+               if franja_of(r) == "extendida" and str(r.get("fecha", "")).startswith(hoy)
+               and r.get("status") in ("filled", "pendiente"))
+
+
+def supers_hoy_count(estado):
+    """v12.0: súper combos de hoy que consumieron dinero."""
+    hoy = datetime.now(timezone.utc).date().isoformat()
+    return sum(1 for r in estado.get("combos_rfq", {}).get("historial", [])
+               if franja_of(r) == "super" and str(r.get("fecha", "")).startswith(hoy)
                and r.get("status") in ("filled", "pendiente"))
 
 
@@ -671,12 +711,78 @@ def generar_combos_catalogo(legs, max_combos=10):
             cuota = round(1 / prod, 2) if prod > 0 else 0
             vol_min = min(c.get("volumen") or 0 for c in sel)
             if CUOTA_MIN <= cuota <= CUOTA_MAX:
-                candidatos.append((vol_min, cuota, list(sel), False))
+                candidatos.append((vol_min, cuota, list(sel), "base"))
             elif (CUOTA_MAX < cuota <= CUOTA_MAX_EXT
                   and all((c.get("yes_price") or 0) >= LEG_P_MIN_EXT for c in sel)):
-                candidatos.append((vol_min, cuota, list(sel), True))   # v11.9 🚀
+                candidatos.append((vol_min, cuota, list(sel), "extendida"))   # v11.9 🚀
     candidatos.sort(key=lambda x: -x[0])
     return candidatos[:max_combos]
+
+
+FRANJA_ICO = {"base": "", "extendida": "🚀 ", "super": "💥 "}
+
+
+def generar_super_catalogo(legs, max_combos=10):
+    """v12.0: SÚPER combos 💥 (cuota est. [5,15], 3-5 legs, p ≥0.55 c/u,
+    eventos distintos) por volumen mín. desc. Solo informativos + botón manual."""
+    pool = []
+    for c in legs:
+        pr = c.get("yes_price") or 0
+        if not (SUPER_P_MIN <= pr <= LEG_PRICE_MAX):
+            continue
+        if (c.get("volumen") or 0) < LEG_VOL_MIN:
+            continue
+        if c.get("pending"):
+            continue
+        if not fecha_slug_ok(c.get("slug")):
+            continue
+        if not c.get("yes_token"):
+            continue
+        pool.append(c)
+    pool.sort(key=lambda x: -(x.get("volumen") or 0))
+    pool = pool[:SUPER_POOL_N]
+    candidatos = []
+    for n in range(SUPER_LEGS[0], SUPER_LEGS[1] + 1):
+        if n > len(pool):
+            break
+        for sel in itertools.combinations(pool, n):
+            eventos = {evento_de(c.get("slug")) for c in sel}
+            if len(eventos) != n:
+                continue
+            prod = 1.0
+            for c in sel:
+                prod *= c.get("yes_price") or 0
+            cuota = round(1 / prod, 2) if prod > 0 else 0
+            if not (SUPER_CUOTA_MIN <= cuota <= SUPER_CUOTA_MAX):
+                continue
+            vol_min = min(c.get("volumen") or 0 for c in sel)
+            candidatos.append((vol_min, cuota, list(sel), "super"))
+    candidatos.sort(key=lambda x: -x[0])
+    return candidatos[:max_combos]
+
+
+def enviar_catalogo(chat_id, cands, prefijo, cabecera, cierre=None):
+    """v12.0: UN mensaje por combo con SU botón ▶️ debajo (Telegram no permite
+    intercalar botones entre líneas de un mismo mensaje)."""
+    enviar(chat_id, cabecera)
+    for i, (vol, cuota, sel, franja) in enumerate(cands, 1):
+        prod = 1.0
+        for c in sel:
+            prod *= float(c.get("yes_price") or 0)
+        ico = FRANJA_ICO.get(franja, "")
+        texto = (f"{i}. {ico}🎫 cuota ~{cuota:.2f} · 💵 ${vol:,.0f}\n"
+                 f"🎯 prob ~{prod * 100:.0f}% — {etiqueta_prob(prod)}\n")
+        for c in sel:
+            texto += f"· {str(c['question'])[:54]} (p={c.get('yes_price', 0):.2f})\n"
+        h8 = hash8_sel(sel)
+        CATALOGO_CACHE[h8] = (time.time(), sel, franja)
+        boton = {"inline_keyboard": [[
+            {"text": f"▶️ {ico}#{i} · ${STAKE_POR_TRADE:.0f} · cuota ~{cuota:.2f}",
+             "callback_data": f"{prefijo}:{i}:{h8}"}]]}
+        enviar(chat_id, texto, boton)
+    _prune_catalogo()
+    if cierre:
+        enviar(chat_id, cierre)
 
 
 CATALOGO_CACHE = {}   # v11.8: hash8 -> (ts, sel) para los botones ▶️
@@ -707,14 +813,13 @@ def _prune_catalogo():
 
 
 def seleccionar_combo(legs, estado):
-    """v11.9: elige la mejor combinación → (sel, extendida).
-    BASE: cuota est. [CUOTA_MIN, CUOTA_MAX], prefiriendo 2 legs.
-    EXTENDIDA 🚀: cuota est. (CUOTA_MAX, CUOTA_MAX_EXT] con TODOS los legs
-    p >= LEG_P_MIN_EXT y cupo diario disponible; compite por volumen con
-    los base de 3 legs cuando no hay base de 2."""
+    """v12.0: elige la mejor combinación SOLO DE FRANJA BASE (la automática):
+    2-3 legs, eventos distintos, cuota est. [CUOTA_MIN, CUOTA_MAX], prefiriendo
+    2 legs. Las franjas 🚀 extendida y 💥 súper son MANUALES (botones) y no
+    se eligen aquí."""
     if combos_hoy_count(estado) >= MAX_COMBOS_DIA:
         log(f"  tope diario alcanzado ({MAX_COMBOS_DIA} combos)")
-        return None, False
+        return None
     pool = []
     for c in legs:
         p = c.get("yes_price") or 0
@@ -734,7 +839,7 @@ def seleccionar_combo(legs, estado):
     pool.sort(key=lambda x: -(x.get("volumen") or 0))
     pool = pool[:POOL_TOP_N]
     huellas = estado.get("combos_rfq", {}).get("huellas", {})
-    base, ext = [], []
+    base = []
     for n in range(LEGS_POR_COMBO[0], LEGS_POR_COMBO[1] + 1):
         if n > len(pool):
             break
@@ -749,29 +854,20 @@ def seleccionar_combo(legs, estado):
             for c in sel:
                 prod *= c.get("yes_price") or 0
             cuota = round(1 / prod, 2) if prod > 0 else 0
+            if not (CUOTA_MIN <= cuota <= CUOTA_MAX):
+                continue
             vol_min = min(c.get("volumen") or 0 for c in sel)
-            if CUOTA_MIN <= cuota <= CUOTA_MAX:
-                base.append((vol_min, cuota, list(sel)))
-            elif (CUOTA_MAX < cuota <= CUOTA_MAX_EXT
-                  and all((c.get("yes_price") or 0) >= LEG_P_MIN_EXT for c in sel)):
-                ext.append((vol_min, cuota, list(sel)))   # v11.9 🚀
+            base.append((vol_min, cuota, list(sel)))
     def _mejor(lst):
         lst = sorted(lst, key=lambda x: -x[0])
         return lst[0] if lst else None
-    # v11.9: la franja EXTENDIDA tiene prioridad mientras haya cupo diario
-    # (si no, sus legs siempre formarían antes un par base y nunca saldría)
-    if ext and extendidas_hoy_count(estado) < MAX_EXT_DIA:
-        me = _mejor(ext)
-        return me[2], True
-    if ext:
-        log(f"  🚀 extendidos disponibles pero cupo diario agotado ({MAX_EXT_DIA})")
-    m2 = _mejor([c for c in base if len(c[2]) == 2])
+    m2 = _mejor([c for c in base if len(c[2]) == 2])   # preferir 2 legs
     if m2:
-        return m2[2], False
+        return m2[2]
     m3 = _mejor([c for c in base if len(c[2]) == 3])
     if m3:
-        return m3[2], False
-    return None, False
+        return m3[2]
+    return None
 
 
 def reservar_combo(pids):
@@ -843,10 +939,11 @@ def programar_pasada_ahora():
         NEXT_PASADA_TS = time.time()
 
 
-def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, extendida=False):
+def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, franja="base"):
     """Flujo RFQ completo: crear → validar cuota real → firmar v3 → aceptar
     → esperar FILLED → registrar + notificar. dry_run=True NO acepta (gratis).
-    extendida=True (v11.9 🚀): ventana de cuota real ampliada hasta CUOTA_REAL_MAX_EXT."""
+    franja (v12.0): 'base' | 'extendida' 🚀 | 'super' 💥 — cada una con su
+    ventana de cuota real y su etiquetado en estado/estadísticas."""
     pids = [str(c["yes_token"]) for c in sel]
     titulo = " + ".join((c.get("question") or "")[:38] for c in sel)
     prod = 1.0
@@ -897,9 +994,14 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, extendida=False):
         if chat_id:
             enviar(chat_id, f"🧪 *TEST COMBO OK*\n💱 Cuota real: *{cuota_real}* · {shares:.2f} shares · ${total_req:.2f}\nNo aceptado (coste $0). rfq_id `{str(rfq_id)[:18]}`")
         return True, {"dry_run": True, "cuota": cuota_real, "rfq_id": rfq_id}
-    max_real = CUOTA_REAL_MAX_EXT if extendida else CUOTA_MAX
-    if not (CUOTA_MIN <= cuota_real <= max_real):
-        banda = f"[{CUOTA_MIN}-{max_real}]" + (" 🚀" if extendida else "")
+    if franja == "super":
+        min_real, max_real = SUPER_REAL_MIN, SUPER_REAL_MAX
+    elif franja == "extendida":
+        min_real, max_real = CUOTA_MIN, CUOTA_REAL_MAX_EXT
+    else:
+        min_real, max_real = CUOTA_MIN, CUOTA_MAX
+    if not (min_real <= cuota_real <= max_real):
+        banda = f"[{min_real}-{max_real}]" + {"base": "", "extendida": " 🚀", "super": " 💥"}.get(franja, "")
         log(f"  NO acepto: cuota real {cuota_real} fuera de {banda}")
         if chat_id:
             enviar(chat_id, f"⚠️ Cuota real {cuota_real} fuera de rango {banda} — quote NO aceptado ($0)")
@@ -978,8 +1080,10 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, extendida=False):
         "slug": "", "market_id": "", "condition_id": req.get("condition_id", ""),
         "real_token": req.get("yes_position_id"),
         "volumen": min((c.get("volumen") or 0) for c in sel),
-        "tags": ["combo-rfq"] + (["extendida"] if extendida else []),
-        "extendida": bool(extendida),
+        "tags": ["combo-rfq"] + ([franja] if franja != "base" else []),
+        "franja": franja,
+        "extendida": franja == "extendida",
+        "super": franja == "super",
     }
     estado = cargar_estado()
     rfq = estado.setdefault("combos_rfq", {"huellas": {}, "legs": {}, "historial": []})
@@ -992,12 +1096,14 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, extendida=False):
         rfq["legs"][pid] = ahora_iso
     rfq["historial"].append({"fecha": ahora_iso, "rfq_id": rfq_id, "status": registro["status"],
                              "cuota": cuota_real, "stake": registro["stake_dolares"],
-                             "legs": titulo, "extendida": bool(extendida)})
+                             "legs": titulo, "franja": franja,
+                             "extendida": franja == "extendida"})
     estado.setdefault("trades_copiados", []).append(registro)
     guardar_estado(estado)
     if chat_id:
         if ok:
-            enviar(chat_id, f"✅ *COMBO REAL LLENADO* {'🚀 EXTENDIDO ' if extendida else ''}🎉\n📌 {titulo[:80]}\n"
+            mk_ll = {"base": "", "extendida": "🚀 EXTENDIDO ", "super": "💥 SÚPER "}.get(franja, "")
+            enviar(chat_id, f"✅ *COMBO REAL LLENADO* {mk_ll}🎉\n📌 {titulo[:80]}\n"
                             f"💵 {shares:.2f} shares @ {blended:.3f} (cuota {cuota_real})\n"
                             f"💰 ${total_req:.2f}\n🔗 tx `{str(tx)[:24]}`")
         elif pendiente:
@@ -1037,10 +1143,10 @@ def cmd_testcombo(chat_id):
             legs = listar_combos()
             if not legs:
                 return enviar(chat_id, "🧪 Sin legs disponibles ahora")
-            sel, ext = seleccionar_combo(legs, cargar_estado())
+            sel = seleccionar_combo(legs, cargar_estado())
             if not sel:
                 return enviar(chat_id, "🧪 No hay combos viables ahora (cuota/cooldown/tope diario/eventos)")
-            ejecutar_combo_rfq(sel, chat_id, dry_run=True, extendida=ext)
+            ejecutar_combo_rfq(sel, chat_id, dry_run=True)
         except Exception as e:
             log(f"testcombo error: {e}")
             enviar(chat_id, f"🧪 Error: {str(e)[:150]}")
@@ -1448,6 +1554,8 @@ def calcular_stats():
     s = {
         "total": len(copiados), "wins": 0, "losses": 0,
         "pnl": 0.0, "stake": 0.0, "mejor": None, "peor": None,
+        "por_franja": {f: {"ops": 0, "wins": 0, "pnl": 0.0, "stake": 0.0}
+                       for f in ("base", "extendida", "super")},
     }
     for op in copiados + historial:
         pnl = op.get("pnl")
@@ -1457,6 +1565,11 @@ def calcular_stats():
             s["stake"] += stake
             if pnl > 0: s["wins"] += 1
             else: s["losses"] += 1
+            pf = s["por_franja"][franja_of(op)]
+            pf["ops"] += 1
+            pf["pnl"] += pnl
+            pf["stake"] += stake
+            if pnl > 0: pf["wins"] += 1
             if s["mejor"] is None or pnl > s["mejor"].get("pnl", -9999):
                 s["mejor"] = op
             if s["peor"] is None or pnl < s["peor"].get("pnl", 9999):
@@ -1631,7 +1744,8 @@ def render_abierta(op):
     stake = float(op.get("stake_dolares") or 0)
     cuota = op.get("cuota_ejecutada") or 0
     es_combo = bool(op.get("legs"))
-    ico_op = "🚀🎫" if op.get("extendida") else ("🎫" if es_combo else "🎯")
+    fr_op = franja_of(op)
+    ico_op = {"extendida": "🚀🎫", "super": "💥🎫"}.get(fr_op, "🎫" if es_combo else "🎯")
     txt = f"{ico_op} {str(op.get('question', '?'))[:58]}\n   ${stake:.2f}"
     if cuota:
         txt += f" · cuota {float(cuota):.2f}"
@@ -1651,7 +1765,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v11.9*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v12.0*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -1661,7 +1775,8 @@ def cmd_start(chat_id):
              f"   · Solo acepta si la cuota real entra en rango\n"
              f"   · Fill confirmado con tx_hash (FILLED)\n"
              f"   · Sin repetir legs (cooldown {COOLDOWN_LEG_H:.0f}h) · max {MAX_COMBOS_DIA}/dia\n\n"
-             f"🚀 Franja extendida: cuota hasta {CUOTA_MAX_EXT} (legs ≥{LEG_P_MIN_EXT}, máx {MAX_EXT_DIA}/día)\n"
+             f"🤖 AUTO = solo base ({CUOTA_MIN}-{CUOTA_MAX}, {MAX_COMBOS_DIA}/día)\n"
+             f"🚀 Extendidas (≤{CUOTA_MAX_EXT}) y 💥 Súper (≥{SUPER_CUOTA_MIN:.0f}): SOLO botones manuales, cupos {MAX_EXT_DIA}+{MAX_SUPER_DIA}/día, estadísticas aparte\n"
              f"⏩ Botones ⏱ — intervalo entre pasadas ({INTERVALO_AUTO_S // 60} min ahora)\n"
              f"🧪 /testcombo — prueba gratis (quote sin aceptar)\n"
              f"🔎 /fills — fills reales de la wallet\n"
@@ -1669,38 +1784,41 @@ def cmd_start(chat_id):
     return enviar(chat_id, texto)
 
 def cmd_trades(chat_id):
-    """📋 v11.7: SOLO INFORMATIVO — top 10 COMBOS CANDIDATOS REALES
-    (2-3 legs, eventos distintos, cuota estimada en rango) por volumen $.
-    Las operaciones están en 📂 Abiertas / ✅ Cerradas."""
+    """📋 v12.0: catálogo informativo BASE + 🚀 EXTENDIDA (manual), un mensaje
+    por combo con SU botón ▶️ debajo. Operaciones: 📂 Abiertas / ✅ Cerradas."""
     legs = listar_combos()
     if not legs:
         return enviar(chat_id, "❌ No hay catálogo de combos disponible ahora mismo.")
     cands = generar_combos_catalogo(legs, 10)
     if not cands:
-        return enviar(chat_id, f"📋 *COMBOS POSIBLES*\n_Ahora mismo ningún combo de {LEGS_POR_COMBO[0]}-{LEGS_POR_COMBO[1]} legs"
-                               f" cae en cuota {CUOTA_MIN}-{CUOTA_MAX}._\n\nℹ️ Informativo · tus operaciones: 📂 Abiertas / ✅ Cerradas")
-    texto = (f"📋 *TOP {len(cands)} COMBOS POSIBLES* 🎰\n"
-             f"_{LEGS_POR_COMBO[0]}-{LEGS_POR_COMBO[1]} legs · cuota {CUOTA_MIN}-{CUOTA_MAX} (🚀 hasta {CUOTA_MAX_EXT}) · por volumen $_\n\n")
-    botones = []
-    for i, (vol, cuota, sel, ext) in enumerate(cands, 1):
-        prod = 1.0
-        for c in sel:
-            prod *= float(c.get("yes_price") or 0)
-        texto += (f"{i}. {'🚀 ' if ext else ''}🎫 cuota ~{cuota:.2f} · 💵 ${vol:,.0f}\n"
-                  f"   🎯 prob ~{prod * 100:.0f}% — {etiqueta_prob(prod)}\n")
-        for c in sel:
-            texto += f"   · {str(c['question'])[:52]} (p={c.get('yes_price', 0):.2f})\n"
-        texto += "\n"
-        h8 = hash8_sel(sel)
-        CATALOGO_CACHE[h8] = (time.time(), sel, ext)
-        botones.append([{"text": f"▶️ {'🚀 ' if ext else ''}#{i} · ${STAKE_POR_TRADE:.0f} · cuota ~{cuota:.2f}",
-                         "callback_data": f"ej:{i}:{h8}"}])
-    _prune_catalogo()
-    texto += ("_Prob = producto de precios (implícita del mercado): a más cuota, menos probabilidad._\n"
-              f"🚀 = extendida (legs ≥{LEG_P_MIN_EXT}, máx {MAX_EXT_DIA}/día)\n"
-              "▶️ *Botón* = ejecutar ESE combo ya vía RFQ (anti-duplicados activo)\n"
+        return enviar(chat_id, f"📋 *COMBOS POSIBLES*\n_Ahora mismo ningún combo cae en cuota {CUOTA_MIN}-{CUOTA_MAX_EXT}._\n\n"
+                               f"💥 SúperCombos (cuota ≥{SUPER_CUOTA_MIN:.0f}) → su botón\n📂/✅ → tus operaciones")
+    cabecera = (f"📋 *TOP {len(cands)} COMBOS POSIBLES* 🎰\n"
+                f"_🤖 base {CUOTA_MIN}-{CUOTA_MAX} (auto {MAX_COMBOS_DIA}/día) · 🚀 extendida ≤{CUOTA_MAX_EXT} (manual {MAX_EXT_DIA}/día) · por volumen $_\n"
+                f"_Un mensaje por combo, con su botón ▶️ debajo_")
+    cierre = ("_Prob = producto de precios (implícita): a más cuota, menos probabilidad._\n"
+              "▶️ Botón = ejecutar ESE combo ya vía RFQ ($5, anti-duplicados)\n"
+              f"💥 SúperCombos (cuota ≥{SUPER_CUOTA_MIN:.0f}) → su botón\n"
               "📂 Abiertas / ✅ Cerradas → tus operaciones")
-    return enviar(chat_id, texto, {"inline_keyboard": botones})
+    enviar_catalogo(chat_id, cands, "ej", cabecera, cierre)
+
+
+def cmd_super(chat_id):
+    """💥 v12.0: SÚPER combos (cuota ≥5, 3-5 legs) — informativos, ejecución
+    SOLO manual con su botón, cupo y estadísticas aparte. Máx 10."""
+    legs = listar_combos()
+    if not legs:
+        return enviar(chat_id, "❌ No hay catálogo disponible ahora mismo.")
+    cands = generar_super_catalogo(legs, 10)
+    if not cands:
+        return enviar(chat_id, f"💥 *SÚPERCOMBOS*\n_Ahora mismo ningún combo de {SUPER_LEGS[0]}-{SUPER_LEGS[1]} legs alcanza"
+                               f" cuota ≥{SUPER_CUOTA_MIN:.0f} (legs p ≥{SUPER_P_MIN})._\n\nℹ️ Solo manuales · cupo {MAX_SUPER_DIA}/día · estadísticas aparte")
+    cabecera = (f"💥 *TOP {len(cands)} SÚPERCOMBOS* 🎰\n"
+                f"_cuota ≥{SUPER_CUOTA_MIN:.0f} · {SUPER_LEGS[0]}-{SUPER_LEGS[1]} legs · prob ~{100 / SUPER_CUOTA_MAX:.0f}-{100 / SUPER_CUOTA_MIN:.0f}% · por volumen $_\n"
+                f"_SOLO MANUALES (no entran en AUTO) · cupo {MAX_SUPER_DIA}/día · estadísticas aparte_")
+    cierre = ("⚠️ Cuota muy alta = probabilidad baja (lotería de $5)\n"
+              "▶️ Botón = ejecutar ESE súper combo ya vía RFQ")
+    enviar_catalogo(chat_id, cands, "sp", cabecera, cierre)
 
 def cmd_saldo(chat_id):
     env = cargar_env()
@@ -1748,6 +1866,11 @@ def cmd_stats(chat_id):
         texto += f"PnL: *${s['pnl']:+.2f}*\n"
         texto += f"Stake: ${s['stake']:.2f}\n"
         texto += f"ROI: *{roi:+.1f}%*\n"
+        pf = s.get("por_franja", {})
+        texto += "\n_Por franja:_\n"
+        for nombre, fr in (("🤖 Base/AUTO", "base"), ("🚀 Extendidas", "extendida"), ("💥 Súper", "super")):
+            d = pf.get(fr) or {"ops": 0, "wins": 0, "pnl": 0.0}
+            texto += f"{nombre}: {d['ops']} ops · ✅{d['wins']} · PnL ${d['pnl']:+.2f}\n"
     if s["mejor"]:
         m = s["mejor"]
         texto += f"\n🏆 Mejor: {m.get('question','?')[:40]} → ${m.get('pnl',0):+.2f}\n"
@@ -1785,13 +1908,22 @@ def cmd_cerradas(chat_id):
         return enviar(chat_id, "📭 Sin cerradas.")
     total = sum(float(h.get("pnl", 0) or 0) for h in historial)
     gan = sum(1 for h in historial if float(h.get("pnl", 0) or 0) > 0)
-    texto = f"✅ *CERRADAS ({len(historial)})* — 🟢 {gan} / 🔴 {len(historial) - gan}\n_PnL: ${total:+.2f}_\n\n"
+    texto = f"✅ *CERRADAS ({len(historial)})* — 🟢 {gan} / 🔴 {len(historial) - gan}\n_PnL: ${total:+.2f}_\n"
+    sub = {}
+    for h in historial:
+        d = sub.setdefault(franja_of(h), [0, 0.0])
+        d[0] += 1
+        d[1] += float(h.get("pnl", 0) or 0)
+    partes = [f"{nombre}: {sub[fr][0]} · ${sub[fr][1]:+.2f}"
+              for nombre, fr in (("🤖 base", "base"), ("🚀 ext", "extendida"), ("💥 súper", "super"))
+              if fr in sub]
+    texto += " · ".join(partes) + "\n\n"
     if nuevas:
         texto += f"_Recién cerradas en este chequeo: {len(nuevas)}_\n\n"
     for h in historial[-15:]:
         pnl = float(h.get("pnl", 0) or 0)
         ico = "🟢" if pnl >= 0 else "🔴"
-        texto += f"{ico} {'🚀 ' if h.get('extendida') else ''}{str(h.get('question', '?'))[:48]} → ${pnl:+.2f}\n"
+        texto += f"{ico} {FRANJA_ICO.get(franja_of(h), '')}{str(h.get('question', '?'))[:46]} → ${pnl:+.2f}\n"
     return enviar(chat_id, texto)
 
 def cmd_top(chat_id):
@@ -1871,13 +2003,11 @@ def auto_pasada(chat_id):
         log("  sin legs disponibles")
         return
     estado = cargar_estado()
-    sel, ext = seleccionar_combo(legs, estado)
+    sel = seleccionar_combo(legs, estado)
     if not sel:
         log("  sin combos viables esta pasada (eventos distintos, cuota, cooldown, tope)")
         return
-    if ext:
-        log(f"  🚀 EXTENDIDA elegida (legs ≥{LEG_P_MIN_EXT}, cuota ≤{CUOTA_MAX_EXT}, cupo {extendidas_hoy_count(estado) + 1}/{MAX_EXT_DIA} hoy)")
-    ok, res = ejecutar_combo_rfq(sel, chat_id, extendida=ext)
+    ok, res = ejecutar_combo_rfq(sel, chat_id)
     if ok:
         log(f"  ✅ combo OK: {str(res)[:110]}")
     else:
@@ -1903,22 +2033,28 @@ def auto_loop():
 # ============================================
 # LOOP TELEGRAM
 # ============================================
-def lanzar_combo_manual(chat_id, sel, extendida=False):
-    """v11.8: ejecuta un combo elegido por botón. Hilo propio pero SERIALIZADO
-    con el auto_loop (PASADA_LOCK) y con check anti-duplicados dentro del lock."""
+def lanzar_combo_manual(chat_id, sel, franja="base"):
+    """v12.0: ejecuta un combo elegido por botón (franja base/extendida/super).
+    Hilo propio SERIALIZADO con el auto_loop (PASADA_LOCK); anti-duplicados y
+    cupo diario por franja dentro del lock."""
     pids = [str(c.get("yes_token")) for c in sel]
     titulo = " + ".join(str(c.get("question", "?"))[:38] for c in sel)
+    mk = FRANJA_ICO.get(franja, "").strip()
 
     def _run():
         try:
             with PASADA_LOCK:
                 estado = cargar_estado()
+                if franja == "extendida" and extendidas_hoy_count(estado) >= MAX_EXT_DIA:
+                    return enviar(chat_id, f"⛔ *Cupo de extendidas agotado hoy* ({MAX_EXT_DIA}/{MAX_EXT_DIA}) 🚀\nMañana más.")
+                if franja == "super" and supers_hoy_count(estado) >= MAX_SUPER_DIA:
+                    return enviar(chat_id, f"⛔ *Cupo de súper combos agotado hoy* ({MAX_SUPER_DIA}/{MAX_SUPER_DIA}) 💥\nMañana más.")
                 if huella_combo(pids) in estado.get("combos_rfq", {}).get("huellas", {}):
                     return enviar(chat_id, f"⛔ *Combo ya operado* (anti-duplicados):\n{titulo[:80]}")
-                log(f"[MANUAL] botón ▶️: {titulo[:70]}")
-                enviar(chat_id, f"▶️ *EJECUTANDO COMBO MANUAL*{' 🚀 EXTENDIDO' if extendida else ''}\n📌 {titulo[:80]}\n"
+                log(f"[MANUAL{' ' + mk if mk else ''}] botón ▶️: {titulo[:70]}")
+                enviar(chat_id, f"▶️ *EJECUTANDO COMBO MANUAL*{' ' + mk if mk else ''}\n📌 {titulo[:80]}\n"
                                 f"💵 ${STAKE_POR_TRADE} · pidiendo quote RFQ…")
-                ok, res = ejecutar_combo_rfq(sel, chat_id=chat_id, extendida=extendida)
+                ok, res = ejecutar_combo_rfq(sel, chat_id=chat_id, franja=franja)
                 if not ok:
                     enviar(chat_id, f"❌ *Combo manual no ejecutado*\n📌 {titulo[:70]}\nMotivo: `{str(res)[:60]}`")
         except Exception as e:
@@ -1946,15 +2082,15 @@ def procesar_callback(cbq):
                 guardar_estado(_est)
             except Exception:
                 pass
-    if data.startswith("ej:") and cid:
+    if (data.startswith("ej:") or data.startswith("sp:")) and cid:
         h8 = data.split(":")[-1]
         hit = CATALOGO_CACHE.get(h8)
         if not hit or time.time() - hit[0] > 3600:
             telegram_api("answerCallbackQuery", {"callback_query_id": cbid,
-                         "text": "Catálogo caducado: pulsa 📋 Trades otra vez", "show_alert": True})
+                         "text": "Catálogo caducado: pulsa 📋 Trades o 💥 SúperCombos otra vez", "show_alert": True})
             return
         telegram_api("answerCallbackQuery", {"callback_query_id": cbid, "text": "Lanzando combo…"})
-        lanzar_combo_manual(cid, hit[1], hit[2] if len(hit) > 2 else False)
+        lanzar_combo_manual(cid, hit[1], hit[2] if len(hit) > 2 else "base")
         return
     telegram_api("answerCallbackQuery", {"callback_query_id": cbid})
 
@@ -1982,6 +2118,8 @@ def procesar_update(update):
             pass
     if text == "📋 Trades":
         return cmd_trades(chat_id)
+    elif text == "💥 SúperCombos":
+        return cmd_super(chat_id)
     elif text == "💰 Saldo":
         return cmd_saldo(chat_id)
     elif text == "📂 Abiertas":
@@ -2039,7 +2177,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v11.9 iniciado")
+    log("v12.0 iniciado")
     offset = 0
     while True:
         try:
@@ -2075,7 +2213,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v11.9 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v12.0 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
