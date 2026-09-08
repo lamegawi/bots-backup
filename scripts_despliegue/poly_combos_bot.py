@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v12.0 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v12.1 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -53,6 +53,11 @@ Estrategia nueva (vs v7):
    📋 Trades: un mensaje por combo con SU botón debajo. Estadísticas y
    contadores diarios separados por franja (las manuales NO consumen
    el tope AUTO).
+   v12.1: 📂 ABIERTAS SIN DUPLICADOS — los fills repetidos de la misma
+   apuesta/conjunta se agrupan en UNA línea (×N, stake y shares totales);
+   títulos ENTEROS (sin cortar); y por cada posición: PRECIO ACTUAL en
+   vivo (midpoint CLOB, cache 60s), probabilidad ahora, valor vs pago y
+   recomendación (💰 cerrar anticipado / 🟢 mantener / 🔴 muy caída).
 
 FIX v10.9 (el SDK usa HTTPX, no requests):
   · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
@@ -1738,6 +1743,120 @@ def sincronizar_operaciones():
     return quedan, nuevas, estado
 
 
+_PRECIO_CACHE = {}   # v12.1: token_id -> (ts, mid)
+
+
+def precio_mid(token_id):
+    """v12.1: midpoint CLOB público = precio/probabilidad actual del token.
+    Cache 60s. None si no disponible."""
+    tok = str(token_id or "")
+    if not tok.isdigit():
+        return None
+    ahora = time.time()
+    hit = _PRECIO_CACHE.get(tok)
+    if hit and ahora - hit[0] < 60:
+        return hit[1]
+    mid = None
+    try:
+        req = urllib.request.Request(f"{CLOB_PUB}/midpoint?token_id={tok}",
+                                     headers={"User-Agent": "poly-combos-bot"})
+        with urllib.request.urlopen(req, timeout=10) as r:
+            d = json.loads(r.read().decode())
+        mid = float(d.get("mid"))
+        if not (0 < mid < 1):
+            mid = None
+    except Exception:
+        mid = None
+    _PRECIO_CACHE[tok] = (ahora, mid)
+    return mid
+
+
+def agrupar_abiertas(abiertas):
+    """v12.1: agrupa fills duplicados de la MISMA posición (misma apuesta o
+    misma conjunta) → una sola entrada con sus ops."""
+    grupos, orden = {}, []
+    for op in abiertas:
+        legs = op.get("legs") or []
+        if legs:
+            clave = ("combo", huella_combo(sorted(str(l.get("position_id")) for l in legs)))
+        else:
+            clave = ("single", str(op.get("real_token") or op.get("condition_id") or op.get("question")))
+        g = grupos.get(clave)
+        if not g:
+            g = {"ops": []}
+            grupos[clave] = g
+            orden.append(clave)
+        g["ops"].append(op)
+    return [grupos[c] for c in orden]
+
+
+def vivo_de(op):
+    """Precio vivo: single = mid de su token; combo = producto de mids de legs."""
+    legs = op.get("legs") or []
+    if legs:
+        prod = 1.0
+        for lg in legs:
+            mm = precio_mid(lg.get("position_id"))
+            if mm is None:
+                return None
+            prod *= mm
+        return prod
+    return precio_mid(op.get("real_token"))
+
+
+def _din(d):
+    """+$1.58 / -$0.75 (formato legible de dinero con signo)."""
+    return ("+$" if d >= 0 else "-$") + f"{abs(d):.2f}"
+
+
+def render_grupo(g):
+    """v12.1: UNA línea por posición única: título entero, ×N si hay fills
+    duplicados, precio actual, probabilidad viva, valor vs pago y consejo."""
+    ops = g["ops"]
+    op0 = ops[0]
+    n = len(ops)
+    stake = sum(float(o.get("stake_dolares") or 0) for o in ops)
+    shares = sum(float(o.get("size_shares") or 0) for o in ops)
+    r = resolver_operacion(op0)
+    es_combo = bool(op0.get("legs"))
+    fr = franja_of(op0)
+    ico = {"extendida": "🚀🎫", "super": "💥🎫"}.get(fr, "🎫" if es_combo else "🎯")
+    titulo = str(op0.get("question", "?"))[:160]
+    txt = f"{ico} {titulo}"
+    if n > 1:
+        txt += f"  ×{n}"
+    txt += f"\n   ${stake:.2f}"
+    cuota = op0.get("cuota_ejecutada") or 0
+    if cuota:
+        txt += f" · cuota {float(cuota):.2f}"
+    if shares > 0:
+        txt += f" · {shares:.2f} sh"
+    if r.get("fin"):
+        txt += f" · 🏁 fin {r['fin']}"
+    txt += "\n"
+    vivo = vivo_de(op0)
+    if vivo and shares > 0:
+        valor = shares * vivo
+        payout = shares
+        txt += (f"   📈 precio ahora {vivo:.3f} (~{vivo * 100:.0f}%) · "
+                f"valor ${valor:.2f} vs pago ${payout:.2f}\n")
+        if payout > 0 and valor >= 0.90 * payout:
+            txt += f"   💰 CERRAR anticipado aseguraría ~{_din(valor - stake)} (≥90% del pago)\n"
+        elif valor <= 0.55 * stake:
+            txt += f"   🔴 Muy caída ({_din(valor - stake)}) — plantéate cortar\n"
+        else:
+            txt += f"   🟢 Mantener ({_din(valor - stake)} latente)\n"
+    else:
+        txt += "   📈 precio ahora: n/d\n"
+    if es_combo:
+        for q, gg in r.get("detalle", []):
+            gi = "⏳" if gg is None else ("✅" if gg else "❌")
+            txt += f"   {gi} {str(q)[:120]}\n"
+    if op0.get("status") == "pendiente":
+        txt += "   ⏳ fill por confirmar (/fills)\n"
+    return txt + "\n"
+
+
 def render_abierta(op):
     """Una línea de operación abierta con detalle de legs y hora de fin."""
     r = resolver_operacion(op)
@@ -1765,7 +1884,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v12.0*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v12.1*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -1892,9 +2011,11 @@ def cmd_abiertas(chat_id):
                 and (float(o.get("stake_dolares") or 0) > 0 or o.get("legs"))]
     if not abiertas:
         return enviar(chat_id, "📭 Sin operaciones abiertas (las resueltas pasan a ✅ Cerradas).")
-    texto = f"📂 *ABIERTAS ({len(abiertas)})*\n\n"
-    for op in abiertas[-10:]:
-        texto += render_abierta(op)
+    grupos = agrupar_abiertas(abiertas)   # v12.1: sin duplicados
+    extra = f" · {len(abiertas)} fills" if len(abiertas) != len(grupos) else ""
+    texto = f"📂 *ABIERTAS ({len(grupos)} posiciones{extra})*\n\n"
+    for g in grupos[:12]:
+        texto += render_grupo(g)
     return enviar(chat_id, texto)
 
 def cmd_cerradas(chat_id):
@@ -2177,7 +2298,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v12.0 iniciado")
+    log("v12.1 iniciado")
     offset = 0
     while True:
         try:
@@ -2213,7 +2334,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v12.0 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v12.1 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
