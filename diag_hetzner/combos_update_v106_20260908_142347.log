@@ -1,0 +1,40 @@
+=== ACTUALIZADOR v10.6 HASH FIJO - Tue Sep  8 02:23:47 PM UTC 2026 ===
+HASH: 58ef3164
+
+=== Paso 1: Detener bot ===
+
+=== Paso 2: Descargar v10.6 (HASH FIJO) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/58ef3164/scripts_despliegue/poly_combos_bot.py
+Descargado: 68615 bytes
+
+=== Paso 3: Verificar version ===
+POLY COMBOS BOT v11.3 — COMBOS REALES (parlays multi-leg) via RFQ
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Tue 2026-09-08 14:23:50 UTC; 5s ago
+   Main PID: 1183718 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 14.7M (peak: 15.0M)
+        CPU: 197ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1183718 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log ===
+[14:20:29]   saldo CLOB ok: $238.62 >= $5.00
+[14:20:29]   RFQ accept -> 200 {"rfq_id":"rfq-04cbbf8a934c3951ff6da552","status":"EXECUTING","taker_order_hash":"0x66562e839b647c980df84e5931b252de86783846bdbe8a1df4263b42abb5580a"}
+
+[14:20:40]   RFQ status final: CONFIRMED tx=0x88532a44809125517e91250d
+[14:20:40]   ✅ combo OK: {'oid': 'rfq-04cbbf8a934c3951ff6da552', 'status': 'CONFIRMED', 'cuota': 1.83}
+[14:22:08]   pagina 1: +50 mercados, 0 legs de deportes
+[14:22:09]   pagina 2: +50 mercados, 1 legs de deportes
+[14:22:09]   pagina 3: +50 mercados, 11 legs de deportes
+[14:22:10]   pagina 4: +50 mercados, 51 legs de deportes
+[14:22:10]   pagina 5: +50 mercados, 91 legs de deportes
+[14:23:50] intervalo AUTO restaurado: 30 min
+[14:23:50] v11.3 cargado · modo=AUTO · stake=$5.0
+[14:23:50] Proxy: http://100.83.57.99:8888
+[14:23:51] Test proxy: 200
+[14:23:51] v11.3 iniciado
