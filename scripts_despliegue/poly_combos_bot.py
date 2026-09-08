@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v11.6 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v11.7 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -33,6 +33,9 @@ Estrategia nueva (vs v7):
    de combos por VOLUMEN EN $ (mayor primero), dentro del rango de cuota;
    las operaciones viven únicamente en 📂 Abiertas / ✅ Cerradas; se
    filtran los registros basura (sin pregunta/stake).
+   v11.7: 📋 Trades muestra COMBOS CANDIDATOS REALES (2-3 legs de eventos
+   distintos, cuota estimada en rango) generados con la misma lógica de
+   selección del bot, ordenados por volumen $ — no líneas sueltas.
 
 FIX v10.9 (el SDK usa HTTPX, no requests):
   · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
@@ -612,6 +615,44 @@ def combos_hoy_count(estado):
     hoy = datetime.now(timezone.utc).date().isoformat()
     return sum(1 for r in estado.get("combos_rfq", {}).get("historial", [])
                if str(r.get("fecha", "")).startswith(hoy))
+
+
+def generar_combos_catalogo(legs, max_combos=10):
+    """v11.7: candidatos INFORMATIVOS de combos reales (2-3 legs, eventos
+    distintos, cuota estimada en rango) por volumen mín. desc.
+    Sin estado: no aplica cooldown/huellas/tope (solo catálogo)."""
+    pool = []
+    for c in legs:
+        p = c.get("yes_price") or 0
+        if not (LEG_PRICE_MIN <= p <= LEG_PRICE_MAX):
+            continue
+        if (c.get("volumen") or 0) < LEG_VOL_MIN:
+            continue
+        if c.get("pending"):
+            continue
+        if not fecha_slug_ok(c.get("slug")):
+            continue
+        pool.append(c)
+    pool.sort(key=lambda x: -(x.get("volumen") or 0))
+    pool = pool[:POOL_TOP_N]
+    candidatos = []
+    for n in range(LEGS_POR_COMBO[0], LEGS_POR_COMBO[1] + 1):
+        if n > len(pool):
+            break
+        for sel in itertools.combinations(pool, n):
+            eventos = {evento_de(c.get("slug")) for c in sel}
+            if len(eventos) != n:
+                continue
+            prod = 1.0
+            for c in sel:
+                prod *= c.get("yes_price") or 0
+            cuota = round(1 / prod, 2) if prod > 0 else 0
+            if not (CUOTA_MIN <= cuota <= CUOTA_MAX):
+                continue
+            vol_min = min(c.get("volumen") or 0 for c in sel)
+            candidatos.append((vol_min, cuota, list(sel)))
+    candidatos.sort(key=lambda x: -x[0])
+    return candidatos[:max_combos]
 
 
 def seleccionar_combo(legs, estado):
@@ -1538,7 +1579,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v11.6*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v11.7*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -1555,25 +1596,24 @@ def cmd_start(chat_id):
     return enviar(chat_id, texto)
 
 def cmd_trades(chat_id):
-    """📋 v11.6: SOLO INFORMATIVO — top 1-10 del catálogo de combos por
-    volumen en $ (mayor primero), dentro del rango de cuota que buscamos.
+    """📋 v11.7: SOLO INFORMATIVO — top 10 COMBOS CANDIDATOS REALES
+    (2-3 legs, eventos distintos, cuota estimada en rango) por volumen $.
     Las operaciones están en 📂 Abiertas / ✅ Cerradas."""
-    combos = listar_combos()
-    if not combos:
+    legs = listar_combos()
+    if not legs:
         return enviar(chat_id, "❌ No hay catálogo de combos disponible ahora mismo.")
-    en_rango = [m for m in combos if CUOTA_MIN <= m.get("cuota", 0) <= CUOTA_MAX
-                and str(m.get("question", "")).strip() not in ("", "?")]
-    en_rango.sort(key=lambda m: float(m.get("volumen") or 0), reverse=True)
-    if not en_rango:
-        return enviar(chat_id, f"📋 *CATÁLOGO COMBOS*\n_Ninguno en cuota {CUOTA_MIN}-{CUOTA_MAX} ahora mismo._\n\n"
-                               f"ℹ️ Informativo · tus operaciones: 📂 Abiertas / ✅ Cerradas")
-    texto = (f"📋 *TOP {min(10, len(en_rango))} COMBOS POR VOLUMEN $* 🎰\n"
-             f"_cuota {CUOTA_MIN}-{CUOTA_MAX} · solo informativo_\n\n")
-    for i, m in enumerate(en_rango[:10], 1):
-        texto += (f"{i}. {str(m['question'])[:56]}\n"
-                  f"   💵 ${float(m.get('volumen') or 0):,.0f} · cuota {m['cuota']:.2f}"
-                  f" · p={float(m.get('yes_price') or 0):.2f}\n\n")
-    texto += "📂 Abiertas / ✅ Cerradas → tus operaciones"
+    cands = generar_combos_catalogo(legs, 10)
+    if not cands:
+        return enviar(chat_id, f"📋 *COMBOS POSIBLES*\n_Ahora mismo ningún combo de {LEGS_POR_COMBO[0]}-{LEGS_POR_COMBO[1]} legs"
+                               f" cae en cuota {CUOTA_MIN}-{CUOTA_MAX}._\n\nℹ️ Informativo · tus operaciones: 📂 Abiertas / ✅ Cerradas")
+    texto = (f"📋 *TOP {len(cands)} COMBOS POSIBLES* 🎰\n"
+             f"_{LEGS_POR_COMBO[0]}-{LEGS_POR_COMBO[1]} legs · cuota {CUOTA_MIN}-{CUOTA_MAX} · por volumen $ · informativo_\n\n")
+    for i, (vol, cuota, sel) in enumerate(cands, 1):
+        texto += f"{i}. 🎫 cuota ~{cuota:.2f} · 💵 ${vol:,.0f}\n"
+        for c in sel:
+            texto += f"   · {str(c['question'])[:52]} (p={c.get('yes_price', 0):.2f})\n"
+        texto += "\n"
+    texto += "_Cuota estimada: la real la da el RFQ al operar_\n📂 Abiertas / ✅ Cerradas → tus operaciones"
     return enviar(chat_id, texto)
 
 def cmd_saldo(chat_id):
@@ -1849,7 +1889,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v11.6 iniciado")
+    log("v11.7 iniciado")
     offset = 0
     while True:
         try:
@@ -1885,7 +1925,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v11.6 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    log(f"v11.7 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
