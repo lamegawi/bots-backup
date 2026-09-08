@@ -1,0 +1,40 @@
+=== ACTUALIZADOR v10.6 HASH FIJO - Tue Sep  8 02:45:41 PM UTC 2026 ===
+HASH: 06152fcf
+
+=== Paso 1: Detener bot ===
+
+=== Paso 2: Descargar v10.6 (HASH FIJO) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/06152fcf/scripts_despliegue/poly_combos_bot.py
+Descargado: 70383 bytes
+
+=== Paso 3: Verificar version ===
+POLY COMBOS BOT v11.4 — COMBOS REALES (parlays multi-leg) via RFQ
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Tue 2026-09-08 14:45:43 UTC; 5s ago
+   Main PID: 1185005 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 14.9M (peak: 15.1M)
+        CPU: 172ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1185005 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log ===
+[14:26:51]   · Counter-Strike:  Phantom Academy vs Misa Esports (BO3) - (p=0.66 vol=$134k)
+[14:26:52]   RFQ: identidad lista (signer 0x8a22F798... maker 0xb0E11970...)
+[14:26:53]   RFQ create -> 200 {"rfq_id":"rfq-13208683ac451f8ef68bd87a","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1788877618335,"request":{"rfq_id":"rfq-13208683ac451f8ef68bd87a",
+[14:26:53]   quote: cuota=1.62 blended=0.618 shares=7.94 total=$5.00
+[14:26:53]   saldo CLOB ok: $233.62 >= $5.00
+[14:26:54]   RFQ accept -> 200 {"rfq_id":"rfq-13208683ac451f8ef68bd87a","status":"EXECUTING","taker_order_hash":"0x2d8aa310d10e3ebf5619dc2c21969b3ae66078c38bc1b84ebf0e97c9f74101c4"}
+
+[14:27:04]   RFQ status final: CONFIRMED tx=0x01e38522f7a3081bfbe608ab
+[14:27:04]   ✅ combo OK: {'oid': 'rfq-13208683ac451f8ef68bd87a', 'status': 'CONFIRMED', 'cuota': 1.62}
+[14:45:43] intervalo AUTO restaurado: 30 min
+[14:45:43]   horario inicial: próxima pasada en 30 min
+[14:45:43] v11.4 cargado · modo=AUTO · stake=$5.0
+[14:45:43] Proxy: http://100.83.57.99:8888
+[14:45:44] Test proxy: 200
+[14:45:44] v11.4 iniciado
