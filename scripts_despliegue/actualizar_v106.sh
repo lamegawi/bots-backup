@@ -1,11 +1,11 @@
 #!/bin/bash
-# Actualizador v10.6 con HASH FIJO
+# Actualizador v10.6 con HASH FIJO (v12.3 = f21c4627: Prob AUTO + iconos + CERRAR REAL)
 set -e
 TS=$(date +%Y%m%d_%H%M%S)
 RESULT_FILE="/tmp/combos_update_v106_${TS}.log"
 exec > >(tee -a "$RESULT_FILE") 2>&1
 
-HASH="abe93c7e"
+HASH="f21c4627"
 INSTALL_DIR="/opt/polymarket"
 
 echo "=== ACTUALIZADOR v10.6 HASH FIJO - $(date) ==="
