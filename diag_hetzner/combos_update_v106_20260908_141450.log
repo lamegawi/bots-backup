@@ -1,0 +1,40 @@
+=== ACTUALIZADOR v10.6 HASH FIJO - Tue Sep  8 02:14:50 PM UTC 2026 ===
+HASH: 8d2ae2f3
+
+=== Paso 1: Detener bot ===
+
+=== Paso 2: Descargar v10.6 (HASH FIJO) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/8d2ae2f3/scripts_despliegue/poly_combos_bot.py
+Descargado: 64209 bytes
+
+=== Paso 3: Verificar version ===
+POLY COMBOS BOT v11.1 — COMBOS REALES (parlays multi-leg) via RFQ
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Tue 2026-09-08 14:14:53 UTC; 5s ago
+   Main PID: 1182624 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 14.6M (peak: 15.0M)
+        CPU: 155ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1182624 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log ===
+[14:12:00]   pagina 2: +50 mercados, 1 legs de deportes
+[14:12:00]   pagina 3: +50 mercados, 11 legs de deportes
+[14:12:01]   pagina 4: +50 mercados, 54 legs de deportes
+[14:12:01]   pagina 5: +50 mercados, 93 legs de deportes
+[14:12:01] [COMBO] 2 legs · cuota est. 1.89 · stake $5.0
+[14:12:01]   · Genoa: Thiago Seyboth Wild vs Francesco Ferrari (p=0.61 vol=$1530k)
+[14:12:01]   · Real Madrid CF vs. FC Internazionale Milano: O/U 1.5 (p=0.86 vol=$68k)
+[14:12:33]   RFQ create -> 200 {"rfq_id":"rfq-13b1219002af55edc1196c80","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1788876758363,"request":{"rfq_id":"rfq-13b1219002af55edc1196c80",
+[14:12:33]   quote: cuota=1.77 blended=0.564 shares=8.68 total=$5.00
+[14:12:35]   RFQ accept -> 200 {"rfq_id":"rfq-13b1219002af55edc1196c80","status":"FAILED","taker_order_hash":"0x9bc8027b6edcd11a421b538e878cbdd2ac01c05c48b77a21ecb14658553f0851","error":{"cod
+[14:12:35]   ❌ combo: accept_PRE_EXECUTION_BALANCE_RESERVATION_FAILED
+[14:14:53] v11.1 cargado · modo=AUTO · stake=$5.0
+[14:14:53] Proxy: http://100.83.57.99:8888
+[14:14:54] Test proxy: 200
+[14:14:54] v11.1 iniciado
