@@ -1,0 +1,40 @@
+=== ACTUALIZADOR v10.6 HASH FIJO - Tue Sep  8 02:18:41 PM UTC 2026 ===
+HASH: 292f0432
+
+=== Paso 1: Detener bot ===
+
+=== Paso 2: Descargar v10.6 (HASH FIJO) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/292f0432/scripts_despliegue/poly_combos_bot.py
+Descargado: 66519 bytes
+
+=== Paso 3: Verificar version ===
+POLY COMBOS BOT v11.2 — COMBOS REALES (parlays multi-leg) via RFQ
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Tue 2026-09-08 14:18:44 UTC; 5s ago
+   Main PID: 1183024 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 14.7M (peak: 14.9M)
+        CPU: 168ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1183024 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log ===
+[14:15:21]   · Real Madrid CF vs. FC Internazionale Milano: O/U 1.5 (p=0.86 vol=$68k)
+[14:15:21]   RFQ create -> 200 {"rfq_id":"rfq-d2ecb6c975d8b14a9ca7cbe4","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1788876926808,"request":{"rfq_id":"rfq-d2ecb6c975d8b14a9ca7cbe4",
+[14:15:21]   quote: cuota=1.76 blended=0.568 shares=8.62 total=$5.00
+[14:15:22]   RFQ accept -> 200 {"rfq_id":"rfq-d2ecb6c975d8b14a9ca7cbe4","status":"EXECUTING","taker_order_hash":"0xe383e4fe2e815b2571f8bbc0cc131f7ed1145d4e75df70005af3153d0b5f096a"}
+
+[14:15:31]   RFQ status final: CONFIRMED tx=0xc6c3351126051b5470da3d3b
+[14:15:31]   ✅ combo OK: {'oid': 'rfq-0b766b6d2879b95df62b1565', 'status': 'CONFIRMED', 'cuota': 1.75}
+[14:15:33]   RFQ status final: CONFIRMED tx=0xcbc6ab40e954e4512b65a09c
+[14:15:33]   ✅ combo OK: {'oid': 'rfq-d2ecb6c975d8b14a9ca7cbe4', 'status': 'CONFIRMED', 'cuota': 1.76}
+[14:15:37] intervalo AUTO -> 30 min
+[14:18:44] intervalo AUTO restaurado: 30 min
+[14:18:44] v11.2 cargado · modo=AUTO · stake=$5.0
+[14:18:44] Proxy: http://100.83.57.99:8888
+[14:18:45] Test proxy: 200
+[14:18:45] v11.2 iniciado
