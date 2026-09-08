@@ -2,7 +2,7 @@
 
 ## 📋 RESUMEN
 
-Bot de Telegram que opera **Combos (parlays) de Polymarket** automáticamente. **OPERATIVO**: el 7 sept 2026 la v10.9 ejecutó el primer trade real vía CLOB (Cagliari, `success:true`). PERO se descubrió que operaba **LEGS SUELTOS** (el endpoint `combo-markets` es un catálogo de piernas, NO combos formados) y **sin deduplicación** (repitió Cagliari 4× = $20, confirmado en data-api). **v11.0**: combos REALES de 2-3 legs vía Requester API RFQ oficial + deduplicación + tope diario + `/testcombo` (gratis) + `/fills`. 🏆 **PRIMER COMBO REAL CONFIRMADO ON-CHAIN**: 8 sept 14:06:59 UTC — CS2 G2-Astralis Map1 (0.61) + WTA Sabalenka-Noskova (0.71), cuota real 1.71, $5.00, 8.38 shares, tx `0x23a0de4decb5b79b81a1900f`.
+Bot de Telegram que opera **Combos (parlays) de Polymarket** automáticamente. **OPERATIVO**: el 7 sept 2026 la v10.9 ejecutó el primer trade real vía CLOB (Cagliari, `success:true`). PERO se descubrió que operaba **LEGS SUELTOS** (el endpoint `combo-markets` es un catálogo de piernas, NO combos formados) y **sin deduplicación** (repitió Cagliari 4× = $20, confirmado en data-api). **v11.0**: combos REALES de 2-3 legs vía Requester API RFQ oficial + deduplicación + tope diario + `/testcombo` (gratis) + `/fills`. 🏆 **PRIMER COMBO REAL CONFIRMADO ON-CHAIN**: 8 sept 14:06:59 UTC — CS2 G2-Astralis Map1 (0.61) + WTA Sabalenka-Noskova (0.71), cuota real 1.71, $5.00, 8.38 shares, tx `0x23a0de4decb5b79b81a1900f`. **v11.1**: botones ⏱ 5/10/20/30/60 min en el teclado fijo para elegir el intervalo entre pasadas AUTO (persistido en estado, efecto inmediato).
 
 ## 🎯 OBJETIVO
 
@@ -343,7 +343,8 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 2. ✅ `/testcombo` disponible (validación gratis sin aceptar quote)
 3. ✅ `/fills` para confirmar fills (RFQ status + reconciliación data-api)
 4. **Observar margen de MM**: cuota est. 2.27 → real 1.71; opcional filtro `cuota_real >= cuota_est * 0.75` para descartar quotes caros
-5. **v11.1 propuesta**: modo SEMI = propone el combo con botones ✅/❌ y solo ejecuta con aprobación
+5. ✅ **v11.1 desplegable**: botones ⏱ de intervalo (5/10/20/30/60 min) + bucle tick 5s + persistencia
+6. **v11.2 propuesta**: modo SEMI = propone el combo con botones ✅/❌ y solo ejecuta con aprobación
 6. **Fase 2**: replicar combos de grandes traders (posiciones públicas via data-api)
 5. **Fase 2 — replicar grandes traders**: investigar posiciones en combo-tokens de top traders via data-api/leaderboard (`/positions?user=...`), detectar legs de sus combos y pedir quotes de los mismos
 6. **Mejoras futuras**: stop-loss, P&L tiempo real, venta de combos (direction SELL vía RFQ), filtros de deportes más específicos
@@ -374,3 +375,4 @@ Esto verifica que la IP de salida es `85.85.41.76` (PC del usuario).
 - 7 sept ~20:15 — v11.0 escrita: motor RFQ + selección 2-3 legs (eventos distintos, 0.60-0.96, vol≥20k, fecha≥hoy) + dedup (huella+cooldown 6h+tope 6/día) + /testcombo + /fills. Tests sandbox OK
 - 8 sept 14:01 — v11.0 desplegada en Hetzner (hash f93ce31b, modo AUTO persistido, proxy 200)
 - 8 sept 14:06 — 🏆 PRIMER COMBO REAL CONFIRMADO ON-CHAIN: pasada AUTO v11 → CS2 G2-Astralis Map1 + WTA Sabalenka-Noskova → RFQ create 200 → quote cuota 1.71 → accept 200 EXECUTING → **CONFIRMED** tx 0x23a0de4decb5b79b81a1900f. Pipeline RFQ completo en producción
+- 8 sept ~14:15 — v11.1: botones ⏱ 5/10/20/30/60 min (teclado fijo) para el intervalo entre pasadas AUTO; auto_loop con tick de 5s y NEXT_PASADA_TS (cambio inmediato); intervalo persistido en combos_estado.json y restaurado al arrancar; guardar_estado endurecido (backup no rompe guardado)

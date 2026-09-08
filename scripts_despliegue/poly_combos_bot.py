@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v11.0 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v11.1 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -13,6 +13,8 @@ Estrategia nueva (vs v7):
        con 2-50 leg_position_ids → quote de market makers → firmar orden
        Exchange v3 (EIP-712) → accept (<5s) → poll hasta FILLED (tx_hash)
      Docs: https://docs.polymarket.com/trading/combos/requesters
+   v11.1: botones ⏱ 5/10/20/30/60 min para elegir el intervalo entre
+   pasadas AUTO (persistido en combos_estado.json, efecto inmediato).
 
 FIX v10.9 (el SDK usa HTTPX, no requests):
   · inyectar_proxy_sdk() reemplaza helpers._http_client del SDK por un
@@ -94,6 +96,7 @@ COOLDOWN_LEG_H = 6.0       # horas sin reutilizar un leg ya operado
 RFQ_TIMEOUT_FILL_S = 45    # espera de FILLED tras aceptar
 MAX_TRADES_SIMULTANEOS = 3
 INTERVALO_AUTO_S = 300
+NEXT_PASADA_TS = 0.0   # v11.1: próxima pasada programada (epoch); 0 = ya
 PESO_MIN = 5
 MAX_MERCADOS_A_REVISAR = 100  # limita para no saturar
 
@@ -242,6 +245,7 @@ TECLADO_FIJO = {
         [{"text": "✅ Cerradas"}, {"text": "📊 Stats"}, {"text": "🏆 Top"}],
         [{"text": "🟢 AUTO"}, {"text": "🟡 SEMI"}, {"text": "🔴 OFF"}],
         [{"text": "💵 Stake $1"}, {"text": "💵 Stake $2"}, {"text": "💵 Stake $5"}],
+        [{"text": "⏱ 5m"}, {"text": "⏱ 10m"}, {"text": "⏱ 20m"}, {"text": "⏱ 30m"}, {"text": "⏱ 60m"}],
     ],
     "resize_keyboard": True,
     "persistent": True,
@@ -748,6 +752,28 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False):
     return ok, {"oid": rfq_id, "status": st, "cuota": cuota_real}
 
 
+INTERVALOS_MIN = (5, 10, 20, 30, 60)
+
+def cmd_intervalo(chat_id, texto):
+    """⏱ Cambia el intervalo entre pasadas AUTO (botones del teclado fijo).
+    Se persiste en combos_estado.json para sobrevivir reinicios."""
+    global INTERVALO_AUTO_S, NEXT_PASADA_TS
+    nums = "".join(ch for ch in texto if ch.isdigit())
+    try:
+        mins = int(nums)
+    except Exception:
+        return enviar(chat_id, "❌ Usa los botones ⏱ 5m/10m/20m/30m/60m")
+    if mins not in INTERVALOS_MIN:
+        return enviar(chat_id, f"❌ Intervalos disponibles: {', '.join(str(m) for m in INTERVALOS_MIN)} min")
+    INTERVALO_AUTO_S = mins * 60
+    NEXT_PASADA_TS = time.time() + INTERVALO_AUTO_S   # siguiente lectura en X min desde ahora
+    estado = cargar_estado()
+    estado["intervalo_min"] = mins
+    guardar_estado(estado)
+    log(f"intervalo AUTO -> {mins} min")
+    return enviar(chat_id, f"⏱ *Pasada cada {mins} min*\nPróxima lectura: ~{datetime.fromtimestamp(NEXT_PASADA_TS, tz=timezone.utc).strftime('%H:%M:%S')} UTC\n(guardado; sobrevive reinicios)")
+
+
 def cmd_testcombo(chat_id):
     """🧪 RFQ completo SIN aceptar: valida el pipeline a coste cero."""
     def _run():
@@ -1147,8 +1173,11 @@ def cargar_estado():
                 "trades_copiados": [], "historial": []}
 
 def guardar_estado(estado):
-    if os.path.exists(ESTADO_FILE):
-        shutil.copy2(ESTADO_FILE, BACKUP_FILE)
+    try:
+        if os.path.exists(ESTADO_FILE):
+            shutil.copy2(ESTADO_FILE, BACKUP_FILE)
+    except Exception:
+        pass  # el backup no debe romper el guardado
     with open(ESTADO_FILE, "w") as f:
         json.dump(estado, f, indent=2, ensure_ascii=False)
 
@@ -1183,7 +1212,7 @@ def calcular_stats():
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v11.0*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v11.1*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *${STAKE_POR_TRADE}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n\n"
@@ -1193,6 +1222,7 @@ def cmd_start(chat_id):
              f"   · Solo acepta si la cuota real entra en rango\n"
              f"   · Fill confirmado con tx_hash (FILLED)\n"
              f"   · Sin repetir legs (cooldown {COOLDOWN_LEG_H:.0f}h) · max {MAX_COMBOS_DIA}/dia\n\n"
+             f"⏩ Botones ⏱ — intervalo entre pasadas ({INTERVALO_AUTO_S // 60} min ahora)\n"
              f"🧪 /testcombo — prueba gratis (quote sin aceptar)\n"
              f"🔎 /fills — fills reales de la wallet\n"
              f"📊 /stats — estadisticas")
@@ -1389,13 +1419,19 @@ def auto_pasada(chat_id):
         log(f"  ❌ combo: {str(res)[:130]}")
 
 def auto_loop():
+    """v11.1: tick de 5s + próxima pasada programada, para que cambiar el
+    intervalo con los botones ⏱ surta efecto inmediato (antes el sleep de
+    300s bloqueaba hasta terminar)."""
+    global NEXT_PASADA_TS
     while True:
         try:
-            if MODO_OPERACION == "AUTO" and CHAT_ID:
+            ahora = time.time()
+            if MODO_OPERACION == "AUTO" and CHAT_ID and ahora >= NEXT_PASADA_TS:
+                NEXT_PASADA_TS = ahora + INTERVALO_AUTO_S
                 auto_pasada(CHAT_ID)
         except Exception as e:
             log(f"auto_loop error: {e}")
-        time.sleep(INTERVALO_AUTO_S)
+        time.sleep(5)
 
 
 # ============================================
@@ -1433,6 +1469,8 @@ def procesar_update(update):
             return cmd_stake(chat_id, str(v))
         except:
             return enviar(chat_id, "❌")
+    if text.startswith("⏱"):
+        return cmd_intervalo(chat_id, text)
     if text == "/testcombo":
         return cmd_testcombo(chat_id)
     elif text == "/fills":
@@ -1464,7 +1502,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v11.0 iniciado")
+    log("v11.1 iniciado")
     offset = 0
     while True:
         try:
@@ -1488,7 +1526,12 @@ def main():
     if not cargar_token():
         log("ERROR: no se encontró el token")
         return
-    log(f"v11.0 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
+    global INTERVALO_AUTO_S
+    _im = cargar_estado().get("intervalo_min")
+    if _im in INTERVALOS_MIN:
+        INTERVALO_AUTO_S = _im * 60
+        log(f"intervalo AUTO restaurado: {_im} min")
+    log(f"v11.1 cargado · modo={MODO_OPERACION} · stake=${STAKE_POR_TRADE}")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
