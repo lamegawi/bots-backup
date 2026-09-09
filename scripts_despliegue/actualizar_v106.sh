@@ -1,11 +1,11 @@
 #!/bin/bash
-# Actualizador v10.6 con HASH FIJO (v12.4 = ef9d7912: PIN fijo del user para el tope diario)
+# Actualizador v10.6 con HASH FIJO (v12.5 = dc6fc35a: reintento $5 ante SIZE_TOO_LARGE)
 set -e
 TS=$(date +%Y%m%d_%H%M%S)
 RESULT_FILE="/tmp/combos_update_v106_${TS}.log"
 exec > >(tee -a "$RESULT_FILE") 2>&1
 
-HASH="ef9d7912"
+HASH="dc6fc35a"
 INSTALL_DIR="/opt/polymarket"
 
 echo "=== ACTUALIZADOR v10.6 HASH FIJO - $(date) ==="
