@@ -18,11 +18,22 @@ cat > /tmp/auto_exit_elon/posicion.json <<'JSON'
 JSON
 echo "[reset] vendido_yes=0  triggers=[]"
 
-curl -sL -o /tmp/parse_jina.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${HASH}/scripts_despliegue/parse_jina.py"
+# Quitar parse_jina.py corrupto si lo está
+if [ -f /tmp/parse_jina.py ] && ! head -1 /tmp/parse_jina.py | grep -q "python"; then
+  rm -f /tmp/parse_jina.py
+fi
 
-HASH=$(curl -s "https://api.github.com/repos/lamegawi/bots-backup/branches/arena/01a058fe-bots-backup" | python3 -c "import json,sys; print(json.load(sys.stdin)['commit']['sha'][:8])")
+# Determinar HASH con fallback seguro
+HASH=$(curl -s --max-time 10 "https://api.github.com/repos/lamegawi/bots-backup/branches/arena/01a058fe-bots-backup" 2>/dev/null | python3 -c "import json,sys; print(json.load(sys.stdin)['commit']['sha'][:8])" 2>/dev/null || echo "")
+if [ -z "$HASH" ]; then
+  HASH="43521968"
+fi
 echo "[hash] $HASH"
-curl -sL -o /tmp/auto.sh "https://raw.githubusercontent.com/lamegawi/bots-backup/${HASH}/scripts_despliegue/auto_exit_v7.sh"
+
+curl -sL -o /tmp/auto.sh "https://raw.githubusercontent.com/lamegawi/bots-backup/${HASH}/scripts_despliegue/auto_exit_v7.sh" || {
+  echo "[error] no pude descargar v7"
+  exit 1
+}
 chmod +x /tmp/auto.sh
 echo "[download] $(wc -c </tmp/auto.sh)b"
 
