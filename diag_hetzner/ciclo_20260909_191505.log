@@ -1,0 +1,29 @@
+=== Chequeo 2026-09-09 19:15:14 UTC ===
+Pos: restante=0.0  bankroll=$20  dry_run=1
+
+-- jina scrap --
+CONTAJE 129
+PCT_120-139 1
+PCT_140-159 3.5
+PCT_160-179 39
+PCT_180-199 44
+PCT_200-219 14
+
+-- CLOB --
+
+
+P_USAR = 1
+
+DECISION: VENDER_TODO 230.8 YES @ 1 (>=0.30)
+TRIGGER: precio_yes_ge_030
+
+{
+  "shares_yes": 230.8,
+  "precio_entrada": 0.026,
+  "vendido_yes": 230.8,
+  "shares_no_cubierta": 0,
+  "ultima_accion": "VENDER_TODO 230.8 YES @ 1 (>=0.30) [TRIGGER: precio_yes_ge_030]",
+  "triggers_disparados": [
+    "precio_yes_ge_030"
+  ]
+}
