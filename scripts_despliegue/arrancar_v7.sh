@@ -37,7 +37,7 @@ curl -sL -o /tmp/auto.sh "https://raw.githubusercontent.com/lamegawi/bots-backup
 chmod +x /tmp/auto.sh
 echo "[download] $(wc -c </tmp/auto.sh)b"
 
-DRY_RUN=1 INTERVALO_S=900 AUTO_BANKROLL_USD=20 \
+DRY_RUN=0 INTERVALO_S=900 AUTO_BANKROLL_USD=20 \
   nohup setsid bash /tmp/auto.sh > /tmp/auto_exit_elon/main.log 2>&1 < /dev/null &
 echo "PID: $!"
 disown
