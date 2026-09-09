@@ -1,0 +1,25 @@
+=== Chequeo 2026-09-09 19:00:04 UTC ===
+Pos: restante=230.8  bankroll=$20  dry_run=1
+
+-- jina scrap --
+  File "/tmp/parse_jina.py", line 1
+    404: Not Found
+    ^^^
+SyntaxError: illegal target for annotation
+
+-- CLOB --
+
+
+P_USAR = 
+
+DECISION: ninguna
+TRIGGER: 
+
+{
+  "shares_yes": 230.8,
+  "precio_entrada": 0.0260,
+  "vendido_yes": 0,
+  "shares_no_cubierta": 0,
+  "ultima_accion": null,
+  "triggers_disparados": []
+}
