@@ -22,8 +22,9 @@ mkdir -p "$LOG_DIR"
 POS_FILE="$LOG_DIR/posicion.json"
 
 PARSE_PY="/tmp/parse_jina.py"
-if [ ! -f "$PARSE_PY" ]; then
-  curl -sL -o "$PARSE_PY" https://raw.githubusercontent.com/lamegawi/bots-backup/HEAD/scripts_despliegue/parse_jina.py
+if [ ! -f "$PARSE_PY" ] || ! head -1 "$PARSE_PY" 2>/dev/null | grep -q "python"; then
+  HASH_LOCAL=$(curl -s "https://api.github.com/repos/lamegawi/bots-backup/branches/arena/01a058fe-bots-backup" | python3 -c "import json,sys; print(json.load(sys.stdin)['commit']['sha'][:8])" 2>/dev/null || echo "a4dcf2b9")
+  curl -sL -o "$PARSE_PY" "https://raw.githubusercontent.com/lamegawi/bots-backup/${HASH_LOCAL}/scripts_despliegue/parse_jina.py"
 fi
 
 init_pos() {
