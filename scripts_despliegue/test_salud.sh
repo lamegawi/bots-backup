@@ -103,7 +103,10 @@ chk() { # nombre url [json_campo]
   local t=$(wc -c < /tmp/_s.json 2>/dev/null || echo 0)
   if [ "$c" = "200" ] && [ "$t" -gt 2 ]; then ok "$n → 200 ($t bytes)"; else falla "$n → HTTP $c ($t bytes)"; fi
 }
-# midpoint con un token REAL (el primero de las posiciones de la wallet) para que el 200 signifique algo
+# posiciones de la wallet PRIMERO: de ahí sale un token_id real para el midpoint
+curl -s --max-time 25 "https://data-api.polymarket.com/positions?user=${WALLET}&limit=200" > /tmp/_pos.json 2>/dev/null
+# endpoint vivo sin parámetros (midpoint con un token inventado da 404 y sería un falso fallo)
+chk "CLOB /ok"          "https://clob.polymarket.com/ok"
 TOK=$(python3 -c "
 import json
 try:
@@ -117,7 +120,6 @@ if [ -n "$TOK" ]; then
 else
   info "CLOB midpoint: sin token real disponible, se omite"
 fi
-curl -s --max-time 25 "https://data-api.polymarket.com/positions?user=${WALLET}&limit=200" > /tmp/_pos.json 2>/dev/null
 chk "Gamma markets"     "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=1"
 chk "Catálogo combos"   "https://combos-rfq-api.polymarket.com/v1/rfq/combo-markets?limit=1"
 chk "Data-API trades"   "https://data-api.polymarket.com/trades?user=${WALLET}&limit=1"
@@ -126,8 +128,12 @@ chk "Data-API positions" "https://data-api.polymarket.com/positions?user=${WALLE
 C=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "https://combos-rfq-gateway-requester-api.polymarket.com/v1/requester/rfq/requests" 2>/dev/null)
 case "$C" in 200|400|401|403|404|405|422) ok "Gateway RFQ alcanzable (HTTP $C sin credenciales L2, es lo esperado)";; *) falla "Gateway RFQ → HTTP $C";; esac
 # A través del proxy (así opera el bot de verdad)
-C2=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 -x "$PROXY" "https://clob.polymarket.com/midpoint?token_id=1" 2>/dev/null)
-if [ "$C2" = "200" ]; then ok "CLOB a través del proxy → 200"; else falla "CLOB a través del proxy → HTTP $C2"; fi
+C2=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 -x "$PROXY" "https://clob.polymarket.com/ok" 2>/dev/null)
+if [ "$C2" = "200" ]; then ok "CLOB a través del proxy → 200"; else falla "CLOB a través del proxy → HTTP $C2 (así opera el bot de verdad)"; fi
+if [ -n "$TOK" ]; then
+  C3=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 -x "$PROXY" "https://clob.polymarket.com/midpoint?token_id=${TOK}" 2>/dev/null)
+  if [ "$C3" = "200" ]; then ok "midpoint por el proxy con token real → 200"; else falla "midpoint por el proxy → HTTP $C3"; fi
+fi
 
 echo ""
 echo "== 6) WALLET (posición y actividad) =="
