@@ -97,7 +97,8 @@ while true; do
   SCRAPE=$(scrape_mercado)
   CONTAJE=$(echo "$SCRAPE" | grep "^CONTAJE " | awk '{print $2}')
   COND=$(echo "$SCRAPE" | grep "^COND " | awk '{print $2}')
-  P120=$(echo "$SCRAPE" | grep "^PCT_120-139 " | awk '{print $2}')
+  # NO usar PCT_120-139 como precio (es un porcentaje, no un precio)
+  P120_PCT=$(echo "$SCRAPE" | grep "^PCT_120-139 " | awk '{print $2}')
 
   CLOB=""
   C_P120=""
@@ -106,7 +107,13 @@ while true; do
     C_P120=$(echo "$CLOB" | grep "^P_120-139 " | awk '{print $2}')
   fi
 
-  P_USAR="${C_P120:-${P120:-}}"
+  # Precio YES = CLOB si está, si no estimamos del porcentaje (PCT/100)
+  P_USAR=""
+  if [ -n "$C_P120" ]; then
+    P_USAR="$C_P120"
+  elif [ -n "$P120_PCT" ] && [ "$P120_PCT" != "None" ]; then
+    P_USAR=$(python3 -c "print(round(float('$P120_PCT')/100.0, 4))")
+  fi
   RESTANTE=$(python3 -c "import json; p=json.load(open('$POS_FILE')); print(p['shares_yes']-p['vendido_yes'])")
 
   DECISION="ninguna"
