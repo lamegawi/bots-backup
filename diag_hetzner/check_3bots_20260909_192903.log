@@ -1,0 +1,275 @@
+=== CHECK 3 BOTS — 2026-09-09 19:29:03 UTC ===
+
+== 1. Servicios systemd ==
+  poly-elon : active
+  poly-zelenskyy : active
+  poly-trump : active
+
+== 2. Listar /opt/polymarket ==
+total 636
+drwxr-xr-x 15 1000 1000   4096 Sep  9 19:25 .
+drwxr-xr-x  3 root root   4096 Aug 17 20:24 ..
+-rw-r--r--  1 root root   2535 Sep  8 20:49 actualizar_v106.sh
+-rw-r--r--  1 root root    310 Sep  9 19:25 apuestas_compartidas.json
+-rw-r--r--  1 root root    301 Aug 22 04:41 apuestas_compartidas.json.bak_20260822_044155
+drwxr-xr-x  8 root root   4096 Aug 19 17:47 _backup_motor_v1
+drwxr-xr-x  4 root root   4096 Aug 31 01:00 backup_trump_20260831_201030
+-rw-r--r--  1 root root    151 Aug 18 20:00 balance_bot.json
+drwxr-xr-x  6 1000 1000   4096 Sep  9 17:10 bot-polymarket-elon
+drwxr-xr-x  6 1000 1000   4096 Sep  9 17:59 bot-polymarket-elon-mensual
+drwxr-xr-x  5 1000 1000   4096 Aug 30 08:30 bot-polymarket-elon-mensual-v2
+drwxr-xr-x  6 1000 1000   4096 Sep  9 17:59 bot-polymarket-elon-semanal
+drwxr-xr-x  5 1000 1000   4096 Aug 30 08:30 bot-polymarket-elon-semanal-v2
+drwxr-xr-x  5 1000 1000   4096 Aug 30 08:30 bot-polymarket-elon-v2
+drwxr-xr-x  5 root root   4096 Sep  9 17:59 bot-polymarket-trump
+drwxr-xr-x  6 root root   4096 Sep  9 17:59 bot-polymarket-zelenskyy
+-rw-r--r--  1 root root   2818 Aug 18 14:17 check_abiertas2.py
+-rw-r--r--  1 root root   2337 Aug 18 14:16 check_abiertas.py
+-rw-r--r--  1 root root   2598 Aug 18 14:03 check_estado.py
+-rw-r--r--  1 root root   2765 Aug 18 14:18 check_final.py
+-rw-r--r--  1 root root   1384 Aug 18 16:56 check_ganadoras.py
+-rw-r--r--  1 root root  24040 Aug 30 18:21 check_integral.py
+-rw-r--r--  1 root root  22118 Aug 30 06:49 check_integral.py.bakZB
+-rw-r--r--  1 root root   2118 Aug 18 14:05 check_ordenes.py
+
+== 3. Bots detectados (cada subdir) ==
+  _backup_motor_v1
+  backup_trump_20260831_201030
+    CSV: /opt/polymarket/backup_trump_20260831_201030//datos_trump.csv (213 lineas)
+    mercado: /opt/polymarket/backup_trump_20260831_201030//mercado_activo.json
+  bot-polymarket-elon
+    CSV: /opt/polymarket/bot-polymarket-elon//datos_ejemplo.csv (81 lineas)
+    mercado: /opt/polymarket/bot-polymarket-elon//mercado_activo.json
+  bot-polymarket-elon-mensual
+    CSV: /opt/polymarket/bot-polymarket-elon-mensual//datos_elon.csv (44 lineas)
+    mercado: /opt/polymarket/bot-polymarket-elon-mensual//mercado_activo.json
+  bot-polymarket-elon-mensual-v2
+    CSV: /opt/polymarket/bot-polymarket-elon-mensual-v2//datos_elon.csv (27 lineas)
+    mercado: /opt/polymarket/bot-polymarket-elon-mensual-v2//mercado_activo.json
+  bot-polymarket-elon-semanal
+    CSV: /opt/polymarket/bot-polymarket-elon-semanal//datos_elon.csv (44 lineas)
+    mercado: /opt/polymarket/bot-polymarket-elon-semanal//mercado_activo.json
+  bot-polymarket-elon-semanal-v2
+    CSV: /opt/polymarket/bot-polymarket-elon-semanal-v2//datos_elon.csv (27 lineas)
+    mercado: /opt/polymarket/bot-polymarket-elon-semanal-v2//mercado_activo.json
+  bot-polymarket-elon-v2
+    CSV: /opt/polymarket/bot-polymarket-elon-v2//datos_elon.csv (27 lineas)
+    mercado: /opt/polymarket/bot-polymarket-elon-v2//mercado_activo.json
+  bot-polymarket-trump
+    CSV: /opt/polymarket/bot-polymarket-trump//datos_trump.csv (222 lineas)
+    mercado: /opt/polymarket/bot-polymarket-trump//mercado_activo.json
+  bot-polymarket-zelenskyy
+    CSV: /opt/polymarket/bot-polymarket-zelenskyy//datos_zelen.csv (174 lineas)
+    mercado: /opt/polymarket/bot-polymarket-zelenskyy//mercado_activo.json
+  motores
+  poly_mention_bot
+  __pycache__
+
+== 4. Posiciones abiertas (CLOB via proxy) ==
+Total: 40
+  size=   2400.00  Yes                   slug=elon-musk-of-tweets-september-4-september-11-2026-120-139  avg=0.0020
+  size=     36.21  Yes                   slug=will-romeu-zema-win-the-2026-brazilian-presidential-election  avg=0.0828
+  size=     33.67  Yes                   slug=arch-elon-musk-of-tweets-may-19-may-26-180-199      avg=0.1485
+  size=     33.33  Yes                   slug=elon-musk-of-tweets-may-12-may-19-180-199           avg=0.1499
+  size=     33.33  Yes                   slug=elon-musk-of-tweets-july-30-august-1-40-64          avg=0.2999
+  size=     33.33  Yes                   slug=elon-musk-of-tweets-july-28-august-4-180-199        avg=0.1499
+  size=     31.25  Yes                   slug=elon-musk-of-tweets-july-31-august-7-200-219        avg=0.1600
+  size=     31.25  Yes                   slug=elon-musk-of-tweets-june-16-june-23-220-239         avg=0.1600
+  size=     31.18  Yes                   slug=elon-musk-of-tweets-july-2-july-4-40-64             avg=0.2199
+  size=     30.61  Yes                   slug=2026-balance-of-power-d-senate-d-house-949          avg=0.4899
+  size=     30.30  Yes                   slug=elon-musk-of-tweets-july-24-july-31-280-299         avg=0.1649
+  size=     30.00  Yes                   slug=zelenskyy-of-tweets-september-1-september-8-2026-100-119  avg=0.1000
+  size=     29.41  Yes                   slug=elon-musk-of-tweets-june-12-june-19-220-239         avg=0.0679
+  size=     29.41  Yes                   slug=elon-musk-of-tweets-april-28-may-5-180-199          avg=0.1699
+  size=     27.78  Yes                   slug=elon-musk-of-tweets-may-12-may-19-120-139           avg=0.1799
+  size=     27.05  Yes                   slug=elon-musk-of-tweets-may-8-may-15-100-119            avg=0.3696
+  size=     26.32  Yes                   slug=elon-musk-of-tweets-july-17-july-24-180-199         avg=0.1899
+  size=     26.32  Yes                   slug=elon-musk-of-tweets-july-28-august-4-200-219        avg=0.1899
+  size=     26.32  Yes                   slug=elon-musk-of-tweets-june-18-june-20-65-89           avg=0.3799
+  size=     25.43  Yes                   slug=elon-musk-of-tweets-july-27-july-29-40-64           avg=0.1965
+  size=     25.00  Yes                   slug=elon-musk-of-tweets-june-15-june-17-40-64           avg=0.2000
+  size=     24.51  Under                 slug=ucl-agf-lep-2026-07-21-total-2pt5                   avg=0.4079
+  size=     23.20  Yes                   slug=elon-musk-of-tweets-may-5-may-12-120-139            avg=0.4309
+  size=     22.73  Yes                   slug=highest-temperature-in-london-on-may-1-2026-23c     avg=0.2199
+  size=     20.83  Yes                   slug=elon-musk-of-tweets-may-15-may-22-100-119           avg=0.2399
+  size=     18.33  Yes                   slug=elon-musk-of-tweets-june-12-june-19-200-219         avg=0.1799
+  size=     18.33  Yes                   slug=elon-musk-of-tweets-june-15-june-17-0-39            avg=0.1799
+  size=     17.00  Yes                   slug=zelenskyy-of-tweets-august-28-september-4-2026-140-159  avg=0.0920
+  size=     16.37  Francisco Cerundolo   slug=atp-cerundo-blockx-2026-09-06                       avg=0.6059
+  size=     12.20  Fenerbahçe SK         slug=ucl-fen-gor-2026-07-21-spread-home-2pt5             avg=0.4099
+  size=     11.76  Arthur Gea            slug=atp-gea-zandsch-2026-09-07                          avg=0.4200
+  size=     11.63  Yes                   slug=highest-temperature-in-london-on-may-2-2026-21c     avg=0.4299
+  size=     10.75  Iga Swiatek           slug=wta-swiatek-zhen-2026-09-06                         avg=0.4600
+  size=     10.00  Yes                   slug=bra-cam-bah-2026-07-21-cam                          avg=0.5000
+  size=      8.92  Yes                   slug=elon-musk-of-tweets-june-19-june-26-200-219         avg=0.3699
+  size=      8.85  Yes                   slug=zelenskyy-of-tweets-august-28-september-4-2026-160-179  avg=0.0400
+  size=      8.26  Yes                   slug=elon-musk-of-tweets-august-2026-840-879             avg=0.3149
+  size=      6.25  Yes                   slug=elon-musk-of-tweets-july-30-august-1-90-114         avg=0.1600
+  size=      6.00  Yes                   slug=zelenskyy-of-tweets-august-21-august-28-2026-40-59  avg=0.2490
+  size=      5.00  Yes                   slug=elon-musk-of-tweets-august-7-august-14-120-139      avg=0.0100
+
+== 5. Ordenes abiertas ==
+ERR: Extra data: line 1 column 5 (char 4)
+
+== 6. Ultimas lineas de logs (cada bot) ==
+--- /var/log/poly-backup.log (ultimas 5) ---
+AVISO: push fallo
+AVISO: push fallo
+AVISO: push fallo
+AVISO: push fallo
+AVISO: push fallo
+
+--- /var/log/poly-combos-bot.log (ultimas 5) ---
+[19:28:41]   quote: cuota=3.58 blended=0.279 shares=19.02 total=$5.50
+[19:28:41]   saldo CLOB ok: $196.50 >= $5.50
+[19:28:42]   RFQ accept -> 200 {"rfq_id":"rfq-41ab4469a6d64f7b57fc2505","status":"EXECUTING","taker_order_hash":"0xe939002e527e7b470184ec427abdee09b3e0e9c4a5d46a23a5245805ec5d62ca"}
+
+[19:28:52]   RFQ status final: CONFIRMED tx=0x50dbd33345e3dd1ec0d9a151
+
+--- /var/log/poly-elon.log (ultimas 5) ---
+
+AVG7 = 14.00  V2 = 46  R = 1.643  ajuste = 1.321  λ48 = 37.0
+Días completos en CSV: 45
+[2026-09-09 15:24:58 EDT] Pasada completada en 92.0 s
+[2026-09-09 15:24:58 EDT] Próxima pasada en 5 min…
+
+--- /var/log/poly-elon-v2.log (ultimas 5) ---
+
+AVG7 = 27.14  V2 = 58  R = 1.068  ajuste = 1.034  λ48 = 56.1
+Días completos en CSV: 26
+[2026-08-19 14:29:20 EDT] Pasada completada en 22.7 s
+[2026-08-19 14:29:20 EDT] Próxima pasada en 5 min…
+
+--- /var/log/poly-fantasmas.log (ultimas 5) ---
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+fantasmas: CORREGIDOS
+[FIXCAL] win=14% (1/7) cuota_med=6.69 kelly=-0.008 factor=1.000 stake=3.3 (INFORMATIVO (faltan datos))
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+fantasmas: OK
+
+--- /var/log/poly-fantasmas-trump.log (ultimas 5) ---
+fantasmas: OK
+fantasmas: OK
+fantasmas: OK
+fantasmas: OK
+fantasmas: OK
+
+--- /var/log/poly-fantasmas-zelen.log (ultimas 5) ---
+fantasmas: OK
+fantasmas: OK
+fantasmas: OK
+fantasmas: OK
+fantasmas: OK
+
+--- /var/log/poly-gestor.log (ultimas 5) ---
+  próxima pasada en 5 min
+[15:19 EDT] gestor pasada
+  próxima pasada en 5 min
+[15:24 EDT] gestor pasada
+  próxima pasada en 5 min
+
+--- /var/log/poly-mensual.log (ultimas 5) ---
+
+AVG7 = 14.00  V2 = 46  R = 1.643  ajuste = 1.321  λ48 = 37.0
+Días completos en CSV: 43
+[2026-09-09 15:24:59 EDT] Pasada completada en 93.0 s
+[2026-09-09 15:24:59 EDT] Próxima pasada en 5 min…
+
+--- /var/log/poly-mensual-v2.log (ultimas 5) ---
+
+AVG7 = 26.29  V2 = 58  R = 1.103  ajuste = 1.052  λ48 = 55.3
+Días completos en CSV: 26
+[2026-08-19 14:30:15 EDT] Pasada completada en 21.4 s
+[2026-08-19 14:30:15 EDT] Próxima pasada en 5 min…
+
+--- /var/log/poly-mention-bot.log (ultimas 5) ---
+19:26:04 │ INFO     │ 🔄 Ciclo de escaneo
+19:26:04 │ INFO     │ 🔍 Escaneando mercados...
+19:26:05 │ INFO     │ ✅ 0 mercados encontrados
+19:26:05 │ INFO     │ ✅ Ciclo completado | 0 mercados analizados
+19:26:05 │ INFO     │ ⏳ Próximo scan en 300s...
+
+--- /var/log/poly-salud-diario.log (ultimas 5) ---
+   poly-gestor: active
+   tailscale ferpc: OK
+   IP de salida: 85.85.41.76
+   proxy + IP casa: OK
+   clob via proxy: OK (HTTP 200)
+
+--- /var/log/poly-salud.log (ultimas 5) ---
+   poly-gestor: active
+   tailscale ferpc: OK
+   IP de salida: 85.85.41.76
+   proxy + IP casa: OK
+   clob via proxy: OK (HTTP 200)
+
+--- /var/log/poly-salud-trump.log (ultimas 5) ---
+   poly-trump: active
+   tailscale ferpc: OK
+   IP de salida: 85.85.41.76
+   proxy + IP casa: OK
+   clob via proxy: OK (HTTP 200)
+
+--- /var/log/poly-salud-zelen.log (ultimas 5) ---
+   poly-telegram-zelen: active
+   tailscale ferpc: OK
+   IP de salida: 85.85.41.76
+   proxy + IP casa: OK
+   clob via proxy: OK (HTTP 200)
+
+--- /var/log/poly-semanal.log (ultimas 5) ---
+
+AVG7 = 14.00  V2 = 46  R = 1.643  ajuste = 1.321  λ48 = 37.0
+Días completos en CSV: 43
+[2026-09-09 15:25:46 EDT] Pasada completada en 89.9 s
+[2026-09-09 15:25:46 EDT] Próxima pasada en 5 min…
+
+--- /var/log/poly-semanal-v2.log (ultimas 5) ---
+
+AVG7 = 26.57  V2 = 58  R = 1.091  ajuste = 1.046  λ48 = 55.6
+Días completos en CSV: 26
+[2026-08-19 14:30:14 EDT] Pasada completada en 21.5 s
+[2026-08-19 14:30:14 EDT] Próxima pasada en 5 min…
+
+--- /var/log/poly-telegram.log (ultimas 5) ---
+getUpdates: The read operation timed out
+[poly-telegram] arrancado, escuchando…
+[FIXCAL] win=14% (1/7) cuota_med=6.69 kelly=-0.008 factor=1.000 stake=3.3 (INFORMATIVO (faltan datos))
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+
+--- /var/log/poly-telegram-zelen.log (ultimas 5) ---
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+getUpdates: The read operation timed out
+getUpdates: The read operation timed out
+getUpdates: The read operation timed out
+getUpdates: The read operation timed out
+
+--- /var/log/poly-test-diario.log (ultimas 5) ---
+[FIXCAL] win=14% (1/7) cuota_med=6.69 kelly=-0.008 factor=1.000 stake=3.3 (INFORMATIVO (faltan datos))
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+resultado: AVISOS
+
+--- /var/log/poly-test-diario-trump.log (ultimas 5) ---
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+resultado: AVISOS
+[FIXCAL] win=14% (1/7) cuota_med=6.69 kelly=-0.008 factor=1.000 stake=3.3 (INFORMATIVO (faltan datos))
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+resultado: AVISOS
+
+--- /var/log/poly-test-diario-zelen.log (ultimas 5) ---
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+resultado: AVISOS
+[FIXCAL] win=14% (1/7) cuota_med=6.69 kelly=-0.008 factor=1.000 stake=3.3 (INFORMATIVO (faltan datos))
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+resultado: AVISOS
+
+--- /var/log/poly-zelenskyy.log (ultimas 5) ---
+
+AVG7 = 10.57  V2 = 22  R = 1.041  ajuste = 1.020  λ48 = 21.6
+Días completos en CSV: 173
+[2026-09-09 15:24:46 EDT] Pasada completada en 21.8 s
+[2026-09-09 15:24:46 EDT] Próxima pasada en 5 min…
+
