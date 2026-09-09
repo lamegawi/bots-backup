@@ -1,0 +1,98 @@
+=== TEST DE SALUD poly-combos-bot — 2026-09-09 16:21:33 UTC ===
+
+== 1) SERVICIO ==
+  ✅ servicio active
+          Active: active (running) since Wed 2026-09-09 16:21:17 UTC; 16s ago
+        Main PID: 1293951 (python3)
+          Memory: 20.0M (peak: 20.3M)
+     proc: 1293951 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+== 2) CÓDIGO (versión e integridad) ==
+  ·  tamaño: 145071 bytes
+  ·  md5:    bf92fb2f643beea011354edfaf798de0
+  ·  banner: POLY COMBOS BOT v12.4 — COMBOS REALES (parlays multi-leg) via RFQ
+  ✅ tamaño plausible
+  ✅ sintaxis OK (py_compile)
+  ·  v12.4 (PIN fijo):   4 menciones
+  ·  v12.3 (prob/cierre): 18 menciones
+
+== 3) ESTADO (combos_estado.json) ==
+  ·  tamaño: 68356 bytes · modificado: 16:21:17 UTC
+  ·  max_ops_dia=10 · prob_min_auto=0.65 · stake_mode=AUTO · stake=5.0
+  ·  intervalo=10 min · modo=AUTO · chat_id=sí
+  ·  historial RFQ: 18 registros · fills hoy: 10
+  ·  trades_copiados (panel): 4 · huellas dedup: 17
+  ·  próxima pasada AUTO en 2.1 min
+  ·  backup de estado: 68077 bytes
+
+== 4) PROXY TAILSCALE (obligatorio para operar) ==
+  ✅ IP de salida correcta: 85.85.41.76 (PC del user)
+
+== 5) APIs PÚBLICAS ==
+  ·  CLOB midpoint: sin token real disponible, se omite
+  ✅ Gamma markets → 200 (6318 bytes)
+  ✅ Catálogo combos → 200 (712 bytes)
+  ✅ Data-API trades → 200 (671 bytes)
+  ✅ Data-API positions → 200 (1050 bytes)
+  ✅ Gateway RFQ alcanzable (HTTP 404 sin credenciales L2, es lo esperado)
+  ❌ CLOB a través del proxy → HTTP 404
+
+== 6) WALLET (posición y actividad) ==
+  ·  OJO: en data-api 'size' son SHARES; el coste en $ = size x price
+  ·  posiciones con tamaño: 40 · valor actual ≈ $16.78
+     - 2026 Balance of Power: D Senate, D House | 30.6 sh | $15.46
+     - Will Elon Musk post 120-139 tweets from September 4 to Sep | 230.8 sh | $1.27
+     - Will Romeu Zema win the 2026 Brazilian presidential electi | 36.2 sh | $0.05
+     - Will Elon Musk post 180-199 tweets from May 19 to May 26,  | 33.7 sh | $0.00
+     - Will Elon Musk post 180-199 tweets from May 12 to May 19,  | 33.3 sh | $0.00
+  ·  últimos fills:
+     - hace    98.1 min | BUY  | 15.79 sh x 0.5610 = $8.86 | Dota 2: MOUZ vs HULIGANI (BO3) - EPL Mas
+     - hace   108.2 min | BUY  | 13.19 sh x 0.6869 = $9.06 | Map Handicap: FURIA (-1.5) vs PARIVISION
+     - hace   128.3 min | BUY  | 16.42 sh x 0.5534 = $9.09 | Counter-Strike: BetBoom Team vs Astralis
+     - hace   168.5 min | BUY  | 13.03 sh x 0.7141 = $9.31 | Counter-Strike: BetBoom Team vs Astralis
+     - hace   218.8 min | BUY  | 13.76 sh x 0.6402 = $8.81 | Map Handicap: 3DMAX (-1.5) vs Acend (+1.
+
+== 7) RECURSOS ==
+  ·  disco /: 26G libres (30% usado)
+  ✅ disco al 30%
+  ·  memoria: 1103 MB usados de 3819 MB (29%)
+  ·  log: 4124 líneas · 266550 bytes
+
+== 8) ERRORES EN EL LOG ==
+  ·  Tracebacks totales en el log: 0
+  ·  líneas con error en las últimas 400: 3 (el 'read operation timed out' es ruido benigno)
+     ! [12:02:30]   RFQ create -> 200 {"rfq_id":"rfq-3716e6a286db1aac20a4d3e0","status":"FAILED","error":{"code":"SIZE_TOO_LARGE","message":"size too large"}}
+     ! [12:12:33]   RFQ create -> 200 {"rfq_id":"rfq-54d1b4fbeab817758bbc9ce8","status":"FAILED","error":{"code":"NO_QUOTES","message":"no quotes"}}
+     ! [12:22:36]   RFQ create -> 200 {"rfq_id":"rfq-6b44306a93815467ac408862","status":"FAILED","error":{"code":"SIZE_TOO_LARGE","message":"size too large"}}
+  ✅ sin tracebacks recientes
+
+== 9) ÚLTIMAS 25 LÍNEAS DEL LOG ==
+   [16:03:37]   pagina 1: +50 mercados, 0 legs de deportes
+   [16:03:37]   pagina 2: +50 mercados, 1 legs de deportes
+   [16:03:38]   pagina 3: +50 mercados, 12 legs de deportes
+   [16:03:38]   pagina 4: +50 mercados, 57 legs de deportes
+   [16:03:38]   pagina 5: +50 mercados, 97 legs de deportes
+   [16:03:38]   tope diario alcanzado (10/10 ops)
+   [16:03:38]   sin combos viables esta pasada (eventos distintos, cuota, cooldown, tope)
+   [16:13:38] [AUTO] pasada (combos RFQ v11)
+   [16:13:39]   pagina 1: +50 mercados, 0 legs de deportes
+   [16:13:39]   pagina 2: +50 mercados, 2 legs de deportes
+   [16:13:40]   pagina 3: +50 mercados, 13 legs de deportes
+   [16:13:40]   pagina 4: +50 mercados, 55 legs de deportes
+   [16:13:40]   pagina 5: +50 mercados, 95 legs de deportes
+   [16:13:40]   tope diario alcanzado (10/10 ops)
+   [16:13:40]   sin combos viables esta pasada (eventos distintos, cuota, cooldown, tope)
+   [16:20:48] loop err: The read operation timed out
+   [16:21:17] intervalo AUTO restaurado: 10 min
+   [16:21:17] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+   [16:21:17]   horario restaurado: próxima pasada en 2 min
+   [16:21:17]   sync: 2 op(s) cerradas (0 ganadas, PnL $-18.37)
+   [16:21:17]   sync inicial: 2 op(s) cerradas (0 ganadas)
+   [16:21:17] v12.4 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+   [16:21:17] Proxy: http://100.83.57.99:8888
+   [16:21:18] Test proxy: 200
+   [16:21:18] v12.4 iniciado
+
+==============================================
+RESULTADO: ⚠️ 1 FALLO(S) — revisar arriba
+==============================================
