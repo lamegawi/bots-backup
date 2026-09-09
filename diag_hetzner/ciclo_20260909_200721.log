@@ -1,0 +1,30 @@
+=== Chequeo 2026-09-09 20:07:31 UTC ===
+Pos: restante=0.0  bankroll=$20  dry_run=0
+
+-- jina scrap --
+CONTAJE 129
+PCT_120-139 1
+PCT_140-159 5.3
+PCT_160-179 40
+PCT_180-199 44
+PCT_200-219 12
+
+-- CLOB --
+
+
+P_USAR = 0.01
+
+DECISION: ninguna
+TRIGGER: 
+
+{
+  "shares_yes": 0,
+  "precio_entrada": 0,
+  "vendido_yes": 0.0,
+  "shares_no_cubierta": 0,
+  "ultima_accion": "VENDER_MITAD 0.0 YES (count=129 >=120) [TRIGGER: count_ge_120]",
+  "triggers_disparados": [
+    "count_ge_120"
+  ],
+  "nota": "reset por user (posicion 120-139 ya cerrada manualmente)"
+}
