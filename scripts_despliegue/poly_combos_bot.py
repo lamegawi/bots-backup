@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v12.4 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v12.5 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -53,6 +53,11 @@ Estrategia nueva (vs v7):
    📋 Trades: un mensaje por combo con SU botón debajo. Estadísticas y
    contadores diarios separados por franja (las manuales NO consumen
    el tope AUTO).
+   v12.5: REINTENTO ANTE SIZE_TOO_LARGE — si el maker del RFQ responde
+   SIZE_TOO_LARGE (no cubre ese tamaño), el bot reintenta UNA única vez con el
+   stake mínimo ($5) siempre que el pedido inicial fuera mayor; si ya iba al
+   mínimo, no reintenta. Se avisa por Telegram (🔁) y queda en el log. NO se
+   aplica al cierre (SELL): vender menos dejaría la posición a medias.
    v12.4: CÓDIGO PIN FIJO ELEGIDO POR EL USER — el código de 4 cifras que
    confirma los topes ≥10 ops/día ya NO se genera aleatoriamente: es el que
    fijó el user (constante PIN_FIJO_OPS). Se teclea SIEMPRE con el teclado
@@ -1293,6 +1298,26 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, franja="base", stake=No
         d = json.loads(resp)
     except Exception:
         d = {}
+    # v12.5: SIZE_TOO_LARGE = el maker no cubre ese tamaño. REINTENTO ÚNICO con
+    # el stake mínimo ($5) si el pedido era mayor; si ya íbamos al mínimo, no se
+    # reintenta (volvería a fallar). Solo en APERTURA: en la rama de CIERRE (SELL)
+    # no se reintenta con menos porque vendería solo una parte de la posición y
+    # dejaría el resto colgando (mejor avisar y que el user decida).
+    _e0 = d.get("error") if isinstance(d, dict) else None
+    _cod0 = (_e0.get("code") if isinstance(_e0, dict) else str(_e0 or "")) or ""
+    if _cod0 == "SIZE_TOO_LARGE" and float(stake or 0) > STAKE_MIN_AUTO + 0.001:
+        _stake_prev = float(stake)
+        stake = STAKE_MIN_AUTO
+        log(f"  ⚠️ RFQ SIZE_TOO_LARGE con ${_stake_prev:.2f} -> reintento único con ${stake:.2f} (suelo)")
+        if chat_id:
+            enviar(chat_id, f"🔁 *El RFQ rechazó el tamaño* (${_stake_prev:.2f})\n"
+                            f"Reintento único con ${stake:.2f} (mínimo)…")
+        status, resp = crear_rfq(pids, stake, identidad)
+        log(f"  RFQ create (reintento) -> {status} {str(resp)[:160]}")
+        try:
+            d = json.loads(resp)
+        except Exception:
+            d = {}
     if status != 200 or not isinstance(d, dict) or not d:
         liberar_combo(pids)
         return False, f"rfq_http_{status}:{str(resp)[:150]}"
@@ -2338,6 +2363,8 @@ def cerrar_grupo(g, chat_id=None, dry_run=False, estado=None):
         err = d.get("error")
         if d.get("status") == "FAILED" or err:
             code = err.get("code") if isinstance(err, dict) else str(err)
+            # v12.5: aquí NO hay reintento con menos tamaño (ni ante SIZE_TOO_LARGE):
+            # vendería solo parte de la posición y dejaría el resto sin archivar.
             return False, f"rfq_sell_{code or 'failed'}"
         quote = d.get("quote") or {}
         req = d.get("request") or {}
@@ -2564,7 +2591,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v12.4*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v12.5*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt()}*\n"
              f"🔢 Máx ops/día: *{max_ops()}*\n"
@@ -2884,7 +2911,7 @@ def cmd_status(chat_id):
     _est = cargar_estado()
     _mx = max_ops(_est)
     _hoy = ops_pagadas_hoy(_est)
-    texto = (f"📊 *ESTADO v12.4 (Combos)*\n\n"
+    texto = (f"📊 *ESTADO v12.5 (Combos)*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt(_est)}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
@@ -3181,7 +3208,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v12.4 iniciado")
+    log("v12.5 iniciado")
     offset = 0
     while True:
         try:
@@ -3223,7 +3250,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v12.4 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
+    log(f"v12.5 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
