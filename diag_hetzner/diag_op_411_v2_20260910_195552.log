@@ -1,0 +1,87 @@
+=== DIAG OPERACIONES 4-11 v2 — 20260910_195552 UTC ===
+
+== 1. TODAS las hojas del Excel ==
+hojas: ['Operaciones', 'Resumen', 'Equity', 'Notas']
+--- Operaciones (8 filas) ---
+  fila 1: ('HISTORIAL ACUMULATIVO DE OPERACIONES  ·  trading REAL', None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+  fila 2: ('Actualizado: 2026-09-10 15:54 EDT · Total: 4 operaciones · Este libro SOLO añade filas (nunca borra: cada operación tiene un ID único).', None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+  fila 3: (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+--- Resumen (21 filas) ---
+  fila 1: ('PANEL DE RESULTADOS ACUMULADOS', None)
+  fila 2: (None, None)
+  fila 3: ('Bankroll inicial ($)', 500)
+--- Equity (7 filas) ---
+  fila 1: ('CURVA DE SALDO (equity) — todas las operaciones', None, None)
+  fila 2: (None, None, None)
+  fila 3: ('#', 'Saldo ($)', 'Beneficio por op. ($)')
+--- Notas (9 filas) ---
+  fila 1: ('CÓMO FUNCIONA ESTE LIBRO',)
+  fila 2: (None,)
+  fila 3: ('· Cada operación tiene un ID único; el libro SOLO AÑADE filas nuevas (nunca duplica ni borra).',)
+
+== 2. Bot log — buscar 4-11 ==
+tamaño bot.log: 76277 bot.log
+
+== 3. JSON files con datos del 4-11 ==
+-rw-r--r-- 1 root root    946 Sep 10 16:42 avisos_cooldown.json
+-rw-r--r-- 1 root root    202 Aug 22 04:36 config.json
+-rw-r--r-- 1 root root     35 Aug 22 04:01 estado_bot.json
+-rw-r--r-- 1 root root 157678 Sep 10 19:53 estado_tweets.json
+-rw-r--r-- 1 root root   1383 Aug 17 20:24 fuentes_serie.json
+-rw-r--r-- 1 root root  33518 Sep 10 19:54 mercado_activo.json
+-rw-r--r-- 1 root root    695 Sep 10 19:55 polymarket_oficial.json
+-rw-r--r-- 1 root root   2796 Sep  4 20:45 real.json
+-rw-r--r-- 1 root root   3748 Sep 10 19:54 ventanas_vistas.json
+
+== 4. operar_real.py — funciones de logging ==
+13:  · Una sola apuesta real activa (secuencial)
+292:    candidatos = ["/home/bots/apuestas_compartidas.json",
+293:                  "./apuestas_compartidas.json"]
+302:    return "./apuestas_compartidas.json"
+329:    """Devuelve el nombre del bot que ya tiene apuesta en esa ventana/bin,
+361:    """Cierra la apuesta real activa si su mercado ya se resolvió.
+404:    print(f"  ✔ RESUELTA apuesta REAL del {act['fecha']}: {act['bin_titulo']} "
+448:        print(f"  (sin señal 48 h → no se abre apuesta real · paso {estado['paso']})")
+591:                        f"✅ ORDEN REAL LLENADA (apuesta activa)\n"
+618:    print(f"  ✔ ABIERTA apuesta REAL (o simulada): {c['bin_titulo']} {c['lado']} "
+628:    - Llenada → notifica ✅ (apuesta activa) y deja de vigilar.
+630:    - Sigue pendiente → solo informa en log (el bot continúa operando)."""
+664:            print(f"  ✅ Orden REAL LLENADA (apuesta activa): {act['bin_titulo']} "
+668:                    f"✅ ORDEN REAL LLENADA (apuesta activa)\n"
+725:        print(f"  Historial REAL: {n} apuestas · {g}G/{n-g}P · "
+
+== 5. ejecutar senal para ver qué dice ==
+Métricas: AVG7=35.43 V2=175 R=2.470 ajuste=1.500 λ48=106.3
+Mercados Elon activos: 5
+  - Elon Musk # tweets September 4 - September 11, 2026?
+    cierre: ? tipo: semanal
+      bin: <20 YES=0.000
+      bin: 20-39 YES=0.000
+      bin: 40-59 YES=0.000
+  - Elon Musk # tweets September 10 - September 12, 2026?
+    cierre: ? tipo: 48h
+      bin: <40 YES=0.195
+      bin: 40-64 YES=0.525
+      bin: 65-89 YES=0.225
+  - Elon Musk # tweets September 8 - September 15, 2026?
+    cierre: ? tipo: semanal
+      bin: <20 YES=0.000
+      bin: 20-39 YES=0.000
+      bin: 40-59 YES=0.001
+  - Elon Musk # tweets September 11 - September 18, 2026?
+    cierre: ? tipo: semanal
+      bin: <20 YES=0.001
+      bin: 20-39 YES=0.001
+      bin: 40-59 YES=0.001
+  - Elon Musk # tweets in October 2026?
+    cierre: ? tipo: mensual
+      bin: <20 YES=0.001
+      bin: 20-39 YES=0.001
+      bin: 40-59 YES=0.001
+
+== 6. tiempo restante para cierre 4-11 sept ==
+ahora ET: 2026-09-10 15:55:53.198488-04:00
+cierre: 2026-09-11 12:00:00-04:00
+restante: 20:04:06.801512
+  horas: 20.1
+  minutos: 1204
