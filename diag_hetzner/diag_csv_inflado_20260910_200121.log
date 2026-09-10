@@ -1,0 +1,126 @@
+=== DIAG CSV INFLADO — 20260910_200121 UTC ===
+
+== 1. CSV actual (últimas 5 filas) ==
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+2026-09-10,153
+
+== 2. bak (estado tras revertir) ==
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+2026-09-10,153
+
+== 3. ¿Qué dice el estado guardado para 09-10? ==
+Total items: 737
+  2026-09-03: 1 tweets
+  2026-09-05: 5 tweets
+  2026-09-06: 21 tweets
+  2026-09-07: 21 tweets
+  2026-09-08: 25 tweets
+  2026-09-09: 22 tweets
+  2026-09-10: 21 tweets
+
+== 4. polymarket_oficial.json ==
+{
+  "fuente": "polymarket.com",
+  "user": "elonmusk",
+  "tweet_count_oficial": 153,
+  "scrapeado_en": "2026-09-10T16:00:02.694763-04:00",
+  "bins": {
+    "0-19": 0.0,
+    "20-39": 0.0,
+    "40-59": 0.0,
+    "60-79": 0.0,
+    "80-99": 0.0,
+    "100-119": 0.0,
+    "120-139": 0.0,
+    "140-159": 0.0335,
+    "160-179": 0.645,
+    "180-199": 0.285,
+    "200-219": 0.0295,
+    "220-239": 0.0055,
+    "240-259": 0.0015,
+    "260-279": 0.0005,
+    "280-299": 0.0005,
+    "300-319": 0.0005,
+    "320-339": 0.0005,
+    "340-359": 0.0005,
+    "360-379": 0.0005,
+    "380-399": 0.0005,
+    "400-419": 0.0005,
+    "420-439": 0.0005,
+    "440-459": 0.0005,
+    "460-479": 0.0005,
+    "480-499": 0.0005
+  }
+}  (también hay .disabled)
+
+== 5. ¿qué tweeted se vieron en último paso de nitter? ==
+[2026-09-10 15:53:44 EDT]       · nitter: 20 items
+[2026-09-10 15:53:44 EDT]       · tweets únicos: 737 (reposts 455) · CSV: 47 días (nuevos/mejorados: 0)
+--
+[2026-09-10 15:59:13 EDT]       · nitter: 20 items
+[2026-09-10 15:59:13 EDT]       · tweets únicos: 737 (reposts 455) · CSV: 47 días (nuevos/mejorados: 0)
+
+== 6. ¿se ejecutó paso 0 (in-process) y qué dijo? ==
+[2026-09-10 15:22:55 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-10 15:22:56 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-10 15:22:56 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-10 15:22:56 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:22:56 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:23:01 EDT]       · nitter: 20 items
+--
+[2026-09-10 15:37:13 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-10 15:37:14 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-10 15:37:14 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-10 15:37:15 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-10 15:37:15 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-10 15:37:15 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:37:15 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:37:20 EDT]       · nitter: 20 items
+--
+[2026-09-10 15:42:40 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-10 15:42:41 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-10 15:42:41 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-10 15:42:42 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-10 15:42:42 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-10 15:42:42 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:42:42 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:42:47 EDT]       · nitter: 20 items
+--
+[2026-09-10 15:48:06 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-10 15:48:07 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-10 15:48:07 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-10 15:48:08 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-10 15:48:08 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+
+== 7. ¿se sobreescribió 09-10 por el bot? ==
+[2026-09-10 15:48:06 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-10 15:48:07 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-10 15:48:07 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-10 15:48:08 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-10 15:48:08 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-10 15:48:08 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:48:08 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:48:13 EDT]       · nitter: 20 items
+[2026-09-10 15:48:13 EDT]       · tweets únicos: 737 (reposts 455) · CSV: 47 días (nuevos/mejorados: 0)
+[2026-09-10 15:48:13 EDT] 2/5 · Actualizando mercados de Polymarket…
+
+== 8. ¿qué tiene el bak? (estado tras revertir) ==
+Bak últimos 7: [('2026-09-03', 1), ('2026-09-05', 5), ('2026-09-06', 21), ('2026-09-07', 21), ('2026-09-08', 25), ('2026-09-09', 22), ('2026-09-10', 153)]
+Bak AVG7: 35.43
+
+== 9. ¿tiene cron el wrapper correcto (sin --actualizar-csv)? ==
+*/5 * * * * /opt/polymarket/scraper_cron_elon.sh
+#!/usr/bin/env bash
+# Ejecuta el scraper de Polymarket y loggea resultado
+TS=$(date -u +%Y%m%d_%H%M%S)
+LOG=/var/log/poly/scraper_elon_${TS}.log
+cd /opt/polymarket/bot-polymarket-elon
+python3 scraper_tweets_pm.py --user elonmusk --actualizar-csv >> "$LOG" 2>&1
+# limpiar logs de más de 7 días
+find /var/log/poly/scraper_elon_*.log -mtime +7 -delete 2>/dev/null
