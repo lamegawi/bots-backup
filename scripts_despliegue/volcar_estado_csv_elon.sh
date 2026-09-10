@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # volcar_estado_csv_elon.sh — vuelca estado_tweets.json al CSV en Hetzner
+#   0) descarga volcar_estado_a_csv.py desde GitHub (no estaba en Hetzner)
 #   1) dry-run mostrando lo que cambiaría
 #   2) ejecuta real
 #   3) muestra el CSV final
@@ -9,6 +10,11 @@ TS=$(date -u +%Y%m%d_%H%M%S)
 LOG=/tmp/volcar_estado_${TS}.log
 
 cd /opt/polymarket/bot-polymarket-elon
+
+# 0) descargar el .py desde la misma rama (no estaba desplegado)
+HASH=$(gh api repos/lamegawi/bots-backup/commits/arena/01a058fe-bots-backup --jq '.sha[:8]' 2>/dev/null || echo "main")
+curl -sL -o volcar_estado_a_csv.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${HASH}/poly/codigo/bot-polymarket-elon/volcar_estado_a_csv.py"
+chmod +x volcar_estado_a_csv.py
 
 {
 echo "=== VOLCAR ESTADO A CSV — $TS UTC ==="
