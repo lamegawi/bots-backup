@@ -41,10 +41,12 @@ curl -sL --max-time 20 -A "Mozilla/5.0" "https://polymarket.com/event/elon-musk-
 echo "tamaño: $(wc -c < /tmp/pm_com.html) bytes"
 echo "---busca 'TWEET COUNT' (texto) en PM---"
 grep -c "TWEET COUNT" /tmp/pm_com.html
-echo "---busca 'TweetCount' (camelCase) en PM---"
-grep -c "TweetCount" /tmp/pm_com.html
-echo "---busca '150' en PM (mostrar contexto)---"
-grep -o ".\{0,80\}150.\{0,80\}" /tmp/pm_com.html | head -3
+echo "---contexto de 'TWEET COUNT' en PM (200 chars antes/después)---"
+grep -o ".\{0,200\}TWEET COUNT.\{0,200\}" /tmp/pm_com.html | head -3
+echo "---contexto de 'TWEET\\u00a0COUNT' (con nbsp) en PM---"
+grep -c "TWEET" /tmp/pm_com.html
+echo "---primera ocurrencia de 'TWEET' en PM (contexto)---"
+grep -o ".\{0,100\}TWEET.\{0,100\}" /tmp/pm_com.html | head -3
 echo
 echo "== CSV FINAL =="
 cat datos_elon.csv
