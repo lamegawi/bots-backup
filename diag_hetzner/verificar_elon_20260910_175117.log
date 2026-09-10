@@ -1,0 +1,124 @@
+=== VERIFICACIÓN BOT ELON TRAS FIX — 20260910_175117 UTC ===
+
+== 1. CSV (últimas 12 filas) ==
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+2026-09-10,152
+
+== 2. POLYMARKET OFICIAL JSON ==
+{
+  "fuente": "polymarket.com",
+  "user": "elonmusk",
+  "tweet_count_oficial": 152,
+  "scrapeado_en": "2026-09-10T13:42:33.297074-04:00",
+  "bins": {
+    "0-19": 0.0,
+    "20-39": 0.0,
+    "40-59": 0.0,
+    "60-79": 0.0,
+    "80-99": 0.0,
+    "100-119": 0.0,
+    "120-139": 0.0,
+    "140-159": 0.024,
+    "160-179": 0.545,
+    "180-199": 0.355,
+    "200-219": 0.0555,
+    "220-239": 0.0105,
+    "240-259": 0.0015,
+    "260-279": 0.0005,
+    "280-299": 0.0005,
+    "300-319": 0.0005,
+    "320-339": 0.0005,
+    "340-359": 0.0005,
+    "360-379": 0.0005,
+    "380-399": 0.0005,
+    "400-419": 0.0005,
+    "420-439": 0.0005,
+    "440-459": 0.0005,
+    "460-479": 0.0005,
+    "480-499": 0.0005
+  }
+}
+== 3. CÁLCULO DE MÉTRICAS (AVG7, V2, λ48) ==
+Traceback (most recent call last):
+  File "<string>", line 22, in <module>
+OverflowError: (34, 'Numerical result out of range')
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 114, in apport_excepthook
+    report["ExecutableTimestamp"] = str(int(os.stat(binary).st_mtime))
+                                            ^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/polymarket/bot-polymarket-elon/-c'
+
+Original exception was:
+Traceback (most recent call last):
+  File "<string>", line 22, in <module>
+OverflowError: (34, 'Numerical result out of range')
+  Total filas: 47
+  AVG7 = 35.29  V2 = 174  R = 2.466  ajuste = 1.500  λ48 = 105.9
+  Últimos 7 días: [1, 5, 21, 21, 25, 22, 152]
+  Últimos 2 días: [22, 152]
+  Distribución proyectada (Poisson λ=105.9):
+    P(N=140) =   0.0%
+
+== 4. DECISIÓN DEL BOT (ejecutar senal_vivo en modo lectura) ==
+usage: senal_vivo.py [-h] [--csv CSV] [--actualizar] [--recoger] [--paso PASO]
+                     [--avg7 AVG7] [--v2 V2] [--t0 T0] [--sin-reposts]
+senal_vivo.py: error: unrecognized arguments: --mercado
+
+== 5. LOGS RECIENTES DEL BOT ==
+-- journalctl (últimas 30 líneas) --
+-- No entries --
+
+-- log del bot si existe --
+-rw-r--r-- 1 root root 5510239 Sep 10 17:51 /opt/polymarket/bot-polymarket-elon/bot.log
+--- /opt/polymarket/bot-polymarket-elon/bot.log (últimas 20 líneas) ---
+[2026-09-10 13:44:33 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-10 13:44:33 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 13:44:33 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 13:44:37 EDT]       · nitter: 20 items
+[2026-09-10 13:44:37 EDT]       · tweets únicos: 736 (reposts 454) · CSV: 47 días (nuevos/mejorados: 0)
+[2026-09-10 13:44:37 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-10 13:44:58 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-10 13:44:58 EDT] 3/4 · Trading REAL…
+[2026-09-10 13:44:59 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-10 13:44:59 EDT] 4/4 · Estado:
+[2026-09-10 13:44:59 EDT] Pasada completada en 25.5 s
+[2026-09-10 13:44:59 EDT] Próxima pasada en 5 min…
+[2026-09-10 13:49:59 EDT] ==============================================================
+[2026-09-10 13:49:59 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-10 13:49:59 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-10 13:51:04 EDT]       · jina-tw: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-09-10 13:51:04 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 13:51:09 EDT]       · nitter: 20 items
+[2026-09-10 13:51:09 EDT]       · tweets únicos: 736 (reposts 454) · CSV: 47 días (nuevos/mejorados: 0)
+[2026-09-10 13:51:09 EDT] 2/4 · Actualizando mercados de Polymarket…
+
+== 6. ESTADO DEL SERVICIO systemd ==
+● poly-elon.service - Bot Polymarket Elon 48h (v1)
+     Loaded: loaded (/etc/systemd/system/poly-elon.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2026-09-10 14:39:48 UTC; 3h 11min ago
+   Main PID: 1379623 (python3)
+      Tasks: 3 (limit: 4538)
+     Memory: 66.4M (peak: 68.0M)
+        CPU: 2min 5.618s
+     CGroup: /system.slice/poly-elon.service
+             ├─1379623 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+             └─1393113 curl -s --max-time 40 "https://gamma-api.polymarket.com/events?slug=elon-musk-of-tweets-september-18-september-20"
+
+Sep 10 14:39:48 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+
+== 7. POSICIÓN EN CLOB ==
+  [ERROR] HTTP Error 403: Forbidden
