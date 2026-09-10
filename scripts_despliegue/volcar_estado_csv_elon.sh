@@ -12,8 +12,10 @@ LOG=/tmp/volcar_estado_${TS}.log
 cd /opt/polymarket/bot-polymarket-elon
 
 # 0) descargar el .py desde la misma rama (no estaba desplegado)
-HASH=$(gh api repos/lamegawi/bots-backup/commits/arena/01a058fe-bots-backup --jq '.sha[:8]' 2>/dev/null || echo "main")
-curl -sL -o volcar_estado_a_csv.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${HASH}/poly/codigo/bot-polymarket-elon/volcar_estado_a_csv.py"
+BRANCH="arena/01a058fe-bots-backup"
+curl -sL -o volcar_estado_a_csv.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/volcar_estado_a_csv.py"
+echo "  descargado: $(wc -c < volcar_estado_a_csv.py) bytes"
+head -1 volcar_estado_a_csv.py
 chmod +x volcar_estado_a_csv.py
 
 {
