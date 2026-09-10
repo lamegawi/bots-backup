@@ -141,6 +141,8 @@ def main():
                     help="si TWEET_COUNT existe, escribir fecha=hoy con ese valor")
     ap.add_argument("--periodo", nargs=2, metavar=("INI","FIN"),
                     help="volcar TWEET_COUNT como primer día SIN datos del periodo")
+    ap.add_argument("--debug-html", action="store_true",
+                    help="guardar el HTML crudo recibido a /tmp/pm_debug.html")
     args = ap.parse_args()
 
     if not args.slug and not args.auto:
@@ -158,6 +160,10 @@ def main():
 
     print(f"Scrapeando: https://polymarket.com/event/{args.slug}\n")
     md = fetch_pm(args.slug)
+    if args.debug_html:
+        with open("/tmp/pm_debug.html", "w", encoding="utf-8") as f:
+            f.write(md)
+        print(f"  HTML crudo guardado en /tmp/pm_debug.html ({len(md)} bytes)")
     if "Just a moment" in md or "404" in md[:200] or "Page Not Found" in md[:200]:
         print("Posible bloqueo o 404. Primeros 500 chars:")
         print(md[:500])

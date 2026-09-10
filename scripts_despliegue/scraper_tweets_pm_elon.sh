@@ -27,7 +27,7 @@ echo "== 2. SCRAPEAR MERCADO =="
 SLUG="elon-musk-of-tweets-september-4-september-11-2026"
 echo "Slug a usar: $SLUG"
 if [ -n "$SLUG" ]; then
-  python3 scraper_tweets_pm.py --slug "$SLUG" --actualizar-csv
+  python3 scraper_tweets_pm.py --slug "$SLUG" --actualizar-csv --debug-html
 fi
 echo
 echo "== 3. CSV FINAL =="
