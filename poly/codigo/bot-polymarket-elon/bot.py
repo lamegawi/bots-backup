@@ -96,6 +96,8 @@ def actualizar_polymarket_oficial():
     try:
         import importlib.util as _ilu
         import os as _os
+        import io as _io
+        from contextlib import redirect_stdout as _rso
         spec = _ilu.spec_from_file_location(
             "scraper_tweets_pm",
             _os.path.join(_os.path.dirname(__file__) or ".", "scraper_tweets_pm.py"),
@@ -103,7 +105,14 @@ def actualizar_polymarket_oficial():
         stpm = _ilu.module_from_spec(spec)
         spec.loader.exec_module(stpm)
         log("0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…")
-        tc = stpm.actualizar_csv_desde_fuente(user="elonmusk", verbose=True)
+        # capturar stdout del scraper para ver qué imprime
+        buf = _io.StringIO()
+        with _rso(buf):
+            tc = stpm.actualizar_csv_desde_fuente(user="elonmusk", verbose=True)
+        scraper_log = buf.getvalue()
+        for ln in scraper_log.splitlines():
+            if ln.strip():
+                log(f"      · scraper: {ln}")
         if tc:
             log(f"      · TWEET_COUNT oficial = {tc} → CSV actualizado")
         else:
