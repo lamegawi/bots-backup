@@ -8,12 +8,14 @@ LOG=/tmp/scraper_tweets_pm_${TS}.log
 
 cd /opt/polymarket/bot-polymarket-elon
 
-# 0) descargar el .py desde la rama
+# 0) descargar el .py desde la rama (con cache-buster por si el raw tarda en propagar)
 BRANCH="arena/01a058fe-bots-backup"
+TS_CACHE=$(date +%s)
 curl -sL -o scraper_tweets_pm.py \
-  "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py"
+  "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py?ts=${TS_CACHE}"
 echo "  descargado: $(wc -c < scraper_tweets_pm.py) bytes"
 head -1 scraper_tweets_pm.py
+grep -c "debug-html" scraper_tweets_pm.py | xargs echo "  matches debug-html:"
 chmod +x scraper_tweets_pm.py
 
 {
