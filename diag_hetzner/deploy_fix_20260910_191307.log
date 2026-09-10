@@ -1,0 +1,75 @@
+=== DEPLOY FIX AUTOMÁTICO — 20260910_191307 UTC ===
+
+== 1. Descargando scraper_tweets_pm.py (con cache-buster) ==
+  11519 bytes
+  matches TWEET_COUNT (modo silent): 8
+
+== 2. Descargando bot.py (con paso 0) ==
+  15427 bytes
+  matches paso 0: 2
+
+== 2b. Test directo del scraper (sin silent) para ver qué pasa ==
+[1/3] Probando xtracker.polymarket.com directo...
+[2/3] Probando polymarket.com directo...
+  [OK] polymarket.com: tweet_count = 153
+[3/3] Probando gamma-api.polymarket.com...
+  [OK] gamma: 25 bins
+
+=== RESULTADO ===
+{
+  "user": "elonmusk",
+  "fuente": "polymarket.com",
+  "tweet_count": 153,
+  "bins": {
+    "0-19": 0.0,
+    "20-39": 0.0,
+    "40-59": 0.0,
+    "60-79": 0.0,
+    "80-99": 0.0,
+    "100-119": 0.0,
+    "120-139": 0.0,
+    "140-159": 0.0305,
+
+== 3. Reiniciando servicio poly-elon ==
+● poly-elon.service - Bot Polymarket Elon 48h (v1)
+     Loaded: loaded (/etc/systemd/system/poly-elon.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2026-09-10 19:13:09 UTC; 3s ago
+   Main PID: 1398604 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 14.0M (peak: 17.2M)
+        CPU: 293ms
+     CGroup: /system.slice/poly-elon.service
+             └─1398604 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+
+
+== 4. Esperando 90s para ver log del bot con el nuevo paso 0 ==
+[2026-09-10 15:11:40 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-10 15:11:40 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-10 15:11:40 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:11:40 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:11:45 EDT]       · nitter: 20 items
+[2026-09-10 15:11:45 EDT]       · tweets únicos: 737 (reposts 455) · CSV: 47 días (nuevos/mejorados: 0)
+[2026-09-10 15:11:45 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-10 15:12:06 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-10 15:12:06 EDT] 3/5 · Trading REAL…
+[2026-09-10 15:12:06 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-10 15:12:06 EDT] 4/5 · Estado:
+[2026-09-10 15:12:06 EDT] Pasada completada en 26.7 s
+[2026-09-10 15:12:06 EDT] Próxima pasada en 5 min…
+[2026-09-10 15:13:09 EDT] 🤖 BOT DEFINITIVO arrancado (loop=True, intervalo=5 min, excel=True) · notificaciones: ntfy → elon-poly-gg1j0zp6 · telegram ✓
+[2026-09-10 15:13:09 EDT] ==============================================================
+[2026-09-10 15:13:09 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-10 15:13:09 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-10 15:13:10 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-10 15:13:10 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-10 15:13:10 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:13:10 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-10 15:13:15 EDT]       · nitter: 20 items
+[2026-09-10 15:13:15 EDT]       · tweets únicos: 737 (reposts 455) · CSV: 47 días (nuevos/mejorados: 0)
+[2026-09-10 15:13:15 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-10 15:13:37 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-10 15:13:37 EDT] 3/5 · Trading REAL…
+[2026-09-10 15:13:37 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-10 15:13:37 EDT] 4/5 · Estado:
+[2026-09-10 15:13:37 EDT] Pasada completada en 28.2 s
+[2026-09-10 15:13:37 EDT] Próxima pasada en 5 min…
