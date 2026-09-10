@@ -1,0 +1,28 @@
+=== DIAG OPERACIONES ELON 4-11 SEPT — 20260910_195425 UTC ===
+
+== 1. ESTADO BOT (posiciones activas) ==
+--- estado_bot.json ---
+
+== 2. HISTORIAL DE OPERACIONES (mercado 4-11 sept) ==
+archivos: []
+
+== 3. EXCEL HISTORIAL (si existe) ==
+-rw-r--r-- 1 root root 10840 Sep 10 19:54 Historial_Operaciones.xlsx
+--- hoja: Operaciones ---
+   ('9545c5c1841c', 1, '2026-08-18', 'GENERAL', 'elon-musk-of-tweets-august-17-august-19', '<40', 'YES', 0.23, 4.35, 0.9171, '1', 3.3, '>40 (gestor vendió 18/08)', 'P', -3.3, 496.7)
+   ('reconc', 2, '2026-08-20', 'GENERAL', 'elon-musk-of-tweets-august-20-august-22', '90-114', 'YES', 0.212, 4.72, 0.6359, '2', 7.43, 'vendido por el gestor en positivo (+2.70 a nivel cuenta)', 'G', 27.64, 524.34)
+   ('8c677c997237', 3, '2026-08-22', 'GENERAL', 'elon-musk-of-tweets-august-22-august-24-2026', '90-114', 'YES', 0.115, 8.7, 0.776, '1', 6.6, '40-64', 'P', -6.6, 517.74)
+   ('7fabd7fc2966', 4, '2026-09-02', 'GENERAL', 'elon-musk-of-tweets-august-31-september-2-2026', '40-64', 'NO', 0.22, 4.55, 0, '5', 10, '40-64', 'P', -10, 477.84)
+--- hoja: Resumen ---
+--- hoja: Equity ---
+--- hoja: Notas ---
+
+== 4. bot.log (últimas 100 líneas, filtrar 4-11) ==
+
+== 5. logs de hoy (todo) ==
+2026-09-10
+total 16
+drwxr-xr-x  2 root root   4096 Sep 10 19:50 .
+drwxrwxr-x 10 root syslog 4096 Sep 10 19:45 ..
+-rw-r--r--  1 root root    939 Sep 10 19:45 scraper_elon_20260910_194536.log
+-rw-r--r--  1 root root    939 Sep 10 19:50 scraper_elon_20260910_195001.log
