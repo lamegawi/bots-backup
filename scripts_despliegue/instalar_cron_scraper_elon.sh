@@ -21,11 +21,13 @@ echo
 echo "== 2. Creando script wrapper del cron =="
 cat > /opt/polymarket/scraper_cron_elon.sh <<'WRAP'
 #!/usr/bin/env bash
-# Ejecuta el scraper de Polymarket y loggea resultado
+# Ejecuta el scraper de Polymarket y guarda TWEET_COUNT en
+# polymarket_oficial.json (NO toca datos_elon.csv porque el TWEET_COUNT
+# es el TOTAL del periodo, no el conteo diario).
 TS=$(date -u +%Y%m%d_%H%M%S)
 LOG=/var/log/poly/scraper_elon_${TS}.log
 cd /opt/polymarket/bot-polymarket-elon
-python3 scraper_tweets_pm.py --user elonmusk --actualizar-csv >> "$LOG" 2>&1
+python3 scraper_tweets_pm.py --user elonmusk >> "$LOG" 2>&1
 # limpiar logs de más de 7 días
 find /var/log/poly/scraper_elon_*.log -mtime +7 -delete 2>/dev/null
 WRAP
