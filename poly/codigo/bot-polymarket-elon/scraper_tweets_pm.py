@@ -36,6 +36,7 @@ CSV = "datos_elon.csv"
 def curl(url, headers=None, timeout=30):
     cmd = ["curl", "-s", "--max-time", str(timeout), "-L", "-A",
            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+           "-k",  # evita problemas de CA bundle cuando se ejecuta como servicio systemd
            url]
     for k, v in (headers or {}).items():
         cmd += ["-H", f"{k}: {v}"]
