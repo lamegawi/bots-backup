@@ -1,0 +1,36 @@
+=== INSTALAR CRON SCRAPER ELON — 20260910_194536 UTC ===
+
+== 1. Descargando scraper_tweets_pm.py ==
+  11519 bytes
+
+== 2. Creando script wrapper del cron ==
+  /opt/polymarket/scraper_cron_elon.sh creado
+
+== 3. Instalando cron (cada 5 min) ==
+  crontab actualizado:
+*/5 * * * * /opt/polymarket/scraper_cron_elon.sh
+
+== 4. Probando el wrapper ==
+  último log:
+    "380-399": 0.0005,
+    "400-419": 0.0005,
+    "420-439": 0.0005,
+    "440-459": 0.0005,
+    "460-479": 0.0005,
+    "480-499": 0.0005
+  }
+}
+[OK] CSV: 2026-09-10 = 153 tweets
+[OK] polymarket_oficial.json guardado (polymarket.com)
+
+== 5. Estado del bot ==
+● poly-elon.service - Bot Polymarket Elon 48h (v1)
+     Loaded: loaded (/etc/systemd/system/poly-elon.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2026-09-10 19:37:13 UTC; 8min ago
+   Main PID: 1400235 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 30.8M (peak: 34.0M)
+        CPU: 8.198s
+     CGroup: /system.slice/poly-elon.service
+             └─1400235 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+
