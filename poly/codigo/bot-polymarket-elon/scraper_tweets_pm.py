@@ -66,25 +66,42 @@ def fetch_gamma(slug):
 def parsear_xtracker(html, user):
     """Extrae tweet_count del HTML de xtracker."""
     out = {"user": user, "fuente": "xtracker.polymarket.com"}
-    # el patrón es: "Sep 4 – Sep 11 150" (con guion largo) en la primera vista
-    m = re.search(r"Sep\s*4\s*[–-]\s*Sep\s*11\s+(\d+)", html)
+    # el patrón en la primera vista: "Sep 4 – Sep 11 150" (con guion largo –)
+    m = re.search(r"Sep\s*4\s*[–\-—]\s*Sep\s*11\s+(\d+)", html)
     if m:
         out["tweet_count"] = int(m.group(1))
         return out
-    # fallback: buscar "September 4 - September 11, 2026" y el número
-    m = re.search(r"September 4 - September 11, 2026\?.*?(\d+)", html, re.S | re.I)
+    # fallback: en página de detalle, "Sep 4, 2026 → Sep 11, 2026" seguido de "150"
+    m = re.search(r"Sep\s*4,\s*2026\s*[→\->]+\s*Sep\s*11,\s*2026.*?(\d+)\s*posts", html, re.S | re.I)
     if m:
         out["tweet_count"] = int(m.group(1))
         return out
+    # fallback genérico: buscar "September 4 - September 11, 2026" y un número cercano
+    idx = html.find("September 4 - September 11, 2026")
+    if idx >= 0:
+        fragmento = html[idx:idx+500]
+        m = re.search(r"(\d{2,4})", fragmento)
+        if m:
+            n = int(m.group(1))
+            if 50 < n < 500:  # rango plausible
+                out["tweet_count"] = n
+                return out
     return out
 
 
 def parsear_pm(html, user):
     """Extrae tweet_count de la página del mercado en polymarket.com."""
     out = {"user": user, "fuente": "polymarket.com"}
+    # "TWEET COUNT 150" en la página
     m = re.search(r"TWEET\s*COUNT\s+(\d+)", html)
     if m:
         out["tweet_count"] = int(m.group(1))
+        return out
+    # a veces está escapado en JSON: \"TWEET COUNT\":150
+    m = re.search(r'TWEET\\?\s*COUNT\\?\s*"?\s*:?\s*(\d+)', html)
+    if m:
+        out["tweet_count"] = int(m.group(1))
+        return out
     return out
 
 
