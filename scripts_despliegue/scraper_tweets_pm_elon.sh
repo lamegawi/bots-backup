@@ -23,29 +23,28 @@ echo
 echo "== HTML DE XTRACKER (descargado aparte) =="
 curl -sL --max-time 20 -A "Mozilla/5.0" "https://xtracker.polymarket.com/user/elonmusk" -o /tmp/xtracker.html
 echo "tamaño: $(wc -c < /tmp/xtracker.html) bytes"
-echo "---busca '150' en xtracker---"
-grep -c "150" /tmp/xtracker.html
-echo "---busca 'Sep 4' en xtracker---"
-grep -c "Sep 4" /tmp/xtracker.html
-echo "---busca 'September 4' en xtracker---"
-grep -c "September 4" /tmp/xtracker.html
-echo "---lineas con '150' (200 chars antes/después)---"
-grep -o ".\{0,200\}150.\{0,200\}" /tmp/xtracker.html | head -3
-echo "---lineas con 'September' (si existe)---"
-grep -o ".\{0,100\}September.\{0,100\}" /tmp/xtracker.html | head -3
-echo "---todo el texto entre 'September' y el siguiente '<':---"
-python3 -c "
-import re
-with open('/tmp/xtracker.html') as f:
-    h = f.read()
-# extraer todos los textos visibles (entre > y <, que tengan letras)
-textos = re.findall(r'>([^<>]{5,200})<', h)
-print(f'Total textos extraídos: {len(textos)}')
-# mostrar los que tengan September, Sep, tweet, post
-for t in textos:
-    if 'Sep' in t or 'tweet' in t.lower() or 'post' in t.lower() or '150' in t or 'elon' in t.lower():
-        print(f'  {t[:150]}')
-"
+echo "---busca 'TWEET COUNT' (texto) en xtracker---"
+grep -c "TWEET COUNT" /tmp/xtracker.html
+echo "---busca 'TweetCount' (camelCase) en xtracker---"
+grep -c "TweetCount" /tmp/xtracker.html
+echo "---busca 'tweetCount' (camelCase) en xtracker---"
+grep -c "tweetCount" /tmp/xtracker.html
+echo "---busca 'TWEET_COUNT' (snake) en xtracker---"
+grep -c "TWEET_COUNT" /tmp/xtracker.html
+echo "---busca 'postCount' en xtracker---"
+grep -c "postCount" /tmp/xtracker.html
+echo "---busca '150' en xtracker (mostrar contexto)---"
+grep -o ".\{0,80\}150.\{0,80\}" /tmp/xtracker.html | head -3
+echo
+echo "== HTML DE POLYMARKET.COM (mercado) =="
+curl -sL --max-time 20 -A "Mozilla/5.0" "https://polymarket.com/event/elon-musk-of-tweets-september-4-september-11-2026" -o /tmp/pm_com.html
+echo "tamaño: $(wc -c < /tmp/pm_com.html) bytes"
+echo "---busca 'TWEET COUNT' (texto) en PM---"
+grep -c "TWEET COUNT" /tmp/pm_com.html
+echo "---busca 'TweetCount' (camelCase) en PM---"
+grep -c "TweetCount" /tmp/pm_com.html
+echo "---busca '150' en PM (mostrar contexto)---"
+grep -o ".\{0,80\}150.\{0,80\}" /tmp/pm_com.html | head -3
 echo
 echo "== CSV FINAL =="
 cat datos_elon.csv
