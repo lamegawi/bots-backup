@@ -72,9 +72,15 @@ def fetch_pm(slug):
 def parsear(md):
     """Extrae TWEET_COUNT, bins, cierre, titulo."""
     out = {}
-    m = re.search(r"TWEET_COUNT\s*[=:]\s*(\d+)", md)
+    # formato en la página: "TWEET COUNT 150 Time left ..."
+    m = re.search(r"TWEET\s*COUNT\s+(\d+)", md)
     if m:
         out["tweet_count"] = int(m.group(1))
+    # también aceptar el formato "TWEET_COUNT = 150" por si acaso
+    if "tweet_count" not in out:
+        m = re.search(r"TWEET_COUNT\s*[=:]\s*(\d+)", md)
+        if m:
+            out["tweet_count"] = int(m.group(1))
     m = re.search(r"(?:Will|Elon)\s+(?:Musk\s+)?(?:have|post|tweet|write)?\s*([\d,]+)\s*(?:or more)?\s*tweets?", md, re.I)
     if m:
         out["titulo_match"] = m.group(0)
