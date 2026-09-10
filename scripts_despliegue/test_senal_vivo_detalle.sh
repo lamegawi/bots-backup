@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
-# test_senal_vivo_detalle.sh — evalúa señal y muestra TODOS los bins con veredicto
+# test_senal_vivo_detalle.sh — evalúa señal y publica log COMPLETO
 set -u
 TS=$(date -u +%Y%m%d_%H%M%S)
 TOK=$(cat /opt/polymarket/.gh_token 2>/dev/null || echo "")
 
-# actualizar mercado_activo.json primero
-cd /opt/polymarket/bot-polymarket-elon
-python3 mercado_polymarket.py 2>&1 | tail -3
-
 LOG="/tmp/senal_detalle_${TS}.log"
 {
 echo "=== TEST SENAL VIVO DETALLE (Elon) — $(date -u) ==="
-python3 senal_vivo.py --actualizar 2>&1 | tail -50
+cd /opt/polymarket/bot-polymarket-elon
+python3 senal_vivo.py --actualizar 2>&1
 echo
 echo "=== TEST SENAL VIVO DETALLE (Zelenskyy) ==="
 cd /opt/polymarket/bot-polymarket-zelenskyy
-python3 senal_vivo.py --actualizar 2>&1 | tail -50
+python3 senal_vivo.py --actualizar 2>&1
 } > "$LOG" 2>&1
 
-cat "$LOG"
+wc -l "$LOG"
+echo
+head -300 "$LOG"
+
 if [ -n "$TOK" ]; then
   DIAG="senal_detalle_${TS}.log"
   b64=$(base64 -w0 "$LOG")
