@@ -13,27 +13,22 @@ echo
 echo "== ANTES =="
 tail -3 datos_elon.csv
 echo
-echo "== Restaurar desde .bak =="
-if [ -f datos_elon.csv.bak ]; then
-  cp datos_elon.csv.bak datos_elon.csv
-  echo "[OK] CSV restaurado desde .bak"
-else
-  echo "[AVISO] no hay .bak, sobrescribiendo 09-10 a 18 manualmente"
-  python3 -c "
+echo "== Restaurar 09-10 a 18 manualmente =="
+python3 -c "
 import csv
 filas = {}
 with open('datos_elon.csv') as f:
     for r in csv.DictReader(f):
         filas[r['fecha']] = int(r['tweets'])
+# Sobrescribir 09-10 a 18 (valor real del estado guardado)
 filas['2026-09-10'] = 18
 with open('datos_elon.csv', 'w') as f:
     w = csv.writer(f)
     w.writerow(['fecha', 'tweets'])
     for f_ in sorted(filas):
         w.writerow([f_, filas[f_]])
-print('[OK] 09-10 = 18')
+print('[OK] 09-10 = 18 (manual)')
 "
-fi
 echo
 echo "== DESPUÉS =="
 tail -3 datos_elon.csv
