@@ -1,0 +1,93 @@
+=== VOLCAR ESTADO A CSV — 20260910_163807 UTC ===
+
+== 1. DRY-RUN (no modifica nada) ==
+Estado: 734 items
+
+Días en estado: 6
+Días en CSV previo: 46
+Días en CSV nuevo:  47
+
+Ventana 2026-09-04 → 2026-09-11:
+  2026-09-05  estado=  5  csv_previo=  5  [+0]
+  2026-09-06  estado= 21  csv_previo= 21  [+0]
+  2026-09-07  estado= 21  csv_previo= 21  [+0]
+  2026-09-08  estado= 25  csv_previo= 25  [+0]
+  2026-09-09  estado= 22  csv_previo= 22  [+0]
+  2026-09-10  estado= 18  csv_previo=  -  [nuevo]  ← HOY (incompleto)
+
+TOTAL en ventana: 112
+
+[DRY-RUN] CSV no modificado.
+
+== 2. EJECUCIÓN REAL ==
+Estado: 734 items
+
+Días en estado: 6
+Días en CSV previo: 46
+Días en CSV nuevo:  47
+
+Ventana 2026-09-04 → 2026-09-11:
+  2026-09-05  estado=  5  csv_previo=  5  [+0]
+  2026-09-06  estado= 21  csv_previo= 21  [+0]
+  2026-09-07  estado= 21  csv_previo= 21  [+0]
+  2026-09-08  estado= 25  csv_previo= 25  [+0]
+  2026-09-09  estado= 22  csv_previo= 22  [+0]
+  2026-09-10  estado= 18  csv_previo=  -  [nuevo]  ← HOY (incompleto)
+
+TOTAL en ventana: 112
+
+Backup: datos_elon.csv.bak
+CSV actualizado: datos_elon.csv (47 filas)
+
+== 3. CSV FINAL ==
+fecha,tweets
+2025-01-24,1
+2026-02-26,1
+2026-05-11,1
+2026-07-25,15
+2026-07-26,14
+2026-07-27,15
+2026-07-28,17
+2026-07-29,21
+2026-07-30,31
+2026-07-31,38
+2026-08-01,32
+2026-08-02,25
+2026-08-03,24
+2026-08-04,26
+2026-08-05,25
+2026-08-06,25
+2026-08-07,26
+2026-08-08,26
+2026-08-09,18
+2026-08-10,29
+2026-08-11,17
+2026-08-12,33
+2026-08-13,50
+2026-08-14,22
+2026-08-15,26
+2026-08-16,9
+2026-08-17,21
+2026-08-18,47
+2026-08-19,86
+2026-08-20,85
+2026-08-21,52
+2026-08-22,17
+2026-08-23,31
+2026-08-24,33
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+2026-09-10,18
+
+== 4. TOTAL 4-11 sept ==
+112
