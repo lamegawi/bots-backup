@@ -27,6 +27,14 @@ for m in elon:
 "
 echo
 echo "== 3. MERCADO ÚLTIMAS OPORTUNIDADES =="
+# forzar descarga nueva (bypass cache raw de GitHub)
+TS_NOW=$(date +%s%N)
+BRANCH="arena/01a058fe-bots-backup"
+rm -f mercado_ultima_oportunidad.py
+curl -sL -o mercado_ultima_oportunidad.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/mercado_ultima_oportunidad.py?bust=${TS_NOW}"
+chmod +x mercado_ultima_oportunidad.py
+echo "  $(wc -c < mercado_ultima_oportunidad.py) bytes (timestamp: ${TS_NOW})"
+grep -c "user_first" mercado_ultima_oportunidad.py | xargs echo "  matches fix user_first:"
 python3 mercado_ultima_oportunidad.py --user elonmusk --bankroll 303.55
 } > "$LOG" 2>&1
 
