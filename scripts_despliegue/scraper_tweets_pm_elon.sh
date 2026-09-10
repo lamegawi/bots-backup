@@ -18,25 +18,22 @@ chmod +x scraper_tweets_pm.py
 {
 echo "=== SCRAPER POLYMARKET (sin jina) — $TS UTC ==="
 echo
-python3 scraper_tweets_pm.py --user elonmusk --actualizar-csv --debug-html
+python3 scraper_tweets_pm.py --user elonmusk --debug-html
 echo
-echo "== HTML CRUDO RECIBIDO =="
-if [ -f /tmp/pm_debug.html ]; then
-  echo "tamaño: $(wc -c < /tmp/pm_debug.html) bytes"
-  echo "---primeros 1500 chars---"
-  head -c 1500 /tmp/pm_debug.html
-  echo
-  echo "---busca '150' en HTML---"
-  grep -c "150" /tmp/pm_debug.html
-  echo "---busca 'September 4' en HTML---"
-  grep -c "September 4" /tmp/pm_debug.html
-fi
+echo "== HTML DE XTRACKER (descargado aparte) =="
+curl -sL --max-time 20 -A "Mozilla/5.0" "https://xtracker.polymarket.com/user/elonmusk" -o /tmp/xtracker.html
+echo "tamaño: $(wc -c < /tmp/xtracker.html) bytes"
+echo "---busca '150' en xtracker---"
+grep -c "150" /tmp/xtracker.html
+echo "---busca 'Sep 4' en xtracker---"
+grep -c "Sep 4" /tmp/xtracker.html
+echo "---busca 'September 4' en xtracker---"
+grep -c "September 4" /tmp/xtracker.html
+echo "---primeras 5 lineas con 'Sep' en xtracker---"
+grep -m 5 "Sep" /tmp/xtracker.html | head -5
 echo
 echo "== CSV FINAL =="
 cat datos_elon.csv
-echo
-echo "== polymarket_oficial.json =="
-cat polymarket_oficial.json 2>/dev/null || echo "(no generado)"
 } > "$LOG" 2>&1
 
 cat "$LOG"
