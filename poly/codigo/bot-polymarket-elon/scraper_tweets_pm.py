@@ -229,6 +229,21 @@ def actualizar_csv_desde_fuente(user="elonmusk", slug="elon-musk-of-tweets-septe
         pass
     if "tweet_count" not in out:
         return None
+    # SIEMPRE guardar oficial.json (incluso si no se actualiza CSV)
+    oficial = {
+        "fuente": out.get("fuente"),
+        "user": out.get("user"),
+        "tweet_count_oficial": out["tweet_count"],
+        "scrapeado_en": datetime.now(ET).isoformat(),
+    }
+    if "bins" in out:
+        oficial["bins"] = out["bins"]
+    try:
+        with open("polymarket_oficial.json", "w", encoding="utf-8") as f:
+            json.dump(oficial, f, indent=2, ensure_ascii=False)
+        print(f"  [OK] polymarket_oficial.json guardado ({out.get('fuente')})")
+    except Exception as e:
+        print(f"  [ERROR] no se pudo guardar oficial.json: {e}")
     hoy = datetime.now(ET).date()
     guardar_csv_y_oficial(out, hoy)
     return out["tweet_count"]
