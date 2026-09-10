@@ -1,0 +1,28 @@
+=== ARREGLAR CRON Y CSV — 20260910_200307 UTC ===
+
+== 1. ARREGLANDO WRAPPER DEL CRON (sin --actualizar-csv) ==
+#!/usr/bin/env bash
+# Ejecuta el scraper de Polymarket SIN --actualizar-csv.
+# El TWEET_COUNT es el TOTAL del periodo, no el conteo de un día.
+# Si activamos --actualizar-csv, sobreescribe 09-10 con el TOTAL.
+TS=$(date -u +%Y%m%d_%H%M%S)
+LOG=/var/log/poly/scraper_elon_${TS}.log
+cd /opt/polymarket/bot-polymarket-elon
+python3 scraper_tweets_pm.py --user elonmusk >> "$LOG" 2>&1
+# limpiar logs de más de 7 días
+find /var/log/poly/scraper_elon_*.log -mtime +7 -delete 2>/dev/null
+
+== 2. REVIRTIENDO 09-10 A 18 ==
+[OK] 09-10 = 18 (forzado)
+
+== 3. RE-VERIFICANDO CSV ==
+2026-09-08,25
+2026-09-09,22
+2026-09-10,18
+
+== 4. PROBANDO MERCADO ÚLTIMAS OPORTUNIDADES ==
+=== MERCADO ÚLTIMAS OPORTUNIDADES — elonmusk ===
+  AVG7=16.14  V2=40  λ48=36.1
+  TWEET_COUNT oficial: N/A
+  Mercados activos de elonmusk: 0
+
