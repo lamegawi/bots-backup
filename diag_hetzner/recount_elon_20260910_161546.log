@@ -1,0 +1,121 @@
+=== RECOUNT ELON — 2026-09-10 16:15:46 UTC ===
+
+== 1. ANTES (CSV actual) ==
+Total filas en CSV:
+47 /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+
+Últimas 12 filas:
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+
+== 2. ESTADO GUARDADO (estado_tweets.json) ==
+Tamaño:
+-rw-r--r-- 1 root root 157039 Sep 10 16:12 /opt/polymarket/bot-polymarket-elon/estado_tweets.json
+Total tweets individuales guardados:
+734
+
+== 3. EJECUTAR recoger_tweets.py (3 pasadas) ==
+--- pasada 1 ---
+2026-08-25       26
+2026-08-26       14
+2026-08-27       30
+2026-08-28        7
+2026-08-29       16
+2026-08-30        9
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+
+AVG7 = 14.86  V2 = 47  R = 1.582  ajuste = 1.291  λ48 = 38.4
+Días completos en CSV: 46
+
+--- pasada 2 ---
+2026-08-25       26
+2026-08-26       14
+2026-08-27       30
+2026-08-28        7
+2026-08-29       16
+2026-08-30        9
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+
+AVG7 = 14.86  V2 = 47  R = 1.582  ajuste = 1.291  λ48 = 38.4
+Días completos en CSV: 46
+
+--- pasada 3 ---
+2026-08-25       26
+2026-08-26       14
+2026-08-27       30
+2026-08-28        7
+2026-08-29       16
+2026-08-30        9
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+
+AVG7 = 14.86  V2 = 47  R = 1.582  ajuste = 1.291  λ48 = 38.4
+Días completos en CSV: 46
+
+
+== 4. DESPUÉS (CSV actualizado) ==
+Total filas en CSV:
+47 /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+
+Últimas 12 filas:
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+
+== 5. RECUENTO 4-11 sept (CSV) ==
+  2026-09-05: 5 tweets
+  2026-09-06: 21 tweets
+  2026-09-07: 21 tweets
+  2026-09-08: 25 tweets
+  2026-09-09: 22 tweets
+  TOTAL bot 4-11 sept: 94 tweets
+
+== 6. POLYMARKET OFICIAL (jina) ==
+Polymarket oficial: TWEET_COUNT = 150
+
+== 7. ESTADO GUARDADO (post-recoger) ==
+Estado guardado 4-11 sept: 110 (posts: 48, reposts: 62)
+Total guardados: 734
+
+== 8. SCRAPE X.COM (jina) ==
+Posts scrapeados visibles: 0
+Posts visibles en ventana 4-11 sept: 0
+NOTA: jina solo muestra el primer fold (~20-30 tweets). Para contar TODOS se necesita API o paginación.
+
+== 9. CONCLUSIÓN ==
+Total bot: 94
+(Si el bot sigue dando ~94 y Polymarket da 150, hay un bug en el bot)
+(Si el bot se acerca a 150, es que el scrapeo estaba atrasado)
