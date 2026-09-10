@@ -34,16 +34,18 @@ CSV = "datos_elon.csv"
 
 
 def curl(url, headers=None, timeout=30):
-    cmd = ["curl", "-s", "--max-time", str(timeout), "-L", "-A",
-           "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-           "-k",  # evita problemas de CA bundle cuando se ejecuta como servicio systemd
-           url]
-    for k, v in (headers or {}).items():
-        cmd += ["-H", f"{k}: {v}"]
-    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
-    if r.returncode != 0:
-        raise RuntimeError(f"curl falló ({r.returncode})")
-    return r.stdout
+    """Usa urllib con SSL no verificado (porque el bot corre como servicio
+    systemd sin acceso a CA certs del sistema, lo que hace fallar
+    'curl' con exit 60)."""
+    import urllib.request
+    import ssl
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    req = urllib.request.Request(url, headers=headers or {})
+    req.add_header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+    with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
+        return r.read().decode("utf-8", errors="replace")
 
 
 def fetch_xtracker_direct(user):
