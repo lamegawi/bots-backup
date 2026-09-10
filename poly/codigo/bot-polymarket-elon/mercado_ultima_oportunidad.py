@@ -97,8 +97,11 @@ def evaluar_mercado(m, user, polymarket_oficial, avg7, lam48):
         return {"info": {"horas_rest": round(horas_rest, 1), "fuera_de_ventana": True}, "apuesta": None}
     titulo = m.get("titulo", "")
     # user puede ser "elonmusk" (sin espacio) y el título es "Elon Musk"
-    # buscar tanto el user completo como el "first name" del user
-    user_match = user.lower() in titulo.lower() or user.lower().split("@")[0][:5] in titulo.lower()
+    # extraer el "first name" del user (sin @, primeras letras)
+    handle = user.lower().replace("@", "")
+    # intentar matchear tanto handle completo como las primeras 4 letras
+    candidates = [handle, handle[:4]]  # "elonmusk", "elon"
+    user_match = any(c in titulo.lower() for c in candidates if len(c) >= 4)
     if not user_match:
         return {"info": {"no_coincide_user": True, "user": user, "titulo": titulo}, "apuesta": None}
     # buscar TWEET_COUNT oficial de este user
@@ -184,14 +187,14 @@ def cargar_mercados(user):
     try:
         d = json.load(open("mercado_activo.json"))
         ms = d.get("mercados", [])
-        # user "elonmusk" debe matchear con "Elon Musk" en el título
-        user_first = user.lower().split("@")[0][:5]  # "elonm"
+        handle = user.lower().replace("@", "")
+        candidates = [handle, handle[:4]]  # "elonmusk", "elon"
         out = []
         for m in ms:
             if m.get("cerrado"):
                 continue
             titulo_low = m.get("titulo", "").lower()
-            if user.lower() in titulo_low or user_first in titulo_low:
+            if any(c in titulo_low for c in candidates if len(c) >= 4):
                 out.append(m)
         return out
     except Exception:
