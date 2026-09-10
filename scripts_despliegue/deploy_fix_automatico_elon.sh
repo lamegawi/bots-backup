@@ -15,19 +15,25 @@ TS_CACHE=$(date +%s)
 {
 echo "=== DEPLOY FIX AUTOMÁTICO — $TS UTC ==="
 echo
-echo "== 1. Descargando scraper_tweets_pm.py =="
+echo "== 1. Descargando scraper_tweets_pm.py (con cache-buster) =="
+CACHE_BUST=$(date +%s%N)
 curl -sL -o scraper_tweets_pm.py \
-  "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py?ts=${TS_CACHE}"
+  "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py?nocache=${CACHE_BUST}"
 echo "  $(wc -c < scraper_tweets_pm.py) bytes"
+grep -c "TWEET_COUNT" scraper_tweets_pm.py | xargs echo "  matches TWEET_COUNT (modo silent):"
 chmod +x scraper_tweets_pm.py
 
 echo
 echo "== 2. Descargando bot.py (con paso 0) =="
 curl -sL -o bot.py \
-  "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/bot.py?ts=${TS_CACHE}"
+  "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/bot.py?nocache=${CACHE_BUST}"
 echo "  $(wc -c < bot.py) bytes"
 chmod +x bot.py
 grep -c "actualizar_polymarket_oficial" bot.py | xargs echo "  matches paso 0:"
+
+echo
+echo "== 2b. Test directo del scraper (sin silent) para ver qué pasa =="
+python3 scraper_tweets_pm.py --user elonmusk --actualizar-csv 2>&1 | head -20
 
 echo
 echo "== 3. Reiniciando servicio poly-elon =="
