@@ -97,15 +97,16 @@ def actualizar_polymarket_oficial():
         import subprocess
         log("0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (scraper_tweets_pm.py)…")
         r = subprocess.run(
-            ["python3", "scraper_tweets_pm.py", "--user", "elonmusk", "--actualizar-csv"],
+            ["python3", "scraper_tweets_pm.py", "--user", "elonmusk", "--actualizar-csv", "--silent"],
             capture_output=True, text=True, timeout=60
         )
-        if r.returncode == 0 and "tweet_count" in r.stdout:
-            import re
-            m = re.search(r'"tweet_count":\s*(\d+)', r.stdout)
-            if m:
-                log(f"      · TWEET_COUNT oficial = {m.group(1)} → CSV actualizado")
-                return
+        if r.returncode == 0:
+            for ln in r.stdout.splitlines():
+                if ln.startswith("TWEET_COUNT="):
+                    val = ln.split("=")[1].strip()
+                    if val != "NONE":
+                        log(f"      · TWEET_COUNT oficial = {val} → CSV actualizado")
+                        return
         log(f"      · scraper no devolvió tweet_count (sigue con CSV previo)")
     except Exception as e:
         log(f"      · scraper_tweets_pm falló: {e}")

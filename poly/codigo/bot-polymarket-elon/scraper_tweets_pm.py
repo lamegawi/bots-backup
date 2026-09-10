@@ -187,6 +187,8 @@ def main():
     ap.add_argument("--slug", default="elon-musk-of-tweets-september-4-september-11-2026")
     ap.add_argument("--actualizar-csv", action="store_true")
     ap.add_argument("--debug-html", action="store_true")
+    ap.add_argument("--silent", action="store_true",
+                    help="modo silencioso: solo imprime TWEET_COUNT=N (para bot.py)")
     args = ap.parse_args()
 
     out = None
@@ -244,6 +246,13 @@ def main():
 
     if out is None:
         out = {}
+    # modo --silent-para-bot: solo imprime el TWEET_COUNT (sin logs ni JSON)
+    if args.silent:
+        if "tweet_count" in out:
+            print(f"TWEET_COUNT={out['tweet_count']}")
+        else:
+            print("TWEET_COUNT=NONE")
+        return
     print("\n=== RESULTADO ===")
     print(json.dumps(out, indent=2, ensure_ascii=False))
 

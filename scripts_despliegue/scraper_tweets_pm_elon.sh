@@ -18,7 +18,7 @@ chmod +x scraper_tweets_pm.py
 {
 echo "=== SCRAPER POLYMARKET (sin jina) — $TS UTC ==="
 echo
-python3 scraper_tweets_pm.py --user elonmusk --actualizar-csv --debug-html
+python3 scraper_tweets_pm.py --user elonmusk --actualizar-csv
 echo
 echo "== HTML DE XTRACKER (descargado aparte) =="
 curl -sL --max-time 20 -A "Mozilla/5.0" "https://xtracker.polymarket.com/user/elonmusk" -o /tmp/xtracker.html
