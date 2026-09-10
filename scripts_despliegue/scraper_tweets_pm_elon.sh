@@ -32,6 +32,20 @@ if [ -n "$SLUG" ]; then
   python3 scraper_tweets_pm.py --slug "$SLUG" --actualizar-csv --debug-html
 fi
 echo
+echo "== 2b. CONTENIDO HTML CRUDO RECIBIDO =="
+if [ -f /tmp/pm_debug.html ]; then
+  echo "tamaño: $(wc -c < /tmp/pm_debug.html) bytes"
+  echo "---primeros 800 chars---"
+  head -c 800 /tmp/pm_debug.html
+  echo
+  echo "---busca 'TWEET' en HTML---"
+  grep -o "TWEET[^\"]*" /tmp/pm_debug.html | head -3
+  echo "---busca '150' en HTML---"
+  grep -c "150" /tmp/pm_debug.html
+  echo "---busca 'Just a moment' en HTML---"
+  grep -c "Just a moment" /tmp/pm_debug.html
+fi
+echo
 echo "== 3. CSV FINAL =="
 cat datos_elon.csv
 echo
