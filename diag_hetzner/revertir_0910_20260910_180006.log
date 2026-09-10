@@ -1,0 +1,21 @@
+=== REVERTIR 09-10 A 18 — 20260910_180006 UTC ===
+
+== ANTES ==
+2026-09-08,25
+2026-09-09,22
+2026-09-10,152
+
+== Restaurar desde .bak ==
+[OK] CSV restaurado desde .bak
+
+== DESPUÉS ==
+2026-09-08,25
+2026-09-09,22
+2026-09-10,152
+
+== Borrar polymarket_oficial.json ==
+[OK] polymarket_oficial.json → polymarket_oficial.json.disabled
+
+== Métricas con CSV restaurado ==
+  AVG7 = 35.29  V2 = 174  R = 2.466  ajuste = 1.500  λ48 = 105.9
+  Últimos 7 días: [1, 5, 21, 21, 25, 22, 152]
