@@ -1,0 +1,14 @@
+=== DUMP SENAL (sin filtro ENTRADA_MAX_H) — Thu Sep 10 03:35:11 PM UTC 2026 ===
+  File "/tmp/dump_senal.py", line 1
+    404: Not Found
+    ^^^
+SyntaxError: illegal target for annotation
+
+=== ZELENSKYY ===
+   160-179         0.0075      133.33        1.01         151  ← cuota ≥ 3
+   180-199         0.0055      181.82        1.01          55  ← cuota ≥ 3
+   200+            0.0065      153.85        1.01         105  ← cuota ≥ 3
+  File "/tmp/dump_senal.py", line 1
+    404: Not Found
+    ^^^
+SyntaxError: illegal target for annotation
