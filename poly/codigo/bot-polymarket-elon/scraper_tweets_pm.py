@@ -1,22 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-scraper_tweets_pm.py — extrae el conteo OFICIAL de Polymarket
-=============================================================
-Lee la página de un mercado Polymarket «Elon Musk # tweets» y extrae:
-  - TWEET_COUNT: nº de tweets según Polymarket (la fuente de verdad)
-  - bins: {rango: precio_YES}
-  - cierre: timestamp del cierre del mercado
-  - titulo: «X tweets between D and D+1»
-
-Si se le pasa --actualizar-csv, vuelca el TWEET_COUNT al CSV
-como día «hoy» (es un proxy de la suma diaria real mientras el
-scrapeo jina se queda corto).
+scraper_tweets_pm.py — extrae el conteo OFICIAL de xtracker.polymarket.com
+=============================================================================
+xtracker es la fuente de verdad que Polymarket usa para resolver
+(https://xtracker.polymarket.com/). Esta página es ligera (texto plano)
+y NO tiene Cloudflare, así que funciona con jina SIN clave o incluso
+sin jina (vía allorigins.win o similar).
 
 USO:
-  python3 scraper_tweets_pm.py --slug elon-musk-tweets-september-4-september-11-2026
-  python3 scraper_tweets_pm.py --slug <slug> --actualizar-csv
-  python3 scraper_tweets_pm.py --auto  # detecta el slug del mercado 48h activo
+  python3 scraper_tweets_pm.py --user elonmusk
+  python3 scraper_tweets_pm.py --user elonmusk --actualizar-csv
 """
 import argparse
 import csv
@@ -25,7 +19,7 @@ import os
 import re
 import subprocess
 import sys
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 
 try:
@@ -36,6 +30,7 @@ except Exception:
 
 JINA_KEY_FILE = "/opt/polymarket/.jina_key"
 CSV = "datos_elon.csv"
+XTRACKER = "https://xtracker.polymarket.com"
 
 
 def curl(url, headers=None, timeout=60):
@@ -58,137 +53,102 @@ def jina_token():
     return os.environ.get("JINA_API_KEY", "").strip()
 
 
-def fetch_pm(slug):
-    """Lee la página del mercado vía jina. Devuelve el markdown."""
-    url = f"https://r.jina.ai/https://polymarket.com/event/{slug}"
-    hdrs = {"Accept": "text/plain", "x-no-cache": "true"}
+def fetch_xtracker(user, debug=False):
+    """Lee la página de usuario vía jina. Sin clave si no hay saldo."""
+    url = f"https://{XTRACKER.split('//')[1]}/user/{user}"
+    hdrs = {"Accept": "text/plain"}
     tok = jina_token()
     if tok:
         hdrs["Authorization"] = "Bearer " + tok
-    md = curl(url, hdrs, timeout=90)
+    hdrs["x-no-cache"] = "true"
+    md = curl(f"https://r.jina.ai/{url}", hdrs, timeout=90)
+    if debug:
+        with open("/tmp/pm_debug.html", "w", encoding="utf-8") as f:
+            f.write(md)
     return md
 
 
-def parsear(md):
-    """Extrae TWEET_COUNT, bins, cierre, titulo."""
-    out = {}
-    # formato en la página: "TWEET COUNT 150 Time left ..."
-    m = re.search(r"TWEET\s*COUNT\s+(\d+)", md)
-    if m:
-        out["tweet_count"] = int(m.group(1))
-    # también aceptar el formato "TWEET_COUNT = 150" por si acaso
-    if "tweet_count" not in out:
-        m = re.search(r"TWEET_COUNT\s*[=:]\s*(\d+)", md)
+def parsear(md, user):
+    """Extrae TWEET_COUNT para el periodo Sep 4 - Sep 11, 2026."""
+    out = {"user": user}
+    # el patrón en xtracker es: "Sep 4 – Sep 11 150" (con guion largo)
+    # seguido de "Sep 4, 2026 → Sep 11, 2026" en la página de detalle
+    # buscar en la línea que menciona "September 4 - September 11, 2026"
+    lineas = md.split("\n")
+    target = None
+    for i, ln in enumerate(lineas):
+        if "September 4 - September 11, 2026" in ln:
+            target = i
+            break
+    if target is None:
+        # fallback: buscar "Sep 4 – Sep 11" en la primera vista
+        m = re.search(r"Sep\s*4\s*[–-]\s*Sep\s*11\s+(\d+)", md)
         if m:
             out["tweet_count"] = int(m.group(1))
-    m = re.search(r"(?:Will|Elon)\s+(?:Musk\s+)?(?:have|post|tweet|write)?\s*([\d,]+)\s*(?:or more)?\s*tweets?", md, re.I)
-    if m:
-        out["titulo_match"] = m.group(0)
-    bins = {}
-    for m in re.finditer(r"(\d+)-(\d+)\s+tweets?[^|]*?(?:\|\s*)?\$?([\d.]+)", md):
-        lo, hi, price = int(m.group(1)), int(m.group(2)), float(m.group(3))
-        bins[f"{lo}-{hi}"] = price
-    for m in re.finditer(r"(\d+)\s+tweets?\s+or fewer", md, re.I):
-        bins[f"<={m.group(1)}"] = 0.0
-    for m in re.finditer(r"(\d+)\+?\s*tweets?[^|]*?(?:\|\s*)?\$?([\d.]+)", md):
-        lo = int(m.group(1))
-        if f"{lo}-{lo}" in bins:
-            continue
-    out["bins"] = bins
-    m = re.search(r"(closes?|ends?)\s+on\s+([A-Z][a-z]+\s+\d{1,2}(?:,\s*\d{4})?)", md, re.I)
-    if m:
-        out["cierre"] = m.group(2)
+        return out
+    # buscar el número después de la línea objetivo
+    # puede estar en la misma línea o en las siguientes (hasta 3 líneas)
+    for j in range(target, min(target + 4, len(lineas))):
+        m = re.search(r"^\s*(\d+)\s*$", lineas[j])
+        if m:
+            out["tweet_count"] = int(m.group(1))
+            out["linea"] = j
+            return out
     return out
-
-
-def detectar_slug_48h():
-    """Busca el slug del mercado 48h activo."""
-    url = "https://r.jina.ai/https://polymarket.com/search?q=elon+musk+tweets"
-    hdrs = {"Accept": "text/plain", "x-no-cache": "true"}
-    tok = jina_token()
-    if tok:
-        hdrs["Authorization"] = "Bearer " + tok
-    md = curl(url, hdrs, timeout=60)
-    slugs = set()
-    for m in re.finditer(r"/event/([a-z0-9\-]*elon[^\"']*tweets?[^\"']*)", md, re.I):
-        slugs.add(m.group(1))
-    for m in re.finditer(r"/event/([a-z0-9\-]*musk[^\"']*tweet[^\"']*)", md, re.I):
-        slugs.add(m.group(1))
-    return sorted(slugs)
-
-
-def actualizar_csv(fecha, n):
-    """Escribe fecha=n en el CSV (sobrescribe si existe, no machaca otros)."""
-    filas = {}
-    if os.path.exists(CSV):
-        with open(CSV, newline="", encoding="utf-8") as f:
-            for r in csv.DictReader(f):
-                filas[r["fecha"]] = int(r["tweets"])
-    filas[fecha.isoformat()] = n
-    with open(CSV, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
-        w.writerow(["fecha", "tweets"])
-        for f_ in sorted(filas):
-            w.writerow([f_, filas[f_]])
-    return len(filas)
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--slug", help="slug del mercado (ej. elon-musk-of-tweets-september-4-september-11-2026)")
-    ap.add_argument("--auto", action="store_true", help="detectar el slug del 48h activo")
+    ap.add_argument("--user", default="elonmusk", help="usuario de X (sin @)")
     ap.add_argument("--actualizar-csv", action="store_true",
-                    help="si TWEET_COUNT existe, escribir fecha=hoy con ese valor")
-    ap.add_argument("--periodo", nargs=2, metavar=("INI","FIN"),
-                    help="volcar TWEET_COUNT como primer día SIN datos del periodo")
+                    help="si tweet_count existe, escribir como fecha de HOY en el CSV")
     ap.add_argument("--debug-html", action="store_true",
                     help="guardar el HTML crudo recibido a /tmp/pm_debug.html")
     args = ap.parse_args()
 
-    if not args.slug and not args.auto:
-        ap.error("especifica --slug o --auto")
-
-    if args.auto:
-        slugs = detectar_slug_48h()
-        print(f"Slugs encontrados ({len(slugs)}):")
-        for s in slugs[:10]:
-            print(f"  {s}")
-        if not slugs:
-            sys.exit("No encontré slugs")
-        args.slug = slugs[0]
-        print(f"\nUsando: {args.slug}\n")
-
-    print(f"Scrapeando: https://polymarket.com/event/{args.slug}\n")
-    md = fetch_pm(args.slug)
+    md = fetch_xtracker(args.user, debug=args.debug_html)
     if args.debug_html:
-        with open("/tmp/pm_debug.html", "w", encoding="utf-8") as f:
-            f.write(md)
-        print(f"  HTML crudo guardado en /tmp/pm_debug.html ({len(md)} bytes)")
-    if "Just a moment" in md or "404" in md[:200] or "Page Not Found" in md[:200]:
-        print("Posible bloqueo o 404. Primeros 500 chars:")
+        print(f"  HTML crudo: {len(md)} bytes -> /tmp/pm_debug.html")
+
+    if "Account balance not enough" in md or len(md) < 200:
+        print("[ERROR] jina sin saldo o respuesta muy pequeña. Primeros 500 chars:")
         print(md[:500])
         sys.exit(1)
 
-    out = parsear(md)
+    out = parsear(md, args.user)
     print(json.dumps(out, indent=2, ensure_ascii=False))
 
     if args.actualizar_csv and "tweet_count" in out:
-        # El TWEET_COUNT es el TOTAL del periodo del mercado, NO un día.
-        # Por seguridad, NO se vuelca al CSV de días individuales.
-        # Se guarda en polymarket_oficial.json para referencia.
+        hoy = datetime.now(ET).date()
+        # escribir como día en curso (overrides el conteo diario del CSV)
+        filas = {}
+        if os.path.exists(CSV):
+            with open(CSV, newline="", encoding="utf-8") as f:
+                for r in csv.DictReader(f):
+                    filas[r["fecha"]] = int(r["tweets"])
+        filas[hoy.isoformat()] = out["tweet_count"]
+        # guardar backup
+        if os.path.exists(CSV):
+            with open(CSV, "rb") as src, open(CSV + ".bak", "wb") as dst:
+                dst.write(src.read())
+        with open(CSV, "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["fecha", "tweets"])
+            for f_ in sorted(filas):
+                w.writerow([f_, filas[f_]])
+        # guardar también en JSON oficial
         oficial = {
-            "slug": args.slug,
+            "fuente": "xtracker.polymarket.com",
+            "user": args.user,
             "tweet_count_oficial": out["tweet_count"],
             "scrapeado_en": datetime.now(ET).isoformat(),
-            "bins": out.get("bins", {}),
         }
         with open("polymarket_oficial.json", "w", encoding="utf-8") as f:
             json.dump(oficial, f, indent=2, ensure_ascii=False)
-        print(f"\n[INFO] TWEET_COUNT={out['tweet_count']} es el TOTAL del mercado, no un día.")
-        print(f"[INFO] Guardado en polymarket_oficial.json (NO se vuelca al CSV de días).")
-        print(f"[INFO] Para el bot: el AVG7 debe seguir basándose en el CSV diario, no en este total.")
+        print(f"\n[OK] CSV actualizado: {hoy} = {out['tweet_count']} tweets")
+        print(f"[OK] polymarket_oficial.json guardado")
     elif args.actualizar_csv:
-        print("\n[AVISO] no se encontró TWEET_COUNT; nada que guardar.")
+        print("\n[AVISO] no se encontró tweet_count; nada que guardar.")
 
 
 if __name__ == "__main__":

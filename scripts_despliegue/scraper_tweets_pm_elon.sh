@@ -21,15 +21,9 @@ chmod +x scraper_tweets_pm.py
 {
 echo "=== SCRAPER TWEETS PM — $TS UTC ==="
 echo
-echo "== 1. AUTO-DETECTAR SLUG =="
-python3 scraper_tweets_pm.py --auto
-echo
-echo "== 2. SCRAPEAR MERCADO =="
-# slug correcto del 48h 4-11 sept (con "of-tweets", no "tweets"):
-SLUG="elon-musk-of-tweets-september-4-september-11-2026"
-echo "Slug a usar: $SLUG"
+echo "== 1. SCRAPEAR xtracker.polymarket.com =="
 if [ -n "$SLUG" ]; then
-  python3 scraper_tweets_pm.py --slug "$SLUG" --actualizar-csv --debug-html
+  python3 scraper_tweets_pm.py --user elonmusk --actualizar-csv --debug-html
 fi
 echo
 echo "== 2b. CONTENIDO HTML CRUDO RECIBIDO =="
@@ -38,12 +32,10 @@ if [ -f /tmp/pm_debug.html ]; then
   echo "---primeros 800 chars---"
   head -c 800 /tmp/pm_debug.html
   echo
-  echo "---busca 'TWEET' en HTML---"
-  grep -o "TWEET[^\"]*" /tmp/pm_debug.html | head -3
   echo "---busca '150' en HTML---"
   grep -c "150" /tmp/pm_debug.html
-  echo "---busca 'Just a moment' en HTML---"
-  grep -c "Just a moment" /tmp/pm_debug.html
+  echo "---busca 'September 4' en HTML---"
+  grep -c "September 4" /tmp/pm_debug.html
 fi
 echo
 echo "== 3. CSV FINAL =="
