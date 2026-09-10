@@ -1,0 +1,46 @@
+=== VERIFICACIÓN DE TWEETS — 20260910_181437 UTC ===
+/opt/polymarket/bot-polymarket-elon/verificar_tweets_ventana.py:90: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  print(f"Fecha UTC: {datetime.utcnow().isoformat()}")
+=== VERIFICACIÓN DE TWEETS — elonmusk ===
+Fecha UTC: 2026-09-10T18:14:39.061873
+Fecha ET:  2026-09-10T14:14:39.061893-04:00
+
+== ESTADO GUARDADO DEL BOT ==
+  Items totales: 736
+  Posts: 282  Reposts: 454
+
+  Últimos 10 items por timestamp (created_at):
+  FECHA UTC              KIND     ID                     PRIMERA_VISTA
+  Thu Sep 10 08:05:00 +0000 2026 repost   2097959730723344727    Thu Sep 10 13:33:07 +0000 2026
+  Thu Sep 10 11:35:00 +0000 2026 repost   2098012534011740165    Thu Sep 10 13:33:07 +0000 2026
+  Thu Sep 10 13:00:00 +0000 2026 repost   2098033814698111453    Thu Sep 10 13:33:07 +0000 2026
+  Thu Sep 10 13:07:00 +0000 2026 repost   2098035528046133403    Thu Sep 10 13:33:07 +0000 2026
+  Thu Sep 10 13:20:00 +0000 2026 post     2098038952284586282    Thu Sep 10 13:33:07 +0000 2026
+  Thu Sep 10 13:39:00 +0000 2026 post     2098043646037950756    Thu Sep 10 14:02:18 +0000 2026
+  Thu Sep 10 13:52:00 +0000 2026 repost   2098046851585036788    Thu Sep 10 14:36:00 +0000 2026
+  Thu Sep 10 14:15:00 +0000 2026 post     2098052817391092113    Thu Sep 10 14:36:00 +0000 2026
+  Thu Sep 10 15:12:00 +0000 2026 repost   2098067052359749703    Thu Sep 10 17:39:12 +0000 2026
+  Thu Sep 10 16:39:00 +0000 2026 repost   2098088965773336641    Thu Sep 10 17:39:12 +0000 2026
+
+== XTRACKER (vista oficial Polymarket) ==
+  Tamaño HTML: 11817 bytes
+  IDs de tweets encontrados en HTML: 0
+
+== ESTADO DEL SERVICIO ==
+● poly-elon.service - Bot Polymarket Elon 48h (v1)
+     Loaded: loaded (/etc/systemd/system/poly-elon.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2026-09-10 18:12:51 UTC; 1min 47s ago
+   Main PID: 1394554 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 29.6M (peak: 29.9M)
+        CPU: 4.816s
+     CGroup: /system.slice/poly-elon.service
+             └─1394554 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+
+
+== ÚLTIMAS 5 LÍNEAS DE bot.log ==
+[2026-09-10 14:14:21 EDT] 3/5 · Trading REAL…
+[2026-09-10 14:14:22 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-10 14:14:22 EDT] 4/5 · Estado:
+[2026-09-10 14:14:22 EDT] Pasada completada en 90.9 s
+[2026-09-10 14:14:22 EDT] Próxima pasada en 5 min…
