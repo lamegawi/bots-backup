@@ -1,36 +1,30 @@
 #!/usr/bin/env bash
-# scraper_tweets_pm_elon.sh — descarga scraper_tweets_pm.py, lo prueba
-#   contra el mercado 48h activo de Polymarket, y vuelca TWEET_COUNT al CSV
-#   si --actualizar-csv.
+# scraper_tweets_pm_elon.sh — extrae TWEET_COUNT de xtracker/PM/gamma (sin jina)
 set -u
 TS=$(date -u +%Y%m%d_%H%M%S)
 LOG=/tmp/scraper_tweets_pm_${TS}.log
 
 cd /opt/polymarket/bot-polymarket-elon
 
-# 0) descargar el .py desde la rama (con cache-buster por si el raw tarda en propagar)
+# 0) descargar el .py desde la rama (con cache-buster)
 BRANCH="arena/01a058fe-bots-backup"
 TS_CACHE=$(date +%s)
 curl -sL -o scraper_tweets_pm.py \
   "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py?ts=${TS_CACHE}"
 echo "  descargado: $(wc -c < scraper_tweets_pm.py) bytes"
 head -1 scraper_tweets_pm.py
-grep -c "debug-html" scraper_tweets_pm.py | xargs echo "  matches debug-html:"
 chmod +x scraper_tweets_pm.py
 
 {
-echo "=== SCRAPER TWEETS PM — $TS UTC ==="
+echo "=== SCRAPER POLYMARKET (sin jina) — $TS UTC ==="
 echo
-echo "== 1. SCRAPEAR xtracker.polymarket.com =="
-if [ -n "$SLUG" ]; then
-  python3 scraper_tweets_pm.py --user elonmusk --actualizar-csv --debug-html
-fi
+python3 scraper_tweets_pm.py --user elonmusk --actualizar-csv --debug-html
 echo
-echo "== 2b. CONTENIDO HTML CRUDO RECIBIDO =="
+echo "== HTML CRUDO RECIBIDO =="
 if [ -f /tmp/pm_debug.html ]; then
   echo "tamaño: $(wc -c < /tmp/pm_debug.html) bytes"
-  echo "---primeros 800 chars---"
-  head -c 800 /tmp/pm_debug.html
+  echo "---primeros 1500 chars---"
+  head -c 1500 /tmp/pm_debug.html
   echo
   echo "---busca '150' en HTML---"
   grep -c "150" /tmp/pm_debug.html
@@ -38,18 +32,11 @@ if [ -f /tmp/pm_debug.html ]; then
   grep -c "September 4" /tmp/pm_debug.html
 fi
 echo
-echo "== 3. CSV FINAL =="
+echo "== CSV FINAL =="
 cat datos_elon.csv
 echo
-echo "== 4. TOTAL 4-11 sept (CSV) =="
-awk -F, 'NR>1 && $1>="2026-09-04" && $1<="2026-09-11" {s+=$2} END {print s}' datos_elon.csv
-echo
-echo "== 5. POLYMARKET OFICIAL (TWEET_COUNT guardado aparte) =="
-if [ -f polymarket_oficial.json ]; then
-  cat polymarket_oficial.json
-else
-  echo "No se generó polymarket_oficial.json"
-fi
+echo "== polymarket_oficial.json =="
+cat polymarket_oficial.json 2>/dev/null || echo "(no generado)"
 } > "$LOG" 2>&1
 
 cat "$LOG"
