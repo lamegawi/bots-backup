@@ -27,14 +27,21 @@ echo "== 2. SCRAPEAR MERCADO =="
 SLUG="elon-musk-of-tweets-september-4-september-11-2026"
 echo "Slug a usar: $SLUG"
 if [ -n "$SLUG" ]; then
-  python3 scraper_tweets_pm.py --slug "$SLUG" --actualizar-csv --periodo 2026-09-04 2026-09-11
+  python3 scraper_tweets_pm.py --slug "$SLUG" --actualizar-csv
 fi
 echo
 echo "== 3. CSV FINAL =="
 cat datos_elon.csv
 echo
-echo "== 4. TOTAL 4-11 sept =="
+echo "== 4. TOTAL 4-11 sept (CSV) =="
 awk -F, 'NR>1 && $1>="2026-09-04" && $1<="2026-09-11" {s+=$2} END {print s}' datos_elon.csv
+echo
+echo "== 5. POLYMARKET OFICIAL (TWEET_COUNT guardado aparte) =="
+if [ -f polymarket_oficial.json ]; then
+  cat polymarket_oficial.json
+else
+  echo "No se generó polymarket_oficial.json"
+fi
 } > "$LOG" 2>&1
 
 cat "$LOG"

@@ -161,41 +161,22 @@ def main():
     print(json.dumps(out, indent=2, ensure_ascii=False))
 
     if args.actualizar_csv and "tweet_count" in out:
-        hoy = datetime.now(ET).date()
-        if args.periodo:
-            from datetime import date
-            ini = date.fromisoformat(args.periodo[0])
-            fin = date.fromisoformat(args.periodo[1])
-            # encontrar el primer día SIN datos en el periodo
-            dias_existentes = set()
-            if os.path.exists(CSV):
-                import csv as _csv
-                with open(CSV, newline="", encoding="utf-8") as f:
-                    for r in _csv.DictReader(f):
-                        try:
-                            d = date.fromisoformat(r["fecha"])
-                            if ini <= d <= fin:
-                                dias_existentes.add(d)
-                        except Exception:
-                            pass
-            from datetime import timedelta
-            f = ini
-            target = None
-            while f <= fin:
-                if f not in dias_existentes:
-                    target = f
-                    break
-                f += timedelta(days=1)
-            if target is None:
-                # todos los días tienen datos: usar el último
-                target = fin
-            n = actualizar_csv(target, out["tweet_count"])
-            print(f"\nCSV actualizado: {target} = {out['tweet_count']} tweets (total filas: {n})")
-        else:
-            n = actualizar_csv(hoy, out["tweet_count"])
-            print(f"\nCSV actualizado: {hoy} = {out['tweet_count']} tweets (total filas: {n})")
+        # El TWEET_COUNT es el TOTAL del periodo del mercado, NO un día.
+        # Por seguridad, NO se vuelca al CSV de días individuales.
+        # Se guarda en polymarket_oficial.json para referencia.
+        oficial = {
+            "slug": args.slug,
+            "tweet_count_oficial": out["tweet_count"],
+            "scrapeado_en": datetime.now(ET).isoformat(),
+            "bins": out.get("bins", {}),
+        }
+        with open("polymarket_oficial.json", "w", encoding="utf-8") as f:
+            json.dump(oficial, f, indent=2, ensure_ascii=False)
+        print(f"\n[INFO] TWEET_COUNT={out['tweet_count']} es el TOTAL del mercado, no un día.")
+        print(f"[INFO] Guardado en polymarket_oficial.json (NO se vuelca al CSV de días).")
+        print(f"[INFO] Para el bot: el AVG7 debe seguir basándose en el CSV diario, no en este total.")
     elif args.actualizar_csv:
-        print("\n[AVISO] no se encontró TWEET_COUNT; CSV no modificado.")
+        print("\n[AVISO] no se encontró TWEET_COUNT; nada que guardar.")
 
 
 if __name__ == "__main__":
