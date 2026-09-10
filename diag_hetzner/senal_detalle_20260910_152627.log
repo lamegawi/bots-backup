@@ -1,0 +1,19 @@
+=== TEST SENAL VIVO DETALLE (Elon) — Thu Sep 10 03:26:35 PM UTC 2026 ===
+[2/4] Métricas de actividad…
+  AVG7 = 14.86 · V2 = 47 · R = 1.582 · ajuste = 1.291 · λ48 = 38.4   [datos propios (46 días)]
+[3/4] Mercados Polymarket…
+  precios actualizados ✓
+[4/4] Evaluación por bin…
+
+► VEREDICTO GLOBAL: PASAR — ningún bin cumple (p_modelo ≥ 60% o ≤ 30%) con cuota ≥ 3.00.
+  La regla es no apostar: la paciencia es parte de la estrategia.
+
+=== TEST SENAL VIVO DETALLE (Zelenskyy) ===
+[2/4] Métricas de actividad…
+  AVG7 = 10.14 · V2 = 25 · R = 1.232 · ajuste = 1.116 · λ semana ≈ 79   [datos propios (174 días)]
+[3/4] Mercados Polymarket…
+  precios actualizados ✓
+[4/4] Evaluación por bin…
+
+► VEREDICTO GLOBAL: PASAR — ningún bin cumple las reglas de la ventana mensual (ventaja ≥ 15%pp y cuota ≥ 3.00).
+  La regla es no apostar: la paciencia es parte de la estrategia.
