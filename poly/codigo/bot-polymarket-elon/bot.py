@@ -94,29 +94,22 @@ def actualizar_polymarket_oficial():
     única el usuario puede ejecutarlo manualmente antes.
     """
     try:
-        import subprocess
-        import re as _re
-        log("0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (scraper_tweets_pm.py)…")
-        r = subprocess.run(
-            ["python3", "scraper_tweets_pm.py", "--user", "elonmusk", "--actualizar-csv", "--silent"],
-            capture_output=True, text=True, timeout=60
+        import importlib.util as _ilu
+        import os as _os
+        spec = _ilu.spec_from_file_location(
+            "scraper_tweets_pm",
+            _os.path.join(_os.path.dirname(__file__) or ".", "scraper_tweets_pm.py"),
         )
-        if r.returncode == 0:
-            # modo --silent: "TWEET_COUNT=152" en stdout
-            m = _re.search(r"TWEET_COUNT=(\d+)", r.stdout)
-            if m:
-                log(f"      · TWEET_COUNT oficial = {m.group(1)} → CSV actualizado")
-                return
-            # fallback: modo sin --silent, "tweet_count": 152 en stdout
-            m = _re.search(r'"tweet_count":\s*(\d+)', r.stdout)
-            if m:
-                log(f"      · TWEET_COUNT oficial = {m.group(1)} → CSV actualizado")
-                return
-            log(f"      · scraper no devolvió TWEET_COUNT (stdout: {r.stdout[:200]!r})")
+        stpm = _ilu.module_from_spec(spec)
+        spec.loader.exec_module(stpm)
+        log("0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…")
+        tc = stpm.actualizar_csv_desde_fuente(user="elonmusk", verbose=True)
+        if tc:
+            log(f"      · TWEET_COUNT oficial = {tc} → CSV actualizado")
         else:
-            log(f"      · scraper rc={r.returncode} stderr={r.stderr[:200]!r}")
+            log(f"      · scraper no devolvió tweet_count (sigue con CSV previo)")
     except Exception as e:
-        log(f"      · scraper_tweets_pm falló: {e}")
+        log(f"      · scraper_tweets_pm in-process falló: {e}")
 
 
 # ------------------------------------------------------------------- 1) tweets

@@ -182,6 +182,56 @@ def guardar_csv_y_oficial(out, hoy):
     print(f"[OK] polymarket_oficial.json guardado ({out.get('fuente')})")
 
 
+def actualizar_csv_desde_fuente(user="elonmusk", slug="elon-musk-of-tweets-september-4-september-11-2026", verbose=True):
+    """Función 'main' simplificada que devuelve el tweet_count y actualiza
+    el CSV. Usada por bot.py (in-process, evita subprocess + curl -k).
+
+    Returns: int o None
+    """
+    out = None
+    # 1) xtracker
+    try:
+        html = fetch_xtracker_direct(user)
+        if "September 4" in html and "September 11" in html:
+            out = parsear_xtracker(html, user)
+            if verbose and "tweet_count" in out:
+                print(f"  [OK] xtracker: tweet_count = {out['tweet_count']}")
+    except Exception as e:
+        if verbose:
+            print(f"  [ERROR] xtracker: {e}")
+    # 2) polymarket.com
+    if not out or "tweet_count" not in out:
+        try:
+            html = fetch_pm_direct(slug)
+            if "TWEET COUNT" in html or "TWEET_COUNT" in html:
+                out2 = parsear_pm(html, user)
+                if "tweet_count" in out2:
+                    if out is None:
+                        out = out2
+                    else:
+                        out.update(out2)
+                    if verbose:
+                        print(f"  [OK] polymarket.com: tweet_count = {out2['tweet_count']}")
+        except Exception as e:
+            if verbose:
+                print(f"  [ERROR] polymarket.com: {e}")
+    # 3) gamma (bins, no tweet_count)
+    if out is None:
+        out = {}
+    try:
+        js = fetch_gamma(slug)
+        out3 = parsear_gamma(js, user)
+        if "bins" in out3 and out3["bins"]:
+            out["bins"] = out3["bins"]
+    except Exception:
+        pass
+    if "tweet_count" not in out:
+        return None
+    hoy = datetime.now(ET).date()
+    guardar_csv_y_oficial(out, hoy)
+    return out["tweet_count"]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--user", default="elonmusk")
