@@ -20,25 +20,31 @@ rm -f scraper_tweets_pm.py scraper_tweets_pm.py.* bot.py bot.py.* 2>/dev/null
 ls -la *.py 2>/dev/null | head -5
 
 echo
-echo "== 2. Descargando scraper_tweets_pm.py (vía API contents) =="
-HASH_REMOTO=$(gh api "repos/lamegawi/bots-backup/commits/${BRANCH}" --jq '.sha' 2>/dev/null || echo "")
-echo "  HEAD remoto: $HASH_REMOTO"
-gh api "repos/lamegawi/bots-backup/contents/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py?ref=${BRANCH}" --jq '.content' 2>/dev/null | tr -d '\n' | base64 -d > scraper_tweets_pm.py 2>/dev/null || {
-  echo "  gh api falló, fallback a raw con timestamp"
-  TS_NOW=$(date +%s%N)
-  curl -sL -o scraper_tweets_pm.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py?bust=${TS_NOW}"
-}
+echo "== 2. Descargando scraper_tweets_pm.py =="
+# guardar versiones previas por si algo falla
+[ -f scraper_tweets_pm.py ] && cp scraper_tweets_pm.py scraper_tweets_pm.py.prev || touch scraper_tweets_pm.py.prev
+TS_NOW=$(date +%s%N)
+curl -sL -o scraper_tweets_pm.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py?bust=${TS_NOW}"
+SIZE=$(wc -c < scraper_tweets_pm.py)
+if [ "$SIZE" -lt 1000 ]; then
+  echo "  ⚠️  descarga falló (size=$SIZE), restaurando .prev"
+  cp scraper_tweets_pm.py.prev scraper_tweets_pm.py
+fi
 echo "  $(wc -c < scraper_tweets_pm.py) bytes"
 grep -c "urllib\|CERT_NONE" scraper_tweets_pm.py | xargs echo "  matches urllib:"
 grep -c "TWEET_COUNT" scraper_tweets_pm.py | xargs echo "  matches TWEET_COUNT:"
 chmod +x scraper_tweets_pm.py
 
 echo
-echo "== 3. Descargando bot.py (vía API contents) =="
-gh api "repos/lamegawi/bots-backup/contents/poly/codigo/bot-polymarket-elon/bot.py?ref=${BRANCH}" --jq '.content' 2>/dev/null | tr -d '\n' | base64 -d > bot.py 2>/dev/null || {
-  TS_NOW=$(date +%s%N)
-  curl -sL -o bot.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/bot.py?bust=${TS_NOW}"
-}
+echo "== 3. Descargando bot.py =="
+[ -f bot.py ] && cp bot.py bot.py.prev || touch bot.py.prev
+TS_NOW2=$(date +%s%N)
+curl -sL -o bot.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/bot.py?bust=${TS_NOW2}"
+SIZE=$(wc -c < bot.py)
+if [ "$SIZE" -lt 1000 ]; then
+  echo "  ⚠️  descarga falló (size=$SIZE), restaurando .prev"
+  cp bot.py.prev bot.py
+fi
 echo "  $(wc -c < bot.py) bytes"
 chmod +x bot.py
 grep -c "TEST urllib" bot.py | xargs echo "  matches TEST urllib (versión nueva):"
