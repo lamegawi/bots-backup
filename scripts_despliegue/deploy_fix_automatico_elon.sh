@@ -20,19 +20,28 @@ rm -f scraper_tweets_pm.py scraper_tweets_pm.py.* bot.py bot.py.* 2>/dev/null
 ls -la *.py 2>/dev/null | head -5
 
 echo
-echo "== 2. Descargando scraper_tweets_pm.py vía wget (fuerza bypass cache) =="
-wget -q -O scraper_tweets_pm.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py" 2>&1 || curl -sL -o scraper_tweets_pm.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py"
+echo "== 2. Descargando scraper_tweets_pm.py (vía API contents) =="
+HASH_REMOTO=$(gh api "repos/lamegawi/bots-backup/commits/${BRANCH}" --jq '.sha' 2>/dev/null || echo "")
+echo "  HEAD remoto: $HASH_REMOTO"
+gh api "repos/lamegawi/bots-backup/contents/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py?ref=${BRANCH}" --jq '.content' 2>/dev/null | tr -d '\n' | base64 -d > scraper_tweets_pm.py 2>/dev/null || {
+  echo "  gh api falló, fallback a raw con timestamp"
+  TS_NOW=$(date +%s%N)
+  curl -sL -o scraper_tweets_pm.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/scraper_tweets_pm.py?bust=${TS_NOW}"
+}
 echo "  $(wc -c < scraper_tweets_pm.py) bytes"
-grep -c "redirect_stdout\|urllib\|CERT_NONE" scraper_tweets_pm.py | xargs echo "  matches (redirect/urllib/CERT_NONE):"
+grep -c "urllib\|CERT_NONE" scraper_tweets_pm.py | xargs echo "  matches urllib:"
 grep -c "TWEET_COUNT" scraper_tweets_pm.py | xargs echo "  matches TWEET_COUNT:"
 chmod +x scraper_tweets_pm.py
 
 echo
-echo "== 3. Descargando bot.py =="
-wget -q -O bot.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/bot.py" 2>&1 || curl -sL -o bot.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/bot.py"
+echo "== 3. Descargando bot.py (vía API contents) =="
+gh api "repos/lamegawi/bots-backup/contents/poly/codigo/bot-polymarket-elon/bot.py?ref=${BRANCH}" --jq '.content' 2>/dev/null | tr -d '\n' | base64 -d > bot.py 2>/dev/null || {
+  TS_NOW=$(date +%s%N)
+  curl -sL -o bot.py "https://raw.githubusercontent.com/lamegawi/bots-backup/${BRANCH}/poly/codigo/bot-polymarket-elon/bot.py?bust=${TS_NOW}"
+}
 echo "  $(wc -c < bot.py) bytes"
 chmod +x bot.py
-grep -c "redirect_stdout" bot.py | xargs echo "  matches redirect_stdout:"
+grep -c "TEST urllib" bot.py | xargs echo "  matches TEST urllib (versión nueva):"
 grep -c "actualizar_polymarket_oficial" bot.py | xargs echo "  matches paso 0:"
 
 echo
