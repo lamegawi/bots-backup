@@ -452,7 +452,8 @@
   "estado": "cerrada",
   "ts_cierre": "2026-09-05 00:19",
   "pnl_usd": null,
-  "motivo": "?"
+  "motivo": "?",
+  "nota": "apertura fallida (sin fill) 05/09 - excluida de stats"
  },
  {
   "id": 1788574674431,
@@ -488,8 +489,10 @@
   "apalancamiento": 5,
   "estado": "cerrada",
   "ts_cierre": "2026-09-08 12:53",
-  "pnl_usd": null,
-  "motivo": "?"
+  "pnl_usd": -12.01,
+  "motivo": "SL",
+  "r_resultado": -1.2,
+  "nota": "corregido 09/09 (realizedPnl c/fees): exchange closeAvg 0.08728 09/08 10:53 UTC"
  },
  {
   "id": 1788873300487,
@@ -506,8 +509,10 @@
   "apalancamiento": 10,
   "estado": "cerrada",
   "ts_cierre": "2026-09-08 15:33",
-  "pnl_usd": null,
-  "motivo": "?"
+  "pnl_usd": -11.08,
+  "motivo": "SL",
+  "r_resultado": -1.11,
+  "nota": "corregido 09/09 (realizedPnl c/fees): exchange closeAvg 8.199 09/08 13:33 UTC"
  },
  {
   "id": 1788888748639,
@@ -546,5 +551,58 @@
   "pnl_usd": 10.91,
   "r_resultado": 1.19,
   "motivo": "TP"
+ },
+ {
+  "id": 1788926905823,
+  "ts_apertura": "2026-09-09 06:08",
+  "bot": "demo",
+  "moneda": "ETC",
+  "direccion": "LONG",
+  "entrada": 8.72,
+  "contratos": 4,
+  "riesgo_usd": 9.5,
+  "score": 8.120809222747264,
+  "atr": 0.1583588262091628,
+  "stop_dist_pct": 2.724,
+  "apalancamiento": 7,
+  "estado": "cerrada",
+  "ts_cierre": "2026-09-09 08:43",
+  "pnl_usd": -9.98,
+  "r_resultado": -1.05,
+  "motivo": "SL"
+ },
+ {
+  "id": 1788997437632,
+  "ts_apertura": "2026-09-10 01:43",
+  "bot": "demo",
+  "moneda": "AVAX",
+  "direccion": "SHORT",
+  "entrada": 5.894,
+  "contratos": 27,
+  "riesgo_usd": 10.11,
+  "score": 7.626515958974791,
+  "atr": 0.24969784949975368,
+  "stop_dist_pct": 6.355,
+  "apalancamiento": 3,
+  "estado": "cerrada",
+  "ts_cierre": "2026-09-10 03:21",
+  "pnl_usd": -56.28,
+  "r_resultado": -5.57,
+  "motivo": "SL"
+ },
+ {
+  "id": 1788999239458,
+  "ts_apertura": "2026-09-10 02:13",
+  "bot": "demo",
+  "moneda": "DOGE",
+  "direccion": "SHORT",
+  "entrada": 0.08596,
+  "contratos": 488,
+  "riesgo_usd": 10.0,
+  "score": 3.334905029587212,
+  "atr": 0.0013661029636704949,
+  "stop_dist_pct": 2.384,
+  "apalancamiento": 8,
+  "estado": "abierta"
  }
 ]
