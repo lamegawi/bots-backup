@@ -90,18 +90,28 @@ def parsear_xtracker(html, user):
 
 
 def parsear_pm(html, user):
-    """Extrae tweet_count de la página del mercado en polymarket.com."""
+    """Extrae tweet_count de la página del mercado en polymarket.com.
+
+    Estructura HTML observada:
+      <span>TWEET COUNT</span>...<span class="text-2xl">152</span>
+    Donde "TWEET COUNT" y el número están en <span> separados.
+    """
     out = {"user": user, "fuente": "polymarket.com"}
-    # "TWEET COUNT 150" en la página
-    m = re.search(r"TWEET\s*COUNT\s+(\d+)", html)
-    if m:
-        out["tweet_count"] = int(m.group(1))
+    # buscar la posición de "TWEET COUNT" y leer el primer número cercano
+    idx = html.find("TWEET COUNT")
+    if idx < 0:
+        idx = html.find("TWEET_COUNT")
+    if idx < 0:
         return out
-    # a veces está escapado en JSON: \"TWEET COUNT\":150
-    m = re.search(r'TWEET\\?\s*COUNT\\?\s*"?\s*:?\s*(\d+)', html)
+    # leer 800 chars después para encontrar el número
+    fragmento = html[idx:idx+800]
+    # buscar el primer número plausible (entre 50 y 500) en un span
+    m = re.search(r">(\d{2,4})<", fragmento)
     if m:
-        out["tweet_count"] = int(m.group(1))
-        return out
+        n = int(m.group(1))
+        if 50 < n < 500:
+            out["tweet_count"] = n
+            return out
     return out
 
 
