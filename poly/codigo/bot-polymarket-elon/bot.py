@@ -93,6 +93,19 @@ def actualizar_polymarket_oficial():
     Solo se ejecuta si el bot está en modo loop (cron) — en una pasada
     única el usuario puede ejecutarlo manualmente antes.
     """
+    # test: ¿urllib llega a polymarket.com desde el proceso del bot?
+    try:
+        import ssl
+        import urllib.request
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        req = urllib.request.Request("https://polymarket.com/event/elon-musk-of-tweets-september-4-september-11-2026", headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=15, context=ctx) as r:
+            html = r.read().decode("utf-8", errors="replace")
+        log(f"      · TEST urllib OK: {len(html)} bytes, TWEET COUNT x{html.count('TWEET COUNT')}")
+    except Exception as e:
+        log(f"      · TEST urllib FALLÓ: {e}")
     try:
         import importlib.util as _ilu
         import os as _os
