@@ -1,0 +1,83 @@
+=== SCRAPER TWEETS PM — 20260910_170530 UTC ===
+
+== 1. AUTO-DETECTAR SLUG ==
+Slugs encontrados (0):
+No encontré slugs
+
+== 2. SCRAPEAR MERCADO ==
+Slug a usar: elon-musk-of-tweets-september-4-september-11-2026
+Scrapeando: https://polymarket.com/event/elon-musk-of-tweets-september-4-september-11-2026
+
+  HTML crudo guardado en /tmp/pm_debug.html (133 bytes)
+{
+  "bins": {}
+}
+
+[AVISO] no se encontró TWEET_COUNT; nada que guardar.
+
+== 2b. CONTENIDO HTML CRUDO RECIBIDO ==
+tamaño: 133 bytes
+---primeros 800 chars---
+InsufficientBalanceError: Account balance not enough to run this query, please recharge. (uid: 8301c9a7-4f7d-4434-8dec-9997cc1962ad)
+
+---busca 'TWEET' en HTML---
+---busca '150' en HTML---
+0
+---busca 'Just a moment' en HTML---
+0
+
+== 3. CSV FINAL ==
+fecha,tweets
+2025-01-24,1
+2026-02-26,1
+2026-05-11,1
+2026-07-25,15
+2026-07-26,14
+2026-07-27,15
+2026-07-28,17
+2026-07-29,21
+2026-07-30,31
+2026-07-31,38
+2026-08-01,32
+2026-08-02,25
+2026-08-03,24
+2026-08-04,26
+2026-08-05,25
+2026-08-06,25
+2026-08-07,26
+2026-08-08,26
+2026-08-09,18
+2026-08-10,29
+2026-08-11,17
+2026-08-12,33
+2026-08-13,50
+2026-08-14,22
+2026-08-15,26
+2026-08-16,9
+2026-08-17,21
+2026-08-18,47
+2026-08-19,86
+2026-08-20,85
+2026-08-21,52
+2026-08-22,17
+2026-08-23,31
+2026-08-24,33
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+2026-09-10,18
+
+== 4. TOTAL 4-11 sept (CSV) ==
+112
+
+== 5. POLYMARKET OFICIAL (TWEET_COUNT guardado aparte) ==
+No se generó polymarket_oficial.json
