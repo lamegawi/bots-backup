@@ -29,8 +29,23 @@ echo "---busca 'Sep 4' en xtracker---"
 grep -c "Sep 4" /tmp/xtracker.html
 echo "---busca 'September 4' en xtracker---"
 grep -c "September 4" /tmp/xtracker.html
-echo "---primeras 5 lineas con 'Sep' en xtracker---"
-grep -m 5 "Sep" /tmp/xtracker.html | head -5
+echo "---lineas con '150' (200 chars antes/después)---"
+grep -o ".\{0,200\}150.\{0,200\}" /tmp/xtracker.html | head -3
+echo "---lineas con 'September' (si existe)---"
+grep -o ".\{0,100\}September.\{0,100\}" /tmp/xtracker.html | head -3
+echo "---todo el texto entre 'September' y el siguiente '<':---"
+python3 -c "
+import re
+with open('/tmp/xtracker.html') as f:
+    h = f.read()
+# extraer todos los textos visibles (entre > y <, que tengan letras)
+textos = re.findall(r'>([^<>]{5,200})<', h)
+print(f'Total textos extraídos: {len(textos)}')
+# mostrar los que tengan September, Sep, tweet, post
+for t in textos:
+    if 'Sep' in t or 'tweet' in t.lower() or 'post' in t.lower() or '150' in t or 'elon' in t.lower():
+        print(f'  {t[:150]}')
+"
 echo
 echo "== CSV FINAL =="
 cat datos_elon.csv
