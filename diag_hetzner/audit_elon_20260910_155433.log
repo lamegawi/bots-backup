@@ -1,0 +1,58 @@
+=== AUDITORÍA ELON TIEMPO REAL — 2026-09-10 15:54:33 UTC ===
+
+== 1. TIEMPO ACTUAL Y VENTANA 4-11 sept ==
+Ahora UTC: Thu Sep 10 03:54:33 PM UTC 2026
+Ahora ET:  2026-09-10 11:54:33 EDT
+Cierre mercado 4-11: 2026-09-11 12:00 EDT
+Tiempo restante: 24.1h = 24h 5m
+
+== 2. TWEETS OFICIALES DE POLYMARKET (jina scrape) ==
+Polymarket oficial: TWEET_COUNT = 150
+Polymarket tiempo restante: NO ENCONTRADO
+
+== 3. TWEETS REALES DE @elonmusk EN X (jina) ==
+Posts scrapeados: 5
+En ventana 4-11 sept: 5
+Hoy (10 sept): 5
+
+== 4. LO QUE DICE EL BOT (CSV) ==
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+
+  2026-09-05: 5 tweets
+  2026-09-06: 21 tweets
+  2026-09-07: 21 tweets
+  2026-09-08: 25 tweets
+  2026-09-09: 22 tweets
+  TOTAL bot 4-11 sept: 94 tweets
+
+== 5. ESTADO TWEETS GUARDADOS ==
+-rw-r--r-- 1 root root 157039 Sep 10 15:48 /opt/polymarket/bot-polymarket-elon/estado_tweets.json
+Estado guardado 4-11 sept: 110 (posts: 48, reposts: 62)
+Total guardados: 734
+
+== 6. MERCADO ACTIVO.JSON DEL BOT ==
+slug: elon-musk-of-tweets-september-4-september-11-2026
+titulo: Elon Musk # tweets September 4 - September 11, 2026?
+fin: 2026-09-11T12:00:00-04:00
+inicio: 2026-09-04T12:00:00-04:00
+
+== 7. POSICIÓN EN CLOB (lo que dice Polymarket de TU posición) ==
+  CLOB: 5060.85 shares YES @ avg $0.0011
+        cur=$0.00  pnl=$0.00
+
+== 8. RESUMEN DISCREPANCIAS ==
+Compara los 4 numeros:
+  - Polymarket oficial: ?
+  - X.com @elonmusk scrapeado: ?
+  - Bot CSV: ?
+  - Estado guardado: ?
+Si los 4 no coinciden, hay un bug en el conteo del bot.
