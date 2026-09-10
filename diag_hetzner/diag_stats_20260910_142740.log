@@ -1,0 +1,319 @@
+=== DIAGNOSTICO ESTADISTICAS 3 BOTS — 2026-09-10 14:27:40 UTC ===
+
+==========================================
+1. POSICIONES ACTUALES (CLOB via proxy)
+==========================================
+Total: 40
+
+  arch-elon-musk-of-tweets-may-19-may-26-180-199
+    shares=33.67  avg=0.1485  cur=0.0000
+  elon-musk-of-tweets-april-28-may-5-180-199
+    shares=29.41  avg=0.1699  cur=0.0000
+  elon-musk-of-tweets-august-2026-840-879
+    shares=8.26  avg=0.3149  cur=0.0000
+  elon-musk-of-tweets-august-7-august-14-120-139
+    shares=5.00  avg=0.0100  cur=0.0000
+  elon-musk-of-tweets-july-17-july-24-180-199
+    shares=26.32  avg=0.1899  cur=0.0000
+  elon-musk-of-tweets-july-2-july-4-40-64
+    shares=31.18  avg=0.2199  cur=0.0000
+  elon-musk-of-tweets-july-24-july-31-280-299
+    shares=30.30  avg=0.1649  cur=0.0000
+  elon-musk-of-tweets-july-27-july-29-40-64
+    shares=25.43  avg=0.1965  cur=0.0000
+  elon-musk-of-tweets-july-28-august-4-180-199
+    shares=33.33  avg=0.1499  cur=0.0000
+  elon-musk-of-tweets-july-28-august-4-200-219
+    shares=26.32  avg=0.1899  cur=0.0000
+  elon-musk-of-tweets-july-30-august-1-40-64
+    shares=33.33  avg=0.2999  cur=0.0000
+  elon-musk-of-tweets-july-30-august-1-90-114
+    shares=6.25  avg=0.1600  cur=0.0000
+  elon-musk-of-tweets-july-31-august-7-200-219
+    shares=31.25  avg=0.1600  cur=0.0000
+  elon-musk-of-tweets-june-12-june-19-200-219
+    shares=18.33  avg=0.1799  cur=0.0000
+  elon-musk-of-tweets-june-12-june-19-220-239
+    shares=29.41  avg=0.0679  cur=0.0000
+  elon-musk-of-tweets-june-15-june-17-0-39
+    shares=18.33  avg=0.1799  cur=0.0000
+  elon-musk-of-tweets-june-15-june-17-40-64
+    shares=25.00  avg=0.2000  cur=0.0000
+  elon-musk-of-tweets-june-16-june-23-220-239
+    shares=31.25  avg=0.1600  cur=0.0000
+  elon-musk-of-tweets-june-18-june-20-65-89
+    shares=26.32  avg=0.3799  cur=0.0000
+  elon-musk-of-tweets-june-19-june-26-200-219
+    shares=8.92  avg=0.3699  cur=0.0000
+  elon-musk-of-tweets-may-12-may-19-120-139
+    shares=27.78  avg=0.1799  cur=0.0000
+  elon-musk-of-tweets-may-12-may-19-180-199
+    shares=33.33  avg=0.1499  cur=0.0000
+  elon-musk-of-tweets-may-15-may-22-100-119
+    shares=20.83  avg=0.2399  cur=0.0000
+  elon-musk-of-tweets-may-5-may-12-120-139
+    shares=23.20  avg=0.4309  cur=0.0000
+  elon-musk-of-tweets-may-8-may-15-100-119
+    shares=27.05  avg=0.3696  cur=0.0000
+  elon-musk-of-tweets-september-4-september-11-2026-120-139
+    shares=5060.85  avg=0.0011  cur=0.0005
+  zelenskyy-of-tweets-august-21-august-28-2026-40-59
+    shares=6.00  avg=0.2490  cur=0.0000
+  zelenskyy-of-tweets-august-28-september-4-2026-140-159
+    shares=17.00  avg=0.0920  cur=0.0000
+  zelenskyy-of-tweets-august-28-september-4-2026-160-179
+    shares=8.85  avg=0.0400  cur=0.0000
+  zelenskyy-of-tweets-september-1-september-8-2026-100-119
+    shares=30.00  avg=0.1000  cur=0.0000
+
+==========================================
+2. HISTORIAL DE OPERACIONES (últimas 30 días)
+==========================================
+
+--- Mes 2026-08 ---
+  trades este mes: 200
+  elon-musk-of-tweets-august-1-august-3-0-39                    trades=  2  buy= 1  sell= 1
+  elon-musk-of-tweets-august-14-august-21-100-119               trades=  3  buy= 2  sell= 1
+  elon-musk-of-tweets-august-14-august-21-140-159               trades=  3  buy= 2  sell= 1
+  elon-musk-of-tweets-august-17-august-19-0-39                  trades=  3  buy= 2  sell= 1
+  elon-musk-of-tweets-august-20-august-22-90-114                trades=  1  buy= 0  sell= 1
+  elon-musk-of-tweets-august-2026-660-679                       trades=  1  buy= 0  sell= 1
+  elon-musk-of-tweets-august-2026-740-759                       trades=  1  buy= 0  sell= 1
+  elon-musk-of-tweets-august-2026-840-879                       trades=  1  buy= 1  sell= 0
+  elon-musk-of-tweets-august-22-august-24-2026-90-114           trades=  1  buy= 1  sell= 0
+  elon-musk-of-tweets-august-25-september-1-2026-120-139        trades= 15  buy= 4  sell=11
+  elon-musk-of-tweets-august-25-september-1-2026-220-239        trades=  2  buy= 0  sell= 2
+  elon-musk-of-tweets-august-28-september-4-2026-120-139        trades=  5  buy= 1  sell= 4
+  elon-musk-of-tweets-august-28-september-4-2026-160-179        trades=  1  buy= 0  sell= 1
+  elon-musk-of-tweets-august-29-august-31-2026-0-39             trades=  1  buy= 1  sell= 0
+  elon-musk-of-tweets-august-31-september-2-2026-40-64          trades=  1  buy= 1  sell= 0
+
+--- Mes 2026-09 ---
+  trades este mes: 200
+  elon-musk-of-tweets-august-1-august-3-0-39                    trades=  2  buy= 1  sell= 1
+  elon-musk-of-tweets-august-14-august-21-100-119               trades=  3  buy= 2  sell= 1
+  elon-musk-of-tweets-august-14-august-21-140-159               trades=  3  buy= 2  sell= 1
+  elon-musk-of-tweets-august-17-august-19-0-39                  trades=  3  buy= 2  sell= 1
+  elon-musk-of-tweets-august-20-august-22-90-114                trades=  1  buy= 0  sell= 1
+  elon-musk-of-tweets-august-2026-660-679                       trades=  1  buy= 0  sell= 1
+  elon-musk-of-tweets-august-2026-740-759                       trades=  1  buy= 0  sell= 1
+  elon-musk-of-tweets-august-2026-840-879                       trades=  1  buy= 1  sell= 0
+  elon-musk-of-tweets-august-22-august-24-2026-90-114           trades=  1  buy= 1  sell= 0
+  elon-musk-of-tweets-august-25-september-1-2026-120-139        trades= 15  buy= 4  sell=11
+  elon-musk-of-tweets-august-25-september-1-2026-220-239        trades=  2  buy= 0  sell= 2
+  elon-musk-of-tweets-august-28-september-4-2026-120-139        trades=  5  buy= 1  sell= 4
+  elon-musk-of-tweets-august-28-september-4-2026-160-179        trades=  1  buy= 0  sell= 1
+  elon-musk-of-tweets-august-29-august-31-2026-0-39             trades=  1  buy= 1  sell= 0
+  elon-musk-of-tweets-august-31-september-2-2026-40-64          trades=  1  buy= 1  sell= 0
+
+==========================================
+3. BOT ELON — DATOS Y ULTIMAS OPERACIONES
+==========================================
+-- CSV últimas 15 líneas --
+2026-08-22,17
+2026-08-23,31
+2026-08-24,33
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+
+-- Log últimas 20 líneas --
+[2026-09-10 10:25:32 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-10 10:25:32 EDT] 4/4 · Estado:
+fecha        tweets
+2026-08-25       26
+2026-08-26       14
+2026-08-27       30
+2026-08-28        7
+2026-08-29       16
+2026-08-30        9
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+
+AVG7 = 14.86  V2 = 47  R = 1.582  ajuste = 1.291  λ48 = 38.4
+Días completos en CSV: 46
+[2026-09-10 10:25:32 EDT] Pasada completada en 96.7 s
+[2026-09-10 10:25:32 EDT] Próxima pasada en 5 min…
+
+-- Mercado activo --
+  elon-musk-of-tweets-september-4-september-11-2026 | Elon Musk # tweets September 4 - September 11, 2026? | fin 2026-09-11T12:00:00-04:00
+    <20              YES @ 0.0000  vol=1382
+    20-39            YES @ 0.0000  vol=1382
+    40-59            YES @ 0.0000  vol=3432
+    60-79            YES @ 0.0000  vol=7571
+    80-99            YES @ 0.0000  vol=63042
+  elon-musk-of-tweets-september-10-september-12-2026 | Elon Musk # tweets September 10 - September 12, 2026? | fin 2026-09-12T12:00:00-04:00
+    <40              YES @ 0.1550  vol=14907
+    40-64            YES @ 0.4950  vol=12913
+    65-89            YES @ 0.2750  vol=13010
+    90-114           YES @ 0.0700  vol=5813
+    115-139          YES @ 0.0160  vol=3614
+  elon-musk-of-tweets-september-8-september-15-2026 | Elon Musk # tweets September 8 - September 15, 2026? | fin 2026-09-15T12:00:00-04:00
+    <20              YES @ 0.0000  vol=1340
+    20-39            YES @ 0.0005  vol=1227
+    40-59            YES @ 0.0005  vol=2810
+    60-79            YES @ 0.0005  vol=15141
+    80-99            YES @ 0.0025  vol=28580
+  elon-musk-of-tweets-october-2026 | Elon Musk # tweets in October 2026? | fin 2026-11-01T00:00:00-04:00
+    <20              YES @ 0.0005  vol=525
+    20-39            YES @ 0.0005  vol=435
+    40-59            YES @ 0.0005  vol=430
+    60-79            YES @ 0.0005  vol=445
+    80-99            YES @ 0.0005  vol=440
+
+==========================================
+4. BOT ZELENSKYY — DATOS Y ULTIMAS OPERACIONES
+==========================================
+-- CSV últimas 15 líneas --
+2026-08-26,27
+2026-08-27,10
+2026-08-28,9
+2026-08-29,11
+2026-08-30,5
+2026-08-31,5
+2026-09-01,7
+2026-09-02,16
+2026-09-03,11
+2026-09-04,8
+2026-09-05,4
+2026-09-06,13
+2026-09-07,10
+2026-09-08,12
+2026-09-09,13
+
+-- Log últimas 20 líneas --
+[2026-09-10 10:24:21 EDT]       · Excel historial actualizado: Historial_Operaciones_Zelenskyy.xlsx (añadidas 0, total 6)
+[2026-09-10 10:24:21 EDT] 4/4 · Estado:
+fecha        tweets
+2026-08-29       11
+2026-08-30        5
+2026-08-31        5
+2026-09-01        7
+2026-09-02       16
+2026-09-03       11
+2026-09-04        8
+2026-09-05        4
+2026-09-06       13
+2026-09-07       10
+2026-09-08       12
+2026-09-09       13
+
+AVG7 = 10.14  V2 = 25  R = 1.232  ajuste = 1.116  λ48 = 22.6
+Días completos en CSV: 174
+[2026-09-10 10:24:21 EDT] Pasada completada en 20.7 s
+[2026-09-10 10:24:21 EDT] Próxima pasada en 5 min…
+
+-- Mercado activo --
+  zelenskyy-of-tweets-september-4-september-11-2026 | Zelenskyy # posts September 4 - September 11, 2026? | fin 2026-09-11T12:00:00-04:00
+    <20              YES @ 0.0000  vol=531
+    20-39            YES @ 0.0000  vol=853
+    40-59            YES @ 0.0040  vol=904
+    60-79            YES @ 0.8000  vol=1963
+    80-99            YES @ 0.1650  vol=1719
+  zelenskyy-of-tweets-september-8-september-15-2026 | Zelenskyy # posts September 8 - September 15, 2026? | fin 2026-09-15T12:00:00-04:00
+    <20              YES @ 0.0000  vol=394
+    20-39            YES @ 0.0050  vol=424
+    40-59            YES @ 0.0450  vol=957
+    60-79            YES @ 0.5200  vol=2433
+    80-99            YES @ 0.2850  vol=1183
+  zelenskyy-of-tweets-september-11-september-18-2026 | Zelenskyy # posts September 11 - September 18, 2026? | fin 2026-09-18T12:00:00-04:00
+    <20              YES @ 0.0020  vol=128
+    20-39            YES @ 0.0060  vol=272
+    40-59            YES @ 0.1750  vol=719
+    60-79            YES @ 0.4550  vol=1377
+    80-99            YES @ 0.2450  vol=424
+
+==========================================
+5. BOT TRUMP — DATOS, MERCADO Y POR QUE NO OPERA
+==========================================
+-- CSV últimas 15 líneas --
+2026-08-26,48
+2026-08-27,36
+2026-08-28,54
+2026-08-29,18
+2026-08-30,26
+2026-08-31,28
+2026-09-01,41
+2026-09-02,9
+2026-09-03,12
+2026-09-04,22
+2026-09-05,1
+2026-09-06,64
+2026-09-07,39
+2026-09-08,17
+2026-09-09,7
+
+-- Log últimas 30 líneas --
+tail: cannot open '/var/log/poly-trump.log' for reading: No such file or directory
+
+-- Mercado activo --
+  donald-trump-of-truth-social-posts-september-4-september-11-2026 | Donald Trump # Truth Social posts September 4 - September 11, 2026? | fin 2026-09-11T12:00:00-04:00
+    <20              YES @ 0.0000  vol=1753
+    20-39            YES @ 0.0000  vol=721
+    40-59            YES @ 0.0000  vol=1198
+    60-79            YES @ 0.0000  vol=1378
+    80-99            YES @ 0.0000  vol=1984
+    100-119          YES @ 0.0000  vol=1112
+    120-139          YES @ 0.0000  vol=3085
+    140-159          YES @ 0.0005  vol=6033
+  donald-trump-of-truth-social-posts-september-8-september-15-2026 | Donald Trump # Truth Social posts September 8 - September 15, 2026? | fin 2026-09-15T12:00:00-04:00
+    <20              YES @ 0.0000  vol=1315
+    20-39            YES @ 0.0005  vol=552
+    40-59            YES @ 0.0050  vol=36
+    60-79            YES @ 0.0095  vol=70
+    80-99            YES @ 0.0050  vol=64
+    100-119          YES @ 0.0265  vol=52
+    120-139          YES @ 0.0650  vol=394
+    140-159          YES @ 0.2350  vol=166
+  donald-trump-of-truth-social-posts-september-11-september-18-2026 | Donald Trump # Truth Social posts September 11 - September 18, 2026? | fin 2026-09-18T12:00:00-04:00
+    <20              YES @ 0.0060  vol=628
+    20-39            YES @ 0.0060  vol=60
+    40-59            YES @ 0.0060  vol=30
+    60-79            YES @ 0.0060  vol=40
+    80-99            YES @ 0.0060  vol=30
+    100-119          YES @ 0.0060  vol=56
+    120-139          YES @ 0.0355  vol=41
+    140-159          YES @ 0.0850  vol=30
+
+-- Filtros / condiciones del bot Trump --
+/opt/polymarket/bot-polymarket-trump/bot_semanal.py:                  f"stake ${a['stake']:.2f} · fin ventana {a.get('ventana_fin', '?')}")
+/opt/polymarket/bot-polymarket-trump/excel_historial.py:                             ("fecha", "bin", "lado", "precio", "paso", "stake",
+/opt/polymarket/bot-polymarket-trump/excel_historial.py:                r.get("p_modelo", ""), r.get("paso", ""), r.get("stake", ""),
+/opt/polymarket/bot-polymarket-trump/excel_historial.py:                    "paso": fila[10], "stake": fila[11], "real": fila[12],
+/opt/polymarket/bot-polymarket-trump/notificar.py:        f"Stake: ${act['stake']:.2f}\n"
+/opt/polymarket/bot-polymarket-trump/notificar.py:        f"Stake ${reg['stake']:.2f} · Paso {reg['paso']}\n"
+/opt/polymarket/bot-polymarket-trump/notificar.py:        shares = float(act.get("stake", 0)) / precio
+/opt/polymarket/bot-polymarket-trump/notificar.py:                return shares * cur - float(act.get("stake", 0))
+/opt/polymarket/bot-polymarket-trump/notificar.py:                          f"${apuesta_activa.get('stake', 0):.2f}")
+/opt/polymarket/bot-polymarket-trump/notificar.py:                    linea += (f" | 💰 {h.get('bin')} {h.get('lado')} ${h.get('stake', 0):.2f} "
+/opt/polymarket/bot-polymarket-trump/notificar_semanal.py:        f"Stake: ${act['stake']:.2f} · Saldo bot: ${saldo:.2f}\n"
+/opt/polymarket/bot-polymarket-trump/notificar_semanal.py:        f"Stake ${reg['stake']:.2f} · Paso {reg['paso']}\n"
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:                    "p_modelo", "paso", "stake", "real", "resultado",
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:                        tr["p_modelo"], tr["paso"], tr["stake"], tr["real"],
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:    fee = round(act["stake"] * fee_pct, 2)
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:        benef = round(act["stake"] * (act["cuota"] - 1) - fee, 2)
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:        benef = -round(act["stake"] + fee, 2)
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:                "stake": round(act["stake"], 2), "real": winner_titulo,
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:            f"Stake ${act['stake']:.2f} · saldo de la operación ${benef:+.2f}\n"
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:    coste_total = c["stake"] * (1 + fee)
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:        print(f"  [BLOQUEADO] el stake ${c['stake']:.2f} supera el 50% del "
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:          f"size {c['stake']:.2f} USDC · token {token_id[:12]}…")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:            # stake $X a precio P → shares = X/P (redondeo a 2 dec).
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:            size_shares = round(c["stake"] / c["precio"], 2)
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:                      f"(stake ${c['stake']:.2f} a precio {c['precio']:.3f}).")
+
+-- Buscar decisiones en logs --
+grep: /var/log/poly-trump.log: No such file or directory
