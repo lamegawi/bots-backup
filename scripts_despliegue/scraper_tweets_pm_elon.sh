@@ -23,17 +23,11 @@ echo "== 1. AUTO-DETECTAR SLUG =="
 python3 scraper_tweets_pm.py --auto
 echo
 echo "== 2. SCRAPEAR MERCADO =="
-# slug detectado arriba, pasarlo manualmente:
-SLUG=$(python3 -c "
-import sys
-sys.path.insert(0, '/opt/polymarket/bot-polymarket-elon')
-import scraper_tweets_pm as s
-slugs = s.detectar_slug_48h()
-print(slugs[0] if slugs else '')
-")
+# slug correcto del 48h 4-11 sept (con "of-tweets", no "tweets"):
+SLUG="elon-musk-of-tweets-september-4-september-11-2026"
 echo "Slug a usar: $SLUG"
 if [ -n "$SLUG" ]; then
-  python3 scraper_tweets_pm.py --slug "$SLUG" --actualizar-csv
+  python3 scraper_tweets_pm.py --slug "$SLUG" --actualizar-csv --periodo 2026-09-04 2026-09-11
 fi
 echo
 echo "== 3. CSV FINAL =="

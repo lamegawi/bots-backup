@@ -129,10 +129,12 @@ def actualizar_csv(fecha, n):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--slug", help="slug del mercado (ej. elon-musk-tweets-september-4-september-11-2026)")
+    ap.add_argument("--slug", help="slug del mercado (ej. elon-musk-of-tweets-september-4-september-11-2026)")
     ap.add_argument("--auto", action="store_true", help="detectar el slug del 48h activo")
     ap.add_argument("--actualizar-csv", action="store_true",
                     help="si TWEET_COUNT existe, escribir fecha=hoy con ese valor")
+    ap.add_argument("--periodo", nargs=2, metavar=("INI","FIN"),
+                    help="volcar TWEET_COUNT como primer día SIN datos del periodo")
     args = ap.parse_args()
 
     if not args.slug and not args.auto:
@@ -160,8 +162,38 @@ def main():
 
     if args.actualizar_csv and "tweet_count" in out:
         hoy = datetime.now(ET).date()
-        n = actualizar_csv(hoy, out["tweet_count"])
-        print(f"\nCSV actualizado: {hoy} = {out['tweet_count']} tweets (total filas: {n})")
+        if args.periodo:
+            from datetime import date
+            ini = date.fromisoformat(args.periodo[0])
+            fin = date.fromisoformat(args.periodo[1])
+            # encontrar el primer día SIN datos en el periodo
+            dias_existentes = set()
+            if os.path.exists(CSV):
+                import csv as _csv
+                with open(CSV, newline="", encoding="utf-8") as f:
+                    for r in _csv.DictReader(f):
+                        try:
+                            d = date.fromisoformat(r["fecha"])
+                            if ini <= d <= fin:
+                                dias_existentes.add(d)
+                        except Exception:
+                            pass
+            from datetime import timedelta
+            f = ini
+            target = None
+            while f <= fin:
+                if f not in dias_existentes:
+                    target = f
+                    break
+                f += timedelta(days=1)
+            if target is None:
+                # todos los días tienen datos: usar el último
+                target = fin
+            n = actualizar_csv(target, out["tweet_count"])
+            print(f"\nCSV actualizado: {target} = {out['tweet_count']} tweets (total filas: {n})")
+        else:
+            n = actualizar_csv(hoy, out["tweet_count"])
+            print(f"\nCSV actualizado: {hoy} = {out['tweet_count']} tweets (total filas: {n})")
     elif args.actualizar_csv:
         print("\n[AVISO] no se encontró TWEET_COUNT; CSV no modificado.")
 
