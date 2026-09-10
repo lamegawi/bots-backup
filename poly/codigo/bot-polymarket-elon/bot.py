@@ -97,7 +97,8 @@ def actualizar_polymarket_oficial():
         import importlib.util as _ilu
         import os as _os
         import io as _io
-        from contextlib import redirect_stdout as _rso
+        import sys as _sys
+        from contextlib import redirect_stdout as _rso, redirect_stderr as _rse
         spec = _ilu.spec_from_file_location(
             "scraper_tweets_pm",
             _os.path.join(_os.path.dirname(__file__) or ".", "scraper_tweets_pm.py"),
@@ -105,12 +106,26 @@ def actualizar_polymarket_oficial():
         stpm = _ilu.module_from_spec(spec)
         spec.loader.exec_module(stpm)
         log("0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…")
-        # capturar stdout del scraper para ver qué imprime
-        buf = _io.StringIO()
-        with _rso(buf):
-            tc = stpm.actualizar_csv_desde_fuente(user="elonmusk", verbose=True)
-        scraper_log = buf.getvalue()
-        for ln in scraper_log.splitlines():
+        # forzar que el scraper imprima a stderr (que sí loggeamos)
+        # mediante un wrapper
+        orig_print = __builtins__.print if hasattr(__builtins__, "print") else _sys.modules["builtins"].print
+
+        def print_to_stderr(*args, **kwargs):
+            _sys.stderr.write(" ".join(str(a) for a in args) + "\n")
+            _sys.stderr.flush()
+        stpm.print = print_to_stderr
+        buf_out = _io.StringIO()
+        buf_err = _io.StringIO()
+        try:
+            with _rso(buf_out), _rse(buf_err):
+                tc = stpm.actualizar_csv_desde_fuente(user="elonmusk", verbose=True)
+        except Exception as inner:
+            log(f"      · scraper lanzó excepción: {inner}")
+            log(f"      · stderr: {buf_err.getvalue()[:300]!r}")
+            tc = None
+        # loggear todo lo que el scraper imprimió
+        out_text = buf_out.getvalue() + buf_err.getvalue()
+        for ln in out_text.splitlines():
             if ln.strip():
                 log(f"      · scraper: {ln}")
         if tc:
