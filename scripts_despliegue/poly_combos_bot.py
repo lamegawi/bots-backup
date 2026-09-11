@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v12.8 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v12.8.1 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -53,6 +53,20 @@ Estrategia nueva (vs v7):
    📋 Trades: un mensaje por combo con SU botón debajo. Estadísticas y
    contadores diarios separados por franja (las manuales NO consumen
    el tope AUTO).
+   v12.8.1: FIN DE LAS FALSAS ALARMAS de "ganadas sin cobrar". El primer aviso
+   de la v12.8 (11-sep, "7 ganadas sin cobrar ~$47.58") era FALSO: eran 7 ops de
+   MERCADO SIMPLE de la era copy-trading (Cagliari ×4, LoL IG-LGD, SMU-FSU ×2)
+   que SÍ se cobraron (un redeem de $27.13 agrupa las 4 de Cagliari, $12.58 SMU,
+   $7.87 LoL) y su saldo on-chain es 0 en el CTF y en el ERC1155 de parlays.
+   Causas y arreglos: (a) `cobros_wallet()` leía /activity SIN filtro de tipo y
+   los trades dejaban fuera los cobros antiguos ⇒ ahora pide `type=REDEEM` con 2
+   páginas (77 cobros desde abril, no 48); (b) esas ops guardan un id que NO es
+   el `asset` del cobro ⇒ nuevo índice por TÍTULO normalizado ("A AND B" ↔
+   "A + B") con ventana temporal, y el cobro que se anota son SUS shares (1 token
+   ganador = $1), nunca el total del redeem; (c) `reclamar_check()` no deduplicaba
+   por token ni confirmaba on-chain ⇒ ahora deduplica y sólo avisa con saldo > 0;
+   (d) cada op se mira en SU contrato: `saldo_token_op()` (combos → ERC1155 de
+   parlays, simples → CTF `0x4D97…6045`), que es lo que usa `pendientes_reclamar`.
    v12.8: 💰 /reclamar — DETECTOR DE GANADAS SIN COBRAR. Recorre TODO el
    histórico y las abiertas (los cobros de Polymarket NO caducan ⇒ sin el límite
    de días de la auto-curación) y busca los combos GANADOS cuyo dinero SIGUE en
@@ -205,6 +219,9 @@ EXCHANGE_V3 = "0xe3333700cA9d93003F00f0F71f8515005F6c00Aa"
 DATA_API = "https://data-api.polymarket.com"
 # v12.6: FUENTES DE VERDAD del resultado real (cobros REDEEM + saldo on-chain)
 PARLAY_ERC1155 = "0x006f54f7f9a22e0000cc2ab60031000000ae9fef"  # posiciones de COMBO (no es el CTF)
+CTF_ERC1155 = "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045"     # v12.8.1: mercados SIMPLES
+COBROS_PAGINAS = 2                     # v12.8.1: páginas de /activity?type=REDEEM (histórico completo)
+COBRO_TITULO_VENTANA_D = 21            # días tras la op en los que un cobro por título es creíble
 # v12.8: 💰 RECLAMAR — cobro (redeem) de parlays
 PARLAY_REDEEM_ADAPTER = "0xa1200000d0002264c9a1698e001292d00e1b00af"   # adaptador redeem()
 REDEEM_SEL = "53d190cf"                    # redeem(address[] owners, uint256[] tokenIds)
@@ -2159,7 +2176,7 @@ def mercado_por_slug(slug):
 # ============================================
 # v12.6: VERDAD REAL (cobros REDEEM de la wallet + saldo on-chain del combo)
 # ============================================
-_COBROS_CACHE = [0.0, {}]      # [ts, {token: usdc cobrado}]
+_COBROS_CACHE = [0.0, {}, {}]   # [ts, {token: usdc}, {titulo_norm: {usdc,ts,n}}]  (v12.8.1)
 _SALDO_CACHE = {}              # token -> (ts, shares|None)
 
 
@@ -2205,62 +2222,124 @@ def _rpc_eth_call(to, data, timeout=8):
     return v
 
 
+def _norm_titulo(s):
+    """v12.8.1: título normalizado para casar una op con su cobro REDEEM.
+    data-api titula el parlay "A AND B" y el bot guarda "A + B"; además quita
+    signos y pasa a minúsculas. Se recorta a 120 chars (títulos largos)."""
+    t = str(s or "").lower().replace(" and ", " + ")
+    for ch in "?.!,:'\"()[]–—":
+        t = t.replace(ch, " ")
+    return _re.sub(r"\s+", " ", t).strip()[:120]
+
+
+def _op_ts(op):
+    """v12.8.1: epoch de la op (para la ventana temporal del casado por título)."""
+    for k in ("copiado_en", "cerrado_en", "fecha"):
+        v = op.get(k)
+        if not v:
+            continue
+        try:
+            dt = datetime.fromisoformat(str(v).replace("Z", "+00:00"))
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return dt.timestamp()
+        except Exception:
+            continue
+    return None
+
+
 def cobros_wallet(refrescar=False, limite=500):
-    """v12.6: cobros REDEEM reales de la wallet (data-api /activity) indexados
-    por token. usdcSize>0 ⇒ ese combo GANÓ y el dinero YA está en la cartera
-    (Polymarket autocobra las posiciones ganadoras; el bot no hace redeem).
-    Cache 10 min. Si la API falla devuelve {} y la resolución sigue por legs."""
+    """v12.6/v12.8.1: cobros REDEEM reales de la wallet (data-api /activity).
+    usdcSize>0 ⇒ esa posición GANÓ y el dinero YA está en la cartera (Polymarket
+    autocobra las ganadoras; el bot no hace redeem). Cache 10 min; si la API
+    falla devuelve lo último que tuvo.
+    v12.8.1: (a) se pide con type=REDEEM y COBROS_PAGINAS páginas ⇒ histórico
+    COMPLETO (77 cobros desde abril) en vez de los últimos 500 registros
+    MEZCLADOS, donde los trades dejaban fuera los cobros antiguos; (b) además del
+    índice por token se guarda otro por TÍTULO normalizado: las ops de la era
+    copy-trading guardan un id que NO es el `asset` del cobro (las 4 de Cagliari
+    se cobraron en UN redeem de $27.13) y por id nunca casaban."""
     ahora = time.time()
     if not refrescar and _COBROS_CACHE[1] and ahora - _COBROS_CACHE[0] < 600:
         return _COBROS_CACHE[1]
-    cobros = {}
+    cobros, titulos, act = {}, {}, []
     try:
-        url = f"{DATA_API}/activity?user={WALLET}&limit={limite}"
-        req = urllib.request.Request(url, headers={"User-Agent": "poly-combos-bot"})
-        with urllib.request.urlopen(req, timeout=20) as r:
-            act = json.loads(r.read().decode())
-        for a in (act or []):
+        for pag in range(COBROS_PAGINAS):
+            url = (f"{DATA_API}/activity?user={WALLET}&limit={limite}"
+                   f"&offset={pag * limite}&type=REDEEM")
+            req = urllib.request.Request(url, headers={"User-Agent": "poly-combos-bot"})
+            with urllib.request.urlopen(req, timeout=20) as r:
+                parte = json.loads(r.read().decode())
+            act += parte or []
+            if len(parte or []) < limite:
+                break
+        for a in act:
             if str(a.get("type", "")).upper() != "REDEEM":
-                continue
-            tok = str(a.get("asset") or "")
-            if not tok:
                 continue
             try:
                 usdc = float(a.get("usdcSize") or 0)
             except Exception:
                 usdc = 0.0
-            cobros[tok] = max(cobros.get(tok, 0.0), usdc)
-        _COBROS_CACHE[0] = ahora
-        _COBROS_CACHE[1] = cobros
-        log(f"  verdad: {sum(1 for v in cobros.values() if v > 0)} cobros REDEEM>0 en la wallet")
+            tok = str(a.get("asset") or "")
+            if tok:
+                cobros[tok] = max(cobros.get(tok, 0.0), usdc)
+            tit = _norm_titulo(a.get("title"))
+            if tit:
+                g = titulos.get(tit) or {"usdc": 0.0, "ts": 0, "n": 0}
+                g["usdc"] = round(g["usdc"] + usdc, 6)
+                try:
+                    g["ts"] = max(g["ts"], int(a.get("timestamp") or 0))
+                except Exception:
+                    pass
+                g["n"] += 1
+                titulos[tit] = g
+        _COBROS_CACHE[0], _COBROS_CACHE[1], _COBROS_CACHE[2] = ahora, cobros, titulos
+        log(f"  verdad: {sum(1 for v in cobros.values() if v > 0)} cobros REDEEM>0 "
+            f"por token + {len(titulos)} por título ({len(act)} registros)")
     except Exception as e:
         log(f"  cobros_wallet: sin datos ({str(e)[:60]})")
     return cobros or _COBROS_CACHE[1]
 
 
-def saldo_combo_token(token_id, refrescar=False):
+
+
+
+def saldo_combo_token(token_id, refrescar=False, contrato=None):
     """v12.6: balanceOf del token de COMBO en su ERC1155 (0x006f…efef).
     >0 ⇒ los tokens SIGUEN en la cartera (posición no liquidada).
     0 ⇒ ya no están (cobrados, vendidos o perdidos). None si ningún RPC responde.
-    Cache 5 min."""
+    Cache 5 min. v12.8.1: `contrato` permite mirar OTRO ERC1155 (el CTF para
+    mercados simples) y la cache pasa a keyed por contrato+token."""
     tok = str(token_id or "")
     if not tok.isdigit():
         return None
+    con = str(contrato or PARLAY_ERC1155).lower()
+    clave = f"{con}:{tok}"
     ahora = time.time()
-    hit = _SALDO_CACHE.get(tok)
+    hit = _SALDO_CACHE.get(clave)
     if hit and not refrescar and ahora - hit[0] < 300:
         return hit[1]
     sal = None
     try:
         data = ("0x00fdd58e" + WALLET[2:].rjust(64, "0")
                 + hex(int(tok))[2:].rjust(64, "0"))
-        v = _rpc_eth_call(PARLAY_ERC1155, data)
+        v = _rpc_eth_call(con, data)
         if v:
             sal = int(v, 16) / 1e6
     except Exception:
         sal = None
-    _SALDO_CACHE[tok] = (ahora, sal)
+    _SALDO_CACHE[clave] = (ahora, sal)
     return sal
+
+
+def saldo_token_op(op, refrescar=False):
+    """v12.8.1: saldo on-chain del token de una op en SU contrato: los COMBOS
+    viven en el ERC1155 de parlays y los mercados SIMPLES en el CTF. Mirar el
+    contrato equivocado daba siempre 0 (y eso ocultaba posiciones sin cobrar)."""
+    tok = _token_de(op)
+    es_combo = bool(op.get("legs")) or str(op.get("tipo") or "") == "combo_rfq"
+    return saldo_combo_token(tok, refrescar=refrescar,
+                             contrato=(PARLAY_ERC1155 if es_combo else CTF_ERC1155))
 
 
 # ============================================
@@ -2402,7 +2481,7 @@ def pendientes_reclamar(con_saldo=True, estado=None):
             continue
         vistos.add(tok)
         revisadas += 1
-        sal = saldo_combo_token(tok) if con_saldo else op.get("saldo_tokens")
+        sal = saldo_token_op(op) if con_saldo else op.get("saldo_tokens")
         if sal is None:
             if con_saldo:
                 sin_datos += 1
@@ -2435,7 +2514,7 @@ def pendientes_reclamar(con_saldo=True, estado=None):
 def _texto_reclamar(res, ok=None, det=""):
     """v12.8: mensaje de /reclamar."""
     rec = res.get("reclamables") or []
-    txt = ("💰 *RECLAMAR v12.8*\n\n"
+    txt = ("💰 *RECLAMAR v12.8.1*\n\n"
            f"Ops revisadas: {res.get('revisadas', 0)}"
            + (f" · sin datos on-chain: {res.get('sin_datos')}" if res.get("sin_datos") else "")
            + "\n\n")
@@ -2487,9 +2566,11 @@ def _marcar_avisados(res, estado=None):
         log(f"  [reclamar] marcar error: {e}")
 
 
-def reclamar_check(silencioso=True):
-    """💰 v12.8: lo llama la auto-curación (sin RPC). Detecta ops ganadas SIN
-    cobro real y avisa sólo de las NUEVAS. → nº de avisos enviados."""
+def reclamar_check(silencioso=True, confirmar=True):
+    """💰 v12.8/v12.8.1: lo llama la auto-curación. Detecta ops ganadas SIN
+    cobro real, lo CONFIRMA on-chain (saldo > 0 en el contrato que
+    toca: combos → ERC1155 de parlays, simples → CTF) y avisa sólo de las NUEVAS.
+    confirmar=False se salta la comprobación on-chain. → nº de ops avisadas."""
     if not CHAT_ID:
         return 0
     try:
@@ -2497,18 +2578,40 @@ def reclamar_check(silencioso=True):
     except Exception:
         return 0
     av = estado.setdefault("reclamos_avisados", {})
-    nuevos = []
+    grupos = {}
     for op in (estado.get("historial") or []) + (estado.get("trades_copiados") or []):
         tok = _token_de(op)
+        # v12.8.1: agrupado por token (4 ops de Cagliari son UN solo position)
         if not tok.isdigit() or tok in av or _ya_cobrada(op):
             continue
         fv = str(op.get("fuente_verdad") or "")
         if fv == "legs_ganadas" or (str(op.get("resultado") or "") == "ganada"
                                     and fv != "cobro_real"):
-            nuevos.append(op)
+            grupos.setdefault(tok, []).append(op)
+    # v12.8.1: confirmar ON-CHAIN antes de avisar. Sin este paso, ops antiguas
+    # cuyo cobro no casaba por id provocaban falsas alarmas (7 ops "sin cobrar"
+    # que en realidad tenían saldo 0 en el CTF y en el ERC1155 de parlays).
+    # El importe es el SALDO real del token: varias ops pueden compartirlo (las
+    # 4 compras de Cagliari son un único position de 27.13 shares).
+    nuevos, importes = [], {}
+    for tok, grupo in grupos.items():
+        sal = saldo_token_op(grupo[0]) if confirmar else None
+        if sal is not None and float(sal) <= 0.000001:
+            av[tok] = {"ts": datetime.now(timezone.utc).isoformat(), "auto": True,
+                       "importe": 0.0, "nota": "saldo 0 on-chain: ya cobrada/vendida"}
+            continue
+        if sal is not None:
+            importes[tok] = round(float(sal), 2)
+        else:                          # sin RPC: no se descarta a ciegas
+            importes[tok] = round(sum(float(o.get("size_shares") or 0) for o in grupo), 2)
+        nuevos.append(grupo[0])
     if not nuevos:
+        try:
+            guardar_estado(estado)
+        except Exception:
+            pass
         return 0
-    imp = sum(float(o.get("size_shares") or 0) for o in nuevos)
+    imp = sum(importes.values())
     log(f"  💰 reclamar: {len(nuevos)} ganada(s) sin cobrar (~${imp:.2f}) → aviso")
     try:
         enviar(CHAT_ID, f"💰 *RECLAMAR*: hay *{len(nuevos)}* combo(s) ganados sin "
@@ -2518,8 +2621,9 @@ def reclamar_check(silencioso=True):
         pass
     ahora = datetime.now(timezone.utc).isoformat()
     for o in nuevos:
-        av[_token_de(o)] = {"ts": ahora, "auto": True,
-                            "importe": round(float(o.get("size_shares") or 0), 2)}
+        t = _token_de(o)
+        av[t] = {"ts": ahora, "auto": True, "importe": importes.get(t, 0.0),
+                 "titulo": _md_limpio(o.get("question"))[:80]}
     try:
         guardar_estado(estado)
     except Exception:
@@ -2559,17 +2663,36 @@ def cmd_reclamar(chat_id, texto=""):
 
 
 def verdad_real(op, con_saldo=False):
-    """v12.6: contraste con la fuente de verdad de Polymarket para un combo.
-    → {"token", "cobro": float|None, "saldo": float|None}
-    con_saldo=True añade la consulta on-chain (sólo se usa en /reauditar: el
-    bucle AUTO no debe esperar a un RPC)."""
-    tok = str(op.get("combo_yes_position_id") or op.get("real_token") or "")
-    out = {"token": tok, "cobro": None, "saldo": None}
-    if not tok:
-        return out
-    out["cobro"] = cobros_wallet().get(tok)
+    """v12.6/v12.8.1: contraste con la fuente de verdad de Polymarket.
+    → {"token", "cobro": float|None, "saldo": float|None, "cobro_por"}
+    con_saldo=True añade la consulta on-chain (sólo /reauditar y /reclamar: el
+    bucle AUTO no debe esperar a un RPC).
+    v12.8.1: si el token no casa con ningún cobro se intenta por TÍTULO (con
+    ventana temporal), que es como casan las ops antiguas de mercados simples.
+    El cobro anotado son SUS shares (1 token ganador = $1), nunca el total del
+    redeem: un mismo redeem puede agrupar varias ops del mismo mercado."""
+    tok = _token_de(op)
+    out = {"token": tok, "cobro": None, "saldo": None, "cobro_por": None}
+    if tok:
+        out["cobro"] = cobros_wallet().get(tok)
+        if out["cobro"]:
+            out["cobro_por"] = "token"
+    if not out["cobro"]:
+        tit = _norm_titulo(op.get("question"))
+        grupo = (_COBROS_CACHE[2] or {}).get(tit) if tit else None
+        if grupo and float(grupo.get("usdc") or 0) > 0.000001:
+            ts_op, ts_cobro = _op_ts(op), int(grupo.get("ts") or 0)
+            dentro = True
+            if ts_op and ts_cobro:
+                dentro = (ts_op - 43200) <= ts_cobro <= (
+                    ts_op + COBRO_TITULO_VENTANA_D * 86400)
+            shares = float(op.get("size_shares") or 0)
+            if dentro and shares > 0:
+                out["cobro"] = round(shares, 6)
+                out["cobro_por"] = "titulo"
+                out["cobro_grupo"] = round(float(grupo["usdc"]), 6)
     if con_saldo:
-        out["saldo"] = saldo_combo_token(tok)
+        out["saldo"] = saldo_token_op(op)
     return out
 
 
@@ -3133,7 +3256,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v12.8*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v12.8.1*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt()}*\n"
              f"🔢 Máx ops/día: *{max_ops()}*\n"
@@ -3707,7 +3830,7 @@ def cmd_status(chat_id):
     _rec_txt = (f"💰 Sin cobrar (último aviso): *{len(_rec)}* "
                 f"(${sum(float(v.get('importe') or 0) for v in _rec.values()):.2f}) "
                 f"· /reclamar\n" if _rec else "")
-    texto = (f"📊 *ESTADO v12.8 (Combos)*\n\n"
+    texto = (f"📊 *ESTADO v12.8.1 (Combos)*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt(_est)}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
@@ -4027,7 +4150,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v12.8 iniciado")
+    log("v12.8.1 iniciado")
     offset = 0
     while True:
         try:
@@ -4070,7 +4193,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v12.8 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
+    log(f"v12.8.1 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
