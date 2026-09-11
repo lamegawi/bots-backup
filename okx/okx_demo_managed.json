@@ -44,6 +44,141 @@
     ],
     "sw_sl_px": 0.08800915,
     "sl_v2": true,
-    "qty_vista": 488.0
+    "qty_vista": 194.0
+  },
+  "ETC: SHORT": {
+    "symbol": "ETC",
+    "direction": "SHORT",
+    "entry": 7.704,
+    "contratos": 8,
+    "sl_algo_id": "3911627849980211201",
+    "state": "opened",
+    "risk_usd": 9.837423198842856,
+    "opened_at": 1789077995.1029994,
+    "dist": 0.01596155,
+    "initial_sl": 7.82696779,
+    "tp_levels": [
+      {
+        "nivel": "1.0R",
+        "precio": 7.62202147,
+        "sz": 2,
+        "algoId": "3911627856791760897"
+      },
+      {
+        "nivel": "1.5R",
+        "precio": 7.58103221,
+        "sz": 2,
+        "algoId": "3911627863066439681"
+      },
+      {
+        "nivel": "2.0R",
+        "precio": 7.54004295,
+        "sz": 2,
+        "algoId": "3911627869508890625"
+      },
+      {
+        "nivel": "2.5R",
+        "precio": 7.49905368,
+        "sz": 2,
+        "algoId": "3911627875984896001"
+      }
+    ],
+    "sw_sl_px": 7.82696779,
+    "sl_v2": true,
+    "qty_vista": 2.0
+  },
+  "HYPE: SHORT": {
+    "symbol": "HYPE",
+    "direction": "SHORT",
+    "entry": 80.098,
+    "contratos": 59,
+    "sl_algo_id": "3911688398919200769",
+    "state": "opened",
+    "risk_usd": 10.07047112659587,
+    "opened_at": 1789079799.800417,
+    "dist": 0.02130964,
+    "initial_sl": 81.80485951,
+    "tp_levels": [
+      {
+        "nivel": "1.0R",
+        "precio": 78.96009366,
+        "sz": 12,
+        "algoId": "3911688405529423873"
+      },
+      {
+        "nivel": "1.5R",
+        "precio": 78.39114049,
+        "sz": 12,
+        "algoId": "3911688411971874817"
+      },
+      {
+        "nivel": "2.0R",
+        "precio": 77.82218732,
+        "sz": 12,
+        "algoId": "3911688418615652353"
+      },
+      {
+        "nivel": "2.5R",
+        "precio": 77.25323415,
+        "sz": 12,
+        "algoId": "3911688425259429889"
+      },
+      {
+        "nivel": "3.0R",
+        "precio": 76.68428097,
+        "sz": 11,
+        "algoId": "3911688431668326401"
+      }
+    ],
+    "sw_sl_px": 81.80485951,
+    "sl_v2": true,
+    "qty_vista": 35.0
+  },
+  "AVAX: SHORT": {
+    "symbol": "AVAX",
+    "direction": "SHORT",
+    "entry": 7.468,
+    "contratos": 54,
+    "sl_algo_id": "3912112015771463681",
+    "state": "opened",
+    "risk_usd": 10.088674800607869,
+    "opened_at": 1789092424.5748184,
+    "dist": 0.02501705,
+    "initial_sl": 7.65482731,
+    "tp_levels": [
+      {
+        "nivel": "1.0R",
+        "precio": 7.34344846,
+        "sz": 11,
+        "algoId": "3912112022482350081"
+      },
+      {
+        "nivel": "1.5R",
+        "precio": 7.28117269,
+        "sz": 11,
+        "algoId": "3912112029059018753"
+      },
+      {
+        "nivel": "2.0R",
+        "precio": 7.21889692,
+        "sz": 11,
+        "algoId": "3912112035535024129"
+      },
+      {
+        "nivel": "2.5R",
+        "precio": 7.15662115,
+        "sz": 11,
+        "algoId": "3912112042245910529"
+      },
+      {
+        "nivel": "3.0R",
+        "precio": 7.09434538,
+        "sz": 10,
+        "algoId": "3912112048755470337"
+      }
+    ],
+    "sw_sl_px": 7.65482731,
+    "sl_v2": true,
+    "qty_vista": 54.0
   }
 }
