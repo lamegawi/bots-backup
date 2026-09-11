@@ -100,7 +100,7 @@ grep -n -A2 "^RPCS_POLYGON" "$INSTALL_DIR/poly_combos_bot.py" | head -4
 
 
 echo ""
-echo "=== Paso 3b: Inyectar las 4 combos GANADAS de agosto SIN cobrar ($82.97) ==="
+echo "=== Paso 3b: Inyectar las 4 combos GANADAS de agosto SIN cobrar (\$82.97) ==="
 python3 - "$ESTADO" <<'PYEOF' || echo "   (inyeccion fallida: el bot arranca igual, sin esas 4 ops)"
 import json, os, sys, tempfile
 p = sys.argv[1]
@@ -488,7 +488,7 @@ PYEOF
 echo ""
 echo "=== EN TELEGRAM ==="
 echo "  📂 Abiertas      → AHORA sí muestra '📈 precio ahora' y el valor de los combos"
-echo "  🧪 /testcerrar 1 → cotización de venta SIN vender ($0) — ya no dice 'sin precio vivo'"
+echo "  🧪 /testcerrar 1 → cotización de venta SIN vender (\$0) — ya no dice 'sin precio vivo'"
 echo "  🔒 /cerrar 1     → venta real; si la posición ya está resuelta lo dice en cristiano"
 echo "  /reclamar        → ganadas SIN cobrar (confirmado on-chain, sin falsas alarmas)"
 echo "  /status          → 🩺 auto-curación + 💰 sin cobrar"
