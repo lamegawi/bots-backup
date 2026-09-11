@@ -1,0 +1,141 @@
+=== ACTUALIZADOR v12.8.1 (💰 /reclamar sin falsas alarmas) - Fri Sep 11 06:05:12 PM UTC 2026 ===
+HASH: 9869c271 · md5 esperado: fec4801f7576ee24793866c838990016
+
+=== Paso 0: Copia de seguridad del estado ANTES de tocar nada ===
+OK: /opt/polymarket/combos_estado.pre_v1281_20260911_180512.json (117345 bytes)
+   ANTES: 9 abiertas · 41 archivadas · PnL archivadas $-21.72
+   archivadas: ✅23 ❌18 🔒manuales 0
+   ganadas SIN cobro real registrado: 7
+
+=== Paso 1: Descargar v12.8.1 a un .new y VALIDAR (el bot sigue corriendo) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/9869c271/scripts_despliegue/poly_combos_bot.py
+Descargado: 194249 bytes
+md5 descargado: fec4801f7576ee24793866c838990016
+   OK md5 identico al del repo
+   OK compila
+
+=== Paso 2: Copia del fichero actual + parada del bot ===
+backup del binario: poly_combos_bot.pre_v1281_20260911_180512.py
+instalado: 194249 bytes
+
+=== Paso 3: Verificar funciones v12.8.1 (+ v12.8 / v12.7 / v12.6) ===
+POLY COMBOS BOT v12.8.1 — COMBOS REALES (parlays multi-leg) via RFQ
+   OK    def saldo_token_op
+   OK    def _norm_titulo
+   OK    def _op_ts
+   OK    CTF_ERC1155
+   OK    COBROS_PAGINAS
+   OK    type=REDEEM
+   OK    COBRO_TITULO_VENTANA_D
+   OK    def cmd_reclamar
+   OK    def pendientes_reclamar
+   OK    def preflight_redeem
+   OK    def calldata_redeem
+   OK    def reclamar_check
+   OK    def _rpc_eth_call_ex
+   OK    def _texto_reclamar
+   OK    def _enlace_evento
+   OK    PARLAY_REDEEM_ADAPTER
+   OK    OPERADOR_REDEEM_4337
+   OK    RECLAMO_PREFLIGHT_H
+   OK    def reauditar_estado
+   OK    def programar_auditoria_inicial
+   OK    def cmd_reauditar
+   OK    def verdad_real
+   OK    def estado_leg
+   OK    def cobros_wallet
+   OK    def saldo_combo_token
+   OK    PARLAY_ERC1155
+   OK    AUDITORIA_CADA_H
+   OK    NEXT_AUDITORIA_TS
+   --- dispatch de /reclamar y del boton ---
+66:   ganador = $1), nunca el total del redeem; (c) `reclamar_check()` no deduplicaba
+3903:                        reclamar_check()      # v12.8: avisa de ganadas sin cobrar
+4118:    if text.startswith("/reclamar"):     # v12.8
+   --- RPC (fuera polygon-rpc.com, que da 401) ---
+234:RPCS_POLYGON = ("https://polygon-bor-rpc.publicnode.com", "https://polygon.drpc.org",
+235-                "https://1rpc.io/matic")
+236-OUTCOME_NUESTRO = ("yes", "true", "up")   # caras que equivalen a "la nuestra"
+
+=== Paso 3b: Migracion - limpiar las marcas del aviso FALSO de v12.8 ===
+   fuera marca falsa: 1905063424885303396046... importe=6.54
+   fuera marca falsa: 1146026886160620546934... importe=7.87
+   fuera marca falsa: 8037040956241296386724... importe=6.13
+   OK: 3 marca(s) eliminada(s); se reevaluaran con saldo on-chain
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-11 18:05:16 UTC; 8s ago
+   Main PID: 1450288 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 22.7M (peak: 23.0M)
+        CPU: 235ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1450288 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log (1ª auto-curación ~25s tras arrancar; 💰 si hay algo sin cobrar) ===
+[17:46:49]   pagina 5: +50 mercados, 86 legs de deportes
+[17:46:49] [COMBO] 2 legs · cuota est. 1.45 · stake $9.14 (AUTO)
+[17:46:49]   · US Open ATP: Alexander Zverev vs Karen Khachanov (p=0.81 vol=$694k)
+[17:46:49]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$116k)
+[17:46:51]   RFQ: identidad lista (signer 0x8a22F798... maker 0xb0E11970...)
+[17:46:52]   RFQ create -> 200 {"rfq_id":"rfq-1857c335cc765d3e58c1fd51","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789148816970,"request":{"rfq_id":"rfq-1857c335cc765d3e58c1fd51",
+[17:46:52]   quote: cuota=1.42 blended=0.702 shares=12.83 total=$9.14
+[17:46:52]   stake AUTO 0: RFQ 1.42 sin ventaja vs legs (est 1.45) — NO se acepta ($0)
+[17:46:52]   ❌ combo: stake_auto_0_sin_margen
+[17:47:24] intervalo AUTO restaurado: 10 min
+[17:47:24] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+[17:47:24]   horario restaurado: próxima pasada en 9 min
+[17:47:25]   auto-curación: primera auditoría en 25s (después cada 4h)
+[17:47:25]   verdad: 26 cobros REDEEM>0 en la wallet
+[17:47:25] v12.8 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[17:47:25] Proxy: http://100.83.57.99:8888
+[17:47:26] Test proxy: 200
+[17:47:26] v12.8 iniciado
+[17:47:56]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=41 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas -21.72→-21.72
+[17:47:56]   💰 reclamar: 7 ganada(s) sin cobrar (~$47.58) → aviso
+[17:49:56]   [CIERRE] sin precio vivo: no se puede dimensionar la venta
+[17:49:56]   [CIERRE] sin precio vivo: no se puede dimensionar la venta
+[17:54:52]   verdad: 26 cobros REDEEM>0 en la wallet
+[17:54:57]   💰 pre-flight redeem: sin datos · RPC respondió: Too Many Requests, Please apply an OnFinality API key or contact 
+[17:54:57]   💰 /reclamar: 0 sin cobrar ($0.00) · revisadas 23
+[18:05:16] intervalo AUTO restaurado: 10 min
+[18:05:16] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+[18:05:16]   horario inicial: próxima pasada en 10 min
+[18:05:16]   auto-curación: primera auditoría en 25s (después cada 4h)
+[18:05:16]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[18:05:16] v12.8.1 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[18:05:16] Proxy: http://100.83.57.99:8888
+[18:05:17] Test proxy: 200
+[18:05:17] v12.8.1 iniciado
+[18:05:47]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=41 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas -21.72→-21.72
+
+   --- lineas de auditoria / reclamos / RPC ---
+[17:47:25]   auto-curación: primera auditoría en 25s (después cada 4h)
+[17:47:25]   verdad: 26 cobros REDEEM>0 en la wallet
+[17:47:56]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=41 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas -21.72→-21.72
+[17:47:56]   💰 reclamar: 7 ganada(s) sin cobrar (~$47.58) → aviso
+[17:54:52]   verdad: 26 cobros REDEEM>0 en la wallet
+[17:54:57]   💰 pre-flight redeem: sin datos · RPC respondió: Too Many Requests, Please apply an OnFinality API key or contact 
+[17:54:57]   💰 /reclamar: 0 sin cobrar ($0.00) · revisadas 23
+[18:05:16]   auto-curación: primera auditoría en 25s (después cada 4h)
+[18:05:16]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[18:05:47]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=41 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas -21.72→-21.72
+
+=== Paso 6: Estado tras el arranque ===
+   AHORA: 9 abiertas · 41 archivadas · PnL archivadas $-21.72
+   archivadas: ✅23 ❌18 🔒0
+   ultima auditoria: 2026-09-11T18:05:47 · origen=auto reabiertas=0 corregidas=0 nuevas=0 · PnL -21.72→-21.72
+   💰 reclamos avisados: 3 · $0.00
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+
+=== EN TELEGRAM ===
+  /reclamar        → ganadas SIN cobrar (ahora confirmado on-chain, sin falsas alarmas)
+  /reclamar prueba → fuerza la prueba on-chain (sin usar la caché de 24h)
+  💰 Reclamar      → botón nuevo en el teclado
+  /status          → ahora muestra 🩺 auto-curación y 💰 sin cobrar
+  /reauditar seco  → detalle de la re-auditoría sin modificar nada
