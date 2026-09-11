@@ -25,13 +25,15 @@ from datetime import date, datetime, timedelta
 VENTANA        = "semanal"     # 48h | semanal | mensual
 STAKE_INICIAL  = 3.00          # $, primera apuesta de cada ciclo
 FACTOR         = 1.40          # multiplicador tras cada fallo
-CUOTA_MINIMA   = 2.50          # cuota mínima aceptada
+CUOTA_MINIMA   = 3.00          # cuota mínima aceptada — SUBIDA de 2.50 a 3.00 (10/09)
+PRECIO_MAX     = 0.30          # precio máximo del lado que compramos — NUEVO (10/09)
+                                # evita comprar long shots absurdos
 P_MIN_YES      = 0.60          # (solo regla ABSOLUTA; en ventaja no se usa)
 P_MAX_NO       = 0.30          # (solo regla ABSOLUTA; en ventaja no se usa)
 PASOS_MAX      = 6             # stop-loss del ciclo (paso máximo)
 REGLA          = "ventaja"     # "absoluta" (48h) | "ventaja" (semanal/mensual)
-EDGE_MIN       = 0.12          # ventaja mínima p_modelo − precio (12 pp)
-P_FLOOR        = 0.15          # p mínimo para entrar en un bin (evita colas)
+EDGE_MIN       = 0.15          # ventaja mínima p_modelo − precio — SUBIDA de 0.12 a 0.15 (10/09)
+P_FLOOR        = 0.20          # p mínimo para entrar en un bin — SUBIDA de 0.15 a 0.20 (10/09)
 AVG7_MIN       = 5.0           # AVG7 mínimo para operar
 VOL_MIN        = 5_000         # $ volumen mínimo del mercado
 LIQ_MIN        = 1_000         # $ liquidez mínima del mercado
@@ -116,28 +118,28 @@ def decidir_bin(p, precio_yes, cuota_yes, cuota_no):
       p_modelo(NO) ≥ precio(NO) + EDGE_MIN) + cuota mín. + piso P_FLOOR."""
     precio_no = 1.0 - precio_yes
     if REGLA == "absoluta":
-        if p >= P_MIN_YES and cuota_yes and cuota_yes >= CUOTA_MINIMA:
-            return "APOSTAR YES", "YES", f"p_modelo {p:.1%} ≥ {P_MIN_YES:.0%} y cuota {cuota_yes:.2f} ≥ {CUOTA_MINIMA:.2f}"
-        if p <= P_MAX_NO and cuota_no and cuota_no >= CUOTA_MINIMA:
-            return "APOSTAR NO", "NO", f"p_modelo {p:.1%} ≤ {P_MAX_NO:.0%} y cuota NO {cuota_no:.2f} ≥ {CUOTA_MINIMA:.2f}"
+        if p >= P_MIN_YES and cuota_yes and cuota_yes >= CUOTA_MINIMA and precio_yes <= PRECIO_MAX:
+            return "APOSTAR YES", "YES", f"p_modelo {p:.1%} ≥ {P_MIN_YES:.0%} y cuota {cuota_yes:.2f} ≥ {CUOTA_MINIMA:.2f} y precio YES {precio_yes:.3f} ≤ {PRECIO_MAX}"
+        if p <= P_MAX_NO and cuota_no and cuota_no >= CUOTA_MINIMA and precio_no <= PRECIO_MAX:
+            return "APOSTAR NO", "NO", f"p_modelo {p:.1%} ≤ {P_MAX_NO:.0%} y cuota NO {cuota_no:.2f} ≥ {CUOTA_MINIMA:.2f} y precio NO {precio_no:.3f} ≤ {PRECIO_MAX}"
         if p >= P_MIN_YES:
-            return "PASAR", None, f"p_modelo {p:.1%} alta pero cuota {cuota_yes:.2f} < {CUOTA_MINIMA:.2f}"
+            return "PASAR", None, f"p_modelo {p:.1%} alta pero cuota {cuota_yes:.2f} < {CUOTA_MINIMA:.2f} o precio YES {precio_yes:.3f} > {PRECIO_MAX}"
         if p <= P_MAX_NO:
-            return "PASAR", None, f"p_modelo {p:.1%} baja pero cuota NO {cuota_no:.2f} < {CUOTA_MINIMA:.2f}"
+            return "PASAR", None, f"p_modelo {p:.1%} baja pero cuota NO {cuota_no:.2f} < {CUOTA_MINIMA:.2f} o precio NO {precio_no:.3f} > {PRECIO_MAX}"
         return "PASAR", None, f"p_modelo {p:.1%} sin ventaja (0.30 < p < 0.60)"
     # ---------------- REGLA VENTAJA (semanal / mensual) ----------------
     vy = p - precio_yes                      # ventaja YES (p_modelo vs mercado)
     vn = (1.0 - p) - precio_no               # ventaja NO
-    if p >= P_FLOOR and vy >= EDGE_MIN and cuota_yes and cuota_yes >= CUOTA_MINIMA:
+    if p >= P_FLOOR and vy >= EDGE_MIN and cuota_yes and cuota_yes >= CUOTA_MINIMA and precio_yes <= PRECIO_MAX:
         return ("APOSTAR YES", "YES",
                 f"p {p:.1%} ≥ precio {precio_yes:.1%} + {EDGE_MIN:.0%}pp "
-                f"(ventaja {vy:.0%}pp) y cuota {cuota_yes:.2f} ≥ {CUOTA_MINIMA:.2f}")
-    if (1.0 - p) >= P_FLOOR and vn >= EDGE_MIN and cuota_no and cuota_no >= CUOTA_MINIMA:
+                f"(ventaja {vy:.0%}pp) y cuota {cuota_yes:.2f} ≥ {CUOTA_MINIMA:.2f} y precio YES {precio_yes:.3f} ≤ {PRECIO_MAX}")
+    if (1.0 - p) >= P_FLOOR and vn >= EDGE_MIN and cuota_no and cuota_no >= CUOTA_MINIMA and precio_no <= PRECIO_MAX:
         return ("APOSTAR NO", "NO",
                 f"p(NO) {1-p:.1%} ≥ precio NO {precio_no:.1%} + {EDGE_MIN:.0%}pp "
-                f"(ventaja {vn:.0%}pp) y cuota {cuota_no:.2f} ≥ {CUOTA_MINIMA:.2f}")
+                f"(ventaja {vn:.0%}pp) y cuota {cuota_no:.2f} ≥ {CUOTA_MINIMA:.2f} y precio NO {precio_no:.3f} ≤ {PRECIO_MAX}")
     return "PASAR", None, (f"sin ventaja ≥ {EDGE_MIN:.0%}pp (YES {vy:+.0%}pp, "
-                           f"NO {vn:+.0%}pp) o cuota < {CUOTA_MINIMA:.2f}")
+                           f"NO {vn:+.0%}pp), cuota < {CUOTA_MINIMA:.2f} o precio > {PRECIO_MAX}")
 
 
 def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
@@ -146,6 +148,16 @@ def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
     if math.isnan(m["r"]):
         return None, None, None, "PASAR", "AVG7 = 0: sin actividad base"
     lam_rest = m["lam48"] * max(0.0, (48.0 - horas)) / 48.0
+    # ====== ANTI-BIN-PERDIDO (10/09) ======
+    # Si los tweets ya publicados + los esperados ya SUPERAN hi, el
+    # bin está matemáticamente perdido para YES.
+    t0 = ya_publicados
+    if hi != math.inf and t0 + lam_rest > hi:
+        return 0.0, None, None, "PASAR", \
+            f"bin perdido matemáticamente: t0={t0} + λ_rest={lam_rest:.1f} > hi={hi}"
+    if hi == math.inf and t0 + lam_rest < lo * 0.5:
+        return 0.0, None, None, "PASAR", \
+            f"bin ≥{lo} inalcanzable: t0={t0} + λ_rest={lam_rest:.1f} << {lo}"
     p = p_bin(lo - ya_publicados, (hi - ya_publicados) if hi != math.inf else math.inf, lam_rest)
     cuota_yes = 1.0 / precio_yes if precio_yes > 0 else float("inf")
     precio_no = 1.0 - precio_yes
@@ -153,6 +165,10 @@ def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
 
     if m["avg7"] < AVG7_MIN:
         return p, cuota_yes, cuota_no, "PASAR", f"AVG7 = {m['avg7']:.1f} < {AVG7_MIN} (base insuficiente)"
+    # ====== FILTRO PRECIO MÁXIMO (10/09) ======
+    if precio_yes > PRECIO_MAX and precio_no > PRECIO_MAX:
+        return p, cuota_yes, cuota_no, "PASAR", \
+            f"Ningún lado cumple PRECIO_MAX={PRECIO_MAX} (precio > {PRECIO_MAX} en ambos lados)"
     veredicto, lado, razon = decidir_bin(p, precio_yes, cuota_yes, cuota_no)
     return p, cuota_yes, cuota_no, veredicto, razon
 

@@ -47,7 +47,9 @@ from datetime import date, datetime, timedelta
 # ----------------------------------------------------------------------------
 STAKE_INICIAL   = 3.30          # $, primera apuesta de cada ciclo
 FACTOR          = 1.50          # multiplicador tras cada fallo
-CUOTA_MINIMA    = 3.00          # cuota mínima aceptada (precio ≤ 0.333)
+CUOTA_MINIMA    = 5.00          # cuota mínima aceptada (precio ≤ 0.20) — SUBIDA de 3.00 a 5.00 (10/09)
+PRECIO_MAX      = 0.20          # precio máximo del lado que compramos (≠ CUOTA_MINIMA) — NUEVO (10/09)
+                                # evita comprar "long shots" a 0.001-0.005 con cuota 200-1000
 P_MIN_YES       = 0.60          # p_modelo mínima para apostar YES
 P_MAX_NO        = 0.30          # p_modelo máxima para apostar NO
 PASOS_MAX       = 7             # stop-loss del ciclo (paso máximo)
@@ -133,6 +135,21 @@ def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
     if math.isnan(m["r"]):
         return None, None, None, "PASAR", "AVG7 = 0: sin actividad base"
     lam_rest = m["lam48"] * max(0.0, (48.0 - horas)) / 48.0
+    # ====== ANTI-BIN-PERDIDO (10/09) ======
+    # Si los tweets ya publicados + los esperados (restantes) ya
+    # SUPERAN el techo del bin, el bin está matemáticamente perdido
+    # para YES. Y si t0 >= lo, está matemáticamente ganado para YES.
+    # Esto evita comprar un bin de 120-139 cuando ya hay 129 tweets
+    # en la ventana (el bot compraba a precio 0.001 esperando que
+    # el mercado le pagara 1.0 si ganaba — long shot absurdo).
+    t0 = ya_publicados
+    if hi != math.inf and t0 + lam_rest > hi:
+        return 0.0, None, None, "PASAR", \
+            f"bin perdido matemáticamente: t0={t0} + λ_rest={lam_rest:.1f} > hi={hi}"
+    if hi == math.inf and t0 + lam_rest < lo * 0.5:
+        # bin "≥ lo" donde ya está claro que NO se llegará
+        return 0.0, None, None, "PASAR", \
+            f"bin ≥{lo} inalcanzable: t0={t0} + λ_rest={lam_rest:.1f} << {lo}"
     p = p_bin(lo - ya_publicados, (hi - ya_publicados) if hi != math.inf else math.inf, lam_rest)
     cuota_yes = 1.0 / precio_yes if precio_yes > 0 else float("inf")
     precio_no = 1.0 - precio_yes
@@ -141,16 +158,21 @@ def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
     razones = []
     if m["avg7"] < AVG7_MIN:
         return p, cuota_yes, cuota_no, "PASAR", f"AVG7 = {m['avg7']:.1f} < {AVG7_MIN} (base insuficiente)"
+    # ====== FILTRO DE PRECIO MÁXIMO (10/09) ======
+    # No comprar a menos de 0.20 (cuota > 5.00 = "long shot")
+    if precio_yes > PRECIO_MAX and precio_no > PRECIO_MAX:
+        return p, cuota_yes, cuota_no, "PASAR", \
+            f"Ningún lado cumple PRECIO_MAX={PRECIO_MAX} (precio > {PRECIO_MAX} en ambos lados)"
     if precio_yes > 1 / CUOTA_MINIMA and (1 - precio_yes) > 1 / CUOTA_MINIMA:
         return p, cuota_yes, cuota_no, "PASAR", "Ningún lado cumple cuota ≥ 3.00 (precio > 0.33 en ambos lados)"
-    if p >= P_MIN_YES and precio_yes <= 1 / CUOTA_MINIMA:
-        return p, cuota_yes, cuota_no, "APOSTAR YES", f"p_modelo {p:.1%} ≥ {P_MIN_YES:.0%} y cuota {cuota_yes:.2f} ≥ 3.00"
-    if p <= P_MAX_NO and precio_no <= 1 / CUOTA_MINIMA:
-        return p, cuota_yes, cuota_no, "APOSTAR NO", f"p_modelo {p:.1%} ≤ {P_MAX_NO:.0%} y cuota NO {cuota_no:.2f} ≥ 3.00"
+    if p >= P_MIN_YES and precio_yes <= 1 / CUOTA_MINIMA and precio_yes <= PRECIO_MAX:
+        return p, cuota_yes, cuota_no, "APOSTAR YES", f"p_modelo {p:.1%} ≥ {P_MIN_YES:.0%} y cuota {cuota_yes:.2f} ≥ 5.00 y precio YES {precio_yes:.3f} ≤ {PRECIO_MAX}"
+    if p <= P_MAX_NO and precio_no <= 1 / CUOTA_MINIMA and precio_no <= PRECIO_MAX:
+        return p, cuota_yes, cuota_no, "APOSTAR NO", f"p_modelo {p:.1%} ≤ {P_MAX_NO:.0%} y cuota NO {cuota_no:.2f} ≥ 5.00 y precio NO {precio_no:.3f} ≤ {PRECIO_MAX}"
     if p >= P_MIN_YES:
-        return p, cuota_yes, cuota_no, "PASAR", f"p_modelo {p:.1%} alta pero precio YES {precio_yes:.3f} > 0.33 (cuota < 3)"
+        return p, cuota_yes, cuota_no, "PASAR", f"p_modelo {p:.1%} alta pero precio YES {precio_yes:.3f} > {PRECIO_MAX} (cuota < 5)"
     if p <= P_MAX_NO:
-        return p, cuota_yes, cuota_no, "PASAR", f"p_modelo {p:.1%} baja pero precio NO {precio_no:.3f} > 0.33 (cuota < 3)"
+        return p, cuota_yes, cuota_no, "PASAR", f"p_modelo {p:.1%} baja pero precio NO {precio_no:.3f} > {PRECIO_MAX} (cuota < 5)"
     return p, cuota_yes, cuota_no, "PASAR", f"p_modelo {p:.1%} sin ventaja (0.30 < p < 0.60)"
 
 

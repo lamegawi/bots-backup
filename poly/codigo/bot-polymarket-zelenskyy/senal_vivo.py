@@ -165,12 +165,24 @@ def evaluar(avg7, v2, ajuste, lam48, mercados, paso, t0_override=-1, ahora=None)
         bins = []
         for b in mk["bins"]:
             hi = b["hi"] if b["hi"] != float("inf") else math.inf
+            # ====== ANTI-LONG-SHOT (10/09) ======
+            # Bin matemáticamente perdido
             if hi != math.inf and t0 > hi:
                 p = 0.0  # bin ya superado: apuesta YES imposible
+            elif hi == math.inf and t0 >= b["lo"]:
+                p = 1.0  # bin "≥ lo" ya cumplido
+            elif hi != math.inf and t0 + lam_rest > hi:
+                p = 0.0  # tweets esperados restantes ya superan hi
+            elif hi == math.inf and t0 + lam_rest < b["lo"] * 0.5:
+                p = 0.0  # bin "≥ lo" inalcanzable
             else:
                 p = senal.p_bin(b["lo"] - t0, (hi - t0) if hi != math.inf else math.inf, lam_rest)
             cy, cn = b["cuota_yes"], b["cuota_no"]
-            veredicto, lado, _ = senal.decidir_bin(p, b["precio_yes"], cy, cn)
+            # ====== FILTRO PRECIO MÁXIMO (10/09) ======
+            if p > 0 and ((b["precio_yes"] > senal.PRECIO_MAX and (1.0 - b["precio_yes"]) > senal.PRECIO_MAX)):
+                veredicto, lado = "PASAR", None
+            else:
+                veredicto, lado, _ = senal.decidir_bin(p, b["precio_yes"], cy, cn)
             bins.append({"titulo": b["titulo"], "lo": b["lo"], "hi": b["hi"],
                          "precio_yes": b["precio_yes"], "cuota_yes": cy,
                          "cuota_no": cn, "p_modelo": p, "veredicto": veredicto})

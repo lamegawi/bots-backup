@@ -84,9 +84,74 @@ def log(msg):
         pass
 
 
+# ------------------------------------------------------------------- 0) polymarket oficial
+def actualizar_polymarket_oficial():
+    """Paso 0: actualiza el CSV con el TWEET_COUNT oficial de Polymarket
+    (scraper_tweets_pm.py). Es el ancla de verdad porque el scrapeo de
+    jina+nitter falla o llega tarde.
+
+    Solo se ejecuta si el bot está en modo loop (cron) — en una pasada
+    única el usuario puede ejecutarlo manualmente antes.
+    """
+    # test: ¿urllib llega a polymarket.com desde el proceso del bot?
+    try:
+        import ssl
+        import urllib.request
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        req = urllib.request.Request("https://polymarket.com/event/elon-musk-of-tweets-september-4-september-11-2026", headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=15, context=ctx) as r:
+            html = r.read().decode("utf-8", errors="replace")
+        log(f"      · TEST urllib OK: {len(html)} bytes, TWEET COUNT x{html.count('TWEET COUNT')}")
+    except Exception as e:
+        log(f"      · TEST urllib FALLÓ: {e}")
+    try:
+        import importlib.util as _ilu
+        import os as _os
+        import io as _io
+        import sys as _sys
+        from contextlib import redirect_stdout as _rso, redirect_stderr as _rse
+        spec = _ilu.spec_from_file_location(
+            "scraper_tweets_pm",
+            _os.path.join(_os.path.dirname(__file__) or ".", "scraper_tweets_pm.py"),
+        )
+        stpm = _ilu.module_from_spec(spec)
+        spec.loader.exec_module(stpm)
+        log("0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…")
+        # forzar que el scraper imprima a stderr (que sí loggeamos)
+        # mediante un wrapper
+        orig_print = __builtins__.print if hasattr(__builtins__, "print") else _sys.modules["builtins"].print
+
+        def print_to_stderr(*args, **kwargs):
+            _sys.stderr.write(" ".join(str(a) for a in args) + "\n")
+            _sys.stderr.flush()
+        stpm.print = print_to_stderr
+        buf_out = _io.StringIO()
+        buf_err = _io.StringIO()
+        try:
+            with _rso(buf_out), _rse(buf_err):
+                tc = stpm.actualizar_csv_desde_fuente(user="elonmusk", verbose=True)
+        except Exception as inner:
+            log(f"      · scraper lanzó excepción: {inner}")
+            log(f"      · stderr: {buf_err.getvalue()[:300]!r}")
+            tc = None
+        # loggear todo lo que el scraper imprimió
+        out_text = buf_out.getvalue() + buf_err.getvalue()
+        for ln in out_text.splitlines():
+            if ln.strip():
+                log(f"      · scraper: {ln}")
+        if tc:
+            log(f"      · TWEET_COUNT oficial = {tc} → CSV actualizado")
+        else:
+            log(f"      · scraper no devolvió tweet_count (sigue con CSV previo)")
+    except Exception as e:
+        log(f"      · scraper_tweets_pm in-process falló: {e}")
+
+
 # ------------------------------------------------------------------- 1) tweets
 def recoger(opts):
-    log("1/4 · Recogiendo tweets de @elonmusk…")
+    log("1/5 · Recogiendo tweets de @elonmusk…")
     vistos_n = {}
     for nombre, fn in (("jina-tw", rt.descargar_jina_tw), ("jina-x", rt.descargar_jina_x), ("nitter", rt.descargar_nitter)):
         try:
@@ -118,7 +183,7 @@ def recoger(opts):
 
 # ------------------------------------------------------------------- 2) mercado
 def actualizar_mercado():
-    log("2/4 · Actualizando mercados de Polymarket…")
+    log("2/5 · Actualizando mercados de Polymarket…")
     try:
         mks = mp.actualizar_mercado()
         abiertos = [m for m in mks if not m["cerrado"] and m["tipo"] == "48h"]
@@ -139,7 +204,7 @@ def actualizar_mercado():
 def trading(opts):
     excel_al_cambio = opts.excel
     if opts.modo == "real":
-        log("3/4 · Trading REAL" + (" (MODO SECO)" if opts.simular else "") + "…")
+        log("3/5 · Trading REAL" + (" (MODO SECO)" if opts.simular else "") + "…")
         try:
             import operar_real
             estado = operar_real.pasada_real(dry=opts.simular, actualizar=False,
@@ -159,7 +224,7 @@ def trading(opts):
         except Exception as e:
             log(f"      · ERROR REAL: {e}\n{traceback.format_exc()}")
             return None
-    log("3/4 · Paper trading…")
+    log("3/5 · Paper trading…")
     try:
         prev = len(papel.cargar_estado().get("historial", []))
         estado = papel.pasada(actualizar=False, excel=False)
@@ -185,7 +250,7 @@ def trading(opts):
 
 # ------------------------------------------------------------------- 4) estado
 def mostrar_estado():
-    log("4/4 · Estado:")
+    log("4/5 · Estado:")
     try:
         rt.resumen(12)
     except Exception as e:
@@ -256,12 +321,14 @@ def pasada(opts):
     t0 = time.time()
     log("=" * 62)
     log("PASADA COMPLETA" + (f"  ·  MODO: {opts.modo.upper()}" if opts.modo == "real" else ""))
-    recoger(opts)
-    actualizar_mercado()
-    trading(opts)
+    if opts.loop:
+        actualizar_polymarket_oficial()  # paso 0: ancla oficial de Polymarket
+    recoger(opts)                         # paso 1: jina + nitter
+    actualizar_mercado()                  # paso 2: precios
+    trading(opts)                         # paso 3: operar
     avisar_casi_senal()
     avisar_resumen_diario()
-    mostrar_estado()
+    mostrar_estado()                      # paso 4: estado
     log(f"Pasada completada en {time.time() - t0:.1f} s")
 
 

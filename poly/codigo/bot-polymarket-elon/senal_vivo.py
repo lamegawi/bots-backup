@@ -174,12 +174,34 @@ def evaluar(avg7, v2, ajuste, lam48, mercados, paso, t0_override=-1, ahora=None)
                              "cuota_no": b["cuota_no"], "p_modelo": p,
                              "veredicto": "PASAR"})
                 continue
+            # ====== ANTI-LONG-SHOT (10/09) ======
+            # Si t0 + lam_rest ya supera hi, este bin está matemáticamente
+            # perdido. Lo saltamos sin evaluar (p_modelo ≈ 0, pero
+            # p_modelo × cuota podría aún dar EV alta en long shots).
+            if hi != math.inf and t0 + lam_rest > hi:
+                bins.append({"titulo": b["titulo"], "lo": b["lo"], "hi": b["hi"],
+                             "precio_yes": b["precio_yes"], "cuota_yes": b["cuota_yes"],
+                             "cuota_no": b["cuota_no"], "p_modelo": 0.0,
+                             "veredicto": "PASAR"})
+                continue
+            if hi == math.inf and t0 + lam_rest < b["lo"] * 0.5:
+                # bin "≥ lo" donde los tweets esperados restantes son
+                # menos de la mitad del umbral: NO se llegará
+                bins.append({"titulo": b["titulo"], "lo": b["lo"], "hi": b["hi"],
+                             "precio_yes": b["precio_yes"], "cuota_yes": b["cuota_yes"],
+                             "cuota_no": b["cuota_no"], "p_modelo": 0.0,
+                             "veredicto": "PASAR"})
+                continue
             p = senal.p_bin(b["lo"] - t0, (hi - t0) if hi != math.inf else math.inf, lam_rest)
             cy, cn = b["cuota_yes"], b["cuota_no"]
             veredicto, lado = "PASAR", None
-            if p >= senal.P_MIN_YES and cy and cy >= senal.CUOTA_MINIMA:
+            # ====== FILTRO PRECIO MÁXIMO (10/09) ======
+            # No comprar long shots (precio < 0.20)
+            if p >= senal.P_MIN_YES and cy and cy >= senal.CUOTA_MINIMA \
+                    and b["precio_yes"] <= senal.PRECIO_MAX:
                 veredicto, lado = "APOSTAR YES", "YES"
-            elif p <= senal.P_MAX_NO and cn and cn >= senal.CUOTA_MINIMA:
+            elif p <= senal.P_MAX_NO and cn and cn >= senal.CUOTA_MINIMA \
+                    and (1.0 - b["precio_yes"]) <= senal.PRECIO_MAX:
                 veredicto, lado = "APOSTAR NO", "NO"
             bins.append({"titulo": b["titulo"], "lo": b["lo"], "hi": b["hi"],
                          "precio_yes": b["precio_yes"], "cuota_yes": cy,
