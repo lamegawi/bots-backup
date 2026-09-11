@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v12.8.1 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v12.8.2 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -53,6 +53,14 @@ Estrategia nueva (vs v7):
    📋 Trades: un mensaje por combo con SU botón debajo. Estadísticas y
    contadores diarios separados por franja (las manuales NO consumen
    el tope AUTO).
+   v12.8.2: 🔒 EL CIERRE DE UN COMBO VUELVE A SER POSIBLE. `vivo_de()` pedía el
+   precio con `legs[].position_id`, que es el id del CATÁLOGO de combos y NO el
+   token_id del CLOB (`/midpoint` da 404 siempre con él): ningún combo tenía
+   "precio vivo", así que 🔒 y /testcerrar acababan en "sin precio vivo" y el
+   panel 📂 mostraba "precio ahora: n/d". Ahora cada leg se valora con su TOKEN
+   REAL del CLOB (`token_clob_de_leg()`, resuelto por condition_id + outcome).
+   Además: mensajes claros cuando la posición YA está resuelta (no se vende, se
+   cobra) y `/reclamar` con pausa + reintento para no chocar con los 429 de RPC.
    v12.8.1: FIN DE LAS FALSAS ALARMAS de "ganadas sin cobrar". El primer aviso
    de la v12.8 (11-sep, "7 ganadas sin cobrar ~$47.58") era FALSO: eran 7 ops de
    MERCADO SIMPLE de la era copy-trading (Cagliari ×4, LoL IG-LGD, SMU-FSU ×2)
@@ -2323,6 +2331,7 @@ def saldo_combo_token(token_id, refrescar=False, contrato=None):
     try:
         data = ("0x00fdd58e" + WALLET[2:].rjust(64, "0")
                 + hex(int(tok))[2:].rjust(64, "0"))
+        time.sleep(0.15)                 # v12.8.2: espaciar eth_call (anti 429)
         v = _rpc_eth_call(con, data)
         if v:
             sal = int(v, 16) / 1e6
@@ -2482,6 +2491,11 @@ def pendientes_reclamar(con_saldo=True, estado=None):
         vistos.add(tok)
         revisadas += 1
         sal = saldo_token_op(op) if con_saldo else op.get("saldo_tokens")
+        if sal is None and con_saldo:
+            # v12.8.2: un None suele ser un 429/timeout del RPC, no "sin saldo".
+            # Se reintenta UNA vez saltando la caché (que guardaba el None 5 min).
+            time.sleep(1.2)
+            sal = saldo_token_op(op, refrescar=True)
         if sal is None:
             if con_saldo:
                 sin_datos += 1
@@ -2514,7 +2528,7 @@ def pendientes_reclamar(con_saldo=True, estado=None):
 def _texto_reclamar(res, ok=None, det=""):
     """v12.8: mensaje de /reclamar."""
     rec = res.get("reclamables") or []
-    txt = ("💰 *RECLAMAR v12.8.1*\n\n"
+    txt = ("💰 *RECLAMAR v12.8.2*\n\n"
            f"Ops revisadas: {res.get('revisadas', 0)}"
            + (f" · sin datos on-chain: {res.get('sin_datos')}" if res.get("sin_datos") else "")
            + "\n\n")
@@ -2882,15 +2896,66 @@ def agrupar_abiertas(abiertas):
     return [grupos[c] for c in orden]
 
 
+_LEGTOK_CACHE = {}
+
+def token_clob_de_leg(lg):
+    """🔴 v12.8.2: TOKEN_ID REAL del CLOB para una leg.
+    El `position_id` que guarda la op es el del CATÁLOGO de combos y NO sirve
+    para pedir precio (`/midpoint` responde 404 SIEMPRE con él) — el mismo error
+    de ids que en v12.6 rompía los resultados, pero en la ruta de precios. Se
+    resuelve por condition_id + outcome (o índice 0 si la op es antigua y no
+    guardó su outcome), con caché de 15 min."""
+    lg = lg or {}
+    cid = str(lg.get("condition_id") or "")
+    if not cid.startswith("0x"):
+        return None
+    out = str(lg.get("outcome") or "").strip().lower()
+    clave = f"{cid}|{out}"
+    ahora = time.time()
+    hit = _LEGTOK_CACHE.get(clave)
+    if hit and ahora - hit[0] < 900:
+        return hit[1]
+    tok = None
+    try:
+        m = mercado_clob(cid)
+        toks = (m or {}).get("tokens") or []
+        if toks:
+            idx = 0
+            if out:
+                for i, t in enumerate(toks):
+                    if str(t.get("outcome") or "").strip().lower() == out:
+                        idx = i
+                        break
+            tok = str(toks[idx].get("token_id") or "") or None
+    except Exception:
+        tok = None
+    _LEGTOK_CACHE[clave] = (ahora, tok)
+    return tok
+
+
 def vivo_de(op):
-    """Precio vivo: single = mid de su token; combo = producto de mids de legs."""
+    """Precio vivo: single = mid de su token; combo = producto de mids de legs.
+    🔴 v12.8.2: el mid de cada leg se pide con su TOKEN REAL del CLOB — antes se
+    usaba el position_id del catálogo (404 siempre), así que NINGÚN combo tenía
+    precio vivo y no se podía cerrar ni valorar."""
     legs = op.get("legs") or []
     if legs:
         prod = 1.0
         for lg in legs:
-            mm = precio_mid(lg.get("position_id"))
+            mm = precio_mid(token_clob_de_leg(lg) or lg.get("position_id"))
             if mm is None:
-                return None
+                # v12.8.2: leg ya DECIDIDA ⇒ su mid real es 1.0/0.0 y precio_mid
+                # lo descarta (sólo acepta 0<mid<1). Se cuenta por su veredicto,
+                # así un combo con una leg terminada y el resto en juego SÍ tiene
+                # valor en el panel en vez de "n/d". Sin veredicto ⇒ None.
+                est, _ = estado_leg(mercado_clob(str(lg.get("condition_id") or "")),
+                                    lg.get("outcome"))
+                if est == "ganada":
+                    mm = 1.0
+                elif est == "perdida":
+                    mm = 0.0
+                else:
+                    return None
             prod *= mm
         return prod
     return precio_mid(op.get("real_token"))
@@ -2998,8 +3063,36 @@ def cerrar_grupo(g, chat_id=None, dry_run=False, estado=None):
     n = len(ops)
     if shares <= 0:
         return False, "sin_shares"
+    # v12.8.2: GUARDIA DE RESUELTA ANTES DE NADA. Con las legs ya decididas el
+    # producto de mids puede dar 1.00 (todo ganado) y el bot intentaría VENDER
+    # una posición que ya no cotiza: lo resuelto no se vende, se COBRA.
+    r = resolver_operacion(op0)
+    if r.get("resuelta"):
+        g = r.get("ganada")
+        log(f"  [CIERRE] posición ya resuelta (ganada={g}): no se puede vender")
+        if chat_id:
+            if g is True and r.get("fuente") == "cobro_real":
+                enviar(chat_id, "✅ Esa posición ya está RESUELTA, GANADA y COBRADA: el dinero ya "
+                                "está en tu cartera. No hay nada que vender.")
+            elif g is True:
+                enviar(chat_id, "✅ Esa posición ya está RESUELTA y GANADA: no se puede vender, "
+                                "se COBRA. Polymarket la cobra solo en cuanto el mercado cierra; "
+                                "compruébalo con /reclamar.")
+            elif g is False:
+                enviar(chat_id, "❌ Esa posición ya está RESUELTA y PERDIDA: su valor es 0, no hay "
+                                "nada que vender. Si sigue apareciendo como abierta, /reauditar la corrige.")
+            else:
+                enviar(chat_id, "🏁 Esa posición ya está resuelta: no se puede vender.")
+        return False, "ya_resuelta"
     vivo = vivo_de(op0)
-    if not vivo or vivo <= 0:
+    if vivo is not None and vivo <= 0:
+        # v12.8.2: alguna leg ya perdió ⇒ el parlay no vale nada (no cotiza).
+        log("  [CIERRE] combo sin valor: alguna leg ya perdió")
+        if chat_id:
+            enviar(chat_id, "❌ Ese combo ya tiene una leg PERDIDA: su valor es 0 y no hay nada que "
+                            "vender. Si sigue como abierta en el panel, /reauditar la corrige.")
+        return False, "sin_valor"
+    if not vivo:
         log("  [CIERRE] sin precio vivo: no se puede dimensionar la venta")
         if chat_id:
             enviar(chat_id, "⚠️ No hay precio vivo de esta posición ahora mismo; no puedo dimensionar la venta. Inténtalo en unos minutos.")
@@ -3219,7 +3312,11 @@ def render_grupo(g, num=None):
         else:
             txt += f"   🟢 Mantener ({_din(valor - stake)} latente)\n"
     else:
-        txt += "   📈 precio ahora: n/d\n"
+        # v12.8.2: "n/d" a secas confundía — si ya está resuelta no cotiza
+        if r.get("resuelta"):
+            txt += "   📈 precio ahora: n/d (posición resuelta: ya no cotiza)\n"
+        else:
+            txt += "   📈 precio ahora: n/d\n"
     if es_combo:
         for q, gg in r.get("detalle", []):
             gi = "⏳" if gg is None else ("✅" if gg else "❌")
@@ -3484,7 +3581,14 @@ def cmd_cerrar(chat_id, texto=""):
                 enviar(chat_id, f"🔒 *CERRANDO POSICIÓN #{idx + 1}*\n📌 {str(g['ops'][0].get('question', '?'))[:80]}\n_Pidiendo cotización de venta…_")
                 ok, res = cerrar_grupo(g, chat_id=chat_id, dry_run=False, estado=estado)
                 if not ok and not str(res).startswith("cierre_pendiente"):
-                    enviar(chat_id, f"❌ *Cierre no ejecutado*\nMotivo: `{str(res)[:90]}`")
+                    # v12.8.2: el motivo en cristiano (antes salía el código crudo)
+                    MOT = {"ya_resuelta": "la posición ya está resuelta — no se vende, se cobra",
+                           "sin_valor": "el combo ya tiene una leg perdida (su valor es 0)",
+                           "sin_precio_vivo": "sin cotización en este momento (reintentable)",
+                           "sin_shares": "sin shares registradas",
+                           "legs_insuficientes_para_sell": "faltan legs para venderla por RFQ"}
+                    mot = MOT.get(str(res)) or f"`{str(res)[:90]}`"
+                    enviar(chat_id, f"❌ *Cierre no ejecutado*\nMotivo: {mot}")
         except Exception as e:
             log(f"cerrar error: {e}")
             enviar(chat_id, f"❌ Error cerrando: {str(e)[:120]}")
@@ -4150,7 +4254,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v12.8.1 iniciado")
+    log("v12.8.2 iniciado")
     offset = 0
     while True:
         try:
