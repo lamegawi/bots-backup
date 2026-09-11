@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v12.5 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v12.7 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -53,6 +53,32 @@ Estrategia nueva (vs v7):
    📋 Trades: un mensaje por combo con SU botón debajo. Estadísticas y
    contadores diarios separados por franja (las manuales NO consumen
    el tope AUTO).
+   v12.7: AUTO-CURACIÓN — la re-auditoría ya NO hace falta pedirla: corre sola
+   ~25s después de cada arranque y después cada 4h (AUDITORIA_CADA_H), dentro
+   del lock de pasada para no pisar el AUTO. Reabre las ops archivadas que
+   siguen en juego, corrige resultado/PnL contra la verdad real (cobros REDEEM
+   + ganador por OUTCOME de cada leg), cierra las abiertas ya resueltas y deja
+   intactos los cierres manuales 🔒. Sólo avisa por Telegram cuando cambia algo
+   (🩺 AUTO-CURACIÓN). /reauditar sigue disponible para hacerlo a mano y con
+   detalle (incluye el saldo on-chain de los tokens).
+   v12.6: RESULTADOS REALES EN ✅ CERRADAS — arreglado el bug que archivaba
+   combos como PERDIDOS antes de tiempo y con cifras que no casaban con
+   Polymarket. Causa raíz: el catálogo /v1/rfq/combo-markets devuelve
+   position_ids que NO son los token_id del CLOB (son otro espacio de ids,
+   pares consecutivos), así que la comparación "nuestro token == token
+   ganador" NUNCA acertaba: en cuanto una leg cerraba, el combo entero se
+   archivaba como pérdida (pnl = -stake). Ahora:
+     · El ganador de cada leg se lee por OUTCOME (nombre de la cara) y, si la
+       op antigua no lo guarda, por el ÍNDICE 0 (el bot compra la primera cara,
+       igual que position_ids[0]). Las ops nuevas guardan su outcome.
+     · Un mercado closed SIN ganador declarado (resolución UMA pendiente)
+       cuenta como ⏳ PENDIENTE, nunca como pérdida.
+     · Manda la VERDAD de Polymarket: los cobros REDEEM reales de la wallet
+       (data-api /activity, usdcSize>0 = ganado y cobrado) y el saldo on-chain
+       del token de combo en su ERC1155 0x006f…efef (NO el CTF).
+     · Nuevo 🩺 /reauditar: re-audita las archivadas, REABRE las que siguen en
+       juego y corrige resultado/PnL de las mal cerradas (con copia previa).
+       /reauditar seco = sólo informa.
    v12.5: REINTENTO ANTE SIZE_TOO_LARGE — si el maker del RFQ responde
    SIZE_TOO_LARGE (no cubre ese tamaño), el bot reintenta UNA única vez con el
    stake mínimo ($5) siempre que el pedido inicial fuera mayor; si ya iba al
@@ -158,6 +184,11 @@ RFQ_GATEWAY = "https://combos-rfq-gateway-requester-api.polymarket.com"
 RFQ_BASE = "/v1/requester/rfq"
 EXCHANGE_V3 = "0xe3333700cA9d93003F00f0F71f8515005F6c00Aa"
 DATA_API = "https://data-api.polymarket.com"
+# v12.6: FUENTES DE VERDAD del resultado real (cobros REDEEM + saldo on-chain)
+PARLAY_ERC1155 = "0x006f54f7f9a22e0000cc2ab60031000000ae9fef"  # posiciones de COMBO (no es el CTF)
+RPCS_POLYGON = ("https://polygon-rpc.com", "https://1rpc.io/matic",
+                "https://polygon-bor-rpc.publicnode.com")
+OUTCOME_NUESTRO = ("yes", "true", "up")   # caras que equivalen a "la nuestra"
 LEGS_POR_COMBO = (2, 3)    # combinar 2 legs (preferido) o 3
 # ---- v11.9: franja EXTENDIDA 🚀 (aprobada por user: techo 3.0, 2/día) ----
 CUOTA_MAX_EXT = 3.0        # techo de cuota ESTIMADA extendida
@@ -184,6 +215,14 @@ MAX_TRADES_SIMULTANEOS = 3
 INTERVALO_AUTO_S = 300
 NEXT_PASADA_TS = 0.0   # v11.1: próxima pasada programada (epoch); 0 = ya
 PASADA_LOCK = threading.Lock()   # v11.3: una pasada a la vez
+# v12.7: AUTO-CURACIÓN (re-auditoría sola)
+AUDITORIA_CADA_H = 4.0                       # horas entre auditorías automáticas
+AUDITORIA_CADA_S = int(AUDITORIA_CADA_H * 3600)
+AUDITORIA_ARRANQUE_S = 25                    # 1ª auditoría tras arrancar
+AUDITORIA_MIN_ENTRE_S = 600                  # no repetir si ya corrió hace <10 min
+AUDITORIA_DIAS_MAX = 45                      # sólo ops de los últimos N días
+NEXT_AUDITORIA_TS = time.time() + AUDITORIA_ARRANQUE_S
+AUDITORIA_LOCK = threading.Lock()            # una auditoría a la vez
 PESO_MIN = 5
 MAX_MERCADOS_A_REVISAR = 100  # limita para no saturar
 
@@ -1426,7 +1465,8 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, franja="base", stake=No
         "n_legs": len(sel),
         "legs": [{"question": c.get("question"), "slug": c.get("slug"),
                   "yes_price": c.get("yes_price"), "position_id": str(c.get("yes_token")),
-                  "condition_id": c.get("condition_id")} for c in sel],
+                  "condition_id": c.get("condition_id"),
+                  "outcome": c.get("outcome")} for c in sel],   # v12.6: cara comprada
         "rfq_id": rfq_id,
         "quote_id": quote_id,
         "combo_condition_id": req.get("condition_id"),
@@ -1648,6 +1688,13 @@ def listar_combos():
                     tokens = json.loads(tokens)
             except:
                 tokens = []
+            # v12.6: nombres de las caras (MISMO ORDEN que los tokens del CLOB)
+            try:
+                outs = m.get("outcomes", [])
+                if isinstance(outs, str):
+                    outs = json.loads(outs)
+            except:
+                outs = []
             if not tokens or len(tokens) < 1:
                 continue
             vol = float(m.get("volume") or 0)
@@ -1658,7 +1705,8 @@ def listar_combos():
                 "condition_id": condition_id,
                 "question": titulo,
                 "slug": slug,
-                "yes_token": str(tokens[0]),  # position_id del endpoint combos (NO tradable)
+                "yes_token": str(tokens[0]),  # position_id del catálogo (NO es el token_id CLOB)
+                "outcome": (str(outs[0]) if outs else "Yes"),   # v12.6: cara que compramos
                 "no_token": str(tokens[1]) if len(tokens) > 1 else str(tokens[0]),
                 "yes_price": yes_price,
                 "cuota": round(1/yes_price, 2) if yes_price > 0 else 0,
@@ -2080,44 +2128,188 @@ def mercado_por_slug(slug):
         return None
 
 
+# ============================================
+# v12.6: VERDAD REAL (cobros REDEEM de la wallet + saldo on-chain del combo)
+# ============================================
+_COBROS_CACHE = [0.0, {}]      # [ts, {token: usdc cobrado}]
+_SALDO_CACHE = {}              # token -> (ts, shares|None)
+
+
+def _rpc_eth_call(to, data, timeout=8):
+    """eth_call a Polygon probando varios RPC públicos. → hex|None."""
+    cuerpo = json.dumps({"jsonrpc": "2.0", "id": 1, "method": "eth_call",
+                         "params": [{"to": to, "data": data}, "latest"]}).encode()
+    for rpc in RPCS_POLYGON:
+        try:
+            req = urllib.request.Request(rpc, data=cuerpo,
+                                         headers={"Content-Type": "application/json",
+                                                  "User-Agent": "poly-combos-bot"})
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                d = json.loads(r.read().decode())
+            v = d.get("result")
+            if isinstance(v, str) and v not in ("", "0x"):
+                return v
+        except Exception:
+            continue
+    return None
+
+
+def cobros_wallet(refrescar=False, limite=500):
+    """v12.6: cobros REDEEM reales de la wallet (data-api /activity) indexados
+    por token. usdcSize>0 ⇒ ese combo GANÓ y el dinero YA está en la cartera
+    (Polymarket autocobra las posiciones ganadoras; el bot no hace redeem).
+    Cache 10 min. Si la API falla devuelve {} y la resolución sigue por legs."""
+    ahora = time.time()
+    if not refrescar and _COBROS_CACHE[1] and ahora - _COBROS_CACHE[0] < 600:
+        return _COBROS_CACHE[1]
+    cobros = {}
+    try:
+        url = f"{DATA_API}/activity?user={WALLET}&limit={limite}"
+        req = urllib.request.Request(url, headers={"User-Agent": "poly-combos-bot"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            act = json.loads(r.read().decode())
+        for a in (act or []):
+            if str(a.get("type", "")).upper() != "REDEEM":
+                continue
+            tok = str(a.get("asset") or "")
+            if not tok:
+                continue
+            try:
+                usdc = float(a.get("usdcSize") or 0)
+            except Exception:
+                usdc = 0.0
+            cobros[tok] = max(cobros.get(tok, 0.0), usdc)
+        _COBROS_CACHE[0] = ahora
+        _COBROS_CACHE[1] = cobros
+        log(f"  verdad: {sum(1 for v in cobros.values() if v > 0)} cobros REDEEM>0 en la wallet")
+    except Exception as e:
+        log(f"  cobros_wallet: sin datos ({str(e)[:60]})")
+    return cobros or _COBROS_CACHE[1]
+
+
+def saldo_combo_token(token_id, refrescar=False):
+    """v12.6: balanceOf del token de COMBO en su ERC1155 (0x006f…efef).
+    >0 ⇒ los tokens SIGUEN en la cartera (posición no liquidada).
+    0 ⇒ ya no están (cobrados, vendidos o perdidos). None si ningún RPC responde.
+    Cache 5 min."""
+    tok = str(token_id or "")
+    if not tok.isdigit():
+        return None
+    ahora = time.time()
+    hit = _SALDO_CACHE.get(tok)
+    if hit and not refrescar and ahora - hit[0] < 300:
+        return hit[1]
+    sal = None
+    try:
+        data = ("0x00fdd58e" + WALLET[2:].rjust(64, "0")
+                + hex(int(tok))[2:].rjust(64, "0"))
+        v = _rpc_eth_call(PARLAY_ERC1155, data)
+        if v:
+            sal = int(v, 16) / 1e6
+    except Exception:
+        sal = None
+    _SALDO_CACHE[tok] = (ahora, sal)
+    return sal
+
+
+def verdad_real(op, con_saldo=False):
+    """v12.6: contraste con la fuente de verdad de Polymarket para un combo.
+    → {"token", "cobro": float|None, "saldo": float|None}
+    con_saldo=True añade la consulta on-chain (sólo se usa en /reauditar: el
+    bucle AUTO no debe esperar a un RPC)."""
+    tok = str(op.get("combo_yes_position_id") or op.get("real_token") or "")
+    out = {"token": tok, "cobro": None, "saldo": None}
+    if not tok:
+        return out
+    out["cobro"] = cobros_wallet().get(tok)
+    if con_saldo:
+        out["saldo"] = saldo_combo_token(tok)
+    return out
+
+
+def estado_leg(m, nombre_nuestro=None):
+    """v12.6: estado REAL de una leg según su mercado CLOB.
+    → ("ganada"|"perdida"|"pendiente", info)
+    OJO: los position_ids del catálogo de combos NO son los token_id del CLOB,
+    así que comparar ids nunca acierta. El ganador se identifica por el NOMBRE
+    de la cara (outcome); si la op no lo guarda, por el ÍNDICE 0 (el bot compra
+    la primera cara, la misma que position_ids[0])."""
+    if not m:
+        return "pendiente", "sin datos CLOB"
+    toks = m.get("tokens") or []
+    win_idx = None
+    win_out = None
+    for i, tk in enumerate(toks):
+        if tk.get("winner"):
+            win_idx = i
+            win_out = str(tk.get("outcome") or "").strip()
+    if win_idx is None:
+        # cerrado o no, pero SIN ganador declarado ⇒ resolución pendiente (UMA)
+        return "pendiente", ("cerrado, ganador sin declarar" if m.get("closed") else "en juego")
+    nuestro = str(nombre_nuestro or "").strip()
+    if nuestro:
+        g = nuestro.lower() == win_out.lower()
+    else:
+        g = (win_out.lower() in OUTCOME_NUESTRO) or win_idx == 0
+    return ("ganada" if g else "perdida"), f"ganó '{win_out}'"
+
+
 def resolver_operacion(op):
     """Estado en vivo de un registro. → {"resuelta", "ganada", "pnl", "fin",
-    "detalle":[(question, None|True|False)]}. Combos: se resuelven por LEGS
-    (el token combo no está en CLOB); single: por su condition_id/token."""
+    "detalle":[(question, None|True|False)], "fuente"}.
+    Combos: se resuelven por LEGS (el token combo no cotiza en el CLOB);
+    single: por su condition_id/token.
+    v12.6: sólo se archiva como PERDIDA si una leg perdió DE VERDAD. Con alguna
+    leg aún sin ganador declarado queda ⏳ PENDIENTE (antes se daba por perdido
+    en cuanto un mercado cerraba). Y si la wallet ya COBRÓ el combo (REDEEM),
+    manda el dinero real recibido."""
     shares = float(op.get("size_shares") or 0)
     stake = float(op.get("stake_dolares") or 0)
     legs = op.get("legs") or []
-    out = {"resuelta": False, "ganada": None, "pnl": None, "fin": None, "detalle": []}
+    out = {"resuelta": False, "ganada": None, "pnl": None, "fin": None,
+           "detalle": [], "fuente": None}
     fines = []
     if legs:
-        ganadas = cerradas = 0
+        ganadas = perdidas = pendientes = sin_datos = 0
         for lg in legs:
             m = mercado_clob(lg.get("condition_id"))
             q = lg.get("question", "?")
             if not m:
-                out["detalle"].append((q, None))
-                continue
-            win_tok = None
-            for tk in m.get("tokens", []):
-                if tk.get("winner"):
-                    win_tok = str(tk.get("token_id"))
-            if m.get("end_date_iso"):
+                sin_datos += 1     # v12.7: sin datos del CLOB ⇒ NO se puede juzgar
+            st_leg, _info = estado_leg(m, lg.get("outcome"))
+            if m and m.get("end_date_iso"):
                 fines.append(m["end_date_iso"])
-            closed = bool(m.get("closed"))
-            g = None
-            if closed:
-                cerradas += 1
-                g = bool(win_tok and str(lg.get("position_id") or "") == win_tok)
-                if g:
-                    ganadas += 1
-            out["detalle"].append((q, g))
+            if st_leg == "ganada":
+                ganadas += 1
+            elif st_leg == "perdida":
+                perdidas += 1
+            else:
+                pendientes += 1
+            out["detalle"].append((q, True if st_leg == "ganada"
+                                   else (False if st_leg == "perdida" else None)))
         if fines:
             out["fin"] = _madrid(max(fines))
-        if cerradas and ganadas < cerradas:
-            out.update(resuelta=True, ganada=False, pnl=round(-stake, 2))   # leg perdida → combo perdido
-        elif cerradas == len(legs):
-            out.update(resuelta=True, ganada=True, pnl=round(shares - stake, 2))
-        return out
+        verdad = verdad_real(op)
+        cobro = verdad.get("cobro")
+        if cobro is not None and cobro > 0.000001:
+            # 💰 dinero REAL recibido en la wallet: manda sobre cualquier deducción
+            out.update(resuelta=True, ganada=True, pnl=round(cobro - stake, 2),
+                       fuente="cobro_real", cobro_real=round(cobro, 6))
+            return out
+        if perdidas:
+            out.update(resuelta=True, ganada=False, pnl=round(-stake, 2),
+                       fuente="leg_perdida")
+            return out
+        if pendientes == 0 and ganadas == len(legs):
+            out.update(resuelta=True, ganada=True, pnl=round(shares - stake, 2),
+                       fuente="legs_ganadas")
+            return out
+        out["pendiente_info"] = f"{ganadas}✅ {perdidas}❌ {pendientes}⏳"
+        out["sin_datos"] = sin_datos
+        if verdad.get("saldo") is not None:
+            out["saldo_tokens"] = round(float(verdad["saldo"]), 6)
+        return out          # ⏳ PENDIENTE: no se archiva
+    # ---- mercado simple ----
     m = mercado_clob(op.get("condition_id"))
     if not m and op.get("slug"):
         m = mercado_por_slug(op.get("slug"))
@@ -2125,15 +2317,19 @@ def resolver_operacion(op):
         return out
     if m.get("end_date_iso"):
         out["fin"] = _madrid(m["end_date_iso"])
-    if m.get("closed"):
-        win_tok = None
-        for tk in m.get("tokens", []):
-            if tk.get("winner"):
-                win_tok = str(tk.get("token_id"))
-        mio = str(op.get("real_token") or "")
-        g = bool(win_tok and mio and win_tok == mio)
-        out.update(resuelta=True, ganada=g,
-                   pnl=round(shares - stake, 2) if g else round(-stake, 2))
+    win_tok = None
+    for tk in (m.get("tokens") or []):
+        if tk.get("winner"):
+            win_tok = str(tk.get("token_id"))
+    if not win_tok:
+        return out          # v12.6: cerrado sin ganador declarado ⇒ se espera
+    mio = str(op.get("real_token") or "")
+    if mio:
+        g = (win_tok == mio)
+    else:
+        g = (estado_leg(m, None)[0] == "ganada")
+    out.update(resuelta=True, ganada=g, fuente="mercado_simple",
+               pnl=round(shares - stake, 2) if g else round(-stake, 2))
     return out
 
 
@@ -2591,7 +2787,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v12.5*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v12.7*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt()}*\n"
              f"🔢 Máx ops/día: *{max_ops()}*\n"
@@ -2610,6 +2806,7 @@ def cmd_start(chat_id):
              f"🔒 Botones en 📂 Abiertas — cierran la posición DE VERDAD (combos por RFQ SELL, simples por CLOB) · /testcerrar = gratis\n"
              f"⏩ Botones ⏱ — intervalo entre pasadas ({INTERVALO_AUTO_S // 60} min ahora)\n"
              f"🧪 /testcombo — prueba gratis (quote sin aceptar)\n"
+             f"🩺 Auto-curación ACTIVA: cada {AUDITORIA_CADA_H:.0f}h (y al arrancar) contrasta ✅ Cerradas con la realidad de Polymarket y corrige sola · /reauditar = a mano\n"
              f"🔎 /fills — fills reales de la wallet\n"
              f"📊 /stats — estadisticas")
     return enviar(chat_id, texto)
@@ -2825,6 +3022,250 @@ def cmd_cerrar(chat_id, texto=""):
     return enviar(chat_id, f"🔒 Cerrando la posición nº {nums}…")
 
 
+def programar_auditoria_inicial():
+    """v12.7: fija NEXT_AUDITORIA_TS según la última auditoría guardada: si ya
+    corrió hace poco (reinicios seguidos) no la repite; si es la primera vez,
+    la lanza a los AUDITORIA_ARRANQUE_S segundos."""
+    global NEXT_AUDITORIA_TS
+    try:
+        ult = cargar_estado().get("ultima_auditoria")
+        if ult:
+            dt = datetime.fromisoformat(str(ult).replace("Z", "+00:00"))
+            hace = time.time() - dt.timestamp()
+            if hace < AUDITORIA_MIN_ENTRE_S:
+                NEXT_AUDITORIA_TS = time.time() + max(60, AUDITORIA_CADA_S - hace)
+                log(f"  auto-curación: la última fue hace {hace / 60:.0f} min → próxima en "
+                    f"{(NEXT_AUDITORIA_TS - time.time()) / 3600:.1f}h")
+                return
+        NEXT_AUDITORIA_TS = time.time() + AUDITORIA_ARRANQUE_S
+        log(f"  auto-curación: primera auditoría en {AUDITORIA_ARRANQUE_S}s "
+            f"(después cada {AUDITORIA_CADA_H:.0f}h)")
+    except Exception as e:
+        NEXT_AUDITORIA_TS = time.time() + AUDITORIA_ARRANQUE_S
+        log(f"  auto-curación: programada sin histórico ({str(e)[:60]})")
+
+
+def _aud_dentro_rango(op):
+    """v12.7: sólo se re-auditan ops de los últimos AUDITORIA_DIAS_MAX días."""
+    for k in ("copiado_en", "cerrado_en"):
+        v = op.get(k)
+        if not v:
+            continue
+        try:
+            dt = datetime.fromisoformat(str(v).replace("Z", "+00:00"))
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return (datetime.now(timezone.utc) - dt).days <= AUDITORIA_DIAS_MAX
+        except Exception:
+            continue
+    return True
+
+
+def reauditar_estado(chat_id=None, aplicar=True, con_saldo=False, origen="manual",
+                     silencioso=False):
+    """🩺 v12.6/v12.7 — NÚCLEO de la re-auditoría: contrasta TODAS las ops con
+    la realidad de Polymarket y corrige el estado.
+      · Archivadas que siguen EN JUEGO → vuelven a 📂 Abiertas.
+      · Resultado/PnL mal calculados → se corrigen (se guarda el valor anterior).
+      · Cierres manuales 🔒 → intactos.
+      · Abiertas ya resueltas de verdad → se cierran con su PnL real.
+    Verdad real = cobros REDEEM de la wallet (data-api) + ganador por OUTCOME de
+    cada leg + (opcional) saldo on-chain del token de combo.
+    aplicar=False ⇒ sólo informa. silencioso=True ⇒ sólo avisa si cambió algo.
+    → {"reabiertas", "corregidas", "confirmadas", "manuales", "nuevas_cerradas",
+       "pnl_antes", "pnl_despues", "stats", "texto"}."""
+    estado = cargar_estado()
+    hist = estado.get("historial", []) or []
+    abiertas = estado.get("trades_copiados", []) or []
+    pnl_antes_total = round(sum(float(o.get("pnl") or 0) for o in hist), 2)
+    reabiertas, corregidas, confirmadas, nuevas_cerr = [], [], [], []
+    manuales = fuera_rango = sin_datos = 0
+    nueva_hist = []
+    for op in hist:
+        if op.get("cerrada_manual") or str(op.get("motivo_cierre") or "").startswith("cerrada"):
+            manuales += 1
+            nueva_hist.append(op)
+            continue
+        if not _aud_dentro_rango(op):
+            fuera_rango += 1
+            nueva_hist.append(op)
+            continue
+        pnl_antes = op.get("pnl")
+        res_antes = op.get("resultado")
+        r = resolver_operacion(op)
+        if not r.get("resuelta"):
+            if r.get("sin_datos"):
+                # v12.7: el CLOB no dio datos de alguna leg (caída/429) ⇒ NO se
+                # toca: reabrir aquí sería inventarse un estado con datos a medias
+                sin_datos += 1
+                nueva_hist.append(op)
+                continue
+            # ⏳ sigue en juego: NO debía estar en ✅ Cerradas
+            op["pnl_antes_auditoria"] = pnl_antes
+            op["resultado_antes"] = res_antes
+            for k in ("resultado", "pnl", "cerrado_en", "fin_real"):
+                op.pop(k, None)
+            op["status"] = "filled" if op.get("tx_hash") else (op.get("status") or "filled")
+            op["pendiente_info"] = r.get("pendiente_info")
+            if con_saldo:
+                _sal = verdad_real(op, con_saldo=True).get("saldo")
+                if _sal is not None:
+                    op["saldo_tokens"] = round(float(_sal), 6)
+            if r.get("fin"):
+                op["fin_previsto"] = r["fin"]
+            op["reauditada"] = datetime.now(timezone.utc).isoformat()
+            reabiertas.append(op)
+            continue
+        res_ahora = "ganada" if r.get("ganada") else "perdida"
+        pnl_ahora = float(r.get("pnl") or 0)
+        if res_ahora != res_antes or abs(pnl_ahora - float(pnl_antes or 0)) > 0.005:
+            op["resultado_antes"] = res_antes
+            op["pnl_antes"] = pnl_antes
+            op["resultado"] = res_ahora
+            op["pnl"] = r.get("pnl")
+            op["fin_real"] = r.get("fin") or op.get("fin_real")
+            op["fuente_verdad"] = r.get("fuente")
+            if r.get("cobro_real"):
+                op["cobro_real"] = r["cobro_real"]
+            op["reauditada"] = datetime.now(timezone.utc).isoformat()
+            corregidas.append(op)
+        else:
+            op["fuente_verdad"] = r.get("fuente") or op.get("fuente_verdad")
+            confirmadas.append(op)
+        nueva_hist.append(op)
+    quedan_ab = []
+    for op in abiertas:
+        if op.get("status") == "fallido":
+            quedan_ab.append(op)
+            continue
+        r = resolver_operacion(op)
+        if r.get("resuelta"):
+            op["status"] = "cerrado"
+            op["resultado"] = "ganada" if r.get("ganada") else "perdida"
+            op["pnl"] = r.get("pnl")
+            op["fin_real"] = r.get("fin")
+            op["fuente_verdad"] = r.get("fuente")
+            if r.get("cobro_real"):
+                op["cobro_real"] = r["cobro_real"]
+            op["cerrado_en"] = datetime.now(timezone.utc).isoformat()
+            nuevas_cerr.append(op)
+        else:
+            if r.get("fin"):
+                op["fin_previsto"] = r["fin"]
+            quedan_ab.append(op)
+    pnl_despues = round(pnl_antes_total
+                        + sum(float(o.get("pnl") or 0) - float(o.get("pnl_antes") or 0) for o in corregidas)
+                        - sum(float(o.get("pnl_antes_auditoria") or 0) for o in reabiertas)
+                        + sum(float(o.get("pnl") or 0) for o in nuevas_cerr), 2)
+    cambios = len(reabiertas) + len(corregidas) + len(nuevas_cerr)
+    stats = None
+    if aplicar:
+        estado["historial"] = nueva_hist + nuevas_cerr
+        estado["trades_copiados"] = quedan_ab + reabiertas
+        estado["ultima_auditoria"] = datetime.now(timezone.utc).isoformat()
+        estado["ultimo_auditoria_resumen"] = {
+            "reabiertas": len(reabiertas), "corregidas": len(corregidas),
+            "confirmadas": len(confirmadas), "manuales": manuales,
+            "nuevas_cerradas": len(nuevas_cerr), "origen": origen,
+            "pnl_antes": pnl_antes_total, "pnl_despues": pnl_despues}
+        guardar_estado(estado)
+        try:
+            stats = calcular_stats()
+        except Exception:
+            stats = None
+    txt = (f"🩺 *{'AUTO-CURACIÓN' if origen == 'auto' else 'RE-AUDITORÍA'} v12.7*"
+           f"{'' if aplicar else ' (modo SECO)'}\n\n"
+           f"Archivadas revisadas: *{len(hist) - manuales - fuera_rango}* "
+           f"(🔒 manuales {manuales}"
+           + (f", fuera de rango {fuera_rango}" if fuera_rango else "")
+           + (f", sin datos CLOB {sin_datos}" if sin_datos else "") + ")\n"
+           f"  ⏳ Reabiertas (seguían en juego): *{len(reabiertas)}*\n"
+           f"  ✏️ Corregidas (resultado/PnL): *{len(corregidas)}*\n"
+           f"  ✔️ Confirmadas: {len(confirmadas)}\n"
+           f"  🏁 Abiertas resueltas ahora: {len(nuevas_cerr)}\n"
+           f"PnL archivadas: ${pnl_antes_total:+.2f} → *${pnl_despues:+.2f}*\n")
+    if reabiertas:
+        txt += "\n*⏳ Vuelven a 📂 Abiertas (antes dadas por perdidas):*\n"
+        for o in reabiertas[:14]:
+            extra = (f" · tokens en cartera {float(o.get('saldo_tokens') or 0):.2f}"
+                     if o.get("saldo_tokens") else "")
+            txt += (f"\n• {str(o.get('question', '?'))[:74]}\n"
+                    f"   decía ${float(o.get('pnl_antes_auditoria') or 0):+.2f} → "
+                    f"EN JUEGO ${float(o.get('stake_dolares') or 0):.2f} "
+                    f"({float(o.get('size_shares') or 0):.2f} sh · "
+                    f"{o.get('pendiente_info') or 'legs sin resolver'}{extra})")
+        if len(reabiertas) > 14:
+            txt += f"\n_… y {len(reabiertas) - 14} más_"
+    if corregidas:
+        txt += "\n\n*✏️ Resultado corregido con la verdad real:*\n"
+        for o in corregidas[:14]:
+            extra = (f" · cobro real ${float(o.get('cobro_real') or 0):.2f}"
+                     if o.get("cobro_real") else "")
+            txt += (f"\n• {str(o.get('question', '?'))[:74]}\n"
+                    f"   {o.get('resultado_antes') or '?'} "
+                    f"${float(o.get('pnl_antes') or 0):+.2f} → "
+                    f"*{o.get('resultado')}* ${float(o.get('pnl') or 0):+.2f}{extra}")
+        if len(corregidas) > 14:
+            txt += f"\n_… y {len(corregidas) - 14} más_"
+    if nuevas_cerr:
+        txt += (f"\n\n*🏁 Abiertas que YA se resolvieron:* {len(nuevas_cerr)} → "
+                f"${sum(float(o.get('pnl') or 0) for o in nuevas_cerr):+.2f}\n")
+    if aplicar and stats:
+        txt += (f"\n💾 Estado guardado (copia previa en combos_estado.bak.json)\n"
+                f"📊 Stats: ✅{stats['wins']} ❌{stats['losses']} · PnL ${stats['pnl']:+.2f} · "
+                f"ROI {(stats['pnl'] / stats['stake'] * 100) if stats['stake'] else 0:+.1f}%\n"
+                f"📂 Abiertas ahora: {len(estado['trades_copiados'])}")
+    elif not aplicar:
+        txt += "\n\n🧪 _Modo SECO: no se ha modificado nada. Envía /reauditar para aplicarlo._"
+    log(f"  [auditoria:{origen}]{' APLICADA' if aplicar else ' SECO'} "
+        f"reabiertas={len(reabiertas)} corregidas={len(corregidas)} "
+        f"confirmadas={len(confirmadas)} manuales={manuales} nuevas={len(nuevas_cerr)} "
+        f"sin_datos={sin_datos} "
+        f"· PnL archivadas {pnl_antes_total:+.2f}→{pnl_despues:+.2f}")
+    resumen = {"reabiertas": len(reabiertas), "corregidas": len(corregidas),
+               "confirmadas": len(confirmadas), "manuales": manuales,
+               "sin_datos": sin_datos,
+               "nuevas_cerradas": len(nuevas_cerr), "pnl_antes": pnl_antes_total,
+               "pnl_despues": pnl_despues, "stats": stats, "texto": txt}
+    if chat_id:
+        if not silencioso:
+            enviar_largo(chat_id, txt)
+        elif cambios:
+            corto = (f"🩺 *AUTO-CURACIÓN* (corre sola cada {AUDITORIA_CADA_H:.0f}h)\n\n"
+                     f"⏳ Reabiertas: *{len(reabiertas)}* · ✏️ Corregidas: *{len(corregidas)}* · "
+                     f"🏁 Cerradas ahora: {len(nuevas_cerr)}\n"
+                     f"PnL de las archivadas: ${pnl_antes_total:+.2f} → *${pnl_despues:+.2f}*\n"
+                     f"_Envía /reauditar seco para ver el detalle o /cerradas para la lista._")
+            enviar_largo(chat_id, corto)
+    return resumen
+
+
+def cmd_reauditar(chat_id, texto=""):
+    """🩺 v12.6: re-auditoría A MANO (con detalle y saldo on-chain).
+    /reauditar seco = sólo informa, no modifica nada.
+    La versión automática (v12.7) corre sola al arrancar y cada 4h."""
+    seco = any(k in str(texto).lower() for k in ("seco", "dry", "test"))
+
+    def _run():
+        try:
+            if not seco:
+                enviar(chat_id, "🩺 Re-auditando operaciones contra Polymarket "
+                                "(cobros reales + legs + saldo on-chain)… "
+                                "_puede tardar unos segundos_")
+            cobros_wallet(refrescar=True)      # verdad fresca de la wallet
+            with AUDITORIA_LOCK:
+                with PASADA_LOCK:
+                    reauditar_estado(chat_id=chat_id, aplicar=(not seco), con_saldo=True,
+                                     origen=("seco" if seco else "manual"))
+        except Exception as e:
+            log(f"  [reauditar] error: {e}")
+            try:
+                enviar(chat_id, f"❌ Re-auditoría falló: {str(e)[:200]}")
+            except Exception:
+                pass
+    threading.Thread(target=_run, daemon=True).start()
+
+
 def cmd_cerradas(chat_id):
     """✅ v11.5: cerradas con 🟢/🔴 y PnL; sincroniza en vivo primero."""
     try:
@@ -2911,7 +3352,11 @@ def cmd_status(chat_id):
     _est = cargar_estado()
     _mx = max_ops(_est)
     _hoy = ops_pagadas_hoy(_est)
-    texto = (f"📊 *ESTADO v12.5 (Combos)*\n\n"
+    _aud = _est.get("ultimo_auditoria_resumen") or {}
+    _aud_txt = (f"🩺 Auto-curación: {_madrid(_est.get('ultima_auditoria')) if _est.get('ultima_auditoria') else '—'}"
+                + (f" · ⏳{_aud.get('reabiertas', 0)} ✏️{_aud.get('corregidas', 0)} "
+                   f"🏁{_aud.get('nuevas_cerradas', 0)}\n" if _aud else " (sin ejecutar aún)\n"))
+    texto = (f"📊 *ESTADO v12.7 (Combos)*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt(_est)}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
@@ -2958,8 +3403,10 @@ def auto_pasada(chat_id):
 def auto_loop():
     """v11.1: tick de 5s + próxima pasada programada, para que cambiar el
     intervalo con los botones ⏱ surta efecto inmediato (antes el sleep de
-    300s bloqueaba hasta terminar)."""
-    global NEXT_PASADA_TS
+    300s bloqueaba hasta terminar).
+    v12.7: también dispara la AUTO-CURACIÓN (re-auditoría) sola: al arrancar y
+    cada AUDITORIA_CADA_H horas, serializada con las pasadas (PASADA_LOCK)."""
+    global NEXT_PASADA_TS, NEXT_AUDITORIA_TS
     while True:
         try:
             ahora = time.time()
@@ -2969,6 +3416,18 @@ def auto_loop():
                     auto_pasada(CHAT_ID)
         except Exception as e:
             log(f"auto_loop error: {e}")
+        # v12.7: auto-curación (no depende del modo: corrige el histórico igual)
+        try:
+            if time.time() >= NEXT_AUDITORIA_TS and AUDITORIA_LOCK.acquire(blocking=False):
+                try:
+                    NEXT_AUDITORIA_TS = time.time() + AUDITORIA_CADA_S
+                    with PASADA_LOCK:
+                        reauditar_estado(chat_id=CHAT_ID, aplicar=True, con_saldo=False,
+                                         origen="auto", silencioso=True)
+                finally:
+                    AUDITORIA_LOCK.release()
+        except Exception as e:
+            log(f"auto_auditoria error: {e}")
         time.sleep(5)
 
 
@@ -3175,6 +3634,8 @@ def procesar_update(update):
         return prob_menu(chat_id)
     if text.startswith("/testcerrar"):
         return cmd_testcerrar(chat_id, text)
+    if text.startswith("/reauditar"):
+        return cmd_reauditar(chat_id, text.replace("/reauditar", "", 1))
     if text.startswith("/cerrar"):
         return cmd_cerrar(chat_id, text.replace("/cerrar", "", 1))
     if text == "/testcombo":
@@ -3208,7 +3669,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v12.5 iniciado")
+    log("v12.7 iniciado")
     offset = 0
     while True:
         try:
@@ -3244,13 +3705,14 @@ def main():
     PROB_MIN_AUTO = prob_min_auto(_est0)
     log(f"stake={STAKE_MODE} · max ops/día={MAX_OPS_DIA} · prob AUTO ≥{int(PROB_MIN_AUTO * 100)}% · PIN ops fijo (4 cifras)")
     restaurar_horario()
+    programar_auditoria_inicial()   # v12.7: auto-curación al arrancar
     try:
         _ab, _nu, _es = sincronizar_operaciones()   # v11.5: cierra resueltas al arrancar
         if _nu:
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v12.5 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
+    log(f"v12.7 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
