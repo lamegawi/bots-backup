@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v12.7 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v12.8 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -53,6 +53,25 @@ Estrategia nueva (vs v7):
    📋 Trades: un mensaje por combo con SU botón debajo. Estadísticas y
    contadores diarios separados por franja (las manuales NO consumen
    el tope AUTO).
+   v12.8: 💰 /reclamar — DETECTOR DE GANADAS SIN COBRAR. Recorre TODO el
+   histórico y las abiertas (los cobros de Polymarket NO caducan ⇒ sin el límite
+   de días de la auto-curación) y busca los combos GANADOS cuyo dinero SIGUE en
+   tokens: sin cobro REDEEM en /activity + saldo on-chain > 0 en el ERC1155 de
+   parlays + todas las legs ganadoras. Los lista con fecha, pagado, a cobrar y
+   enlace al evento, y hace una PRUEBA REAL de si la wallet puede ejecutar el
+   cobro ella sola (eth_call al adaptador de parlays 0xa120…00af con el calldata
+   redeem(address[],uint256[]) — sel 0x53d190cf — reproducido byte a byte contra
+   un cobro real). RESULTADO DE ESA PRUEBA (11-sep-2026): REVERT. Polymarket
+   restringe redeem() a su propia cuenta ERC-4337 (0xac9930b2…5294), que es quien
+   cobra las ganadoras vía EntryPoint handleOps; ni la proxy wallet ni una EOA
+   pueden llamarlo, y no hay endpoint público de redeem de combos. Por eso el bot
+   NO ejecuta el cobro: /reclamar dice exactamente cuánto hay pendiente y dónde
+   cobrarlo (Portfolio → Positions → Claim). La prueba se cachea 24h y, si algún
+   día deja de revertir, /reclamar lo anuncia (el calldata ya está listo).
+   La auto-curación llama al detector y avisa sólo de reclamos NUEVOS.
+   v12.8 (RPC): polygon-rpc.com devuelve 401 Unauthorized desde el 11-sep-2026 y
+   era el PRIMERO de RPCS_POLYGON ⇒ cada eth_call gastaba un intento en un RPC
+   muerto. Lista nueva y comprobada en vivo: publicnode → drpc → 1rpc.
    v12.7: AUTO-CURACIÓN — la re-auditoría ya NO hace falta pedirla: corre sola
    ~25s después de cada arranque y después cada 4h (AUDITORIA_CADA_H), dentro
    del lock de pasada para no pisar el AUTO. Reabre las ops archivadas que
@@ -186,8 +205,17 @@ EXCHANGE_V3 = "0xe3333700cA9d93003F00f0F71f8515005F6c00Aa"
 DATA_API = "https://data-api.polymarket.com"
 # v12.6: FUENTES DE VERDAD del resultado real (cobros REDEEM + saldo on-chain)
 PARLAY_ERC1155 = "0x006f54f7f9a22e0000cc2ab60031000000ae9fef"  # posiciones de COMBO (no es el CTF)
-RPCS_POLYGON = ("https://polygon-rpc.com", "https://1rpc.io/matic",
-                "https://polygon-bor-rpc.publicnode.com")
+# v12.8: 💰 RECLAMAR — cobro (redeem) de parlays
+PARLAY_REDEEM_ADAPTER = "0xa1200000d0002264c9a1698e001292d00e1b00af"   # adaptador redeem()
+REDEEM_SEL = "53d190cf"                    # redeem(address[] owners, uint256[] tokenIds)
+OPERADOR_REDEEM_4337 = "0xac9930b2ae455a671b62de86876a7e8587825294"    # única cuenta que hoy puede llamarlo
+RECLAMO_PREFLIGHT_H = 24.0                 # horas entre pruebas de "¿puedo redimir yo sola?"
+RECLAMO_MAX_LISTA = 12                     # combos que se detallan en el mensaje
+GAMMA_API = "https://gamma-api.polymarket.com"
+# v12.8: polygon-rpc.com da 401 Unauthorized (11-sep-2026) y era el primero;
+# lista reordenada y comprobada en vivo (publicnode y drpc ~0.1s, 1rpc de respaldo)
+RPCS_POLYGON = ("https://polygon-bor-rpc.publicnode.com", "https://polygon.drpc.org",
+                "https://1rpc.io/matic")
 OUTCOME_NUESTRO = ("yes", "true", "up")   # caras que equivalen a "la nuestra"
 LEGS_POR_COMBO = (2, 3)    # combinar 2 legs (preferido) o 3
 # ---- v11.9: franja EXTENDIDA 🚀 (aprobada por user: techo 3.0, 2/día) ----
@@ -368,7 +396,7 @@ def http_post(url, data, headers=None, timeout=30):
 TECLADO_FIJO = {
     "keyboard": [
         [{"text": "📋 Trades"}, {"text": "💰 Saldo"}, {"text": "📂 Abiertas"}],
-        [{"text": "💥 SúperCombos"}],
+        [{"text": "💥 SúperCombos"}, {"text": "💰 Reclamar"}],
         [{"text": "✅ Cerradas"}, {"text": "📊 Stats"}, {"text": "🏆 Top"}],
         [{"text": "🟢 AUTO"}, {"text": "🟡 SEMI"}, {"text": "🔴 OFF"}],
         [{"text": "💵 Stake AUTO"}, {"text": "💵 Stake $5"}],
@@ -2135,10 +2163,16 @@ _COBROS_CACHE = [0.0, {}]      # [ts, {token: usdc cobrado}]
 _SALDO_CACHE = {}              # token -> (ts, shares|None)
 
 
-def _rpc_eth_call(to, data, timeout=8):
-    """eth_call a Polygon probando varios RPC públicos. → hex|None."""
+def _rpc_eth_call_ex(to, data, frm=None, timeout=8):
+    """v12.8: eth_call a Polygon devolviendo (resultado, error).
+    Distinguir "revert" de "RPC caído" es imprescindible en el pre-flight de
+    redeem: un revert significa que el contrato rechazó la llamada (no hay red)."""
+    params = {"to": to, "data": data}
+    if frm:
+        params["from"] = frm
     cuerpo = json.dumps({"jsonrpc": "2.0", "id": 1, "method": "eth_call",
-                         "params": [{"to": to, "data": data}, "latest"]}).encode()
+                         "params": [params, "latest"]}).encode()
+    ultimo = None
     for rpc in RPCS_POLYGON:
         try:
             req = urllib.request.Request(rpc, data=cuerpo,
@@ -2148,10 +2182,27 @@ def _rpc_eth_call(to, data, timeout=8):
                 d = json.loads(r.read().decode())
             v = d.get("result")
             if isinstance(v, str) and v not in ("", "0x"):
-                return v
-        except Exception:
-            continue
-    return None
+                return v, None
+            if d.get("error"):
+                ultimo = str(d["error"].get("message", ""))[:200]
+        except Exception as e:
+            ultimo = str(e)[:200]
+            leer_err = getattr(e, "read", None)
+            if leer_err:
+                try:
+                    cuerpo_err = leer_err().decode("utf-8", errors="replace")
+                    msg = json.loads(cuerpo_err).get("error", {}).get("message", "")
+                    if msg:
+                        ultimo = str(msg)[:200]
+                except Exception:
+                    pass
+    return None, ultimo
+
+
+def _rpc_eth_call(to, data, timeout=8):
+    """eth_call a Polygon probando varios RPC públicos. → hex|None."""
+    v, _err = _rpc_eth_call_ex(to, data, timeout=timeout)
+    return v
 
 
 def cobros_wallet(refrescar=False, limite=500):
@@ -2210,6 +2261,301 @@ def saldo_combo_token(token_id, refrescar=False):
         sal = None
     _SALDO_CACHE[tok] = (ahora, sal)
     return sal
+
+
+# ============================================
+# v12.8: 💰 RECLAMAR — ganadas con el dinero aún en tokens
+# ============================================
+_PREFLIGHT_CACHE = [0.0, None, ""]      # [ts, ok|None, detalle]
+_EVENTO_CACHE = {}                      # condition_id -> (ts, url)
+
+
+def _md_limpio(s):
+    """v12.8: quita los caracteres que romperían el Markdown de Telegram."""
+    return str(s or "").replace("*", "").replace("_", " ").replace("`", "").strip()
+
+
+def _token_de(op):
+    """v12.8: token id del combo (position id real del CLOB de parlays)."""
+    return str(op.get("combo_yes_position_id") or op.get("real_token") or "")
+
+
+def _ya_cobrada(op):
+    """v12.8: la op ya tiene dinero REAL recibido (REDEEM) o se dio por reclamada."""
+    try:
+        if float(op.get("cobro_real") or 0) > 0.000001:
+            return True
+    except Exception:
+        pass
+    if str(op.get("fuente_verdad") or "") == "cobro_real":
+        return True
+    return str(op.get("reclamo") or "") == "reclamado"
+
+
+def calldata_redeem(tokens, owner=None):
+    """💰 v12.8: calldata de redeem(address[] owners, uint256[] tokenIds) del
+    adaptador de parlays. Arrays PARALELOS: owners[i] ↔ tokenIds[i] (longitudes
+    distintas ⇒ revert). Reproducido BYTE A BYTE contra cobros reales de la
+    wallet (tx 0x296d4dbb60a05221539fec73e76a96cbfa1c4f8ec6996f0beec4562982ce16f0).
+    El "conditionId" que da la data-api para un parlay ES este token id."""
+    ow = str(owner or WALLET).lower()
+    toks = [str(t) for t in (tokens or []) if str(t).isdigit()]
+    if not toks or not ow.startswith("0x") or len(ow) != 42:
+        return None
+    n = len(toks)
+    h = "0x" + REDEEM_SEL
+    h += hex(0x40)[2:].rjust(64, "0")                       # offset owners[]
+    h += hex(0x40 + 0x20 + 0x20 * n)[2:].rjust(64, "0")     # offset tokenIds[]
+    h += hex(n)[2:].rjust(64, "0")                          # owners.length
+    h += ow[2:].rjust(64, "0") * n
+    h += hex(n)[2:].rjust(64, "0")                          # tokenIds.length
+    for t in toks:
+        h += hex(int(t))[2:].rjust(64, "0")
+    return h
+
+
+def preflight_redeem(token, forzar=False):
+    """💰 v12.8: ¿puede la wallet ejecutar el cobro ELLA SOLA?
+    eth_call desde la proxy wallet al adaptador con el calldata real de redeem.
+    Hoy (11-sep-2026) REVERT: Polymarket sólo acepta la llamada de su cuenta
+    ERC-4337 OPERADOR_REDEEM_4337, que cobra las ganadoras vía EntryPoint
+    handleOps. Probado también desde una EOA cualquiera y desde 0x1: mismo revert.
+    → (True|False|None, detalle). Cacheado RECLAMO_PREFLIGHT_H horas."""
+    ahora = time.time()
+    if (not forzar and _PREFLIGHT_CACHE[1] is not None
+            and ahora - _PREFLIGHT_CACHE[0] < RECLAMO_PREFLIGHT_H * 3600):
+        return _PREFLIGHT_CACHE[1], _PREFLIGHT_CACHE[2]
+    data = calldata_redeem([token]) if token else None
+    if not data:
+        return None, "sin token que probar"
+    v, err = _rpc_eth_call_ex(PARLAY_REDEEM_ADAPTER, data, frm=WALLET)
+    if v is not None:
+        ok, det = True, "el adaptador ya acepta la llamada de tu wallet"
+    elif err and "revert" in err.lower():
+        ok = False
+        det = (f"revert: sólo la cuenta de Polymarket {OPERADOR_REDEEM_4337[:10]}…"
+               f"{OPERADOR_REDEEM_4337[-4:]} puede ejecutar redeem()")
+    elif err:
+        ok, det = None, f"RPC respondió: {err[:90]}"
+    else:
+        ok, det = None, "ningún RPC respondió"
+    _PREFLIGHT_CACHE[0], _PREFLIGHT_CACHE[1], _PREFLIGHT_CACHE[2] = time.time(), ok, det
+    log(f"  💰 pre-flight redeem: {'SÍ puede' if ok else ('NO puede' if ok is False else 'sin datos')}"
+        f" · {det[:80]}")
+    return ok, det
+
+
+def _enlace_evento(op):
+    """v12.8: enlace al evento en polymarket.com (gamma: condition_id → events[0].slug)."""
+    cid = ""
+    for lg in (op.get("legs") or []):
+        c = str(lg.get("condition_id") or "")
+        if c.startswith("0x"):
+            cid = c
+            break
+    if not cid:
+        return ""
+    hit = _EVENTO_CACHE.get(cid)
+    if hit and time.time() - hit[0] < 3600:
+        return hit[1]
+    url = ""
+    try:
+        req = urllib.request.Request(f"{GAMMA_API}/markets?condition_ids={cid}",
+                                     headers={"User-Agent": "poly-combos-bot"})
+        with urllib.request.urlopen(req, timeout=12) as r:
+            arr = json.loads(r.read().decode())
+        evs = (arr[0].get("events") or []) if arr else []
+        slug = str(evs[0].get("slug") or "") if evs else ""
+        if slug:
+            url = f"https://polymarket.com/event/{slug}"
+    except Exception:
+        url = ""
+    _EVENTO_CACHE[cid] = (time.time(), url)
+    return url
+
+
+def _primer_token(estado=None):
+    """v12.8: cualquier token de combo del histórico (para el pre-flight)."""
+    estado = estado or cargar_estado()
+    for op in (estado.get("historial") or []) + (estado.get("trades_copiados") or []):
+        t = _token_de(op)
+        if t.isdigit():
+            return t
+    return ""
+
+
+def pendientes_reclamar(con_saldo=True, estado=None):
+    """💰 v12.8: combos GANADOS cuyo dinero SIGUE en la cartera (sin cobrar).
+    Recorre TODO (histórico + abiertas): los cobros de Polymarket no caducan, así
+    que aquí NO se aplica el límite de días de la auto-curación.
+    Criterio: sin cobro REDEEM + saldo on-chain del token > 0 + legs ganadoras
+    (resolver_operacion). con_saldo=False usa el saldo guardado (sin RPC).
+    → {"reclamables":[{op,token,saldo,importe,stake,titulo,desde,fuente}],
+       "sin_datos":int, "importe":float, "revisadas":int}"""
+    estado = estado or cargar_estado()
+    ops = list(estado.get("historial") or []) + list(estado.get("trades_copiados") or [])
+    reclamables, vistos = [], set()
+    revisadas = sin_datos = 0
+    for op in ops:
+        tok = _token_de(op)
+        if not tok.isdigit() or tok in vistos or _ya_cobrada(op):
+            continue
+        vistos.add(tok)
+        revisadas += 1
+        sal = saldo_combo_token(tok) if con_saldo else op.get("saldo_tokens")
+        if sal is None:
+            if con_saldo:
+                sin_datos += 1
+            continue
+        try:
+            sal = float(sal)
+        except Exception:
+            continue
+        if sal <= 0.000001:
+            continue                       # sin tokens: cobrado, vendido o perdido
+        r = resolver_operacion(op)
+        if not (r.get("resuelta") and r.get("ganada")):
+            continue                       # en juego o perdida: nada que reclamar
+        if r.get("fuente") == "cobro_real":
+            continue                       # ya cobrado (REDEEM en /activity)
+        reclamables.append({
+            "op": op, "token": tok, "saldo": round(sal, 6),
+            "importe": round(sal, 2),      # 1 token ganador = $1 pUSD al redimir
+            "stake": round(float(op.get("stake_dolares") or 0), 2),
+            "titulo": _md_limpio(op.get("question"))[:74] or "?",
+            "desde": _madrid(op.get("copiado_en") or op.get("cerrado_en") or "") or "—",
+            "fuente": r.get("fuente"),
+        })
+    reclamables.sort(key=lambda x: -x["importe"])
+    return {"reclamables": reclamables, "sin_datos": sin_datos,
+            "importe": round(sum(x["importe"] for x in reclamables), 2),
+            "revisadas": revisadas}
+
+
+def _texto_reclamar(res, ok=None, det=""):
+    """v12.8: mensaje de /reclamar."""
+    rec = res.get("reclamables") or []
+    txt = ("💰 *RECLAMAR v12.8*\n\n"
+           f"Ops revisadas: {res.get('revisadas', 0)}"
+           + (f" · sin datos on-chain: {res.get('sin_datos')}" if res.get("sin_datos") else "")
+           + "\n\n")
+    if not rec:
+        txt += "✅ *Nada sin cobrar*: todo lo ganado ya está en la cartera.\n"
+    else:
+        txt += (f"🏦 *GANADAS SIN COBRAR: {len(rec)}* → *${res.get('importe', 0):.2f}*\n"
+                "_El dinero sigue en tokens: al redimir, 1 token ganador = $1._\n")
+        for x in rec[:RECLAMO_MAX_LISTA]:
+            enl = _enlace_evento(x["op"])
+            txt += (f"\n• {x['desde']} — {x['titulo']}\n"
+                    f"   pagado ${x['stake']:.2f} → a cobrar *${x['importe']:.2f}* "
+                    f"({x['saldo']:.2f} sh)\n")
+            if enl:
+                txt += f"   {enl}\n"
+            txt += f"   token `{x['token'][:24]}…`\n"
+        if len(rec) > RECLAMO_MAX_LISTA:
+            txt += f"\n_… y {len(rec) - RECLAMO_MAX_LISTA} más_\n"
+    txt += "\n🔌 *¿Puede el bot cobrarlo on-chain?* "
+    if ok is True:
+        txt += f"*SÍ* — {det}.\n_Dímelo y preparo la ejecución del redeem._\n"
+    elif ok is False:
+        txt += ("*NO* (probado ahora con eth_call).\n"
+                f"El adaptador de parlays sólo acepta la llamada de la cuenta de "
+                f"Polymarket `{OPERADOR_REDEEM_4337[:10]}…{OPERADOR_REDEEM_4337[-4:]}` "
+                f"(ERC-4337): es ella quien cobra las ganadoras.\n")
+    else:
+        txt += f"*sin datos* — {det[:80]}\n"
+    if rec and ok is not True:
+        txt += ("\n👉 *Cómo cobrarlo tú* (1 minuto):\n"
+                "1. polymarket.com → *Portfolio* → *Positions*\n"
+                "2. En la posición ganada, botón *Claim* / *Redeem*\n"
+                "3. Si no aparece el botón: soporte de Polymarket con el token id\n"
+                "_Los cobros no caducan: ese dinero es tuyo hasta que lo reclames._")
+    return txt
+
+
+def _marcar_avisados(res, estado=None):
+    """v12.8: guarda qué reclamos ya se avisaron (la auto-curación no los repite)."""
+    try:
+        estado = estado or cargar_estado()
+        av = estado.setdefault("reclamos_avisados", {})
+        ahora = datetime.now(timezone.utc).isoformat()
+        for x in res.get("reclamables") or []:
+            av[x["token"]] = {"ts": ahora, "importe": x["importe"],
+                              "titulo": x["titulo"][:80]}
+        guardar_estado(estado)
+    except Exception as e:
+        log(f"  [reclamar] marcar error: {e}")
+
+
+def reclamar_check(silencioso=True):
+    """💰 v12.8: lo llama la auto-curación (sin RPC). Detecta ops ganadas SIN
+    cobro real y avisa sólo de las NUEVAS. → nº de avisos enviados."""
+    if not CHAT_ID:
+        return 0
+    try:
+        estado = cargar_estado()
+    except Exception:
+        return 0
+    av = estado.setdefault("reclamos_avisados", {})
+    nuevos = []
+    for op in (estado.get("historial") or []) + (estado.get("trades_copiados") or []):
+        tok = _token_de(op)
+        if not tok.isdigit() or tok in av or _ya_cobrada(op):
+            continue
+        fv = str(op.get("fuente_verdad") or "")
+        if fv == "legs_ganadas" or (str(op.get("resultado") or "") == "ganada"
+                                    and fv != "cobro_real"):
+            nuevos.append(op)
+    if not nuevos:
+        return 0
+    imp = sum(float(o.get("size_shares") or 0) for o in nuevos)
+    log(f"  💰 reclamar: {len(nuevos)} ganada(s) sin cobrar (~${imp:.2f}) → aviso")
+    try:
+        enviar(CHAT_ID, f"💰 *RECLAMAR*: hay *{len(nuevos)}* combo(s) ganados sin "
+                        f"cobrar (~${imp:.2f} siguen en tokens).\n"
+                        f"Envía /reclamar para el detalle y cómo cobrarlos.")
+    except Exception:
+        pass
+    ahora = datetime.now(timezone.utc).isoformat()
+    for o in nuevos:
+        av[_token_de(o)] = {"ts": ahora, "auto": True,
+                            "importe": round(float(o.get("size_shares") or 0), 2)}
+    try:
+        guardar_estado(estado)
+    except Exception:
+        pass
+    return len(nuevos)
+
+
+def cmd_reclamar(chat_id, texto=""):
+    """💰 v12.8: /reclamar — qué hay GANADO SIN COBRAR, cuánto y cómo cobrarlo.
+    /reclamar prueba = fuerza la prueba on-chain (sin usar la caché de 24h).
+    Hilo propio con los locks de la auto-curación (hace llamadas RPC)."""
+    forzar = any(k in str(texto).lower() for k in ("prueba", "test", "forzar"))
+
+    def _run():
+        try:
+            enviar(chat_id, "💰 Buscando combos GANADOS sin cobrar (saldo on-chain "
+                            "+ cobros REDEEM + legs ganadoras)… "
+                            "_puede tardar unos segundos_")
+            cobros_wallet(refrescar=True)
+            with AUDITORIA_LOCK:
+                with PASADA_LOCK:
+                    res = pendientes_reclamar(con_saldo=True)
+                    tok = (res["reclamables"][0]["token"] if res["reclamables"]
+                           else _primer_token())
+                    ok, det = preflight_redeem(tok, forzar=forzar)
+                    _marcar_avisados(res)
+            enviar(chat_id, _texto_reclamar(res, ok, det))
+            log(f"  💰 /reclamar: {len(res['reclamables'])} sin cobrar "
+                f"(${res['importe']:.2f}) · revisadas {res['revisadas']}")
+        except Exception as e:
+            log(f"  [reclamar] error: {e}")
+            try:
+                enviar(chat_id, f"❌ /reclamar falló: {str(e)[:200]}")
+            except Exception:
+                pass
+    threading.Thread(target=_run, daemon=True).start()
 
 
 def verdad_real(op, con_saldo=False):
@@ -2787,7 +3133,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v12.7*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v12.8*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt()}*\n"
              f"🔢 Máx ops/día: *{max_ops()}*\n"
@@ -2807,6 +3153,7 @@ def cmd_start(chat_id):
              f"⏩ Botones ⏱ — intervalo entre pasadas ({INTERVALO_AUTO_S // 60} min ahora)\n"
              f"🧪 /testcombo — prueba gratis (quote sin aceptar)\n"
              f"🩺 Auto-curación ACTIVA: cada {AUDITORIA_CADA_H:.0f}h (y al arrancar) contrasta ✅ Cerradas con la realidad de Polymarket y corrige sola · /reauditar = a mano\n"
+             f"💰 /reclamar — ganadas SIN cobrar: cuánto hay pendiente, enlace al evento y cómo cobrarlo (el bot no puede redimir parlays: el adaptador es sólo para la cuenta de Polymarket)\n"
              f"🔎 /fills — fills reales de la wallet\n"
              f"📊 /stats — estadisticas")
     return enviar(chat_id, texto)
@@ -3356,7 +3703,11 @@ def cmd_status(chat_id):
     _aud_txt = (f"🩺 Auto-curación: {_madrid(_est.get('ultima_auditoria')) if _est.get('ultima_auditoria') else '—'}"
                 + (f" · ⏳{_aud.get('reabiertas', 0)} ✏️{_aud.get('corregidas', 0)} "
                    f"🏁{_aud.get('nuevas_cerradas', 0)}\n" if _aud else " (sin ejecutar aún)\n"))
-    texto = (f"📊 *ESTADO v12.7 (Combos)*\n\n"
+    _rec = _est.get("reclamos_avisados") or {}
+    _rec_txt = (f"💰 Sin cobrar (último aviso): *{len(_rec)}* "
+                f"(${sum(float(v.get('importe') or 0) for v in _rec.values()):.2f}) "
+                f"· /reclamar\n" if _rec else "")
+    texto = (f"📊 *ESTADO v12.8 (Combos)*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt(_est)}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
@@ -3364,6 +3715,8 @@ def cmd_status(chat_id):
              f"🎯 Prob AUTO: *{prob_nivel_txt(prob_min_auto(_est))}*\n"
              f"Trades: *{s['total']}*\n"
              f"PnL: *${s['pnl']:+.2f}*\n"
+             f"{_aud_txt}"
+             f"{_rec_txt}"
              f"Proxy: `{PROXY_URL}`\n"
              f"Hora: {datetime.now().strftime('%H:%M:%S')}")
     return enviar(chat_id, texto)
@@ -3424,6 +3777,7 @@ def auto_loop():
                     with PASADA_LOCK:
                         reauditar_estado(chat_id=CHAT_ID, aplicar=True, con_saldo=False,
                                          origen="auto", silencioso=True)
+                        reclamar_check()      # v12.8: avisa de ganadas sin cobrar
                 finally:
                     AUDITORIA_LOCK.release()
         except Exception as e:
@@ -3626,6 +3980,8 @@ def procesar_update(update):
         return max_combos_menu(chat_id)
     elif text == "🎯 Prob AUTO":
         return prob_menu(chat_id)
+    elif text == "💰 Reclamar":          # v12.8
+        return cmd_reclamar(chat_id)
     if text.startswith("⏱"):
         return cmd_intervalo(chat_id, text)
     if _re.match(r"^\d{1,2}\s*(min|minutos|m|minutes?)\b$", text, _re.IGNORECASE):
@@ -3636,6 +3992,8 @@ def procesar_update(update):
         return cmd_testcerrar(chat_id, text)
     if text.startswith("/reauditar"):
         return cmd_reauditar(chat_id, text.replace("/reauditar", "", 1))
+    if text.startswith("/reclamar"):     # v12.8
+        return cmd_reclamar(chat_id, text.replace("/reclamar", "", 1))
     if text.startswith("/cerrar"):
         return cmd_cerrar(chat_id, text.replace("/cerrar", "", 1))
     if text == "/testcombo":
@@ -3669,7 +4027,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v12.7 iniciado")
+    log("v12.8 iniciado")
     offset = 0
     while True:
         try:
@@ -3712,7 +4070,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v12.7 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
+    log(f"v12.8 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
