@@ -1,0 +1,449 @@
+=== BOT DE COMBOS · volcado de diagnóstico - Fri Sep 11 08:21:09 PM UTC 2026 ===
+
+--- servicio ---
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-11 20:11:20 UTC; 9min ago
+   Main PID: 1457934 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 26.0M (peak: 26.5M)
+        CPU: 1.747s
+     CGroup: /system.slice/poly-combos-bot.service
+
+--- versión instalada ---
+POLY COMBOS BOT v12.8.2 — COMBOS REALES (parlays multi-leg) via RFQ
+829d3b335d993a205ef7453f0bec0eb8  /opt/polymarket/poly_combos_bot.py
+
+--- estado (resumen) ---
+   9 abiertas · 45 archivadas · PnL archivadas $+11.26
+   archivadas: ✅27 ❌18 🔒manuales 0
+   última auditoría: 2026-09-11T20:11:52 · origen=auto reabiertas=0 corregidas=0 confirmadas=45 nuevas=0 · PnL 11.26→11.26
+   💰 reclamos avisados: 7 · $82.98
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+      Dota 2: Team Liquid vs Vici Gaming (BO3) - 1win Esse   $  19.05 · 2026-09-11T20:18
+      Counter-Strike: Imperial vs Procyon Gaming (BO3) - B   $  19.32 · 2026-09-11T20:18
+      LoL: Baam Esports vs 3BL Esports (BO3) - Arabian Lea   $  14.04 · 2026-09-11T20:18
+      LoL: Dark Passage vs Team Phoenix (BO3) - TCL Play-I   $  30.57 · 2026-09-11T20:18
+   config: max_ops_día=10 · prob_min_auto=0.65 · intervalo=10 min · modo=None · próxima pasada=1789151117.7521586
+   💉 inyectadas de agosto: 4 · $82.97 por cobrar
+
+--- últimas 400 líneas de /var/log/poly-combos-bot.log ---
+[09:05:19] [COMBO] 2 legs · cuota est. 1.37 · stake $9.38 (AUTO)
+[09:05:19]   · Counter-Strike: Nuclear TigeRES vs BET-M 33 (BO3) - PGL  (p=0.81 vol=$65k)
+[09:05:19]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$48k)
+[09:05:50]   RFQ create -> 200 {"rfq_id":"rfq-43def8242d57cc4dff024690","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789031155453,"request":{"rfq_id":"rfq-43def8242d57cc4dff024690",
+[09:05:50]   quote: cuota=1.24 blended=0.804 shares=11.55 total=$9.38
+[09:05:50]   stake AUTO 0: RFQ 1.24 sin ventaja vs legs (est 1.37) — NO se acepta ($0)
+[09:05:50]   ❌ combo: stake_auto_0_sin_margen
+[09:15:20] [AUTO] pasada (combos RFQ v11)
+[09:15:21]   pagina 1: +50 mercados, 0 legs de deportes
+[09:15:21]   pagina 2: +50 mercados, 0 legs de deportes
+[09:15:21]   pagina 3: +50 mercados, 12 legs de deportes
+[09:15:22]   pagina 4: +50 mercados, 55 legs de deportes
+[09:15:22]   pagina 5: +50 mercados, 102 legs de deportes
+[09:15:22] [COMBO] 2 legs · cuota est. 1.31 · stake $9.58 (AUTO)
+[09:15:22]   · Counter-Strike: Nuclear TigeRES vs BET-M 33 (BO3) - PGL  (p=0.85 vol=$66k)
+[09:15:22]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$49k)
+[09:15:23]   RFQ create -> 200 {"rfq_id":"rfq-a360174754022d14d2677e19","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789031728338,"request":{"rfq_id":"rfq-a360174754022d14d2677e19",
+[09:15:23]   quote: cuota=1.25 blended=0.800 shares=11.86 total=$9.58
+[09:15:23]   stake AUTO 0: RFQ 1.25 sin ventaja vs legs (est 1.31) — NO se acepta ($0)
+[09:15:23]   ❌ combo: stake_auto_0_sin_margen
+[09:25:23] [AUTO] pasada (combos RFQ v11)
+[09:25:23]   pagina 1: +50 mercados, 0 legs de deportes
+[09:25:24]   pagina 2: +50 mercados, 0 legs de deportes
+[09:25:24]   pagina 3: +50 mercados, 12 legs de deportes
+[09:25:25]   pagina 4: +50 mercados, 56 legs de deportes
+[09:25:25]   pagina 5: +50 mercados, 103 legs de deportes
+[09:25:25] [COMBO] 2 legs · cuota est. 1.29 · stake $9.65 (AUTO)
+[09:25:25]   · Counter-Strike: Nuclear TigeRES vs BET-M 33 (BO3) - PGL  (p=0.86 vol=$66k)
+[09:25:25]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$51k)
+[09:25:26]   RFQ create -> 200 {"rfq_id":"rfq-15f9e8f8ce0da9f48e680acf","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789032331272,"request":{"rfq_id":"rfq-15f9e8f8ce0da9f48e680acf",
+[09:25:26]   quote: cuota=1.35 blended=0.742 shares=12.84 total=$9.65
+[09:25:26]   stake AUTO ajustado con cuota real: $9.65 -> $10.0
+[09:25:26]   saldo CLOB ok: $175.63 >= $9.65
+[09:25:27]   RFQ accept -> 200 {"rfq_id":"rfq-15f9e8f8ce0da9f48e680acf","status":"FAILED","taker_order_hash":"0x41eb0051a6f65fa8022f86c323602b5cd467c769ce43d221ab154842b4d81ba3","error":{"cod
+[09:25:27]   accept transitorio (200/PRE_EXECUTION_BALANCE_RESERVATION_FAILED): reintento único en 6s
+[09:25:34]   RFQ accept retry -> 200 {"rfq_id":"rfq-15f9e8f8ce0da9f48e680acf","status":"FAILED","error":{"code":"PRE_EXECUTION_BALANCE_RESERVATION_FAILED","message":"pre execution balance reservati
+[09:25:34]   ❌ combo: accept_PRE_EXECUTION_BALANCE_RESERVATION_FAILED
+[09:35:24] [AUTO] pasada (combos RFQ v11)
+[09:35:24]   pagina 1: +50 mercados, 0 legs de deportes
+[09:35:25]   pagina 2: +50 mercados, 0 legs de deportes
+[09:35:25]   pagina 3: +50 mercados, 12 legs de deportes
+[09:35:26]   pagina 4: +50 mercados, 56 legs de deportes
+[09:35:26]   pagina 5: +50 mercados, 103 legs de deportes
+[09:35:26] [COMBO] 2 legs · cuota est. 1.39 · stake $9.32 (AUTO)
+[09:35:26]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$51k)
+[09:35:26]   · LoL: LOS vs FURIA Esports (BO5) - CBLOL Playoffs (p=0.81 vol=$26k)
+[09:35:27]   RFQ create -> 200 {"rfq_id":"rfq-6f76859c0f0e422c7af70535","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789032932269,"request":{"rfq_id":"rfq-6f76859c0f0e422c7af70535",
+[09:35:27]   quote: cuota=1.36 blended=0.733 shares=12.55 total=$9.32
+[09:35:27]   stake AUTO 0: RFQ 1.36 sin ventaja vs legs (est 1.39) — NO se acepta ($0)
+[09:35:57]   ❌ combo: stake_auto_0_sin_margen
+[09:45:27] [AUTO] pasada (combos RFQ v11)
+[09:45:27]   pagina 1: +50 mercados, 0 legs de deportes
+[09:45:28]   pagina 2: +50 mercados, 0 legs de deportes
+[09:45:28]   pagina 3: +50 mercados, 12 legs de deportes
+[09:45:29]   pagina 4: +50 mercados, 57 legs de deportes
+[09:45:29]   pagina 5: +50 mercados, 102 legs de deportes
+[09:45:29] [COMBO] 2 legs · cuota est. 1.48 · stake $9.05 (AUTO)
+[09:45:29]   · Counter-Strike: Nuclear TigeRES vs BET-M 33 (BO3) - PGL  (p=0.76 vol=$67k)
+[09:45:29]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$51k)
+[09:45:30]   RFQ create -> 200 {"rfq_id":"rfq-19db085e5f1280a58db47050","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789033535160,"request":{"rfq_id":"rfq-19db085e5f1280a58db47050",
+[09:45:30]   quote: cuota=1.41 blended=0.707 shares=12.61 total=$9.05
+[09:45:30]   stake AUTO 0: RFQ 1.41 sin ventaja vs legs (est 1.48) — NO se acepta ($0)
+[09:45:30]   ❌ combo: stake_auto_0_sin_margen
+[09:55:30] [AUTO] pasada (combos RFQ v11)
+[09:55:30]   pagina 1: +50 mercados, 0 legs de deportes
+[09:55:31]   pagina 2: +50 mercados, 0 legs de deportes
+[09:55:31]   pagina 3: +50 mercados, 12 legs de deportes
+[09:55:31]   pagina 4: +50 mercados, 56 legs de deportes
+[09:55:32]   pagina 5: +50 mercados, 102 legs de deportes
+[09:55:32] [COMBO] 2 legs · cuota est. 1.39 · stake $9.32 (AUTO)
+[09:55:32]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$51k)
+[09:55:32]   · LoL: LOS vs FURIA Esports (BO5) - CBLOL Playoffs (p=0.81 vol=$26k)
+[09:55:33]   RFQ create -> 200 {"rfq_id":"rfq-d50403273214a4b88b69deef","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789034138258,"request":{"rfq_id":"rfq-d50403273214a4b88b69deef",
+[09:55:33]   quote: cuota=1.36 blended=0.733 shares=12.55 total=$9.32
+[09:55:33]   stake AUTO 0: RFQ 1.36 sin ventaja vs legs (est 1.39) — NO se acepta ($0)
+[09:55:33]   ❌ combo: stake_auto_0_sin_margen
+[10:05:33] [AUTO] pasada (combos RFQ v11)
+[10:05:33]   pagina 1: +50 mercados, 0 legs de deportes
+[10:05:34]   pagina 2: +50 mercados, 0 legs de deportes
+[10:05:34]   pagina 3: +50 mercados, 12 legs de deportes
+[10:05:35]   pagina 4: +50 mercados, 55 legs de deportes
+[10:05:35]   pagina 5: +50 mercados, 101 legs de deportes
+[10:05:35] [COMBO] 2 legs · cuota est. 1.39 · stake $9.32 (AUTO)
+[10:05:35]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$51k)
+[10:05:35]   · LoL: LOS vs FURIA Esports (BO5) - CBLOL Playoffs (p=0.81 vol=$26k)
+[10:05:36]   RFQ create -> 200 {"rfq_id":"rfq-7fce420a3e8746564666155f","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789034741452,"request":{"rfq_id":"rfq-7fce420a3e8746564666155f",
+[10:05:36]   quote: cuota=1.36 blended=0.733 shares=12.55 total=$9.32
+[10:05:36]   stake AUTO 0: RFQ 1.36 sin ventaja vs legs (est 1.39) — NO se acepta ($0)
+[10:05:36]   ❌ combo: stake_auto_0_sin_margen
+[10:15:36] [AUTO] pasada (combos RFQ v11)
+[10:15:37]   pagina 1: +50 mercados, 0 legs de deportes
+[10:15:37]   pagina 2: +50 mercados, 0 legs de deportes
+[10:15:37]   pagina 3: +50 mercados, 12 legs de deportes
+[10:15:38]   pagina 4: +50 mercados, 55 legs de deportes
+[10:15:38]   pagina 5: +50 mercados, 100 legs de deportes
+[10:15:38] [COMBO] 2 legs · cuota est. 1.23 · stake $9.88 (AUTO)
+[10:15:38]   · Will FC Bayern München win on 2026-09-10? (p=0.91 vol=$265k)
+[10:15:38]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$52k)
+[10:15:39]   RFQ create -> 200 {"rfq_id":"rfq-a10a6291aceb00b1b2f6ad7b","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789035344552,"request":{"rfq_id":"rfq-a10a6291aceb00b1b2f6ad7b",
+[10:15:39]   quote: cuota=1.22 blended=0.822 shares=11.91 total=$9.88
+[10:15:39]   stake AUTO 0: RFQ 1.22 sin ventaja vs legs (est 1.23) — NO se acepta ($0)
+[10:15:39]   ❌ combo: stake_auto_0_sin_margen
+[10:25:39] [AUTO] pasada (combos RFQ v11)
+[10:25:40]   pagina 1: +50 mercados, 0 legs de deportes
+[10:25:40]   pagina 2: +50 mercados, 0 legs de deportes
+[10:25:40]   pagina 3: +50 mercados, 11 legs de deportes
+[10:25:41]   pagina 4: +50 mercados, 56 legs de deportes
+[10:25:41]   pagina 5: +50 mercados, 100 legs de deportes
+[10:25:41] [COMBO] 2 legs · cuota est. 1.44 · stake $9.17 (AUTO)
+[10:25:41]   · Will FC Bayern München win on 2026-09-10? (p=0.91 vol=$273k)
+[10:25:41]   · LoL: T1 Academy vs Dplus KIA Challengers (BO5) - LCK Cha (p=0.77 vol=$207k)
+[10:25:42]   RFQ create -> 200 {"rfq_id":"rfq-52affaab72d156b55a740017","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789035947417,"request":{"rfq_id":"rfq-52affaab72d156b55a740017",
+[10:25:42]   quote: cuota=1.37 blended=0.732 shares=12.36 total=$9.17
+[10:25:42]   stake AUTO 0: RFQ 1.37 sin ventaja vs legs (est 1.44) — NO se acepta ($0)
+[10:25:42]   ❌ combo: stake_auto_0_sin_margen
+[10:32:52] loop err: The read operation timed out
+[10:35:42] [AUTO] pasada (combos RFQ v11)
+[10:35:43]   pagina 1: +50 mercados, 0 legs de deportes
+[10:35:43]   pagina 2: +50 mercados, 0 legs de deportes
+[10:35:43]   pagina 3: +50 mercados, 11 legs de deportes
+[10:35:44]   pagina 4: +50 mercados, 56 legs de deportes
+[10:35:44]   pagina 5: +50 mercados, 100 legs de deportes
+[10:35:44] [COMBO] 2 legs · cuota est. 1.45 · stake $9.14 (AUTO)
+[10:35:44]   · Counter-Strike: Legacy vs FURIA (BO3) - FISSURE PLAYGROU (p=0.76 vol=$421k)
+[10:35:44]   · Will FC Bayern München win on 2026-09-10? (p=0.91 vol=$273k)
+[10:35:45]   RFQ create -> 200 {"rfq_id":"rfq-b8a53573ef0805bed7172897","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789036550504,"request":{"rfq_id":"rfq-b8a53573ef0805bed7172897",
+[10:35:45]   quote: cuota=1.59 blended=0.631 shares=14.23 total=$9.14
+[10:35:45]   stake AUTO ajustado con cuota real: $9.14 -> $10.0
+[10:35:45]   saldo CLOB ok: $175.67 >= $9.14
+[10:35:46]   RFQ accept -> 200 {"rfq_id":"rfq-b8a53573ef0805bed7172897","status":"EXECUTING","taker_order_hash":"0xd0f257da2ad055ea04e07322521a30422473451c73d05278a2d3c66d95746489"}
+
+[10:35:56]   RFQ status final: CONFIRMED tx=0x63c11147b27a82f7ef19a103
+[10:35:56]   ✅ combo OK: {'oid': 'rfq-b8a53573ef0805bed7172897', 'status': 'CONFIRMED', 'cuota': 1.59}
+[10:45:46] [AUTO] pasada (combos RFQ v11)
+[10:45:47]   pagina 1: +50 mercados, 0 legs de deportes
+[10:45:47]   pagina 2: +50 mercados, 0 legs de deportes
+[10:45:47]   pagina 3: +50 mercados, 11 legs de deportes
+[10:45:48]   pagina 4: +50 mercados, 57 legs de deportes
+[10:45:48]   pagina 5: +50 mercados, 101 legs de deportes
+[10:45:48] [COMBO] 2 legs · cuota est. 1.28 · stake $9.69 (AUTO)
+[10:45:48]   · LoL: T1 Academy vs Dplus KIA Challengers (BO5) - LCK Cha (p=0.81 vol=$214k)
+[10:45:48]   · Counter-Strike: Nuclear TigeRES vs BET-M 33 (BO3) - PGL  (p=0.95 vol=$77k)
+[10:45:49]   RFQ create -> 200 {"rfq_id":"rfq-0895360a725b8cccc2368299","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789037154676,"request":{"rfq_id":"rfq-0895360a725b8cccc2368299",
+[10:45:49]   quote: cuota=1.23 blended=0.813 shares=11.80 total=$9.69
+[10:45:49]   stake AUTO 0: RFQ 1.23 sin ventaja vs legs (est 1.28) — NO se acepta ($0)
+[10:45:49]   ❌ combo: stake_auto_0_sin_margen
+[10:55:49] [AUTO] pasada (combos RFQ v11)
+[10:55:50]   pagina 1: +50 mercados, 0 legs de deportes
+[10:55:50]   pagina 2: +50 mercados, 0 legs de deportes
+[10:55:50]   pagina 3: +50 mercados, 12 legs de deportes
+[10:55:51]   pagina 4: +50 mercados, 57 legs de deportes
+[10:55:51]   pagina 5: +50 mercados, 100 legs de deportes
+[10:55:51] [COMBO] 2 legs · cuota est. 1.44 · stake $9.17 (AUTO)
+[10:55:51]   · LoL: T1 Academy vs Dplus KIA Challengers - Game 4 Winner (p=0.73 vol=$121k)
+[10:55:51]   · Counter-Strike: Nuclear TigeRES vs BET-M 33 (BO3) - PGL  (p=0.95 vol=$78k)
+[10:55:52]   RFQ create -> 200 {"rfq_id":"rfq-d3878294f9591e4994217cad","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789037757408,"request":{"rfq_id":"rfq-d3878294f9591e4994217cad",
+[10:55:52]   quote: cuota=1.37 blended=0.730 shares=12.39 total=$9.17
+[10:55:52]   stake AUTO 0: RFQ 1.37 sin ventaja vs legs (est 1.44) — NO se acepta ($0)
+[10:55:52]   ❌ combo: stake_auto_0_sin_margen
+[11:05:52] [AUTO] pasada (combos RFQ v11)
+[11:05:53]   pagina 1: +50 mercados, 0 legs de deportes
+[11:05:53]   pagina 2: +50 mercados, 0 legs de deportes
+[11:05:53]   pagina 3: +50 mercados, 12 legs de deportes
+[11:05:54]   pagina 4: +50 mercados, 56 legs de deportes
+[11:05:54]   pagina 5: +50 mercados, 99 legs de deportes
+[11:05:54] [COMBO] 2 legs · cuota est. 1.2 · stake $10.0 (AUTO)
+[11:05:54]   · Counter-Strike: Legacy vs FURIA - Map 2 Winner (p=0.94 vol=$554k)
+[11:05:54]   · LoL: T1 Academy vs Dplus KIA Challengers - Game 4 Winner (p=0.89 vol=$121k)
+[11:05:55]   RFQ create -> 200 {"rfq_id":"rfq-7788a7cadca3f040d3e17c86","status":"FAILED","error":{"code":"NO_QUOTES","message":"no quotes"}}
+
+[11:05:55]   ❌ combo: rfq_NO_QUOTES
+[11:15:55] [AUTO] pasada (combos RFQ v11)
+[11:15:55]   pagina 1: +50 mercados, 0 legs de deportes
+[11:15:56]   pagina 2: +50 mercados, 0 legs de deportes
+[11:15:56]   pagina 3: +50 mercados, 10 legs de deportes
+[11:15:57]   pagina 4: +50 mercados, 54 legs de deportes
+[11:15:57]   pagina 5: +50 mercados, 97 legs de deportes
+[11:15:57] [COMBO] 2 legs · cuota est. 1.33 · stake $9.51 (AUTO)
+[11:15:57]   · LoL: T1 Academy vs Dplus KIA Challengers (BO5) - LCK Cha (p=0.94 vol=$234k)
+[11:15:57]   · Counter-Strike: Heroic vs K27 (BO3) - Thunderpick World  (p=0.80 vol=$82k)
+[11:15:58]   RFQ create -> 200 {"rfq_id":"rfq-ae6a3d880525f7663e784921","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789038963173,"request":{"rfq_id":"rfq-ae6a3d880525f7663e784921",
+[11:15:58]   quote: cuota=1.22 blended=0.820 shares=11.49 total=$9.51
+[11:15:58]   stake AUTO 0: RFQ 1.22 sin ventaja vs legs (est 1.33) — NO se acepta ($0)
+[11:15:58]   ❌ combo: stake_auto_0_sin_margen
+[11:25:58] [AUTO] pasada (combos RFQ v11)
+[11:25:58]   pagina 1: +50 mercados, 0 legs de deportes
+[11:25:59]   pagina 2: +50 mercados, 0 legs de deportes
+[11:25:59]   pagina 3: +50 mercados, 9 legs de deportes
+[11:25:59]   pagina 4: +50 mercados, 54 legs de deportes
+[11:26:00]   pagina 5: +50 mercados, 97 legs de deportes
+[11:26:00] [COMBO] 2 legs · cuota est. 1.5 · stake $9.0 (AUTO)
+[11:26:00]   · Counter-Strike: Heroic vs K27 (BO3) - Thunderpick World  (p=0.94 vol=$92k)
+[11:26:00]   · Counter-Strike: ShindeN vs Turma do Pagode (BO3) - PGL M (p=0.70 vol=$78k)
+[11:26:01]   RFQ create -> 200 {"rfq_id":"rfq-d191c359b4d136d3d51ef3c2","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789039566286,"request":{"rfq_id":"rfq-d191c359b4d136d3d51ef3c2",
+[11:26:01]   quote: cuota=1.39 blended=0.719 shares=12.34 total=$9.00
+[11:26:01]   stake AUTO 0: RFQ 1.39 sin ventaja vs legs (est 1.5) — NO se acepta ($0)
+[11:26:01]   ❌ combo: stake_auto_0_sin_margen
+[11:36:01] [AUTO] pasada (combos RFQ v11)
+[11:36:01]   pagina 1: +50 mercados, 0 legs de deportes
+[11:36:02]   pagina 2: +50 mercados, 0 legs de deportes
+[11:36:02]   pagina 3: +50 mercados, 9 legs de deportes
+[11:36:02]   pagina 4: +50 mercados, 53 legs de deportes
+[11:36:03]   pagina 5: +50 mercados, 95 legs de deportes
+[11:36:03] [COMBO] 2 legs · cuota est. 1.31 · stake $9.58 (AUTO)
+[11:36:03]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$66k)
+[11:36:03]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$55k)
+[11:36:04]   RFQ create -> 200 {"rfq_id":"rfq-83d56d2092ac0ab22ce59440","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789040169011,"request":{"rfq_id":"rfq-83d56d2092ac0ab22ce59440",
+[11:36:04]   quote: cuota=1.29 blended=0.778 shares=12.18 total=$9.58
+[11:36:04]   stake AUTO 0: RFQ 1.29 sin ventaja vs legs (est 1.31) — NO se acepta ($0)
+[11:36:04]   ❌ combo: stake_auto_0_sin_margen
+[11:46:04] [AUTO] pasada (combos RFQ v11)
+[11:46:04]   pagina 1: +50 mercados, 0 legs de deportes
+[11:46:05]   pagina 2: +50 mercados, 1 legs de deportes
+[11:46:05]   pagina 3: +50 mercados, 10 legs de deportes
+[11:46:05]   pagina 4: +50 mercados, 53 legs de deportes
+[11:46:06]   pagina 5: +50 mercados, 96 legs de deportes
+[11:46:06] [COMBO] 2 legs · cuota est. 1.31 · stake $9.58 (AUTO)
+[11:46:06]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$66k)
+[11:46:06]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$56k)
+[11:46:07]   RFQ create -> 200 {"rfq_id":"rfq-ccab5423bb4e66e14e304050","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789040772081,"request":{"rfq_id":"rfq-ccab5423bb4e66e14e304050",
+[11:46:07]   quote: cuota=1.29 blended=0.777 shares=12.19 total=$9.58
+[11:46:07]   stake AUTO 0: RFQ 1.29 sin ventaja vs legs (est 1.31) — NO se acepta ($0)
+[11:46:07]   ❌ combo: stake_auto_0_sin_margen
+[11:56:07] [AUTO] pasada (combos RFQ v11)
+[11:56:07]   pagina 1: +50 mercados, 0 legs de deportes
+[11:56:08]   pagina 2: +50 mercados, 1 legs de deportes
+[11:56:08]   pagina 3: +50 mercados, 10 legs de deportes
+[11:56:09]   pagina 4: +50 mercados, 53 legs de deportes
+[11:56:09]   pagina 5: +50 mercados, 98 legs de deportes
+[11:56:09] [COMBO] 2 legs · cuota est. 1.31 · stake $9.58 (AUTO)
+[11:56:09]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$66k)
+[11:56:09]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$56k)
+[11:56:10]   RFQ create -> 200 {"rfq_id":"rfq-1c895460f4ea3f197a9bce72","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789041375312,"request":{"rfq_id":"rfq-1c895460f4ea3f197a9bce72",
+[11:56:10]   quote: cuota=1.29 blended=0.777 shares=12.19 total=$9.58
+[11:56:10]   stake AUTO 0: RFQ 1.29 sin ventaja vs legs (est 1.31) — NO se acepta ($0)
+[11:56:10]   ❌ combo: stake_auto_0_sin_margen
+[12:01:42] loop err: The read operation timed out
+[12:06:10] [AUTO] pasada (combos RFQ v11)
+[12:06:10]   pagina 1: +50 mercados, 0 legs de deportes
+[12:06:11]   pagina 2: +50 mercados, 1 legs de deportes
+[12:06:11]   pagina 3: +50 mercados, 9 legs de deportes
+[12:06:11]   pagina 4: +50 mercados, 55 legs de deportes
+[12:06:12]   pagina 5: +50 mercados, 98 legs de deportes
+[12:06:12] [COMBO] 2 legs · cuota est. 1.31 · stake $9.58 (AUTO)
+[12:06:12]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$66k)
+[12:06:12]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$56k)
+[12:06:13]   RFQ create -> 200 {"rfq_id":"rfq-d0941a34fdb8ce696e857d07","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789041978131,"request":{"rfq_id":"rfq-d0941a34fdb8ce696e857d07",
+[12:06:13]   quote: cuota=1.29 blended=0.777 shares=12.19 total=$9.58
+[12:06:13]   stake AUTO 0: RFQ 1.29 sin ventaja vs legs (est 1.31) — NO se acepta ($0)
+[12:06:43]   ❌ combo: stake_auto_0_sin_margen
+[12:16:13] [AUTO] pasada (combos RFQ v11)
+[12:16:13]   pagina 1: +50 mercados, 0 legs de deportes
+[12:16:14]   pagina 2: +50 mercados, 1 legs de deportes
+[12:16:14]   pagina 3: +50 mercados, 10 legs de deportes
+[12:16:14]   pagina 4: +50 mercados, 55 legs de deportes
+[12:16:15]   pagina 5: +50 mercados, 98 legs de deportes
+[12:16:15] [COMBO] 2 legs · cuota est. 1.31 · stake $9.58 (AUTO)
+[12:16:15]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$66k)
+[12:16:15]   · Will Manchester United FC win on 2026-09-10? (p=0.90 vol=$56k)
+[12:16:16]   RFQ create -> 200 {"rfq_id":"rfq-1a8142d56cde3873bedf8314","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789042581166,"request":{"rfq_id":"rfq-1a8142d56cde3873bedf8314",
+[12:16:16]   quote: cuota=1.29 blended=0.778 shares=12.18 total=$9.58
+[12:16:16]   stake AUTO 0: RFQ 1.29 sin ventaja vs legs (est 1.31) — NO se acepta ($0)
+[12:16:16]   ❌ combo: stake_auto_0_sin_margen
+[12:38:47] loop err: The read operation timed out
+[13:06:30] loop err: The read operation timed out
+[14:18:40] telegram_api error: HTTP Error 400: Bad Request
+[14:19:43]   sync: 5 op(s) cerradas (0 ganadas, PnL $-39.91)
+[15:06:55] loop err: The read operation timed out
+[15:17:44]   pagina 1: +50 mercados, 0 legs de deportes
+[15:17:44]   pagina 2: +50 mercados, 2 legs de deportes
+[15:17:45]   pagina 3: +50 mercados, 13 legs de deportes
+[15:17:45]   pagina 4: +50 mercados, 53 legs de deportes
+[15:17:45]   pagina 5: +50 mercados, 99 legs de deportes
+[16:20:40] loop err: The read operation timed out
+[17:02:19] loop err: The read operation timed out
+[17:10:02] loop err: The read operation timed out
+[17:57:01] loop err: The read operation timed out
+[18:22:58] loop err: The read operation timed out
+[19:48:21] loop err: The read operation timed out
+[21:20:12] loop err: The read operation timed out
+[23:22:07] loop err: The read operation timed out
+[23:29:54] loop err: The read operation timed out
+[00:01:51] loop err: The read operation timed out
+[00:52:32] loop err: The read operation timed out
+[01:29:01] loop err: The read operation timed out
+[02:20:42] loop err: The read operation timed out
+[02:55:41] loop err: The read operation timed out
+[04:26:46] loop err: The read operation timed out
+[05:12:16] loop err: The read operation timed out
+[05:18:52] loop err: The read operation timed out
+[05:51:08] loop err: The read operation timed out
+[07:32:06] loop err: The read operation timed out
+[07:39:41] loop err: The read operation timed out
+[08:16:50] loop err: The read operation timed out
+[09:15:35] loop err: The read operation timed out
+[10:30:17] loop err: The read operation timed out
+[10:45:06] loop err: The read operation timed out
+[12:50:29] loop err: The read operation timed out
+[14:44:24] loop err: The read operation timed out
+[16:24:29] loop err: The read operation timed out
+[16:27:39] loop err: The read operation timed out
+[17:05:38] loop err: The read operation timed out
+[17:30:46] loop err: The read operation timed out
+[17:36:46] intervalo AUTO restaurado: 10 min
+[17:36:46] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+[17:36:46]   horario inicial: próxima pasada en 10 min
+[17:36:46]   auto-curación: primera auditoría en 25s (después cada 4h)
+[17:36:46] v12.7 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[17:36:46] Proxy: http://100.83.57.99:8888
+[17:36:47] Test proxy: 200
+[17:36:47] v12.7 iniciado
+[17:37:13]   verdad: 26 cobros REDEEM>0 en la wallet
+[17:37:17]   [auditoria:auto] APLICADA reabiertas=6 corregidas=16 confirmadas=25 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas -276.68→-21.72
+[17:45:27] loop err: The read operation timed out
+[17:46:47] [AUTO] pasada (combos RFQ v11)
+[17:46:48]   pagina 1: +50 mercados, 0 legs de deportes
+[17:46:48]   pagina 2: +50 mercados, 0 legs de deportes
+[17:46:49]   pagina 3: +50 mercados, 11 legs de deportes
+[17:46:49]   pagina 4: +50 mercados, 44 legs de deportes
+[17:46:49]   pagina 5: +50 mercados, 86 legs de deportes
+[17:46:49] [COMBO] 2 legs · cuota est. 1.45 · stake $9.14 (AUTO)
+[17:46:49]   · US Open ATP: Alexander Zverev vs Karen Khachanov (p=0.81 vol=$694k)
+[17:46:49]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$116k)
+[17:46:51]   RFQ: identidad lista (signer 0x8a22F798... maker 0xb0E11970...)
+[17:46:52]   RFQ create -> 200 {"rfq_id":"rfq-1857c335cc765d3e58c1fd51","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789148816970,"request":{"rfq_id":"rfq-1857c335cc765d3e58c1fd51",
+[17:46:52]   quote: cuota=1.42 blended=0.702 shares=12.83 total=$9.14
+[17:46:52]   stake AUTO 0: RFQ 1.42 sin ventaja vs legs (est 1.45) — NO se acepta ($0)
+[17:46:52]   ❌ combo: stake_auto_0_sin_margen
+[17:47:24] intervalo AUTO restaurado: 10 min
+[17:47:24] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+[17:47:24]   horario restaurado: próxima pasada en 9 min
+[17:47:25]   auto-curación: primera auditoría en 25s (después cada 4h)
+[17:47:25]   verdad: 26 cobros REDEEM>0 en la wallet
+[17:47:25] v12.8 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[17:47:25] Proxy: http://100.83.57.99:8888
+[17:47:26] Test proxy: 200
+[17:47:26] v12.8 iniciado
+[17:47:56]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=41 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas -21.72→-21.72
+[17:47:56]   💰 reclamar: 7 ganada(s) sin cobrar (~$47.58) → aviso
+[17:49:56]   [CIERRE] sin precio vivo: no se puede dimensionar la venta
+[17:49:56]   [CIERRE] sin precio vivo: no se puede dimensionar la venta
+[17:54:52]   verdad: 26 cobros REDEEM>0 en la wallet
+[17:54:57]   💰 pre-flight redeem: sin datos · RPC respondió: Too Many Requests, Please apply an OnFinality API key or contact 
+[17:54:57]   💰 /reclamar: 0 sin cobrar ($0.00) · revisadas 23
+[18:05:16] intervalo AUTO restaurado: 10 min
+[18:05:16] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+[18:05:16]   horario inicial: próxima pasada en 10 min
+[18:05:16]   auto-curación: primera auditoría en 25s (después cada 4h)
+[18:05:16]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[18:05:16] v12.8.1 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[18:05:16] Proxy: http://100.83.57.99:8888
+[18:05:17] Test proxy: 200
+[18:05:17] v12.8.1 iniciado
+[18:05:47]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=41 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas -21.72→-21.72
+[18:09:48]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[18:09:50]   💰 pre-flight redeem: NO puede · revert: sólo la cuenta de Polymarket 0xac9930b2…5294 puede ejecutar redeem()
+[18:10:20] telegram_api error: HTTP Error 400: Bad Request
+[18:10:20]   💰 /reclamar: 0 sin cobrar ($0.00) · revisadas 23
+[18:15:17] [AUTO] pasada (combos RFQ v11)
+[18:15:18]   pagina 1: +50 mercados, 0 legs de deportes
+[18:15:18]   pagina 2: +50 mercados, 1 legs de deportes
+[18:15:19]   pagina 3: +50 mercados, 10 legs de deportes
+[18:15:19]   pagina 4: +50 mercados, 42 legs de deportes
+[18:15:19]   pagina 5: +50 mercados, 80 legs de deportes
+[18:15:19] [COMBO] 2 legs · cuota est. 1.44 · stake $9.17 (AUTO)
+[18:15:19]   · US Open ATP: Alexander Zverev vs Karen Khachanov (p=0.81 vol=$1151k)
+[18:15:19]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$116k)
+[18:15:21]   RFQ: identidad lista (signer 0x8a22F798... maker 0xb0E11970...)
+[18:15:21]   RFQ create -> 200 {"rfq_id":"rfq-e3ce2cf0921cdd465304cf4c","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789150526807,"request":{"rfq_id":"rfq-e3ce2cf0921cdd465304cf4c",
+[18:15:21]   quote: cuota=1.39 blended=0.718 shares=12.60 total=$9.17
+[18:15:21]   stake AUTO 0: RFQ 1.39 sin ventaja vs legs (est 1.44) — NO se acepta ($0)
+[18:15:22]   ❌ combo: stake_auto_0_sin_margen
+[18:49:13] loop err: The read operation timed out
+[18:52:24] loop err: The read operation timed out
+[19:04:07] loop err: <urlopen error [Errno 104] Connection reset by peer>
+[19:05:12] loop err: The read operation timed out
+[19:51:57] loop err: The read operation timed out
+[20:11:20] intervalo AUTO restaurado: 10 min
+[20:11:20] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+[20:11:20]   horario inicial: próxima pasada en 10 min
+[20:11:20]   auto-curación: primera auditoría en 25s (después cada 4h)
+[20:11:20]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[20:11:20] v12.8.1 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[20:11:20] Proxy: http://100.83.57.99:8888
+[20:11:21] Test proxy: 200
+[20:11:21] v12.8.2 iniciado
+[20:11:52]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=45 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas +11.26→+11.26
+[20:11:53]   💰 reclamar: 4 ganada(s) sin cobrar (~$82.98) → aviso
+[20:15:10]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[20:15:17]   💰 pre-flight redeem: NO puede · revert: sólo la cuenta de Polymarket 0xac9930b2…5294 puede ejecutar redeem()
+[20:15:17] telegram_api error: HTTP Error 400: Bad Request
+[20:15:17]   💰 /reclamar: 4 sin cobrar ($82.98) · revisadas 27
+[20:18:24]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[20:18:29] telegram_api error: HTTP Error 400: Bad Request
+[20:18:29]   💰 /reclamar: 4 sin cobrar ($82.98) · revisadas 27
+[20:18:54]   pagina 1: +50 mercados, 3 legs de deportes
+[20:18:55]   pagina 2: +50 mercados, 4 legs de deportes
+[20:18:55]   pagina 3: +50 mercados, 8 legs de deportes
+[20:18:55]   pagina 4: +50 mercados, 41 legs de deportes
+[20:18:56]   pagina 5: +50 mercados, 73 legs de deportes
+
+--- errores recientes (tracebacks / telegram / RPC) ---
+5574:[11:05:55]   ❌ combo: rfq_NO_QUOTES
+5587:[11:15:58]   ❌ combo: stake_auto_0_sin_margen
+5600:[11:26:01]   ❌ combo: stake_auto_0_sin_margen
+5613:[11:36:04]   ❌ combo: stake_auto_0_sin_margen
+5626:[11:46:07]   ❌ combo: stake_auto_0_sin_margen
+5639:[11:56:10]   ❌ combo: stake_auto_0_sin_margen
+5653:[12:06:43]   ❌ combo: stake_auto_0_sin_margen
+5666:[12:16:16]   ❌ combo: stake_auto_0_sin_margen
+5669:[14:18:40] telegram_api error: HTTP Error 400: Bad Request
+5731:[17:46:52]   ❌ combo: stake_auto_0_sin_margen
+5746:[17:54:57]   💰 pre-flight redeem: sin datos · RPC respondió: Too Many Requests, Please apply an OnFinality API key or contact 
+5760:[18:10:20] telegram_api error: HTTP Error 400: Bad Request
+5775:[18:15:22]   ❌ combo: stake_auto_0_sin_margen
+5794:[20:15:17] telegram_api error: HTTP Error 400: Bad Request
+5797:[20:18:29] telegram_api error: HTTP Error 400: Bad Request
