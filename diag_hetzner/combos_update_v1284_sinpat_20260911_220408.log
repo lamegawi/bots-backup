@@ -1,0 +1,143 @@
+=== DESPLIEGUE v12.8.4 SIN PAT (🟡 SEMI de verdad · ⚖️ ventaja 5%) - Fri Sep 11 10:04:08 PM UTC 2026 ===
+md5 esperado antes: d096c581d57f05a66784c10f004fbf9b · después: e08cb649f4838a963135e2f301498092
+
+=== Paso 0: copia de seguridad del estado + situación actual ===
+   OK copia del estado
+   ANTES: 4 abiertas · 47 archivadas · PnL $+11.16
+   modo SEMI · intervalo 10 min · stake AUTO · tope 10/día
+   💰 avisos de reclamo: 7 · con dinero de verdad 4 ($82.98)
+
+=== Paso 1: extraer el parche y validar el bot desplegado ===
+   parche: 606 líneas · md5 0a03d7a066e3be67e72f0cf54997b570
+   md5 del bot en el server: d096c581d57f05a66784c10f004fbf9b
+   OK copia previa: poly_combos_bot.pre_v1284_20260911_220408.py
+
+=== Paso 2: aplicar el parche sobre una copia y VALIDAR ===
+✅ v12.8.4 generado: /tmp/bot_v1284.py · 31 cambios:
+     · cabecera v12.8.4
+     · log de arranque v12.8.4
+     · título /reclamar v12.8.4
+     · título /start v12.8.4
+     · título /status v12.8.4
+     · línea 'cargado' (decía v12.8.1)
+     · changelog v12.8.4 en la cabecera
+     · constantes PROPUESTA_VALIDA_S y VENTAJA_MIN_EV
+     · teclado_fijo: fila de modo con ✅
+     · teclado_fijo usa fila_modo
+     · docstring teclado_fijo (modo + intervalo)
+     · docstring teclado_fijo (tick AL FINAL)
+     · handler de modo tolerante al ✅
+     · cmd_modo: SEMI explicado + horario
+     · auto_pasada acepta SEMI
+     · auto_pasada: rama SEMI (propone, no compra)
+     · auto_loop escanea también en SEMI
+     · docstring auto_loop (SEMI)
+     · procesar_callback: sm:/smx:
+     · filtro de ventaja EV ≥ 5%
+     · calcular_stats: acumuladores de brutos
+     · calcular_stats: acumula brutos por banda
+     · 📊 Stats: bloque 🧮 de compensación
+     · bloque de funciones nuevas v12.8.4 (SEMI)
+     · restaurar_modo: el modo guardado sobrevive al reinicio
+     · main() restaura el modo guardado
+     · sincronizar_operaciones guarda cobro_real/fuente
+     · /status: sin cobrar sólo con importe > 0
+     · 🔍 Leer ahora: sin cobrar sólo con importe > 0
+     · 🔍 Leer ahora: propuestas SEMI vivas
+     · ayuda /start: SEMI + ventaja
+   líneas: 5229 · md5 e08cb649f4838a963135e2f301498092
+   md5 del parcheado: e08cb649f4838a963135e2f301498092
+   OK compila
+   OK    def proponer_combo_semi
+   OK    def ejecutar_semi_aprobado
+   OK    def respuesta_propuesta
+   OK    def _marcar_propuesta
+   OK    def _prune_propuestas
+   OK    def _sin_tick
+   OK    PROPUESTA_VALIDA_S
+   OK    VENTAJA_MIN_EV
+   OK    ventaja insuficiente
+   OK    CUENTAS DE COMPENSACIÓN
+   OK    pnl_wins
+   OK    v12.8.4 cargado
+   OK    def restaurar_modo
+   OK    restaurar_modo(_est0)
+   OK    def teclado_fijo
+   OK    def cmd_leer_ahora
+   OK    def curar_abiertas
+   OK    def _reparto_mapa
+
+=== Paso 3: parar, dejar el modo en 🟡 SEMI, sustituir y arrancar ===
+   modo SEMI → SEMI · próxima pasada (propuesta) en ~2 min
+   → v12.8.4 restaura el modo al arrancar; antes el bot volvía SIEMPRE en AUTO
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-11 22:04:08 UTC; 8s ago
+   Main PID: 1465755 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 26.6M (peak: 27.3M)
+        CPU: 278ms
+     CGroup: /system.slice/poly-combos-bot.service
+
+=== Paso 4: log (arranque + 1ª auto-curación ~25 s) ===
+[21:21:16]   pagina 3: +50 mercados, 9 legs de deportes
+[21:21:16]   pagina 4: +50 mercados, 39 legs de deportes
+[21:21:17]   pagina 5: +50 mercados, 74 legs de deportes
+[21:21:17]   [LEER] lectura inmediata completada en 3.5 s (sólo mirar)
+[21:21:27]   RFQ create -> 200 {"rfq_id":"rfq-a6e28324724d5658aa513faa","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789161692943,"request":{"rfq_id":"rfq-a6e28324724d5658aa513faa",
+[21:21:27]   quote: cuota=1.49 blended=0.672 shares=13.06 total=$8.92
+[21:21:28]   stake AUTO 0: RFQ 1.49 sin ventaja vs legs (est 1.53) — NO se acepta ($0)
+[21:21:28]   ❌ combo: stake_auto_0_sin_margen
+[21:21:58]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[21:22:11]   💰 pre-flight redeem: sin datos · RPC respondió: The read operation timed out
+[21:22:12]   💰 /reclamar: 4 sin cobrar ($82.98) · revisadas 27
+[21:58:08] loop err: The read operation timed out
+[22:02:43]   pagina 1: +50 mercados, 1 legs de deportes
+[22:02:44]   pagina 2: +50 mercados, 1 legs de deportes
+[22:02:44]   pagina 3: +50 mercados, 13 legs de deportes
+[22:02:44]   pagina 4: +50 mercados, 48 legs de deportes
+[22:02:45]   pagina 5: +50 mercados, 87 legs de deportes
+[22:03:15]   [LEER] lectura inmediata completada en 32.9 s (sólo mirar)
+[22:04:08] intervalo AUTO restaurado: 10 min
+[22:04:08]   modo restaurado del estado: SEMI
+[22:04:08] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+[22:04:08]   horario restaurado: próxima pasada en 1 min
+[22:04:08]   auto-curación: primera auditoría en 25s (después cada 4h)
+[22:04:09]   v12.8.3: 477 fills reales de la wallet (evidencia de cadena)
+[22:04:09]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[22:04:09] v12.8.4 cargado · modo=SEMI · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[22:04:09] Proxy: http://100.83.57.99:8888
+[22:04:10] Test proxy: 200
+[22:04:10] v12.8.4 iniciado
+[22:04:40]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=47 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas +11.16→+11.16
+   --- v12.8.4 cargado / modo / curación ---
+[18:05:16] v12.8.1 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[20:11:20]   auto-curación: primera auditoría en 25s (después cada 4h)
+[20:11:20] v12.8.1 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[21:19:52]   auto-curación: primera auditoría en 25s (después cada 4h)
+[21:19:52]   🧹 v12.8.3 curación: 1 basura + 2 duplicados fantasma fuera de ABIERTAS · quedan 6 registros (6 casados con fill real, 0 sin evidencia)
+[21:19:52] v12.8.1 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[22:04:08]   auto-curación: primera auditoría en 25s (después cada 4h)
+[22:04:09] v12.8.4 cargado · modo=SEMI · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+
+=== Paso 5: estado tras la cura + 🧮 cuentas de compensación ===
+   AHORA: 4 abiertas · 47 archivadas (↩️ anuladas 2) · 🧹 descartadas 3 · PnL $+11.16
+   🧮 27 ganadas (+$5.14 de media) · 18 pérdidas (-$7.08 de media)
+      ⇒ 1.38 victorias por derrota · equilibrio 58.0% · tu win-rate 60.0%
+      stake medio $8.03 → para recuperar -$7.08: cuota 1.5 → 1.8 · cuota 2.0 → 0.9 · cuota 2.5 → 0.6
+      ⚖️ v12.8.4 sólo compra si prob × cuota_real ≥ 1.05
+   💰 sin cobrar: 4 posiciones ($82.98) · 3 avisos de importe 0 ya no cuentan
+
+=== Paso 6: EN VIVO — qué exigiría el filtro del 5% con el catálogo real ===
+   catálogo RFQ (HTTP 200): 50 legs
+   legs aprovechables (prob 0.70-0.995): 0
+
+=== EN TELEGRAM ===
+  🟡 SEMI        → pulsa 🟡 SEMI (saldrá '🟡 SEMI ✅'): cada 10 min te PROPONE un
+                   combo con ✅ Aceptar y comprar / ❌ Descartar. Nada sin tu ✅.
+  ✅ Aceptar     → pide cotización NUEVA y sólo compra si mejora el mercado ≥5%.
+  📊 Stats       → 🧮 cuentas: media ganada/perdida, victorias por derrota, equilibrio.
+  Teclado        → ✅ en el intervalo ACTIVO y en el MODO activo.
+  🔍 Leer ahora  → lectura inmediata + propuestas SEMI vivas (solo mirar).
+  🟡 Ya estás en SEMI: este despliegue guarda modo=SEMI y programa la 1ª
+                   pasada a ~2 min para que veas la propuesta enseguida.
