@@ -94,7 +94,10 @@ s = s[:i0] + CABECERA + s[i1:]
 n[0] += 1
 print("  ✓ cabecera nueva")
 
-# ------------------------------------------------- 4) paso 3: funciones nuevas
+# --------------------------------------------- 4) paso 3: título + funciones nuevas
+rep('echo "=== Paso 3: Verificar funciones v12.9.0 (🟡 SEMI · ⚖️ ventaja · ✅ modo · 🧮 cuentas) ==="',
+    'echo "=== Paso 3: Verificar funciones (🟡 SEMI · ⚖️ ventaja · 🧮 cuentas · 🏆 top real · 📡 copy en papel) ==="',
+    "paso 3: título")
 rep('''          "PARLAY_ERC1155" "AUDITORIA_CADA_H" "NEXT_AUDITORIA_TS"; do''',
     r'''          "PARLAY_ERC1155" "AUDITORIA_CADA_H" "NEXT_AUDITORIA_TS" \
           "def top_traders" "def nombre_lb" "def _din_lb" "def es_deporte_copy" \
@@ -132,9 +135,12 @@ cp = d.get("copy") or {}
 se = d.get("copy_señales") or []
 res = [x for x in se if x.get("resuelta") and not x.get("anulada")]
 pnl = sum(float(x.get("pnl_papel_nuestro") or 0) for x in res)
-print(f"   📡 copy en papel: {len(cp.get('traders') or [])} traders vigilados · "
-      f"{len(se)} señales ({len(res)} resueltas, {sum(1 for x in se if x.get('anulada'))} anuladas) · "
-      f"dedup {len(cp.get('vistos') or {})} fills · informes {int(cp.get('informes') or 0)}")
+nt = len(cp.get('traders') or [])
+na = sum(1 for x in se if x.get('anulada'))
+print(f"   📡 copy en papel: {nt} trader{'' if nt == 1 else 's'} vigilado{'' if nt == 1 else 's'} · "
+      f"{len(se)} señal{'' if len(se) == 1 else 'es'} ({len(res)} resuelta{'' if len(res) == 1 else 's'}, "
+      f"{na} anulada{'' if na == 1 else 's'}) · dedup {len(cp.get('vistos') or {})} fills · "
+      f"{int(cp.get('informes') or 0)} informe{'' if int(cp.get('informes') or 0) == 1 else 's'}")
 if res:
     print(f"      acierto {sum(1 for x in res if x.get('senal_acerto')) / len(res) * 100:.1f}% · "
           f"PnL teórico al precio nuestro ${pnl:+.2f} "
@@ -311,7 +317,9 @@ print("  ✓ bloque final EN TELEGRAM")
 # ------------------------------------------------------------- 11) comprobaciones
 assert s.count(f'HASH="{HASH8}"') == 1
 assert s.count(f'MD5_ESPERADO="{MD5}"') == 1
-assert "v1284" not in s and "v12.8.4" not in s, "queda algún nombre viejo"
+assert "v1284" not in s, "queda algún nombre operativo viejo (v1284)"
+assert s.count("v12.8.4") == 1 and "v12.6→v12.8.4" in s, \
+    "v12.8.4 sólo debe quedar en la línea de herencia de la cabecera"
 assert s.count("Paso 6c:") == 1 and s.count("COPY_DINERO=False") >= 2
 assert 'lg.get("yes_price")' not in s, "sigue el bug del precio del catálogo"
 assert 'lg.get("outcome_prices")' in s
