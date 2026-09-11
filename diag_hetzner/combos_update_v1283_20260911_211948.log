@@ -1,0 +1,185 @@
+=== ACTUALIZADOR v12.8.3 (✅ tick del intervalo · 🔍 Leer ahora · panel honesto · 🧹 cura) - Fri Sep 11 09:19:48 PM UTC 2026 ===
+HASH: 05b658b2 · md5 esperado: d096c581d57f05a66784c10f004fbf9b
+
+=== Paso 0: Copia de seguridad del estado ANTES de tocar nada ===
+OK: /opt/polymarket/combos_estado.pre_v1283_20260911_211948.json (128589 bytes)
+   ANTES: 9 abiertas · 45 archivadas · PnL archivadas $+11.26
+   archivadas: ✅27 ❌18 🔒manuales 0
+   ganadas SIN cobro real registrado: 11
+
+=== Paso 1: Descargar v12.8.3 a un .new y VALIDAR (el bot sigue corriendo) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/05b658b2/scripts_despliegue/poly_combos_bot.py
+Descargado: 230926 bytes
+md5 descargado: d096c581d57f05a66784c10f004fbf9b
+   OK md5 identico al del repo
+   OK compila
+
+=== Paso 2: Copia del fichero actual + parada del bot ===
+backup del binario: poly_combos_bot.pre_v1283_20260911_211948.py
+instalado: 230926 bytes
+
+=== Paso 3: Verificar funciones v12.8.3 (✅ tick · 🔍 leer · ⏸/↩️ · 🧹 cura) ===
+POLY COMBOS BOT v12.8.3 — COMBOS REALES (parlays multi-leg) via RFQ
+   OK    def teclado_fijo
+   OK    TICK_ACTIVO
+   OK    def intervalo_min_actual
+   OK    🔍 Leer ahora
+   OK    def cmd_leer_ahora
+   OK    LECTURA_LOCK
+   OK    def _eta_txt
+   OK    def situacion_mercado
+   OK    def situacion_op
+   OK    def precio_vivo_op
+   OK    def fills_wallet
+   OK    def casar_fills
+   OK    def es_basura
+   OK    def curar_abiertas
+   OK    def _reparto_mapa
+   OK    def reparto_cobro
+   OK    cobro_real_simple
+   OK    anulada
+   OK    def token_clob_de_leg
+   OK    def vivo_de
+   OK    ya_resuelta
+   OK    sin_valor
+   OK    token_clob_de_leg(lg) or lg.get
+   OK    time.sleep(0.15)
+   OK    MOT = {
+   OK    def saldo_token_op
+   OK    def _norm_titulo
+   OK    def _op_ts
+   OK    CTF_ERC1155
+   OK    COBROS_PAGINAS
+   OK    type=REDEEM
+   OK    COBRO_TITULO_VENTANA_D
+   OK    def cmd_reclamar
+   OK    def pendientes_reclamar
+   OK    def preflight_redeem
+   OK    def calldata_redeem
+   OK    def reclamar_check
+   OK    def _rpc_eth_call_ex
+   OK    def _texto_reclamar
+   OK    def _enlace_evento
+   OK    PARLAY_REDEEM_ADAPTER
+   OK    OPERADOR_REDEEM_4337
+   OK    RECLAMO_PREFLIGHT_H
+   OK    def reauditar_estado
+   OK    def programar_auditoria_inicial
+   OK    def cmd_reauditar
+   OK    def verdad_real
+   OK    def estado_leg
+   OK    def cobros_wallet
+   OK    def saldo_combo_token
+   OK    PARLAY_ERC1155
+   OK    AUDITORIA_CADA_H
+   OK    NEXT_AUDITORIA_TS
+   --- dispatch de /reclamar y del boton ---
+87:   ganador = $1), nunca el total del redeem; (c) `reclamar_check()` no deduplicaba
+4638:                        reclamar_check()      # v12.8: avisa de ganadas sin cobrar
+4855:    if text.startswith("/reclamar"):     # v12.8
+   --- RPC (fuera polygon-rpc.com, que da 401) ---
+255:RPCS_POLYGON = ("https://polygon-bor-rpc.publicnode.com", "https://polygon.drpc.org",
+256-                "https://1rpc.io/matic")
+257-OUTCOME_NUESTRO = ("yes", "true", "up")   # caras que equivalen a "la nuestra"
+
+=== Paso 3b: (quitado en v12.8.3) las 4 ops de agosto YA están inyectadas ===
+   archivadas ganadas SIN cobro real registrado: 11 ($130.56 por cobrar)
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-11 21:19:51 UTC; 8s ago
+   Main PID: 1462603 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 24.8M (peak: 25.1M)
+        CPU: 284ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1462603 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log (1ª auto-curación ~25s tras arrancar; 💰 si hay algo sin cobrar) ===
+[21:01:40]   NO acepto: cuota real 1.17 fuera de [1.2-2.5]
+[21:01:40]   ❌ combo: cuota_real_1.17_fuera
+[21:02:06]   pagina 1: +50 mercados, 2 legs de deportes
+[21:02:06]   pagina 2: +50 mercados, 2 legs de deportes
+[21:02:07]   pagina 3: +50 mercados, 9 legs de deportes
+[21:02:07]   pagina 4: +50 mercados, 41 legs de deportes
+[21:02:07]   pagina 5: +50 mercados, 75 legs de deportes
+[21:03:17]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[21:11:40] [AUTO] pasada (combos RFQ v11)
+[21:11:41]   pagina 1: +50 mercados, 1 legs de deportes
+[21:11:41]   pagina 2: +50 mercados, 1 legs de deportes
+[21:11:41]   pagina 3: +50 mercados, 8 legs de deportes
+[21:11:42]   pagina 4: +50 mercados, 38 legs de deportes
+[21:11:42]   pagina 5: +50 mercados, 72 legs de deportes
+[21:11:42] [COMBO] 2 legs · cuota est. 1.25 · stake $9.8 (AUTO)
+[21:11:42]   · US Open ATP: Alexander Zverev vs Karen Khachanov (p=0.94 vol=$3274k)
+[21:11:42]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$116k)
+[21:11:43]   RFQ create -> 200 {"rfq_id":"rfq-f57da04bd4c8d821fe8e7c21","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789161108429,"request":{"rfq_id":"rfq-f57da04bd4c8d821fe8e7c21",
+[21:11:43]   quote: cuota=1.21 blended=0.827 shares=11.75 total=$9.80
+[21:11:43]   stake AUTO 0: RFQ 1.21 sin ventaja vs legs (est 1.25) — NO se acepta ($0)
+[21:12:13]   ❌ combo: stake_auto_0_sin_margen
+[21:19:52] intervalo AUTO restaurado: 10 min
+[21:19:52] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+[21:19:52]   horario restaurado: próxima pasada en 1 min
+[21:19:52]   auto-curación: primera auditoría en 25s (después cada 4h)
+[21:19:52]   v12.8.3: 477 fills reales de la wallet (evidencia de cadena)
+[21:19:52]   🧹 v12.8.3 curación: 1 basura + 2 duplicados fantasma fuera de ABIERTAS · quedan 6 registros (6 casados con fill real, 0 sin evidencia)
+[21:19:52]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[21:19:52]   sync: 2 op(s) cerradas (0 ganadas, PnL $-0.10)
+[21:19:52]   sync inicial: 2 op(s) cerradas (0 ganadas)
+[21:19:52] v12.8.1 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[21:19:52] Proxy: http://100.83.57.99:8888
+[21:19:53] Test proxy: 200
+[21:19:53] v12.8.3 iniciado
+[21:20:24]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=47 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas +11.16→+11.16
+
+   --- lineas de auditoria / reclamos / RPC ---
+[20:11:53]   💰 reclamar: 4 ganada(s) sin cobrar (~$82.98) → aviso
+[20:15:10]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[20:15:17]   💰 pre-flight redeem: NO puede · revert: sólo la cuenta de Polymarket 0xac9930b2…5294 puede ejecutar redeem()
+[20:15:17]   💰 /reclamar: 4 sin cobrar ($82.98) · revisadas 27
+[20:18:24]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[20:18:29]   💰 /reclamar: 4 sin cobrar ($82.98) · revisadas 27
+[21:03:17]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[21:19:52]   auto-curación: primera auditoría en 25s (después cada 4h)
+[21:19:52]   verdad: 26 cobros REDEEM>0 por token + 77 por título (77 registros)
+[21:20:24]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=47 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas +11.16→+11.16
+
+=== Paso 6: Estado tras el arranque ===
+   AHORA: 4 abiertas · 47 archivadas · PnL archivadas $+11.16
+   archivadas: ✅27 ❌18 🔒0
+   ultima auditoria: 2026-09-11T21:20:24 · origen=auto reabiertas=0 corregidas=0 nuevas=0 · PnL 11.16→11.16
+   💰 reclamos avisados: 7 · $82.98
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+      Dota 2: Team Liquid vs Vici Gaming (BO3) - 1win Esse   $  19.05 · 2026-09-11T20:18
+      Counter-Strike: Imperial vs Procyon Gaming (BO3) - B   $  19.32 · 2026-09-11T20:18
+      LoL: Baam Esports vs 3BL Esports (BO3) - Arabian Lea   $  14.04 · 2026-09-11T20:18
+      LoL: Dark Passage vs Team Phoenix (BO3) - TCL Play-I   $  30.57 · 2026-09-11T20:18
+
+=== Paso 6b: Comprobacion EN VIVO v12.8.3 (suspendido + fills reales + cura) ===
+   1) Seyboth Wild (CLOB 200): closed=False active=False accepting_orders=False end=2026-09-15T00:00:00Z
+      ⇒ el bot debe mostrar ⏸ SUSPENDIDO + resolución prevista (v12.8.3)
+      cara Thiago Seyboth Wild            price=0.5585 winner=False  ← último precio publicado (libro cerrado)
+      cara Francesco Ferrari              price=0.4415 winner=False  ← último precio publicado (libro cerrado)
+   2) Barranquilla: 2 fills REALES en data-api (el bot tenía 4 registros)
+      1788837652 · 9.9 sh · 4.95 USD · 0xb26d3e96e9bd0f27e9
+      1788837306 · 9.9 sh · 4.95 USD · 0x8311856b39b8134a5e
+   3) estado tras la cura: 4 abiertas · 47 archivadas (↩️ anuladas 2) · 🧹 descartadas 3
+      🧹 (registro vacío)                             registro vacío (basura): sin pregunta, stake ni legs
+      🧹 Barranquilla: Julieta Pareja vs Lucrezia S   duplicado fantasma: hay más registros que fills real
+      🧹 Barranquilla: Julieta Pareja vs Lucrezia S   duplicado fantasma: hay más registros que fills real
+      ↩️ Barranquilla: Julieta Pareja vs Lucrezia S   cobro $0.00 · PnL $-0.05
+      ↩️ Barranquilla: Julieta Pareja vs Lucrezia S   cobro $0.00 · PnL $-0.05
+
+=== EN TELEGRAM ===
+  Teclado        → el botón ⏱ del intervalo ACTIVO lleva ✅ (se mueve solo al cambiarlo)
+  🔍 Leer ahora  → lectura inmediata: bankroll, catálogo, qué abriría y estado REAL
+                   de cada posición. SÓLO MIRAR: no abre, no vende, no archiva (/leer)
+  📂 Abiertas    → ⏸ SUSPENDIDO (sin libro + fecha prevista) y ↩️ ANULADO en cristiano;
+                   si /midpoint da 404 muestra el último precio publicado
+  ✅ Cerradas    → ↩️ anuladas/devueltas aparte de 🟢/🔴 (PnL real, no inventado)
+  /status        → v12.8.3 + 🩺 auto-curación (ahora con 🧹 limpieza de basura/duplicados)
+  /reauditar seco→ detalle de la curación sin modificar nada
+  🧹 descartadas → nada se borra: los registros fantasma/vacíos quedan auditables
