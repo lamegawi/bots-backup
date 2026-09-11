@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-POLY COMBOS BOT v12.8.3 — COMBOS REALES (parlays multi-leg) via RFQ
+POLY COMBOS BOT v12.8.4 — COMBOS REALES (parlays multi-leg) via RFQ
 =====================================================
 Estrategia nueva (vs v7):
   1. Lee COMBOS ACTIVOS del endpoint publico: /v1/rfq/combo-markets
@@ -53,6 +53,19 @@ Estrategia nueva (vs v7):
    📋 Trades: un mensaje por combo con SU botón debajo. Estadísticas y
    contadores diarios separados por franja (las manuales NO consumen
    el tope AUTO).
+   v12.8.4: 🟡 SEMI DE VERDAD + ⚖️ VENTAJA MÍNIMA 5%. SEMI era un modo muerto
+   (auto_pasada salía al instante si el modo no era AUTO, y auto_loop ni
+   escaneaba): pulsar 🟡 dejaba el bot parado, sin nada que aprobar. Ahora en
+   SEMI el bot busca y TE PROPONE el combo con ✅ Aceptar / ❌ Descartar, la
+   propuesta caduca a los 10 min y al aceptar se pide una cotización nueva
+   (las del RFQ viven segundos) y se ejecuta por la ruta de AUTO. Además sólo
+   compra si prob × cuota_real ≥ 1.05 (antes bastaba con que el RFQ no fuera
+   peor que el mercado, o sea esperanza ≈ 0). Además el MODO guardado ya
+   sobrevive al reinicio: main() no leía estado["modo"], así que el bot volvía
+   siempre en AUTO por mucho que hubieras pulsado 🟡 SEMI. Y: ✅ verde en el botón
+   del modo activo, 🧮 cuentas de compensación en 📊 Stats (victorias por
+   derrota, win-rate de equilibrio) y cosméticos (arranque decía v12.8.1,
+   anuladas sin cobro_real, "sin cobrar" contaba avisos de importe 0).
    v12.8.3: EL PANEL DICE LA VERDAD + ✅ + 🔍. (1) El botón ⏱ del intervalo
    ACTIVO lleva un tick verde ✅ (teclado dinámico, se reconstruye en cada
    mensaje). (2) Nuevo botón 🔍 Leer ahora (+ /leer): lectura inmediata que
@@ -277,6 +290,9 @@ POOL_TOP_N = 30            # considerar top-N legs por volumen
 MAX_COMBOS_DIA = 6         # tope de combos por día UTC
 COOLDOWN_LEG_H = 6.0       # horas sin reutilizar un leg ya operado
 RFQ_TIMEOUT_FILL_S = 45    # espera de FILLED tras aceptar
+# v12.8.4: SEMI de verdad + filtro de ventaja
+PROPUESTA_VALIDA_S = 600   # lo que vive una propuesta 🟡 SEMI antes de caducar
+VENTAJA_MIN_EV = 0.05      # exige prob × cuota_real ≥ 1.05 (5% de ventaja real)
 MAX_TRADES_SIMULTANEOS = 3
 INTERVALO_AUTO_S = 300
 NEXT_PASADA_TS = 0.0   # v11.1: próxima pasada programada (epoch); 0 = ya
@@ -446,21 +462,28 @@ def intervalo_min_actual():
 
 
 def teclado_fijo():
-    """✅ v12.8.3: teclado DINÁMICO. El botón ⏱ del intervalo ACTIVO sale con un
-    tick verde al final ("⏱ 10m ✅") para ver de un golpe cada cuánto lee el bot;
+    """✅ v12.8.3: teclado DINÁMICO. El botón ⏱ del intervalo activo y el del MODO
+    activo salen con un tick verde al final ("⏱ 10m ✅", "🟡 SEMI ✅") para ver de
+    un golpe cada cuánto lee el bot y en qué modo está;
     los demás van sin tick. Se reconstruye en CADA mensaje porque Telegram sólo
     refresca un teclado cuando llega uno nuevo, así que el tick se mueve solo al
-    cambiar el intervalo. El tick va AL FINAL para que el handler
-    (text.startswith("⏱")) siga casando. Añade el botón 🔍 Leer ahora."""
+    cambiar el intervalo o el modo. El tick va AL FINAL para que los handlers
+    sigan casando: el de ⏱ por startswith y los de modo vía _sin_tick() (v12.8.4).
+    Añade el botón 🔍 Leer ahora."""
     act = intervalo_min_actual()
     fila_int = [{"text": f"⏱ {m}m" + (TICK_ACTIVO if act == m else "")}
                 for m in INTERVALOS_MIN]
+    # v12.8.4: también el MODO activo lleva su ✅ (🟢 AUTO ✅ / 🟡 SEMI ✅ / 🔴 OFF ✅)
+    _modo_txt = {"AUTO": "🟢 AUTO", "SEMI": "🟡 SEMI", "OFF": "🔴 OFF"}.get(
+        str(MODO_OPERACION or "").upper())
+    fila_modo = [{"text": t + (TICK_ACTIVO if t == _modo_txt else "")}
+                 for t in ("🟢 AUTO", "🟡 SEMI", "🔴 OFF")]
     return {
         "keyboard": [
             [{"text": "📋 Trades"}, {"text": "💰 Saldo"}, {"text": "📂 Abiertas"}],
             [{"text": "💥 SúperCombos"}, {"text": "💰 Reclamar"}],
             [{"text": "✅ Cerradas"}, {"text": "📊 Stats"}, {"text": "🏆 Top"}],
-            [{"text": "🟢 AUTO"}, {"text": "🟡 SEMI"}, {"text": "🔴 OFF"}],
+            fila_modo,
             [{"text": "💵 Stake AUTO"}, {"text": "💵 Stake $5"}],
             [{"text": "🔢 Máx ops/día"}, {"text": "🎯 Prob AUTO"}],
             fila_int,
@@ -1360,6 +1383,25 @@ def programar_paso(ts):
         pass
 
 
+def restaurar_modo(estado=None):
+    """🟡 v12.8.4: al arrancar recupera el MODO guardado (AUTO/SEMI/OFF).
+    main() NO lo leía: el bot volvía SIEMPRE en AUTO aunque hubieras pulsado
+    🟡 SEMI, así que cualquier reinicio, despliegue o caída te devolvía al
+    automático sin avisar (buena parte de por qué "el SEMI no funcionaba")."""
+    global MODO_OPERACION
+    try:
+        est = estado if estado is not None else cargar_estado()
+        md = str(est.get("modo") or "").upper()
+    except Exception:
+        md = ""
+    if md in ("AUTO", "SEMI", "OFF"):
+        MODO_OPERACION = md
+        log(f"  modo restaurado del estado: {md}")
+    else:
+        log(f"  modo sin guardar en el estado → sigo en {MODO_OPERACION}")
+    return MODO_OPERACION
+
+
 def restaurar_horario():
     """v11.4: al arrancar, recupera chat_id y la próxima pasada programada.
     Si el horario caducó o no existe → now + intervalo (NUNCA inmediata)."""
@@ -1492,6 +1534,23 @@ def ejecutar_combo_rfq(sel, chat_id=None, dry_run=False, franja="base", stake=No
             enviar(chat_id, f"⚠️ Cuota real {cuota_real} fuera de rango {banda} — quote NO aceptado ($0)")
         liberar_combo(pids)
         return False, f"cuota_real_{cuota_real}_fuera"
+    # ⚖️ v12.8.4: FILTRO DE VENTAJA (esperanza positiva). prob = 1/cuota_est es el
+    # precio implícito de los legs, así que EV = prob × cuota_real − 1. Exigimos
+    # ≥5%: un RFQ que sólo iguala al mercado (EV≈0) no compensa. Los botones
+    # manuales 🚀/💥 (manual=True) siguen operando siempre: los eliges tú.
+    if not manual and cuota_est > 0:
+        _ev = (cuota_real / cuota_est) - 1.0
+        if _ev < VENTAJA_MIN_EV:
+            liberar_combo(pids)
+            log(f"  ⚖️ ventaja insuficiente: RFQ {cuota_real} vs mercado ~{cuota_est} "
+                f"= EV {_ev * 100:+.1f}% < {VENTAJA_MIN_EV * 100:.0f}% exigidos — NO se acepta ($0)")
+            if chat_id:
+                enviar(chat_id, f"⚖️ *Combo omitido por falta de ventaja* ($0)\n"
+                                f"Cuota real {cuota_real} vs mercado ~{cuota_est} = "
+                                f"EV {_ev * 100:+.1f}% · se exigen ≥{VENTAJA_MIN_EV * 100:.0f}% "
+                                f"(cuota ≥{cuota_est * (1 + VENTAJA_MIN_EV):.2f}).\n"
+                                f"_Comprar algo que sólo empata es perder: no se acepta._")
+            return False, f"ventaja_{_ev * 100:+.1f}_insuficiente"
     # v12.2: stake definitivo con la cuota REAL y la ventaja sobre los legs
     if _auto and not _stake_forzado:
         _nuevo = stake_para(cuota_real, cuota_est, manual=manual)
@@ -2128,6 +2187,8 @@ def calcular_stats():
     historial = estado.get("historial", [])
     s = {
         "total": len(copiados), "wins": 0, "losses": 0, "anuladas": 0,
+        # v12.8.4: brutos para las cuentas de compensación (📊 Stats)
+        "pnl_wins": 0.0, "pnl_losses": 0.0, "stake_wins": 0.0, "stake_losses": 0.0,
         "pnl": 0.0, "stake": 0.0, "mejor": None, "peor": None,
         "por_franja": {f: {"ops": 0, "wins": 0, "pnl": 0.0, "stake": 0.0}
                        for f in ("base", "extendida", "super")},
@@ -2139,9 +2200,16 @@ def calcular_stats():
             s["pnl"] += pnl
             s["stake"] += stake
             # ↩️ v12.8.3: las anuladas (mercado devuelto) no son ni ✅ ni ❌
-            if str(op.get("resultado")) == "anulada": s["anuladas"] += 1
-            elif pnl > 0: s["wins"] += 1
-            else: s["losses"] += 1
+            if str(op.get("resultado")) == "anulada":
+                s["anuladas"] += 1
+            elif pnl > 0:
+                s["wins"] += 1
+                s["pnl_wins"] += pnl        # v12.8.4
+                s["stake_wins"] += stake
+            else:
+                s["losses"] += 1
+                s["pnl_losses"] += pnl      # v12.8.4
+                s["stake_losses"] += stake
             pf = s["por_franja"][franja_of(op)]
             pf["ops"] += 1
             pf["pnl"] += pnl
@@ -2572,7 +2640,7 @@ def pendientes_reclamar(con_saldo=True, estado=None):
 def _texto_reclamar(res, ok=None, det=""):
     """v12.8: mensaje de /reclamar."""
     rec = res.get("reclamables") or []
-    txt = ("💰 *RECLAMAR v12.8.3*\n\n"
+    txt = ("💰 *RECLAMAR v12.8.4*\n\n"
            f"Ops revisadas: {res.get('revisadas', 0)}"
            + (f" · sin datos on-chain: {res.get('sin_datos')}" if res.get("sin_datos") else "")
            + "\n\n")
@@ -2902,6 +2970,9 @@ def sincronizar_operaciones():
                                else ("ganada" if r["ganada"] else "perdida"))
             op["pnl"] = r["pnl"]
             op["fin_real"] = r.get("fin")
+            op["fuente_verdad"] = r.get("fuente")       # v12.8.4
+            if r.get("cobro_real"):
+                op["cobro_real"] = r["cobro_real"]      # v12.8.4: dinero real recibido
             op["cerrado_en"] = datetime.now(timezone.utc).isoformat()
             nuevas.append(op)
         else:
@@ -3431,7 +3502,7 @@ def render_abierta(op):
 # COMANDOS
 # ============================================
 def cmd_start(chat_id):
-    texto = (f"🤖 *POLY COMBOS BOT v12.8.3*\n\n"
+    texto = (f"🤖 *POLY COMBOS BOT v12.8.4*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt()}*\n"
              f"🔢 Máx ops/día: *{max_ops()}*\n"
@@ -3450,6 +3521,8 @@ def cmd_start(chat_id):
              f"🔒 Botones en 📂 Abiertas — cierran la posición DE VERDAD (combos por RFQ SELL, simples por CLOB) · /testcerrar = gratis\n"
              f"⏩ Botones ⏱ — intervalo entre pasadas ({INTERVALO_AUTO_S // 60} min ahora) · el ACTIVO lleva ✅\n"
              f"🔍 *Leer ahora* — lectura inmediata (bankroll, catálogo, qué abriría y estado real de cada posición). SÓLO MIRAR: no abre ni vende nada · /leer\n"
+             f"🟡 *SEMI* — busco y te PROPONGO el combo con ✅ Aceptar / ❌ Descartar (caduca a los {int(PROPUESTA_VALIDA_S // 60)} min). Nada se compra sin tu ✅\n"
+             f"⚖️ Ventaja mínima *{int(VENTAJA_MIN_EV * 100)}%*: sólo compra si la cotización real mejora el mercado (prob × cuota ≥ {1 + VENTAJA_MIN_EV:.2f}). Vale en 🟢 AUTO y 🟡 SEMI; los botones 🚀/💥 siempre operan\n"
              f"🧪 /testcombo — prueba gratis (quote sin aceptar)\n"
              f"🩺 Auto-curación ACTIVA: cada {AUDITORIA_CADA_H:.0f}h (y al arrancar) contrasta ✅ Cerradas con la realidad de Polymarket y corrige sola · /reauditar = a mano\n"
              f"💰 /reclamar — ganadas SIN cobrar: cuánto hay pendiente, enlace al evento y cómo cobrarlo (el bot no puede redimir parlays: el adaptador es sólo para la cuenta de Polymarket)\n"
@@ -3553,6 +3626,28 @@ def cmd_stats(chat_id):
         for nombre, fr in (("🤖 Base/AUTO", "base"), ("🚀 Extendidas", "extendida"), ("💥 Súper", "super")):
             d = pf.get(fr) or {"ops": 0, "wins": 0, "pnl": 0.0}
             texto += f"{nombre}: {d['ops']} ops · ✅{d['wins']} · PnL ${d['pnl']:+.2f}\n"
+    # 🧮 v12.8.4: cuántas victorias compensan una derrota, con TU libro real
+    if s["wins"] and s["losses"] and s["pnl_wins"] > 0 and s["pnl_losses"] < 0:
+        _mw = s["pnl_wins"] / s["wins"]              # media ganada (+)
+        _ml = -s["pnl_losses"] / s["losses"]         # media perdida (+)
+        _sw = (s["stake_wins"] / s["wins"]) if s["wins"] else 0.0
+        _wr_eq = (_ml / (_mw + _ml) * 100) if (_mw + _ml) > 0 else 0.0
+        _wr_tu = s["wins"] / (s["wins"] + s["losses"]) * 100
+        texto += ("\n🧮 *CUENTAS DE COMPENSACIÓN* (tu libro real)\n"
+                  f"Media por ganada: *+${_mw:.2f}* ({s['wins']} ops)\n"
+                  f"Media por pérdida: *-${_ml:.2f}* ({s['losses']} ops)\n"
+                  f"⇒ *{_ml / _mw:.2f} victorias* por cada derrota\n"
+                  f"Win-rate de equilibrio: *{_wr_eq:.1f}%* · el tuyo: *{_wr_tu:.1f}%* "
+                  + ("✅ por encima\n" if _wr_tu >= _wr_eq else "❌ por debajo\n"))
+        if _sw > 0:
+            _t = []
+            for _q in (1.5, 2.0, 2.5):
+                _b = _sw * (_q - 1)
+                _t.append(f"cuota {_q:.1f} → {_ml / _b:.1f}" if _b > 0 else f"cuota {_q:.1f} → ∞")
+            texto += (f"_Victorias para recuperar una derrota media (-${_ml:.2f}) "
+                      f"apostando ${_sw:.2f}: " + " · ".join(_t) + "_\n")
+        texto += (f"_Sólo se compra con ventaja: prob × cuota ≥ {1 + VENTAJA_MIN_EV:.2f} "
+                  f"(filtro activo en 🟢 AUTO y 🟡 SEMI)_\n")
     if s["mejor"]:
         m = s["mejor"]
         texto += f"\n🏆 Mejor: {m.get('question','?')[:40]} → ${m.get('pnl',0):+.2f}\n"
@@ -3984,6 +4079,9 @@ def cmd_top(chat_id):
     return enviar(chat_id, texto)
 
 def cmd_modo(chat_id, modo):
+    """🟢/🟡/🔴 v12.8.4: cambia el modo Y explica qué hace cada uno de verdad.
+    AUTO = abre solo. SEMI = propone con ✅/❌ y no compra sin tu visto bueno
+    (antes SEMI no hacía NADA: era un OFF disfrazado). OFF = parado."""
     global MODO_OPERACION
     modo = modo.upper()
     if modo not in ("AUTO", "SEMI", "OFF"):
@@ -3992,9 +4090,28 @@ def cmd_modo(chat_id, modo):
     estado = cargar_estado()
     estado["modo"] = modo
     guardar_estado(estado)
-    enviar(chat_id, f"*Modo: {modo}*")
+    log(f"modo -> {modo}")
     if modo == "AUTO":
         programar_pasada_ahora()   # v11.3: sin hilo paralelo
+        return enviar(chat_id, f"🟢 *Modo: AUTO* ✅\n"
+                               f"Abre combos solo cada {INTERVALO_AUTO_S // 60} min "
+                               f"(cuota {CUOTA_MIN}-{CUOTA_MAX} · prob ≥{prob_nivel_txt(prob_min_auto(estado))} · "
+                               f"tope {max_ops(estado)}/día) y sólo si la cotización mejora el "
+                               f"mercado ≥{int(VENTAJA_MIN_EV * 100)}%.")
+    if modo == "SEMI":
+        # v12.8.4: en SEMI también hay pasadas, pero PROPONEN en vez de comprar
+        programar_paso(time.time() + INTERVALO_AUTO_S)
+        return enviar(chat_id, f"🟡 *Modo: SEMI* ✅\n"
+                               f"Cada {INTERVALO_AUTO_S // 60} min busco y *te propongo* el mejor combo "
+                               f"con botones ✅ Aceptar / ❌ Descartar.\n"
+                               f"*Nada se compra sin tu ✅* · la propuesta caduca a los "
+                               f"{int(PROPUESTA_VALIDA_S // 60)} min.\n"
+                               f"_Al aceptar pido cotización nueva y sólo compro si mejora el "
+                               f"mercado ≥{int(VENTAJA_MIN_EV * 100)}%; si no, te lo digo y no gasto nada._\n"
+                               f"🔍 *Leer ahora* te enseña qué propondría, sin esperar.")
+    return enviar(chat_id, "🔴 *Modo: OFF* ✅\nNo abro ni propongo nada. Siguen activos los "
+                           "paneles, la auto-curación 🩺, /reclamar 💰 y los botones "
+                           "manuales 🚀/💥.")
 
 def cmd_stake(chat_id, valor):
     global STAKE_POR_TRADE
@@ -4432,6 +4549,15 @@ def cmd_leer_ahora(chat_id):
                   f"hoy {ops_pagadas_hoy(estado)}/{max_ops(estado)} ops · "
                   f"prob mín {prob_nivel_txt(prob_min_auto(estado))}")]
             try:
+                _prune_propuestas()          # v12.8.4: propuestas SEMI vivas
+                if PROPUESTAS:
+                    _ul = max(v[0] for v in PROPUESTAS.values())
+                    _q = max(0, int((PROPUESTA_VALIDA_S - (time.time() - _ul)) // 60))
+                    L.append(f"🟡 Propuestas SEMI vivas: *{len(PROPUESTAS)}* "
+                             f"(la última caduca en ~{_q} min)")
+            except Exception:
+                pass
+            try:
                 sal = saldo_disponible_clob()
                 L.append(f"💵 Disponible en la wallet: *${float(sal):.2f}*"
                          if sal is not None else "💵 Disponible: sin dato (proxy/credenciales)")
@@ -4503,7 +4629,8 @@ def cmd_leer_ahora(chat_id):
                 L.append(f"📂 Abiertas: sin lectura ({str(e)[:70]})")
             # ---- sin cobrar + última curación + stats
             try:
-                rec = estado.get("reclamos_avisados") or {}
+                rec = {k: v for k, v in (estado.get("reclamos_avisados") or {}).items()
+                       if float(v.get("importe") or 0) > 0.000001}   # v12.8.4
                 if rec:
                     imp = sum(float(v.get("importe") or 0) for v in rec.values())
                     L.append(f"💰 *Sin cobrar*: {len(rec)} posiciones · ${imp:.2f} — "
@@ -4550,6 +4677,153 @@ def cmd_leer_ahora(chat_id):
     return None
 
 
+
+# ============================================
+# v12.8.4: 🟡 SEMI DE VERDAD (propuesta + ✅/❌, caduca a los 10 min)
+# ============================================
+PROPUESTAS = {}          # h8 -> (ts, sel, chat_id, texto)
+
+
+def _prune_propuestas():
+    """v12.8.4: tira las propuestas caducadas (las vivas se quedan)."""
+    global PROPUESTAS
+    ahora = time.time()
+    PROPUESTAS = {k: v for k, v in PROPUESTAS.items()
+                  if ahora - v[0] < PROPUESTA_VALIDA_S}
+
+
+def _sin_tick(t):
+    """✅ v12.8.4: quita el tick de un texto de botón para casar con el handler
+    (el botón activo llega como "🟡 SEMI ✅" y el handler compara "🟡 SEMI")."""
+    return str(t or "").replace(TICK_ACTIVO, "").strip()
+
+
+def proponer_combo_semi(chat_id, sel, estado=None):
+    """🟡 v12.8.4: en SEMI el bot NO compra: PROPONE el combo con botones
+    ✅ Aceptar / ❌ Descartar y espera. Caduca a los PROPUESTA_VALIDA_S (10 min).
+    No reserva la huella (si no, el anti-duplicados bloquearía tu propio ✅);
+    la reserva la hace ejecutar_combo_rfq al aceptar, como en AUTO."""
+    _prune_propuestas()
+    estado = estado if estado is not None else cargar_estado()
+    pids = [str(c.get("yes_token")) for c in sel]
+    if huella_combo(pids) in (estado.get("combos_rfq", {}) or {}).get("huellas", {}):
+        log("  [SEMI] combo ya operado: no se propone")
+        return None
+    h8 = hash8_sel(sel)
+    if any(hash8_sel(v[1]) == h8 for v in PROPUESTAS.values()):
+        log(f"  [SEMI] ya hay una propuesta viva para este combo ({h8})")
+        return None
+    prod = 1.0
+    for c in sel:
+        prod *= float(c.get("yes_price") or 0)
+    cuota_est = round(1 / prod, 2) if prod > 0 else 0.0
+    try:
+        stake = float(stake_operacion(estado, cuota_est, cuota_est) or 0)
+    except Exception:
+        stake = 0.0
+    if stake < STAKE_MIN_AUTO:
+        stake = STAKE_MIN_AUTO
+    gana = round(stake * max(0.0, cuota_est - 1), 2)
+    cuota_min_real = round(cuota_est * (1 + VENTAJA_MIN_EV), 2)
+    caduca = datetime.fromtimestamp(time.time() + PROPUESTA_VALIDA_S,
+                                    tz=timezone.utc).strftime("%H:%M:%S")
+    txt = (f"🟡 *SEMI — PROPUESTA* (caduca en {int(PROPUESTA_VALIDA_S // 60)} min)\n\n"
+           f"🎫 Combo de {len(sel)} legs · cuota est. *{cuota_est:.2f}* · "
+           f"prob *{prod * 100:.0f}%*\n")
+    for c in sel:
+        txt += (f"   · {str(c.get('question') or '?')[:64]} "
+                f"(p={float(c.get('yes_price') or 0):.2f})\n")
+    txt += (f"💵 Stake previsto *${stake:.2f}* · ganancia si acierta *+${gana:.2f}*\n"
+            f"⚖️ Al aceptar pediré cotización NUEVA (las del RFQ viven segundos) y sólo "
+            f"compro si mejora el mercado ≥{int(VENTAJA_MIN_EV * 100)}% "
+            f"(cuota real ≥{cuota_min_real:.2f}). Si no, te lo digo y no gasto nada.\n"
+            f"🔢 hoy {ops_pagadas_hoy(estado)}/{max_ops(estado)} ops · ⏱ caduca {caduca} UTC")
+    kb = {"inline_keyboard": [
+        [{"text": "✅ Aceptar y comprar", "callback_data": f"sm:{h8}"},
+         {"text": "❌ Descartar", "callback_data": f"smx:{h8}"}]]}
+    PROPUESTAS[h8] = (time.time(), sel, chat_id, txt)
+    log(f"  [SEMI] propuesta {h8}: {len(sel)} legs · cuota est {cuota_est} · "
+        f"prob {prod:.2f} · stake ${stake} · caduca en {int(PROPUESTA_VALIDA_S // 60)} min")
+    return enviar(chat_id, txt, kb)
+
+
+def ejecutar_semi_aprobado(chat_id, sel, h8=None):
+    """✅ v12.8.4: aprobaste la propuesta → se ejecuta por la MISMA ruta que
+    AUTO (stake dinámico con la cuota real, filtro de ventaja, tope diario y
+    anti-duplicados). Hilo propio serializado con PASADA_LOCK."""
+    PROPUESTAS.pop(h8, None)
+    titulo = " + ".join(str(c.get("question", "?"))[:38] for c in sel)
+
+    def _run():
+        try:
+            with PASADA_LOCK:
+                estado = cargar_estado()
+                _mx, _hoy = max_ops(estado), ops_pagadas_hoy(estado)
+                if _hoy >= _mx:
+                    return enviar(chat_id, f"⛔ *Tope diario alcanzado* ({_hoy}/{_mx} ops pagadas hoy)")
+                pids = [str(c.get("yes_token")) for c in sel]
+                if huella_combo(pids) in (estado.get("combos_rfq", {}) or {}).get("huellas", {}):
+                    return enviar(chat_id, f"⛔ *Combo ya operado* (anti-duplicados):\n{titulo[:80]}")
+                log(f"[SEMI] aprobado con ✅: {titulo[:70]}")
+                enviar(chat_id, f"✅ *SEMI aprobado* — pidiendo cotización nueva…\n📌 {titulo[:80]}")
+                ok, res = ejecutar_combo_rfq(sel, chat_id=chat_id, franja="base")
+                if not ok:
+                    enviar(chat_id, f"❌ *No comprado* (tu ✅ no ha gastado nada)\n"
+                                    f"📌 {titulo[:70]}\nMotivo: `{str(res)[:70]}`")
+        except Exception as e:
+            log(f"[SEMI] error: {e}")
+            try:
+                enviar(chat_id, f"❌ Error ejecutando la propuesta: {str(e)[:100]}")
+            except Exception:
+                pass
+
+    threading.Thread(target=_run, daemon=True).start()
+
+
+def _marcar_propuesta(chat_id, message_id, etiqueta):
+    """v12.8.4: sustituye los botones de la propuesta por su resultado, para que
+    nadie pueda pulsar ✅ dos veces ni aceptar una propuesta caducada."""
+    if not chat_id or not message_id:
+        return
+    try:
+        telegram_api("editMessageReplyMarkup", {
+            "chat_id": chat_id, "message_id": message_id,
+            "reply_markup": json.dumps({"inline_keyboard": [
+                [{"text": etiqueta, "callback_data": "noop"}]]})})
+    except Exception as e:
+        log(f"  [SEMI] sin editar botones: {str(e)[:60]}")
+
+
+def respuesta_propuesta(cbq, h8, aceptar):
+    """v12.8.4: atiende ✅/❌ de una propuesta SEMI, con caducidad de 10 min."""
+    cbid = cbq.get("id")
+    msg = cbq.get("message") or {}
+    cid = (msg.get("chat") or {}).get("id") or (cbq.get("from") or {}).get("id")
+    mid = msg.get("message_id")
+    hit = PROPUESTAS.get(h8)
+    if not hit or time.time() - hit[0] > PROPUESTA_VALIDA_S:
+        PROPUESTAS.pop(h8, None)
+        telegram_api("answerCallbackQuery", {
+            "callback_query_id": cbid, "show_alert": True,
+            "text": (f"⌛ Propuesta caducada o ya atendida (valía "
+                     f"{int(PROPUESTA_VALIDA_S // 60)} min). No se compra dos veces: "
+                     "la pasada SEMI siguiente te propondrá otro combo.")})
+        _marcar_propuesta(cid, mid, "⌛ caducada")
+        log(f"  [SEMI] propuesta {h8} caducada (pulsada fuera de tiempo)")
+        return
+    if not aceptar:
+        PROPUESTAS.pop(h8, None)
+        telegram_api("answerCallbackQuery", {"callback_query_id": cbid, "text": "❌ Descartada"})
+        _marcar_propuesta(cid, mid, "❌ descartada")
+        log(f"  [SEMI] propuesta {h8} descartada por el usuario")
+        return enviar(cid, "❌ *Propuesta descartada* — no se ha comprado nada ($0).\n"
+                           "_La pasada SEMI siguiente te propondrá otro combo._")
+    telegram_api("answerCallbackQuery", {"callback_query_id": cbid,
+                                         "text": "✅ Aceptada, pidiendo cotización…"})
+    _marcar_propuesta(cid, mid, "✅ aceptada")
+    return ejecutar_semi_aprobado(cid, hit[1], h8)
+
+
 def cmd_status(chat_id):
     global CHAT_ID
     CHAT_ID = chat_id
@@ -4561,11 +4835,14 @@ def cmd_status(chat_id):
     _aud_txt = (f"🩺 Auto-curación: {_madrid(_est.get('ultima_auditoria')) if _est.get('ultima_auditoria') else '—'}"
                 + (f" · ⏳{_aud.get('reabiertas', 0)} ✏️{_aud.get('corregidas', 0)} "
                    f"🏁{_aud.get('nuevas_cerradas', 0)}\n" if _aud else " (sin ejecutar aún)\n"))
-    _rec = _est.get("reclamos_avisados") or {}
+    # v12.8.4: sólo los avisos con dinero DE VERDAD (importe 0 = "ya revisado:
+    # saldo 0 on-chain", que no es un reclamo pendiente)
+    _rec = {k: v for k, v in (_est.get("reclamos_avisados") or {}).items()
+            if float(v.get("importe") or 0) > 0.000001}
     _rec_txt = (f"💰 Sin cobrar (último aviso): *{len(_rec)}* "
                 f"(${sum(float(v.get('importe') or 0) for v in _rec.values()):.2f}) "
                 f"· /reclamar\n" if _rec else "")
-    texto = (f"📊 *ESTADO v12.8.3 (Combos)*\n\n"
+    texto = (f"📊 *ESTADO v12.8.4 (Combos)*\n\n"
              f"Modo: *{MODO_OPERACION}*\n"
              f"Stake: *{stake_txt(_est)}*\n"
              f"Cuota: *{CUOTA_MIN}-{CUOTA_MAX}*\n"
@@ -4589,9 +4866,9 @@ def auto_pasada(chat_id):
     ejecuta via RFQ (quote → firma Exchange v3 → accept → FILLED).
     Max 1 combo por pasada + tope diario. La via CLOB de legs sueltos
     (ejecutar_trade) queda DESACTIVADA en AUTO: no eran combos reales."""
-    if MODO_OPERACION != "AUTO":
-        return
-    log("[AUTO] pasada (combos RFQ v11)")
+    if MODO_OPERACION not in ("AUTO", "SEMI"):
+        return                      # v12.8.4: en SEMI también hay pasada (propone)
+    log(f"[{MODO_OPERACION}] pasada (combos RFQ v11)")
     try:
         legs = listar_combos()
     except Exception as e:
@@ -4605,6 +4882,10 @@ def auto_pasada(chat_id):
     if not sel:
         log("  sin combos viables esta pasada (eventos distintos, cuota, cooldown, tope)")
         return
+    if MODO_OPERACION == "SEMI":
+        # 🟡 v12.8.4: SEMI de verdad — PROPONE y espera tu ✅ (caduca a los 10 min)
+        proponer_combo_semi(chat_id, sel, estado)
+        return
     ok, res = ejecutar_combo_rfq(sel, chat_id)
     if ok:
         log(f"  ✅ combo OK: {str(res)[:110]}")
@@ -4616,12 +4897,13 @@ def auto_loop():
     intervalo con los botones ⏱ surta efecto inmediato (antes el sleep de
     300s bloqueaba hasta terminar).
     v12.7: también dispara la AUTO-CURACIÓN (re-auditoría) sola: al arrancar y
-    cada AUDITORIA_CADA_H horas, serializada con las pasadas (PASADA_LOCK)."""
+    cada AUDITORIA_CADA_H horas, serializada con las pasadas (PASADA_LOCK).
+    v12.8.4: en SEMI también hay pasada, pero PROPONE (✅/❌) en vez de comprar."""
     global NEXT_PASADA_TS, NEXT_AUDITORIA_TS
     while True:
         try:
             ahora = time.time()
-            if MODO_OPERACION == "AUTO" and CHAT_ID and ahora >= NEXT_PASADA_TS:
+            if MODO_OPERACION in ("AUTO", "SEMI") and CHAT_ID and ahora >= NEXT_PASADA_TS:
                 programar_paso(ahora + INTERVALO_AUTO_S)
                 with PASADA_LOCK:
                     auto_pasada(CHAT_ID)
@@ -4717,6 +4999,10 @@ def procesar_callback(cbq):
         telegram_api("answerCallbackQuery", {"callback_query_id": cbid, "text": "Lanzando combo…"})
         lanzar_combo_manual(cid, hit[1], hit[2] if len(hit) > 2 else "base")
         return
+    if data.startswith("sm:") and cid:       # v12.8.4: 🟡 SEMI ✅ aceptar
+        return respuesta_propuesta(cbq, data.split(":", 1)[1], True)
+    if data.startswith("smx:") and cid:      # v12.8.4: 🟡 SEMI ❌ descartar
+        return respuesta_propuesta(cbq, data.split(":", 1)[1], False)
     if data.startswith("mx:") and cid:
         acc = data.split(":", 1)[1]
         telegram_api("answerCallbackQuery", {"callback_query_id": cbid})
@@ -4820,11 +5106,11 @@ def procesar_update(update):
         return cmd_stats(chat_id)
     elif text == "🏆 Top":
         return cmd_top(chat_id)
-    elif text == "🟢 AUTO":
+    elif _sin_tick(text) == "🟢 AUTO":     # v12.8.4: el activo llega con ✅
         return cmd_modo(chat_id, "AUTO")
-    elif text == "🟡 SEMI":
+    elif _sin_tick(text) == "🟡 SEMI":
         return cmd_modo(chat_id, "SEMI")
-    elif text == "🔴 OFF":
+    elif _sin_tick(text) == "🔴 OFF":
         return cmd_modo(chat_id, "OFF")
     elif text == "💵 Stake AUTO":
         return cmd_stake(chat_id, "auto")
@@ -4887,7 +5173,7 @@ def procesar_update(update):
         return cmd_status(chat_id)
 
 def bot_loop():
-    log("v12.8.3 iniciado")
+    log("v12.8.4 iniciado")
     offset = 0
     while True:
         try:
@@ -4917,6 +5203,7 @@ def main():
     if _im in INTERVALOS_MIN:
         INTERVALO_AUTO_S = _im * 60
         log(f"intervalo AUTO restaurado: {_im} min")
+    restaurar_modo(_est0)   # 🟡 v12.8.4: SEMI/OFF sobreviven al reinicio
     # v12.2: stake dinámico y tope diario persistidos
     set_stake_mode(_est0.get("stake_mode", "AUTO"))
     MAX_OPS_DIA = max_ops(_est0)
@@ -4930,7 +5217,7 @@ def main():
             log(f"  sync inicial: {len(_nu)} op(s) cerradas ({sum(1 for o in _nu if o.get('resultado') == 'ganada')} ganadas)")
     except Exception as e:
         log(f"  sync inicial error: {e}")
-    log(f"v12.8.1 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
+    log(f"v12.8.4 cargado · modo={MODO_OPERACION} · stake={stake_txt()} · max {MAX_OPS_DIA}/día · prob ≥{int(PROB_MIN_AUTO * 100)}%")
     log(f"Proxy: {PROXY_URL}")
     status, body = http_get("https://api.telegram.org", timeout=10)
     log(f"Test proxy: {status if status else 'FALLO'}")
