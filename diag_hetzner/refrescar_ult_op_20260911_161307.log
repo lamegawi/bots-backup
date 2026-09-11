@@ -1,0 +1,61 @@
+=== REFRESCAR MERCADO Y EVALUAR ÚLTIMAS OPORTUNIDADES — 20260911_161307 UTC ===
+
+== 1. REFRESCAR mercado_activo.json ==
+Mercados Polymarket «Elon Musk # tweets»  (actualizado: 2026-09-11 12:13 EDT)
+============================================================================================
+
+■ Elon Musk # tweets September 4 - September 11, 2026?  [ABIERTO]  tipo: semanal  volumen: $2,838,370
+   ventana: 2026-09-04T12:00:00-04:00 → 2026-09-11T12:00:00-04:00 (168 h)
+   bin         precio YES   cuota YES    cuota NO     volumen
+   <20             0.0000           —        1.00       1,382
+   20-39           0.0000           —        1.00       1,382
+   40-59           0.0000           —        1.00       3,432
+   60-79           0.0000           —        1.00       7,571
+   80-99           0.0000           —        1.00      63,042
+   100-119         0.0000           —        1.00      96,709
+   120-139         0.0000           —        1.00     233,920
+   140-159         0.0005     2000.00        1.00     945,838  ← cuota ≥ 3
+   160-179         0.9995        1.00     2000.00     265,261  ← cuota ≥ 3
+   180-199         0.0005     2000.00        1.00     291,955  ← cuota ≥ 3
+   200-219         0.0005     2000.00        1.00     240,790  ← cuota ≥ 3
+   220-239         0.0005     2000.00        1.00     159,132  ← cuota ≥ 3
+   240-259         0.0005     2000.00        1.00     114,637  ← cuota ≥ 3
+   260-279         0.0005     2000.00        1.00      79,634  ← cuota ≥ 3
+   280-299         0.0005     2000.00        1.00      60,441  ← cuota ≥ 3
+   300-319         0.0005     2000.00        1.00      64,181  ← cuota ≥ 3
+   320-339         0.0005     2000.00        1.00      54,312  ← cuota ≥ 3
+   340-359         0.0005     2000.00        1.00      35,431  ← cuota ≥ 3
+   360-379         0.0005     2000.00        1.00      24,743  ← cuota ≥ 3
+   380-399         0.0005     2000.00        1.00      28,036  ← cuota ≥ 3
+   400-419         0.0005     2000.00        1.00      23,030  ← cuota ≥ 3
+   420-439         0.0005     2000.00        1.00      14,382  ← cuota ≥ 3
+   440-459         0.0005     2000.00        1.00       6,236  ← cuota ≥ 3
+   460-479         0.0005     2000.00        1.00       7,410  ← cuota ≥ 3
+
+== 2. Ver mercados cargados ==
+total: 6
+elon activos: 5
+  - Elon Musk # tweets September 4 - September 11, 2026?
+    fin: ? tipo: semanal
+  - Elon Musk # tweets September 10 - September 12, 2026?
+    fin: ? tipo: 48h
+  - Elon Musk # tweets September 8 - September 15, 2026?
+    fin: ? tipo: semanal
+  - Elon Musk # tweets September 11 - September 18, 2026?
+    fin: ? tipo: semanal
+  - Elon Musk # tweets in October 2026?
+    fin: ? tipo: mensual
+
+== 3. MERCADO ÚLTIMAS OPORTUNIDADES ==
+  10392 bytes (timestamp: 1789143193805674917)
+  matches fix user_first: 0
+=== MERCADO ÚLTIMAS OPORTUNIDADES — elonmusk ===
+  AVG7=16.71  V2=44  λ48=38.7
+  TWEET_COUNT oficial: N/A
+  Mercados activos de elonmusk: 5
+
+  [FUERA] Elon Musk # tweets September 4 - September 11, 2026? (rest: -0.2h)
+  [NO TC] Elon Musk # tweets September 10 - September 12, 2026?
+  [FUERA] Elon Musk # tweets September 8 - September 15, 2026? (rest: 95.8h)
+  [FUERA] Elon Musk # tweets September 11 - September 18, 2026? (rest: 167.8h)
+  [FUERA] Elon Musk # tweets in October 2026? (rest: 1211.8h)
