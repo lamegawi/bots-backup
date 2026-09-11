@@ -1,0 +1,101 @@
+=== ACTUALIZADOR v12.7 (RESULTADOS REALES + AUTO-CURACION) - Fri Sep 11 05:36:43 PM UTC 2026 ===
+HASH: 4731f473
+
+=== Paso 0: Copia de seguridad del estado ANTES de tocar nada ===
+OK: /opt/polymarket/combos_estado.pre_v127_20260911_173643.json (112277 bytes)
+   ANTES: 3 abiertas · 47 archivadas · PnL archivadas $-276.68
+   archivadas: ✅7 ❌40 🔒manuales 0
+   stake aún en abiertas: $10.00
+
+=== Paso 1: Detener bot ===
+
+=== Paso 2: Descargar v12.7 (HASH FIJO) ===
+URL: https://raw.githubusercontent.com/lamegawi/bots-backup/4731f473/scripts_despliegue/poly_combos_bot.py
+Descargado: 170495 bytes
+
+=== Paso 3: Verificar version, funciones y auto-curacion ===
+POLY COMBOS BOT v12.7 — COMBOS REALES (parlays multi-leg) via RFQ
+   OK    def reauditar_estado
+   OK    def programar_auditoria_inicial
+   OK    def cmd_reauditar
+   OK    def verdad_real
+   OK    def estado_leg
+   OK    def cobros_wallet
+   OK    def saldo_combo_token
+   OK    PARLAY_ERC1155
+   OK    AUDITORIA_CADA_H
+   OK    NEXT_AUDITORIA_TS
+   --- la auto-curacion esta enganchada al bucle? ---
+3419:        # v12.7: auto-curación (no depende del modo: corrige el histórico igual)
+3420-        try:
+3421-            if time.time() >= NEXT_AUDITORIA_TS and AUDITORIA_LOCK.acquire(blocking=False):
+   OK    compila
+
+=== Paso 4: Reiniciar bot ===
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-11 17:36:46 UTC; 8s ago
+   Main PID: 1448260 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 21.0M (peak: 21.4M)
+        CPU: 166ms
+     CGroup: /system.slice/poly-combos-bot.service
+             └─1448260 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+=== Paso 5: Log (la 1ª auto-auditoria salta ~25s tras arrancar) ===
+[00:52:32] loop err: The read operation timed out
+[01:29:01] loop err: The read operation timed out
+[02:20:42] loop err: The read operation timed out
+[02:55:41] loop err: The read operation timed out
+[04:26:46] loop err: The read operation timed out
+[05:12:16] loop err: The read operation timed out
+[05:18:52] loop err: The read operation timed out
+[05:51:08] loop err: The read operation timed out
+[07:32:06] loop err: The read operation timed out
+[07:39:41] loop err: The read operation timed out
+[08:16:50] loop err: The read operation timed out
+[09:15:35] loop err: The read operation timed out
+[10:30:17] loop err: The read operation timed out
+[10:45:06] loop err: The read operation timed out
+[12:50:29] loop err: The read operation timed out
+[14:44:24] loop err: The read operation timed out
+[16:24:29] loop err: The read operation timed out
+[16:27:39] loop err: The read operation timed out
+[17:05:38] loop err: The read operation timed out
+[17:30:46] loop err: The read operation timed out
+[17:36:46] intervalo AUTO restaurado: 10 min
+[17:36:46] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+[17:36:46]   horario inicial: próxima pasada en 10 min
+[17:36:46]   auto-curación: primera auditoría en 25s (después cada 4h)
+[17:36:46] v12.7 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[17:36:46] Proxy: http://100.83.57.99:8888
+[17:36:47] Test proxy: 200
+[17:36:47] v12.7 iniciado
+[17:37:13]   verdad: 26 cobros REDEEM>0 en la wallet
+[17:37:17]   [auditoria:auto] APLICADA reabiertas=6 corregidas=16 confirmadas=25 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas -276.68→-21.72
+
+   --- lineas de auditoria ---
+[17:36:46]   auto-curación: primera auditoría en 25s (después cada 4h)
+[17:37:13]   verdad: 26 cobros REDEEM>0 en la wallet
+[17:37:17]   [auditoria:auto] APLICADA reabiertas=6 corregidas=16 confirmadas=25 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas -276.68→-21.72
+
+=== Paso 6: Estado tras la auto-curacion ===
+   AHORA: 9 abiertas · 41 archivadas · PnL archivadas $-21.72
+   archivadas: ✅23 ❌18 🔒0
+   ultima auditoria: 2026-09-11T17:37:17 · origen=auto reabiertas=6 corregidas=16 nuevas=0 · PnL -276.68→-21.72
+   --- corregidas (antes → ahora) ---
+     Counter-Strike: BetBoom Team vs Astral + Map Handica   perdida $  -8.97 → ganada $  +4.79
+     Counter-Strike: BetBoom Team vs Astral + Will Paris    perdida $  -9.44 → ganada $  +3.59
+     Cassis: Ugo Blanchet vs Daniel Rincon + US Open ATP:   perdida $  -9.17 → ganada $  +4.16
+     Will VfB Stuttgart win on 2026-09-09? + Map Handicap   perdida $  -9.20 → ganada $  +3.99
+     Dota 2: MOUZ vs HULIGANI (BO3) - EPL M + FC Barcelon   perdida $  -9.05 → ganada $  +6.74
+     Will Paris Saint-Germain FC win on 202 + Sporting CP   perdida $  -8.90 → ganada $  +2.77
+     Will Liverpool FC win on 2026-09-09? + Will Chelsea    perdida $  -9.84 → ganada $  +2.35
+     Will SE Palmeiras win on 2026-09-09? + Will FC Bayer   perdida $  -9.05 → ganada $  +4.39
+     LoL: T1 Academy vs Dplus KIA Challenge + Counter-Str   perdida $  -9.69 → ganada $  +2.91
+     Counter-Strike: Legacy vs FURIA (BO3)  + Will FC Bay   perdida $  -9.14 → ganada $  +5.09
+
+=== EN TELEGRAM (opcional, para ver el detalle) ===
+  /reauditar seco  → informe detallado SIN modificar
+  /cerradas /stats → cifras ya corregidas
