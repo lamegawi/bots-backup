@@ -1,0 +1,35 @@
+=== SALUD poly-mention-bot — 2026-09-11 18:00 UTC ===
+
+== 1) SERVICIO ==
+  ✅ servicio active
+  ·  activo desde: Thu 2026-09-10 19:46:53 UTC
+  ·  memoria: 81 MB
+
+== 2) CÓDIGO ==
+  ·  archivos .py: 2072
+  ✅ código completo
+
+== 3) TRADES Y ESTADO ==
+  ·  Total: 3 | Abiertas: 2 | Wins: 1 | Losses: 0
+  ·  PnL: $90.00
+
+== 4) PROXY ==
+  ✅ proxy OK (IP: 85.85.41.76)
+
+== 5) APIs ==
+  ✅ gamma-api.polymarket.com/markets?limit=1 → 200
+  ✅ gamma-api.polymarket.com/markets?limit=1&closed=false → 200
+
+== 6) RECURSOS ==
+  ✅ disco al 33%
+  ·  log: 4397 líneas
+
+== 7) ERRORES RECIENTES ==
+  ✅ sin errores recientes
+
+== 8) ÚLTIMO ESCANEO ==
+  ·  último: 18:00:02 │ INFO     │ ✅ Ciclo completado | 0 mercados | 0 resueltos
+
+==============================================
+RESULTADO: ✅ SALUD OK
+==============================================
