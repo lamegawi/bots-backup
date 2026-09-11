@@ -38,27 +38,42 @@ else
 fi
 
 echo ""
-echo "=== Paso 1: Detener bot ==="
-systemctl stop poly-combos-bot 2>/dev/null || true
-pkill -9 -f poly_combos_bot.py 2>/dev/null || true
-sleep 2
-
-echo ""
-echo "=== Paso 2: Descargar v12.8 (HASH FIJO) ==="
+echo "=== Paso 1: Descargar v12.8 a un .new y VALIDAR (el bot sigue corriendo) ==="
 mkdir -p "$INSTALL_DIR"
 URL="https://raw.githubusercontent.com/lamegawi/bots-backup/${HASH}/scripts_despliegue/poly_combos_bot.py"
 echo "URL: $URL"
-curl -sL --max-time 60 -o "$INSTALL_DIR/poly_combos_bot.py" "$URL"
-SIZE=$(wc -c < "$INSTALL_DIR/poly_combos_bot.py" 2>/dev/null || echo 0)
+curl -sL --max-time 60 -o "$INSTALL_DIR/poly_combos_bot.py.new" "$URL"
+SIZE=$(wc -c < "$INSTALL_DIR/poly_combos_bot.py.new" 2>/dev/null || echo 0)
 echo "Descargado: $SIZE bytes"
 if [ "$SIZE" -lt 100000 ]; then
-  echo "ERROR: tamano muy pequeno, no se descargo bien"
-  head -5 "$INSTALL_DIR/poly_combos_bot.py"
+  echo "ERROR: tamano muy pequeno, no se descargo bien (el commit no esta en GitHub?)"
+  head -5 "$INSTALL_DIR/poly_combos_bot.py.new"
+  rm -f "$INSTALL_DIR/poly_combos_bot.py.new"
+  echo ">>> NO se ha tocado el bot en marcha: sigue la version anterior."
   exit 1
 fi
-MD5=$(md5sum "$INSTALL_DIR/poly_combos_bot.py" | cut -d' ' -f1)
-echo "md5 servidor: $MD5"
-if [ "$MD5" == "$MD5_ESPERADO" ]; then echo "   OK md5 identico al del repo"; else echo "   AVISO: md5 distinto (comprobar que HASH es el bueno)"; fi
+MD5=$(md5sum "$INSTALL_DIR/poly_combos_bot.py.new" | cut -d' ' -f1)
+echo "md5 descargado: $MD5"
+if [ "$MD5" == "$MD5_ESPERADO" ]; then
+  echo "   OK md5 identico al del repo"
+else
+  echo "   AVISO: md5 distinto del esperado ($MD5_ESPERADO) - revisar que HASH es el bueno"
+fi
+if ! python3 -c "import py_compile; py_compile.compile('$INSTALL_DIR/poly_combos_bot.py.new', doraise=True)"; then
+  echo "ERROR: el fichero descargado no compila. NO se toca el bot en marcha."
+  rm -f "$INSTALL_DIR/poly_combos_bot.py.new"
+  exit 1
+fi
+echo "   OK compila"
+
+echo ""
+echo "=== Paso 2: Copia del fichero actual + parada del bot ==="
+[ -f "$INSTALL_DIR/poly_combos_bot.py" ] && cp -a "$INSTALL_DIR/poly_combos_bot.py" "$INSTALL_DIR/poly_combos_bot.pre_v128_${TS}.py" && echo "backup del binario: poly_combos_bot.pre_v128_${TS}.py"
+systemctl stop poly-combos-bot 2>/dev/null || true
+pkill -9 -f poly_combos_bot.py 2>/dev/null || true
+sleep 2
+mv "$INSTALL_DIR/poly_combos_bot.py.new" "$INSTALL_DIR/poly_combos_bot.py"
+echo "instalado: $(wc -c < "$INSTALL_DIR/poly_combos_bot.py") bytes"
 
 echo ""
 echo "=== Paso 3: Verificar version y funciones v12.8 (+ las de v12.6/12.7) ==="
@@ -76,7 +91,6 @@ echo "   --- dispatch de /reclamar y del boton ---"
 grep -n "reclamar" "$INSTALL_DIR/poly_combos_bot.py" | grep -E "startswith|💰 Reclamar\"|reclamar_check\(\)" | head -5 || true
 echo "   --- RPC (fuera polygon-rpc.com, que da 401) ---"
 grep -n -A2 "^RPCS_POLYGON" "$INSTALL_DIR/poly_combos_bot.py" | head -4
-python3 -c "import py_compile; py_compile.compile('$INSTALL_DIR/poly_combos_bot.py', doraise=True); print('   OK    compila')"
 
 echo ""
 echo "=== Paso 4: Reiniciar bot ==="
