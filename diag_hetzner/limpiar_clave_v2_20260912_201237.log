@@ -1,0 +1,91 @@
+=== LIMPIAR CLAVE V2 — 20260912_201237 UTC ===
+
+== 1. Estado actual del config_real.json ==
+{
+    "wallet_address": "0xb0E1197098E6d427c01720F1631cAD24CE740FA0",
+    "wallet_private_key": "PLACEHOLDER_OCULTO_POR_SEGURIDAD",
+    "relayer_api_key": "",
+    "relayer_api_key_address": "",
+    "api_key": "",
+    "api_secret": "",
+    "api_passphrase": "",
+    "bankroll": 228.45,
+    "fee_pct": 0.0,
+    "signature_type": 1,
+    "confirmado": true
+}
+
+== 2. ¿Qué contiene wallet_private_key? ==
+longitud: 32
+repr: 'PLACEHOLDER_OCULTO_POR_SEGURIDAD'
+hex bytes: 504c414345484f4c4445525f4f43554c544f5f504f525f534547555249444144
+
+== 3. Probar diferentes formas de leer la clave ==
+largo raw: 32
+después de strip: 32
+key_clean: '0xPLACEHOLDER_OCULTO_POR_SEGURIDAD'
+largo final: 34
+caracteres no-hex: ['P', 'L', 'H', 'O', 'L', 'R', '_', 'O', 'U', 'L', 'T', 'O', '_', 'P', 'O', 'R', '_', 'S', 'G', 'U', 'R', 'I']
+❌ ERROR: Non-hexadecimal digit found
+❌ ERROR from_key: Non-hexadecimal digit found
+
+== 4. Reescribir config_real.json con clave limpia ==
+  clave actual: 32 chars
+  ❌ clave contiene chars no-hex: PLACEHOLDER_OCULTO_POR_SEGURIDAD
+
+== 5. Reescribir bot_semanal.py con clave limpia dentro ==
+  ✅ limpiada lectura de clave
+
+== 6. Validar ==
+  ✅ compila OK
+
+== 7. Probar pasada única ==
+  File "/usr/local/lib/python3.12/dist-packages/eth_utils/decorators.py", line 30, in _wrapper
+    return self.method(objtype, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_account/account.py", line 310, in from_key
+    key = self._parse_private_key(private_key)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_utils/decorators.py", line 30, in _wrapper
+    return self.method(objtype, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_account/account.py", line 894, in _parse_private_key
+    hb_key = HexBytes(key)
+             ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/main.py", line 35, in __new__
+    bytesval = to_bytes(val)
+               ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/_utils.py", line 17, in to_bytes
+    return hexstr_to_bytes(val)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/_utils.py", line 54, in hexstr_to_bytes
+    return binascii.unhexlify(ascii_hex)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Non-hexadecimal digit found
+
+[2026-09-12 20:12:44] ════════════════════════════════════════════
+[2026-09-12 20:12:44] Pasada completada
+
+== 8. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 20:12:44 UTC; 5s ago
+   Main PID: 1564066 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 9.5M (peak: 10.0M)
+        CPU: 897ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 9. Verificar log ==
+Sep 12 20:09:12 bot-poly python3[1563448]: [2026-09-12 20:09:12] Pasada completada
+Sep 12 20:09:12 bot-poly python3[1563448]: [2026-09-12 20:09:12] Próxima pasada en 15 min
+Sep 12 20:12:44 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 12 20:12:44 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 12 20:12:44 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:12:44 bot-poly systemd[1]: poly-elon-semanal.service: Consumed 3.958s CPU time, 9.9M memory peak, 0B memory swap peak.
+Sep 12 20:12:44 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:12:44 bot-poly python3[1564066]: [2026-09-12 20:12:44] BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+Sep 12 20:12:44 bot-poly python3[1564066]: [2026-09-12 20:12:44] ════════════════════════════════════════════
+Sep 12 20:12:44 bot-poly python3[1564066]: [2026-09-12 20:12:44] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 20:12:44 bot-poly python3[1564066]: [2026-09-12 20:12:44] ════════════════════════════════════════════
+Sep 12 20:12:44 bot-poly python3[1564066]: [2026-09-12 20:12:44] AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
