@@ -1,0 +1,69 @@
+=== SINCRONIZACIÓN BOT ELON v3 — 20260912_074249 UTC ===
+
+== 1. Estado actual ==
+-rw-r--r-- 1 root root 2796 Sep  4 20:45 /opt/polymarket/bot-polymarket-elon/real.json
+contenido actual:
+{
+ "saldo": 303.55,
+ "paso": 6,
+ "activa": null,
+ "historial": [
+  {
+   "id": "9545c5c1841c",
+   "fecha": "2026-08-18",
+   "mercado": "elon-musk-of-tweets-august-17-august-19",
+   "bin": "<40",
+   "lado": "YES",
+   "precio": 0.23,
+   "cuota": 4.35,
+   "p_modelo": 0.9171,
+   "paso": 1,
+   "stake": 3.3,
+   "real": ">40 (gestor vendió 18/08)",
+   "resultado": "P",
+   "beneficio": -3.3,
+   "saldo": 496.7
+
+== 2. Backup ==
+backup: /opt/polymarket/bot-polymarket-elon/real.json.bak_20260912_074249
+
+== 3. Actualizar con jq (más simple que python) ==
+actualizado con python
+
+== 4. Verificación ==
+{
+  "saldo": 228.45,
+  "paso": 6,
+  "activa": null,
+  "historial": [
+    {
+      "id": "9545c5c1841c",
+      "fecha": "2026-08-18",
+      "mercado": "elon-musk-of-tweets-august-17-august-19",
+      "bin": "<40",
+      "lado": "YES",
+      "precio": 0.23,
+      "cuota": 4.35,
+      "p_modelo": 0.9171,
+      "paso": 1,
+      "stake": 3.3,
+      "real": ">40 (gestor vendi\u00f3 18/08)",
+      "resultado": "P",
+      "beneficio": -3.3,
+      "saldo": 496.7
+
+== 5. Servicio ==
+● poly-elon.service - Bot Polymarket Elon 48h (v1)
+     Loaded: loaded (/etc/systemd/system/poly-elon.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 06:06:01 UTC; 1h 36min ago
+   Main PID: 1498638 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 35.9M (peak: 39.1M)
+        CPU: 1min 6.650s
+     CGroup: /system.slice/poly-elon.service
+
+== 6. Resumen ==
+saldo: $228.45
+backup: /opt/polymarket/bot-polymarket-elon/real.json.bak_20260912_074249
+historial: preservado
+servicio: no reiniciado (lee nuevo saldo en 5 min)
