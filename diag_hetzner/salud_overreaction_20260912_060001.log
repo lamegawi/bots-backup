@@ -1,0 +1,40 @@
+=== SALUD poly-overreaction-bot — 2026-09-12 06:00 UTC ===
+
+== 1) SERVICIO ==
+  ✅ servicio active
+  ·  memoria: 52 MB
+
+== 2) CÓDIGO ==
+  ·  archivos .py: 9
+  ✅ código completo
+
+== 3) DATOS ==
+  ·  precios almacenados: 178 mercados
+  ✅ base de precios OK
+  ·  spikes pendientes: 7 | procesados: 72
+
+== 4) TRADES ==
+  ·  Total: 6 | Abiertas: 5 | Wins: 0 | Losses: 1
+  ·  PnL: $-25.00
+
+== 5) PROXY ==
+  ✅ proxy OK (85.85.41.76)
+
+== 6) APIs ==
+  ✅ gamma-api.polymarket.com/markets?limit=1
+  ✅ gamma-api.polymarket.com/events?limit=1&closed=false
+
+== 7) RECURSOS ==
+  ✅ disco 27%
+
+== 8) ERRORES ==
+  ✅ sin errores
+
+== 9) ÚLTIMA ACTIVIDAD ==
+   05:35:24 │ INFO     │    ✅ OPORTUNIDAD: NO @ 0.760 | $59.09 | Edge: 118.2%
+   05:43:04 │ INFO     │ 📉 SPIKE: Spread: KKS Lech Poznań (-1.5)... | -15.7% | 0.065 → 0.055
+   05:59:54 │ INFO     │ 📈 SPIKE: Exact Score: Al Khaleej Saudi Club 3 - 2 Al Nassr ... | +11.7% | 0.009 → 0.010
+
+==============================================
+RESULTADO: ✅ SALUD OK
+==============================================
