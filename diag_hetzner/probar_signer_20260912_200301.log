@@ -1,0 +1,121 @@
+=== PROBAR SIGNER API — 20260912_200301 UTC ===
+
+== 1. Listar métodos/atributos de Signer ==
+Atributos:
+  address
+  get_chain_id
+  sign
+
+== 2. Ver el código fuente de Signer ==
+fichero: py_clob_client.signer
+/usr/local/lib/python3.12/dist-packages/py_clob_client/signer.py
+grep: py_clob_client.signer
+/usr/local/lib/python3.12/dist-packages/py_clob_client/signer.py: No such file or directory
+
+== 3. Probar firma completa (sin get_address) ==
+Traceback (most recent call last):
+  File "<string>", line 15, in <module>
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/signer.py", line 22, in sign
+    return Account._sign_hash(message_hash, self.private_key).signature.hex()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_utils/decorators.py", line 30, in _wrapper
+    return self.method(objtype, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_account/account.py", line 665, in _sign_hash
+    raise ValueError("The message hash must be exactly 32-bytes")
+ValueError: The message hash must be exactly 32-bytes
+signer creado: <py_clob_client.signer.Signer object at 0x7a17fe98e060>
+tipo: <class 'py_clob_client.signer.Signer'>
+atributos:
+  account
+  address
+  chain_id
+  get_chain_id
+  private_key
+  sign
+❌ ERROR: The message hash must be exactly 32-bytes
+
+== 4. ¿Cómo Zelenskyy usa el Signer? ==
+112:    signer = (cfg.get("wallet_private_key") or "").strip()
+113:    if not signer:
+127:        # auto: smart wallet (funder distinto del signer) → POLY_PROXY; EOA puro → EOA
+130:    client = ClobClient(HOST, chain_id=137, key=signer, **kwargs)
+245:    IMPORTANTE: la API CLOB consulta el saldo del FIRMANTE (signer), que en
+
+== 5. ¿Cómo Zelenskyy autentica con ClobClient? ==
+130:    client = ClobClient(HOST, chain_id=137, key=signer, **kwargs)
+131-    if "creds" not in kwargs:
+132-        try:
+133-            creds = client.derive_api_key()
+134-            client.set_api_creds(creds)
+135-            print("  · Credenciales CLOB derivadas automáticamente de la clave privada.")
+136-        except Exception as e:
+137-            print(f"  [aviso] no se pudieron derivar credenciales API: {e}")
+138-    return client
+
+== 6. Probar ClobClient completo con sign ==
+✅ cliente creado
+métodos públicos:
+  are_orders_scoring
+  assert_builder_auth
+  assert_level_1_auth
+  assert_level_2_auth
+  calculate_market_price
+  can_builder_auth
+  cancel
+  cancel_all
+  cancel_market_orders
+  cancel_orders
+  clear_tick_size_cache
+  create_and_post_order
+  create_api_key
+  create_market_order
+  create_or_derive_api_creds
+  create_order
+  create_readonly_api_key
+  delete_api_key
+  delete_readonly_api_key
+  derive_api_key
+  drop_notifications
+  get_address
+  get_api_keys
+  get_balance_allowance
+  get_builder_trades
+  get_closed_only_mode
+  get_collateral_address
+  get_conditional_address
+  get_exchange_address
+  get_fee_rate_bps
+  get_last_trade_price
+  get_last_trades_prices
+  get_market
+  get_market_trades_events
+  get_markets
+  get_midpoint
+  get_midpoints
+  get_neg_risk
+  get_notifications
+  get_ok
+  get_order
+  get_order_book
+  get_order_book_hash
+  get_order_books
+  get_orders
+  get_price
+  get_prices
+  get_readonly_api_keys
+  get_sampling_markets
+  get_sampling_simplified_markets
+  get_server_time
+  get_simplified_markets
+  get_spread
+  get_spreads
+  get_tick_size
+  get_trades
+  is_order_scoring
+  post_heartbeat
+  post_order
+  post_orders
+  set_api_creds
+  update_balance_allowance
+  validate_readonly_api_key
