@@ -1,0 +1,206 @@
+=== DIAG BOT TRUMP — 20260912_071145 UTC ===
+
+== 1. ¿Servicio systemd? ==
+● poly-trump.service - Bot Polymarket Trump Truth Social posts
+     Loaded: loaded (/etc/systemd/system/poly-trump.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 07:09:28 UTC; 2min 17s ago
+   Main PID: 1505133 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 22.8M (peak: 30.5M)
+        CPU: 3.159s
+     CGroup: /system.slice/poly-trump.service
+             └─1505133 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-06       64
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-07       39
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-08       17
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-09        7
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-10       25
+
+== 2. ¿Procesos activos? ==
+root     1498662  0.0  0.5  32104 23424 ?        Ss   06:06   0:00 /usr/bin/python3 /opt/polymarket/poly_telegram_trump.py
+
+== 3. ¿Cron? ==
+
+== 4. Contenido del directorio ==
+total 2404
+drwxr-xr-x  5 root root    4096 Sep 12 06:05 .
+drwxr-xr-x 16 1000 1000    4096 Sep 12 07:09 ..
+-rw-r--r--  1 root root     179 Sep 12 07:08 avisos_cooldown.json
+-rw-r--r--  1 root root   13847 Aug 30 17:49 bot_semanal.py
+-rw-r--r--  1 root root  911490 Sep 12 07:09 bot_trump.log
+-rw-r--r--  1 root root    6394 Aug 30 17:49 chequear_cuenta.py
+-rw-r--r--  1 root root     217 Aug 30 18:39 config.json
+-rw-r--r--  1 root root     942 Aug 30 17:49 config_real.json.example
+drwxr-xr-x  2 root root   65536 Sep 12 07:09 datos_raw_trump
+-rw-r--r--  1 root root    3324 Sep 12 07:09 datos_trump.csv
+-rw-r--r--  1 root root    3021 Aug 30 17:49 diagnostico.py
+-rw-r--r--  1 root root      35 Sep 12 04:00 estado_bot_trump.json
+-rw-r--r--  1 root root 1168014 Sep 12 07:09 estado_tweets_trump.json
+-rw-r--r--  1 root root   13000 Aug 30 17:49 excel_historial.py
+drwxr-xr-x  3 root root    4096 Aug 30 17:49 .github
+-rw-r--r--  1 root root     287 Aug 30 17:49 .gitignore
+-rw-r--r--  1 root root    4292 Aug 30 17:49 GUIA_SEMANAL.md
+-rw-r--r--  1 root root   13604 Sep 12 07:09 mercado_activo.json
+-rw-r--r--  1 root root   12893 Aug 30 17:49 mercado_polymarket.py
+-rw-r--r--  1 root root   17536 Aug 30 17:49 notificar.py
+-rw-r--r--  1 root root   12244 Aug 30 17:49 notificar_semanal.py
+-rw-r--r--  1 root root   45304 Aug 30 17:49 operar_real_semanal.py
+-rw-r--r--  1 root root   10134 Aug 30 17:49 papel_semanal.py
+-rw-r--r--  1 root root    4869 Aug 30 17:49 probar_orden_semanal.py
+drwxr-xr-x  2 root root    4096 Sep 12 06:05 __pycache__
+-rw-r--r--  1 root root   23612 Aug 30 17:49 recoger_tweets.py
+-rw-r--r--  1 root root    4217 Aug 30 17:49 saldo_ntfy.py
+-rw-r--r--  1 root root   20301 Aug 30 17:49 senal.py
+-rw-r--r--  1 root root   14937 Sep  4 15:00 senal_vivo.py
+-rw-r--r--  1 root root    1397 Sep 12 07:09 ventanas_vistas.json
+
+== 5. Configuración ==
+{
+  "ntfy": {
+    "topic": "elon-poly-s2iduxz9",
+    "token": null
+  },
+  "telegram": {
+    "token": "8982773230:AAGfqqMxn3cgxcYDU_WAS2aWlkcl1UlGTxM",
+    "chat_id": 250818720
+  },
+  "resumen": {
+    "hora": 20
+  }
+}
+
+
+== 6. ¿Hay real.json? ==
+ls: cannot access 'real.json': No such file or directory
+
+== 7. ¿Hay balance/estado? ==
+
+== 8. bot.py / bot principal ==
+-rw-r--r-- 1 root root 13847 Aug 30 17:49 bot_semanal.py
+-rw-r--r-- 1 root root  6394 Aug 30 17:49 chequear_cuenta.py
+-rw-r--r-- 1 root root  3021 Aug 30 17:49 diagnostico.py
+-rw-r--r-- 1 root root 13000 Aug 30 17:49 excel_historial.py
+-rw-r--r-- 1 root root 12893 Aug 30 17:49 mercado_polymarket.py
+-rw-r--r-- 1 root root 17536 Aug 30 17:49 notificar.py
+-rw-r--r-- 1 root root 12244 Aug 30 17:49 notificar_semanal.py
+-rw-r--r-- 1 root root 45304 Aug 30 17:49 operar_real_semanal.py
+-rw-r--r-- 1 root root 10134 Aug 30 17:49 papel_semanal.py
+-rw-r--r-- 1 root root  4869 Aug 30 17:49 probar_orden_semanal.py
+-rw-r--r-- 1 root root 23612 Aug 30 17:49 recoger_tweets.py
+-rw-r--r-- 1 root root  4217 Aug 30 17:49 saldo_ntfy.py
+-rw-r--r-- 1 root root 20301 Aug 30 17:49 senal.py
+-rw-r--r-- 1 root root 14937 Sep  4 15:00 senal_vivo.py
+
+== 9. Log del bot ==
+-rw-r--r-- 1 root root 911490 Sep 12 07:09 bot_trump.log
+
+== 10. Excel historial ==
+
+== 11. Servicio poly-trump.service contenido ==
+[Unit]
+Description=Bot Polymarket Trump Truth Social posts
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-trump
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+== 12. ¿Cuánto tiempo lleva activo? ==
+MainPID=1505133
+ActiveState=active
+ActiveEnterTimestamp=Sat 2026-09-12 07:09:28 UTC
+
+== 13. ¿Hay logs en /var/log/ ? ==
+ls: cannot access '/var/log/poly-trump*': No such file or directory
+
+== 14. mercado_activo.json y CSV ==
+-rw-r--r-- 1 root root  3324 Sep 12 07:09 datos_trump.csv
+-rw-r--r-- 1 root root 13604 Sep 12 07:09 mercado_activo.json
+mercados: 5
+  Donald Trump # Truth Social posts September 8 - Se
+  Donald Trump # Truth Social posts September 11 - S
+  Donald Trump # Truth Social posts September 15 - S
+  Donald Trump # Truth Social posts March 24 - March
+  Donald Trump # Truth Social posts September 4 - Se
+
+== 15. ¿Qué está escupiendo el servicio? journalctl últimas 50 líneas ==
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-08-31       28
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-09-01       41
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-09-02        9
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-09-03       12
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-09-04       22
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-09-05        1
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-09-06       64
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-09-07       39
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-09-08       17
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-09-09        7
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-09-10       25
+Sep 12 07:08:22 bot-poly python3[1498672]: 2026-09-11       11
+Sep 12 07:08:22 bot-poly python3[1498672]: AVG7 = 23.43  V2 = 36  R = 0.768  ajuste = 0.884  λ48 = 41.4
+Sep 12 07:08:22 bot-poly python3[1498672]: Días completos en CSV: 224
+Sep 12 07:08:22 bot-poly python3[1498672]: [2026-09-12 03:08:22 EDT] Pasada completada en 8.0 s
+Sep 12 07:08:22 bot-poly python3[1498672]: [2026-09-12 03:08:22 EDT] Próxima pasada en 15 min…
+Sep 12 07:08:58 bot-poly systemd[1]: poly-trump.service: Deactivated successfully.
+Sep 12 07:08:58 bot-poly systemd[1]: poly-trump.service: Consumed 18.194s CPU time.
+Sep 12 07:09:28 bot-poly systemd[1]: poly-trump.service: Scheduled restart job, restart counter is at 1.
+Sep 12 07:09:28 bot-poly systemd[1]: Started poly-trump.service - Bot Polymarket Trump Truth Social posts.
+Sep 12 07:09:28 bot-poly python3[1505133]: [FIXCAL] win=14% (1/7) cuota_med=11.78 kelly=0.063 factor=1.000 stake=3.0 (INFORMATIVO (faltan datos))
+Sep 12 07:09:28 bot-poly python3[1505133]: [2026-09-12 03:09:28 EDT] 🤖 BOT DEFINITIVO arrancado (loop=True, intervalo=15 min, excel=False) · notificaciones: ntfy → elon-poly-s2iduxz9 · telegram ✓
+Sep 12 07:09:28 bot-poly python3[1505133]: [2026-09-12 03:09:28 EDT] ==============================================================
+Sep 12 07:09:28 bot-poly python3[1505133]: [2026-09-12 03:09:28 EDT] PASADA COMPLETA (TRUMP)  ·  MODO: REAL
+Sep 12 07:09:28 bot-poly python3[1505133]: [2026-09-12 03:09:28 EDT] 1/4 · Recogiendo posts de @realDonaldTrump…
+Sep 12 07:09:28 bot-poly python3[1505133]: [2026-09-12 03:09:28 EDT]       · xtracker: 4970 items
+Sep 12 07:09:28 bot-poly python3[1505133]: [2026-09-12 03:09:28 EDT]       · tweets únicos: 4970 (reposts 0) · CSV: 224 días (nuevos/mejorados: 0)
+Sep 12 07:09:28 bot-poly python3[1505133]: [2026-09-12 03:09:28 EDT] 2/4 · Actualizando mercados de Polymarket…
+Sep 12 07:09:32 bot-poly python3[1505133]: [2026-09-12 03:09:32 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+Sep 12 07:09:32 bot-poly python3[1505133]: [2026-09-12 03:09:32 EDT] 3/4 · Trading REAL…
+Sep 12 07:09:32 bot-poly python3[1505133]: [2026-09-12 03:09 EDT] Trading REAL SEMANAL  · saldo $500.00 · paso 1
+Sep 12 07:09:32 bot-poly python3[1505133]:   [BLOQUEADO] config_real.json no tiene 'confirmado': true. Usa --simular para probar.
+Sep 12 07:09:32 bot-poly python3[1505133]: [2026-09-12 03:09:32 EDT] 4/4 · Estado:
+Sep 12 07:09:32 bot-poly python3[1505133]: fecha        tweets
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-08-31       28
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-01       41
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-02        9
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-03       12
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-04       22
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-05        1
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-06       64
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-07       39
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-08       17
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-09        7
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-10       25
+Sep 12 07:09:32 bot-poly python3[1505133]: 2026-09-11       11
+Sep 12 07:09:32 bot-poly python3[1505133]: AVG7 = 23.43  V2 = 36  R = 0.768  ajuste = 0.884  λ48 = 41.4
+Sep 12 07:09:32 bot-poly python3[1505133]: Días completos en CSV: 224
+Sep 12 07:09:32 bot-poly python3[1505133]: [2026-09-12 03:09:32 EDT] Pasada completada en 4.5 s
+Sep 12 07:09:32 bot-poly python3[1505133]: [2026-09-12 03:09:32 EDT] Próxima pasada en 15 min…
+
+== 16. ¿Errores? ==
+Sep 08 17:22:19 bot-poly python3[779034]: [2026-09-08 13:22:19 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+Sep 08 17:22:19 bot-poly python3[779034]: [2026-09-08 13:22:19 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+Sep 08 17:38:04 bot-poly python3[779034]: [2026-09-08 13:38:04 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+Sep 08 17:38:04 bot-poly python3[779034]: [2026-09-08 13:38:04 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+Sep 08 17:54:54 bot-poly python3[779034]: [2026-09-08 13:54:54 EDT]       · jina-tw: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+Sep 08 17:54:54 bot-poly python3[779034]: [2026-09-08 13:54:54 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+Sep 08 18:10:40 bot-poly python3[779034]: [2026-09-08 14:10:40 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+Sep 08 18:10:40 bot-poly python3[779034]: [2026-09-08 14:10:40 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+Sep 08 18:26:26 bot-poly python3[779034]: [2026-09-08 14:26:26 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+Sep 08 18:26:26 bot-poly python3[779034]: [2026-09-08 14:26:26 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+Sep 08 18:42:11 bot-poly python3[779034]: [2026-09-08 14:42:11 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+Sep 08 18:42:11 bot-poly python3[779034]: [2026-09-08 14:42:11 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+Sep 08 18:57:57 bot-poly python3[779034]: [2026-09-08 14:57:57 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+Sep 08 18:57:57 bot-poly python3[779034]: [2026-09-08 14:57:57 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+Sep 12 06:06:02 bot-poly python3[1498672]: [2026-09-12 02:06:02 EDT]       · xtracker: ERROR xtracker no disponible: curl falló (6):
+Sep 12 06:07:06 bot-poly python3[1498672]: [2026-09-12 02:07:06 EDT]       · jina-tw: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+Sep 12 06:07:06 bot-poly python3[1498672]: [2026-09-12 02:07:06 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
