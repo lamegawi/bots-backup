@@ -1,0 +1,107 @@
+=== ACTIVACIÓN BOT TRUMP — 20260912_073108 UTC ===
+wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+(clave privada NO se loguea)
+
+== 1. Backup del config_real.json.example ==
+ls: cannot access '/opt/polymarket/bot-polymarket-trump/config_real.json': No such file or directory
+-rw-r--r-- 1 root root 942 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/config_real.json.example
+
+== 2. Crear config_real.json con wallet real ==
+config_real.json creado con confirmado=true y bankroll=228.45
+-rw------- 1 root root 333 Sep 12 07:31 /opt/polymarket/bot-polymarket-trump/config_real.json
+
+== 3. Crear real.json con saldo inicial ==
+real.json creado con saldo=228.45
+-rw------- 1 root root 242 Sep 12 07:31 /opt/polymarket/bot-polymarket-trump/real.json
+
+== 4. Crear /etc/default/poly-trump con la clave ==
+/etc/default/poly-trump creado (permisos 600)
+
+== 5. Actualizar poly-trump.service para cargar /etc/default/poly-trump ==
+  añadido EnvironmentFile=/etc/default/poly-trump
+[Unit]
+Description=Bot Polymarket Trump Truth Social posts
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=/etc/default/poly-trump
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-trump
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+== 6. Recargar systemd y reiniciar ==
+● poly-trump.service - Bot Polymarket Trump Truth Social posts
+     Loaded: loaded (/etc/systemd/system/poly-trump.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 07:31:18 UTC; 5s ago
+   Main PID: 1506561 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 25.4M (peak: 30.4M)
+        CPU: 2.396s
+     CGroup: /system.slice/poly-trump.service
+             ├─1506561 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+             └─1506625 curl -s --max-time 40 "https://gamma-api.polymarket.com/events?slug=donald-trump-of-truth-social-posts-september-21-september-23-2026"
+
+Sep 12 07:31:18 bot-poly systemd[1]: Started poly-trump.service - Bot Polymarket Trump Truth Social posts.
+Sep 12 07:31:18 bot-poly python3[1506561]: [FIXCAL] win=14% (1/7) cuota_med=11.78 kelly=0.063 factor=1.000 stake=3.0 (INFORMATIVO (faltan datos))
+Sep 12 07:31:18 bot-poly python3[1506561]: [2026-09-12 03:31:18 EDT] 🤖 BOT DEFINITIVO arrancado (loop=True, intervalo=15 min, excel=False) · notificaciones: ntfy → elon-poly-s2iduxz9 · telegram ✓
+Sep 12 07:31:18 bot-poly python3[1506561]: [2026-09-12 03:31:18 EDT] ==============================================================
+
+== 7. Verificar que el bot arranca con la clave ==
+PID: 1506561
+--- variables de entorno del proceso ---
+POLY_PRIVATE_KEY=***OCULTO***
+POLY_WALLET_ADDRESS=***OCULTO***
+
+== 8. ¿Está en 'BLOQUEADO' o arrancando? ==
+Sep 12 07:24:40 bot-poly python3[1505133]: 2026-09-09        7
+Sep 12 07:24:40 bot-poly python3[1505133]: 2026-09-10       25
+Sep 12 07:24:40 bot-poly python3[1505133]: 2026-09-11       11
+Sep 12 07:24:40 bot-poly python3[1505133]: AVG7 = 23.43  V2 = 36  R = 0.768  ajuste = 0.884  λ48 = 41.4
+Sep 12 07:24:40 bot-poly python3[1505133]: Días completos en CSV: 224
+Sep 12 07:24:40 bot-poly python3[1505133]: [2026-09-12 03:24:40 EDT] Pasada completada en 7.9 s
+Sep 12 07:24:40 bot-poly python3[1505133]: [2026-09-12 03:24:40 EDT] Próxima pasada en 15 min…
+Sep 12 07:31:18 bot-poly systemd[1]: Stopping poly-trump.service - Bot Polymarket Trump Truth Social posts...
+Sep 12 07:31:18 bot-poly systemd[1]: poly-trump.service: Deactivated successfully.
+Sep 12 07:31:18 bot-poly systemd[1]: Stopped poly-trump.service - Bot Polymarket Trump Truth Social posts.
+Sep 12 07:31:18 bot-poly systemd[1]: poly-trump.service: Consumed 6.997s CPU time, 36.9M memory peak, 0B memory swap peak.
+Sep 12 07:31:18 bot-poly systemd[1]: Started poly-trump.service - Bot Polymarket Trump Truth Social posts.
+Sep 12 07:31:18 bot-poly python3[1506561]: [FIXCAL] win=14% (1/7) cuota_med=11.78 kelly=0.063 factor=1.000 stake=3.0 (INFORMATIVO (faltan datos))
+Sep 12 07:31:18 bot-poly python3[1506561]: [2026-09-12 03:31:18 EDT] 🤖 BOT DEFINITIVO arrancado (loop=True, intervalo=15 min, excel=False) · notificaciones: ntfy → elon-poly-s2iduxz9 · telegram ✓
+Sep 12 07:31:18 bot-poly python3[1506561]: [2026-09-12 03:31:18 EDT] ==============================================================
+Sep 12 07:31:18 bot-poly python3[1506561]: [2026-09-12 03:31:18 EDT] PASADA COMPLETA (TRUMP)  ·  MODO: REAL
+Sep 12 07:31:18 bot-poly python3[1506561]: [2026-09-12 03:31:18 EDT] 1/4 · Recogiendo posts de @realDonaldTrump…
+Sep 12 07:31:18 bot-poly python3[1506561]: [2026-09-12 03:31:18 EDT]       · xtracker: 4970 items
+Sep 12 07:31:18 bot-poly python3[1506561]: [2026-09-12 03:31:18 EDT]       · tweets únicos: 4970 (reposts 0) · CSV: 224 días (nuevos/mejorados: 0)
+Sep 12 07:31:18 bot-poly python3[1506561]: [2026-09-12 03:31:18 EDT] 2/4 · Actualizando mercados de Polymarket…
+
+== 9. Verificación final del bot ==
+Sep 12 07:08:22 bot-poly python3[1498672]: [2026-09-12 03:08:22 EDT] 3/4 · Trading REAL…
+Sep 12 07:08:22 bot-poly python3[1498672]: [2026-09-12 03:08 EDT] Trading REAL SEMANAL  · saldo $500.00 · paso 1
+Sep 12 07:08:22 bot-poly python3[1498672]:   [BLOQUEADO] config_real.json no tiene 'confirmado': true. Usa --simular para probar.
+Sep 12 07:09:32 bot-poly python3[1505133]: [2026-09-12 03:09:32 EDT] 3/4 · Trading REAL…
+Sep 12 07:09:32 bot-poly python3[1505133]: [2026-09-12 03:09 EDT] Trading REAL SEMANAL  · saldo $500.00 · paso 1
+Sep 12 07:09:32 bot-poly python3[1505133]:   [BLOQUEADO] config_real.json no tiene 'confirmado': true. Usa --simular para probar.
+Sep 12 07:24:40 bot-poly python3[1505133]: [2026-09-12 03:24:40 EDT] 3/4 · Trading REAL…
+Sep 12 07:24:40 bot-poly python3[1505133]: [2026-09-12 03:24 EDT] Trading REAL SEMANAL  · saldo $500.00 · paso 1
+Sep 12 07:24:40 bot-poly python3[1505133]:   [BLOQUEADO] config_real.json no tiene 'confirmado': true. Usa --simular para probar.
+
+== 10. Resumen ==
+  ✅ config_real.json: confirmado=true, bankroll=228.45
+  ✅ real.json: saldo=228.45, activa=null, historial=[]
+  ✅ /etc/default/poly-trump: POLY_PRIVATE_KEY cargada
+  ✅ poly-trump.service: EnvironmentFile añadido
+  ✅ servicio reiniciado
+
+  ⚠️  PRÓXIMOS PASOS:
+  - Espera 15 min a la próxima pasada
+  - Verifica logs: journalctl -u poly-trump.service -f
+  - Si quieres ver el saldo: cat /opt/polymarket/bot-polymarket-trump/real.json
