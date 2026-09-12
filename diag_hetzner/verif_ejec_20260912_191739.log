@@ -1,0 +1,94 @@
+=== VERIFICAR EJECUCIÓN REAL BOT SEMANAL — 20260912_191739 UTC ===
+
+== 1. Última ejecución del bot (últimas 50 líneas de journalctl) ==
+Sep 12 19:07:12 bot-poly python3[1556135]: [2026-09-12 19:07:12] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 19:07:12 bot-poly python3[1556135]: [2026-09-12 19:07:12] ════════════════════════════════════════════
+Sep 12 19:07:12 bot-poly python3[1556135]: [2026-09-12 19:07:12] 📊 AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14] 📈 2 mercados semanales abiertos
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14] 💰 saldo=$228.45  paso=1  activa=no
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]   🎯 Elon Musk # tweets September 8 - September 15, 202 | bin 120-139 | YES @ 0.045 (cuota 22.22/1.05)
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]      EV=+12.536 | ventaja 56%pp
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]   🎯 Elon Musk # tweets September 11 - September 18, 20 | bin 120-139 | YES @ 0.055 (cuota 18.18/1.06)
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]      EV=+10.075 | ventaja 55%pp
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]
+Sep 12 19:07:14 bot-poly python3[1556135]: 🚀 Mejor señal: Elon Musk # tweets September 8 - September 15, 202
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]    bin 120-139 YES EV=+12.536
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]    ⚠️ sin token_id para YES, saltamos
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14] ════════════════════════════════════════════
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14] Pasada completada
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14] Próxima pasada en 15 min…
+Sep 12 19:12:39 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 12 19:12:39 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 12 19:12:39 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 19:12:39 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 19:12:39 bot-poly python3[1556935]: [2026-09-12 19:12:39] 🤖 BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min, modo=real)
+Sep 12 19:12:39 bot-poly python3[1556935]: [2026-09-12 19:12:39] ════════════════════════════════════════════
+Sep 12 19:12:39 bot-poly python3[1556935]: [2026-09-12 19:12:39] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 19:12:39 bot-poly python3[1556935]: [2026-09-12 19:12:39] ════════════════════════════════════════════
+Sep 12 19:12:39 bot-poly python3[1556935]: [2026-09-12 19:12:39] 📊 AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44] 📈 2 mercados semanales abiertos
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44] 💰 saldo=$228.45  paso=1  activa=no
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]   🎯 Elon Musk # tweets September 8 - September 15, 202 | bin 120-139 | YES @ 0.045 (cuota 22.22/1.05)
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]      EV=+12.536 | ventaja 56%pp
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]   🎯 Elon Musk # tweets September 11 - September 18, 20 | bin 120-139 | YES @ 0.057 (cuota 17.54/1.06)
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]      EV=+9.686 | ventaja 55%pp
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]
+Sep 12 19:12:44 bot-poly python3[1556935]: 🚀 Mejor señal: Elon Musk # tweets September 8 - September 15, 202
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]    bin 120-139 YES EV=+12.536
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]    💵 stake=$3.3  paso=1
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]    ⚠️ py_clob_client no disponible
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]    💡 registrando señal en historial sin ejecutar
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44] ════════════════════════════════════════════
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44] Pasada completada
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44] Próxima pasada en 15 min…
+
+== 2. ¿Hay orden_id en real_semanal.json? ==
+{
+  "saldo": 228.45,
+  "paso": 1,
+  "activa": null,
+  "abierta": null,
+  "historial": [
+    {
+      "fecha": "2026-09-12",
+      "mercado": "elon-musk-of-tweets-september-8-september-15-2026",
+      "bin": "120-139",
+      "lado": "YES",
+      "precio": 0.045,
+      "cuota": 22.22222222222222,
+      "p_modelo": 0.6091051497204563,
+      "paso": 1,
+      "stake": 3.3,
+      "ev": 12.535669993787916,
+      "resultado": "se\u00f1al_detectada",
+      "beneficio": 0,
+      "saldo": 228.45
+    }
+  ],
+  "_sincronizado_con_real": true,
+  "_sincronizado_ts": "2026-09-12T08:00:00Z",
+  "_bankroll_inicial_real": 228.45,
+  "_pnl_historico_acumulado": 0.0
+}
+
+== 3. ¿Hay historial de señales? ==
+historial: 1 ops
+  2026-09-12 elon-musk-of-tweets-september- | bin 120-139 YES | señal_detectada | benef=0
+
+== 4. ¿Posiciones abiertas en la wallet? ==
+posiciones semanales elon: 0
+
+== 5. Servicio vivo? ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 19:12:39 UTC; 5min ago
+   Main PID: 1556935 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 42.5M (peak: 42.6M)
+        CPU: 3.658s
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 6. ¿Logs del cron de monitoreo? ==
+-rw-r--r-- 1 root root 2070 Sep 12 19:15 /tmp/mon_bots_20260912_191501.log
+-rw-r--r-- 1 root root 2070 Sep 12 19:10 /tmp/mon_bots_20260912_191001.log
+-rw-r--r-- 1 root root 2070 Sep 12 19:05 /tmp/mon_bots_20260912_190501.log
