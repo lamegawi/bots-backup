@@ -1,0 +1,52 @@
+=== CORREGIR SIGNER Y EJECUTAR — 20260912_200631 UTC ===
+
+== 1. Ver signer.address ==
+signer.address: <bound method Signer.address of <py_clob_client.signer.Signer object at 0x7beff14875c0>>
+tipo: <class 'method'>
+
+== 2. Backup bot_semanal.py ==
+backup: bot_semanal.py.bak_sign_20260912_200631
+
+== 3. Aplicar corrección ==
+  no se encontró el patrón exacto
+  ✅ log añadido antes de ejecutar
+
+== 4. Validar ==
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 116
+    else:
+    ^^^^
+SyntaxError: invalid syntax
+
+== 5. Borrar caches ==
+  ✅ caches borrados
+
+== 6. Probar pasada única ==
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 116
+    else:
+    ^^^^
+SyntaxError: invalid syntax
+
+== 7. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: activating (auto-restart) (Result: exit-code) since Sat 2026-09-12 20:06:32 UTC; 4s ago
+    Process: 1563167 ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real (code=exited, status=1/FAILURE)
+   Main PID: 1563167 (code=exited, status=1/FAILURE)
+        CPU: 171ms
+
+== 8. Verificar log ==
+Sep 12 20:00:50 bot-poly python3[1562451]: [2026-09-12 20:00:50]    ❌ ERROR ejecutando orden: Non-hexadecimal digit found
+Sep 12 20:00:50 bot-poly python3[1562451]: [2026-09-12 20:00:50] ════════════════════════════════════════════
+Sep 12 20:00:50 bot-poly python3[1562451]: [2026-09-12 20:00:50] Pasada completada
+Sep 12 20:00:50 bot-poly python3[1562451]: [2026-09-12 20:00:50] Próxima pasada en 15 min…
+Sep 12 20:06:32 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 12 20:06:32 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 12 20:06:32 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:06:32 bot-poly systemd[1]: poly-elon-semanal.service: Consumed 4.244s CPU time, 10.0M memory peak, 0B memory swap peak.
+Sep 12 20:06:32 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:06:32 bot-poly python3[1563167]:   File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 116
+Sep 12 20:06:32 bot-poly python3[1563167]:     else:
+Sep 12 20:06:32 bot-poly python3[1563167]:     ^^^^
+Sep 12 20:06:32 bot-poly python3[1563167]: SyntaxError: invalid syntax
+Sep 12 20:06:32 bot-poly systemd[1]: poly-elon-semanal.service: Main process exited, code=exited, status=1/FAILURE
+Sep 12 20:06:32 bot-poly systemd[1]: poly-elon-semanal.service: Failed with result 'exit-code'.
