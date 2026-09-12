@@ -1,0 +1,269 @@
+════════════════════════════════════════════
+  DIAGNÓSTICO DE MOTORES — 20260912_075653 UTC
+════════════════════════════════════════════
+
+########################################
+# BOT 1: ELON
+########################################
+
+== 1. Archivos principales de Elon ==
+-rwxr-xr-x 1 root root 16862 Sep 10 19:37 /opt/polymarket/bot-polymarket-elon/bot.py
+-rw-r--r-- 1 root root  6386 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/chequear_cuenta.py
+-rw-r--r-- 1 root root  1316 Aug 26 20:30 /opt/polymarket/bot-polymarket-elon/compara_senal.py
+-rw-r--r-- 1 root root  5865 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/construir_serie.py
+-rw-r--r-- 1 root root  3021 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/diagnostico.py
+-rw-r--r-- 1 root root 13000 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/excel_historial.py
+-rw-r--r-- 1 root root 10348 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/generar_excel_resultados.py
+-rw-r--r-- 1 root root 13674 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/generar_xlsx.py
+-rw-r--r-- 1 root root 12721 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/mercado_polymarket.py
+-rwxr-xr-x 1 root root 10392 Sep 11 16:13 /opt/polymarket/bot-polymarket-elon/mercado_ultima_oportunidad.py
+-rw-r--r-- 1 root root 17532 Aug 18 17:05 /opt/polymarket/bot-polymarket-elon/notificar.py
+-rw-r--r-- 1 1000 1000 42173 Aug 30 17:15 /opt/polymarket/bot-polymarket-elon/operar_real.py
+-rw-r--r-- 1 root root 10062 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/papel.py
+-rw-r--r-- 1 root root  4853 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/probar_orden.py
+-rw-r--r-- 1 root root 22055 Aug 27 15:02 /opt/polymarket/bot-polymarket-elon/recoger_tweets.py
+-rw-r--r-- 1 root root  4217 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/saldo_ntfy.py
+-rwxr-xr-x 1 root root 11519 Sep 10 19:45 /opt/polymarket/bot-polymarket-elon/scraper_tweets_pm.py
+-rw-r--r-- 1 root root 18582 Sep 10 14:39 /opt/polymarket/bot-polymarket-elon/senal.py
+-rw-r--r-- 1 1000 1000 15618 Sep 10 14:39 /opt/polymarket/bot-polymarket-elon/senal_vivo.py
+-rw-r--r-- 1 root root 11630 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/simulador.py
+
+== 2. ¿Qué motor usa senal.py? ==
+4:MOTOR DE SEÑAL — Mercados Polymarket "Elon Musk # tweets" (ventanas de 48 h)
+404:    """Diagnostico: estado del motor empirico (para comparar/pruebas)."""
+
+== 3. ¿Qué motor usa senal_vivo.py? ==
+34:# MOTOR DE TRADING (versión) — tamaño por ventaja (escalones + tope)
+36:MOTOR_ACTUAL = "motor_v2_ev_escalones_tope10"
+41:def stake_motor_v2(stake_base, p_lado, cuota):
+213:                stake = stake_motor_v2(stake_base, p_lado, cuota_lado)
+221:                                   "stake": stake, "ev": ev, "motor": MOTOR_ACTUAL})
+
+== 4. ¿Qué motor usa bot.py? ==
+
+== 5. Funciones definidas en senal.py (motor principal) ==
+64:def clamp(x, lo, hi):
+68:def poisson_cdf(k, lam):
+84:def p_bin(lo, hi, lam):
+91:def tabla_apuestas(stake_inicial=STAKE_INICIAL, factor=FACTOR, pasos=PASOS_MAX):
+105:def cargar_csv(path):
+119:def metricas(datos):
+132:def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
+179:def formatear_senal(m, lo, hi, precio_yes, ya_publicados, horas, paso=None):
+204:def backtest(datos, lo, hi, precio_yes):
+270:def main():
+324:def _emp_dist(k, frac, dias):
+360:def metricas(datos):
+376:def p_bin(lo, hi, lam):
+403:def emp_info():
+
+== 6. ¿Qué variables/filtros activos? ==
+48:STAKE_INICIAL   = 3.30          # $, primera apuesta de cada ciclo
+49:FACTOR          = 1.50          # multiplicador tras cada fallo
+50:CUOTA_MINIMA    = 5.00          # cuota mínima aceptada (precio ≤ 0.20) — SUBIDA de 3.00 a 5.00 (10/09)
+51:PRECIO_MAX      = 0.20          # precio máximo del lado que compramos (≠ CUOTA_MINIMA) — NUEVO (10/09)
+
+== 7. ¿Qué se ejecuta realmente? (de bot.log reciente) ==
+
+== 8. ¿Filtros anti-long-shot activos? ==
+50:CUOTA_MINIMA    = 5.00          # cuota mínima aceptada (precio ≤ 0.20) — SUBIDA de 3.00 a 5.00 (10/09)
+51:PRECIO_MAX      = 0.20          # precio máximo del lado que compramos (≠ CUOTA_MINIMA) — NUEVO (10/09)
+99:        benef = round(stake * (CUOTA_MINIMA - 1) - perdida_prev, 2)
+166:    if precio_yes > 1 / CUOTA_MINIMA and (1 - precio_yes) > 1 / CUOTA_MINIMA:
+168:    if p >= P_MIN_YES and precio_yes <= 1 / CUOTA_MINIMA and precio_yes <= PRECIO_MAX:
+170:    if p <= P_MAX_NO and precio_no <= 1 / CUOTA_MINIMA and precio_no <= PRECIO_MAX:
+
+== 9. ¿Qué tipo de ventana usa? ==
+306:# en 48h) cuando Musk se mueve realmente +-40. El modelo compraba
+
+########################################
+# BOT 2: ZELENSKYY
+########################################
+
+== 1. Archivos principales de Zelenskyy ==
+-rw-r--r-- 1 root root 13851 Aug 20 21:07 /opt/polymarket/bot-polymarket-zelenskyy/bot_semanal.py
+-rw-r--r-- 1 root root  6394 Aug 17 20:24 /opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py
+-rw-r--r-- 1 root root  3021 Aug 17 20:24 /opt/polymarket/bot-polymarket-zelenskyy/diagnostico.py
+-rw-r--r-- 1 root root 13000 Aug 17 20:24 /opt/polymarket/bot-polymarket-zelenskyy/excel_historial.py
+-rw-r--r-- 1 root root 12816 Aug 20 20:56 /opt/polymarket/bot-polymarket-zelenskyy/mercado_polymarket.py
+-rw-r--r-- 1 root root 17536 Aug 20 20:56 /opt/polymarket/bot-polymarket-zelenskyy/notificar.py
+-rw-r--r-- 1 root root 12244 Aug 20 20:56 /opt/polymarket/bot-polymarket-zelenskyy/notificar_semanal.py
+-rw-r--r-- 1 root root 45316 Aug 30 17:15 /opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py
+-rw-r--r-- 1 root root 10138 Aug 20 20:56 /opt/polymarket/bot-polymarket-zelenskyy/papel_semanal.py
+-rw-r--r-- 1 root root  4869 Aug 17 20:24 /opt/polymarket/bot-polymarket-zelenskyy/probar_orden_semanal.py
+-rw-r--r-- 1 root root 23548 Aug 27 15:02 /opt/polymarket/bot-polymarket-zelenskyy/recoger_tweets.py
+-rw-r--r-- 1 root root  4217 Aug 17 20:24 /opt/polymarket/bot-polymarket-zelenskyy/saldo_ntfy.py
+-rw-r--r-- 1 root root 14966 Sep 10 14:39 /opt/polymarket/bot-polymarket-zelenskyy/senal.py
+-rw-r--r-- 1 root root 14384 Sep 10 14:39 /opt/polymarket/bot-polymarket-zelenskyy/senal_vivo.py
+
+== 2. ¿Qué motor usa senal.py? ==
+4:MOTOR DE SEÑAL — ventana SEMANAL «Zelenskyy # tweets <inicio> - <fin>?»
+
+== 3. ¿Qué motor usa senal_vivo.py? ==
+37:# MOTOR DE TRADING (versión) — tamaño por ventaja (escalones + tope)
+39:MOTOR_ACTUAL = "motor_v2_ev_escalones_tope10"
+44:def stake_motor_v2(stake_base, p_lado, cuota):
+193:                stake = stake_motor_v2(stake_base, p_lado, cuota_lado)
+201:                                   "stake": stake, "ev": ev, "motor": MOTOR_ACTUAL})
+
+== 4. Funciones definidas en senal.py ==
+45:def clamp(x, lo, hi):
+49:def poisson_cdf(k, lam):
+65:def p_bin(lo, hi, lam):
+72:def tabla_apuestas(stake_inicial=STAKE_INICIAL, factor=FACTOR, pasos=PASOS_MAX):
+86:def cargar_csv(path):
+100:def metricas(datos):
+113:def decidir_bin(p, precio_yes, cuota_yes, cuota_no):
+145:def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
+176:def formatear_senal(m, lo, hi, precio_yes, ya_publicados, horas, paso=None):
+201:def backtest(datos, lo, hi, precio_yes):
+267:def main():
+
+== 5. ¿Qué variables/filtros activos? ==
+25:VENTANA        = "semanal"     # 48h | semanal | mensual
+26:STAKE_INICIAL  = 3.00          # $, primera apuesta de cada ciclo
+27:FACTOR         = 1.40          # multiplicador tras cada fallo
+28:CUOTA_MINIMA   = 3.00          # cuota mínima aceptada — SUBIDA de 2.50 a 3.00 (10/09)
+29:PRECIO_MAX     = 0.30          # precio máximo del lado que compramos — NUEVO (10/09)
+35:EDGE_MIN       = 0.15          # ventaja mínima p_modelo − precio — SUBIDA de 0.12 a 0.15 (10/09)
+36:P_FLOOR        = 0.20          # p mínimo para entrar en un bin — SUBIDA de 0.15 a 0.20 (10/09)
+
+== 6. ¿Qué se ejecuta realmente? (de bot.log reciente) ==
+grep: /opt/polymarket/bot-polymarket-zelenskyy/bot.log: No such file or directory
+
+== 7. ¿Filtros activos? ==
+28:CUOTA_MINIMA   = 3.00          # cuota mínima aceptada — SUBIDA de 2.50 a 3.00 (10/09)
+29:PRECIO_MAX     = 0.30          # precio máximo del lado que compramos — NUEVO (10/09)
+80:        benef = round(stake * (CUOTA_MINIMA - 1) - perdida_prev, 2)
+121:        if p >= P_MIN_YES and cuota_yes and cuota_yes >= CUOTA_MINIMA and precio_yes <= PRECIO_MAX:
+122:            return "APOSTAR YES", "YES", f"p_modelo {p:.1%} ≥ {P_MIN_YES:.0%} y cuota {cuota_yes:.2f} ≥ {CUOTA_MINIMA:.2f} y precio YES {precio_yes:.3f} ≤ {PRECIO_MAX}"
+123:        if p <= P_MAX_NO and cuota_no and cuota_no >= CUOTA_MINIMA and precio_no <= PRECIO_MAX:
+124:            return "APOSTAR NO", "NO", f"p_modelo {p:.1%} ≤ {P_MAX_NO:.0%} y cuota NO {cuota_no:.2f} ≥ {CUOTA_MINIMA:.2f} y precio NO {precio_no:.3f} ≤ {PRECIO_MAX}"
+126:            return "PASAR", None, f"p_modelo {p:.1%} alta pero cuota {cuota_yes:.2f} < {CUOTA_MINIMA:.2f} o precio YES {precio_yes:.3f} > {PRECIO_MAX}"
+128:            return "PASAR", None, f"p_modelo {p:.1%} baja pero cuota NO {cuota_no:.2f} < {CUOTA_MINIMA:.2f} o precio NO {precio_no:.3f} > {PRECIO_MAX}"
+133:    if p >= P_FLOOR and vy >= EDGE_MIN and cuota_yes and cuota_yes >= CUOTA_MINIMA and precio_yes <= PRECIO_MAX:
+
+== 8. ¿Qué tipo de ventana usa? ==
+8:mensual: tabla de apuestas suave (2.00 × 1.35, máx. 5 pasos) y regla
+23:# Parámetros fijos de la estrategia (tabla PROPIA de la ventana mensual)
+25:VENTANA        = "semanal"     # 48h | semanal | mensual
+34:REGLA          = "ventaja"     # "absoluta" (48h) | "ventaja" (semanal/mensual)
+116:    - REGLA "absoluta" (48h): p_modelo ≥ 60% (YES) o ≤ 30% (NO) + cuota mín.
+117:    - REGLA "ventaja" (semanal/mensual): p_modelo ≥ precio + EDGE_MIN (o
+130:    # ---------------- REGLA VENTAJA (semanal / mensual) ----------------
+268:    ap = argparse.ArgumentParser(description="Motor de señal — mercado mensual Polymarket de tweets de Zelenskyy")
+
+########################################
+# BOT 3: TRUMP
+########################################
+
+== 1. Archivos principales de Trump ==
+-rw-r--r-- 1 root root 13847 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/bot_semanal.py
+-rw-r--r-- 1 root root  6394 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/chequear_cuenta.py
+-rw-r--r-- 1 root root  3021 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/diagnostico.py
+-rw-r--r-- 1 root root 13000 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/excel_historial.py
+-rw-r--r-- 1 root root 12893 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/mercado_polymarket.py
+-rw-r--r-- 1 root root 17536 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/notificar.py
+-rw-r--r-- 1 root root 12244 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/notificar_semanal.py
+-rw-r--r-- 1 root root 45304 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/operar_real_semanal.py
+-rw-r--r-- 1 root root 10134 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/papel_semanal.py
+-rw-r--r-- 1 root root  4869 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/probar_orden_semanal.py
+-rw-r--r-- 1 root root 23612 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/recoger_tweets.py
+-rw-r--r-- 1 root root  4217 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/saldo_ntfy.py
+-rw-r--r-- 1 root root 20301 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/senal.py
+-rw-r--r-- 1 root root 14937 Sep  4 15:00 /opt/polymarket/bot-polymarket-trump/senal_vivo.py
+
+== 2. ¿Qué motor usa senal.py? ==
+4:MOTOR DE SEÑAL — ventana SEMANAL «Trump # tweets <inicio> - <fin>?»
+381:    """Diagnostico: estado del motor empirico (para comparar/pruebas)."""
+
+== 3. ¿Qué motor usa bot_semanal.py? ==
+
+== 4. Funciones definidas en senal.py ==
+43:def clamp(x, lo, hi):
+47:def poisson_cdf(k, lam):
+63:def p_bin(lo, hi, lam):
+70:def tabla_apuestas(stake_inicial=STAKE_INICIAL, factor=FACTOR, pasos=PASOS_MAX):
+84:def cargar_csv(path):
+98:def metricas(datos):
+111:def decidir_bin(p, precio_yes, cuota_yes, cuota_no):
+143:def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
+160:def formatear_senal(m, lo, hi, precio_yes, ya_publicados, horas, paso=None):
+185:def backtest(datos, lo, hi, precio_yes):
+251:def main():
+301:def _emp_dist(k, frac, dias):
+337:def metricas(datos):
+353:def p_bin(lo, hi, lam):
+380:def emp_info():
+395:def metricas(datos):
+406:def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
+432:def _fixcal_calibrar():
+
+== 5. ¿Qué variables/filtros activos? ==
+25:VENTANA        = "semanal"     # 48h | semanal | mensual
+26:STAKE_INICIAL  = 3.00          # $, primera apuesta de cada ciclo
+27:FACTOR         = 1.40          # multiplicador tras cada fallo
+28:CUOTA_MINIMA   = 2.80          # cuota mínima aceptada
+33:EDGE_MIN       = 0.12          # ventaja mínima p_modelo − precio (12 pp)
+34:P_FLOOR        = 0.15          # p mínimo para entrar en un bin (evita colas)
+
+== 6. ¿Qué se ejecuta realmente? ==
+
+== 7. ¿Filtros activos? ==
+28:CUOTA_MINIMA   = 2.80          # cuota mínima aceptada
+78:        benef = round(stake * (CUOTA_MINIMA - 1) - perdida_prev, 2)
+119:        if p >= P_MIN_YES and cuota_yes and cuota_yes >= CUOTA_MINIMA:
+120:            return "APOSTAR YES", "YES", f"p_modelo {p:.1%} ≥ {P_MIN_YES:.0%} y cuota {cuota_yes:.2f} ≥ {CUOTA_MINIMA:.2f}"
+121:        if p <= P_MAX_NO and cuota_no and cuota_no >= CUOTA_MINIMA:
+122:            return "APOSTAR NO", "NO", f"p_modelo {p:.1%} ≤ {P_MAX_NO:.0%} y cuota NO {cuota_no:.2f} ≥ {CUOTA_MINIMA:.2f}"
+124:            return "PASAR", None, f"p_modelo {p:.1%} alta pero cuota {cuota_yes:.2f} < {CUOTA_MINIMA:.2f}"
+126:            return "PASAR", None, f"p_modelo {p:.1%} baja pero cuota NO {cuota_no:.2f} < {CUOTA_MINIMA:.2f}"
+131:    if p >= P_FLOOR and vy >= EDGE_MIN and cuota_yes and cuota_yes >= CUOTA_MINIMA:
+134:                f"(ventaja {vy:.0%}pp) y cuota {cuota_yes:.2f} ≥ {CUOTA_MINIMA:.2f}")
+
+== 8. ¿Qué tipo de ventana usa? ==
+8:mensual: tabla de apuestas suave (2.00 × 1.35, máx. 5 pasos) y regla
+23:# Parámetros fijos de la estrategia (tabla PROPIA de la ventana mensual)
+25:VENTANA        = "semanal"     # 48h | semanal | mensual
+32:REGLA          = "ventaja"     # "absoluta" (48h) | "ventaja" (semanal/mensual)
+114:    - REGLA "absoluta" (48h): p_modelo ≥ 60% (YES) o ≤ 30% (NO) + cuota mín.
+115:    - REGLA "ventaja" (semanal/mensual): p_modelo ≥ precio + EDGE_MIN (o
+128:    # ---------------- REGLA VENTAJA (semanal / mensual) ----------------
+252:    ap = argparse.ArgumentParser(description="Motor de señal — mercado mensual Polymarket de tweets de Trump")
+283:# en 48h) cuando Musk se mueve realmente +-40. El modelo compraba
+
+########################################
+# COMPARATIVA DE FILTROS
+########################################
+
+== Valores de los filtros en los 3 bots ==
+--- elon ---
+CUOTA_MINIMA    = 5.00          # cuota mínima aceptada (precio ≤ 0.20) — SUBIDA de 3.00 a 5.00 (10/09)
+PRECIO_MAX      = 0.20          # precio máximo del lado que compramos (≠ CUOTA_MINIMA) — NUEVO (10/09)
+
+--- zelenskyy ---
+CUOTA_MINIMA   = 3.00          # cuota mínima aceptada — SUBIDA de 2.50 a 3.00 (10/09)
+PRECIO_MAX     = 0.30          # precio máximo del lado que compramos — NUEVO (10/09)
+EDGE_MIN       = 0.15          # ventaja mínima p_modelo − precio — SUBIDA de 0.12 a 0.15 (10/09)
+P_FLOOR        = 0.20          # p mínimo para entrar en un bin — SUBIDA de 0.15 a 0.20 (10/09)
+
+--- trump ---
+CUOTA_MINIMA   = 2.80          # cuota mínima aceptada
+EDGE_MIN       = 0.12          # ventaja mínima p_modelo − precio (12 pp)
+P_FLOOR        = 0.15          # p mínimo para entrar en un bin (evita colas)
+
+
+########################################
+# ESTADÍSTICAS DE OPERACIONES
+########################################
+
+--- elon ---
+  real.json: 7 ops
+    sin_motor: 5 ops
+    motor_v2_ev_escalones_tope10: 2 ops
+--- zelenskyy ---
+  real_zelen.json: 7 ops
+    sin_motor: 5 ops
+    motor_v2_ev_escalones_tope10: 2 ops
+--- trump ---
+  real.json: 0 ops
