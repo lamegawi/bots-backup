@@ -1,0 +1,143 @@
+=== ACTIVACIÓN BOT ZELENSKYY — 20260912_073559 UTC ===
+wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+(clave privada NO se loguea)
+
+== 1. Estado actual de Zelenskyy ==
+ls: cannot access '/opt/polymarket/bot-polymarket-zelenskyy/config_real.json': No such file or directory
+-rw-r--r-- 1 root root 5317 Sep 11 16:06 /opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json
+● poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL
+     Loaded: loaded (/etc/systemd/system/poly-zelenskyy.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 07:09:28 UTC; 26min ago
+   Main PID: 1505134 (python3)
+      Tasks: 3 (limit: 4538)
+     Memory: 35.5M (peak: 38.1M)
+        CPU: 21.943s
+     CGroup: /system.slice/poly-zelenskyy.service
+             ├─1505134 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+             └─1506736 curl -s --max-time 40 "https://gamma-api.polymarket.com/events?slug=zelenskyy-of-tweets-september-20-september-22-2026"
+
+== 2. Saldo actual del bot (de real_zelen.json) ==
+  saldo actual: $281.19
+  bankroll_inicial: $311.39
+  pnl_acumulado: $-7.84
+  activa: {'slug': 'zelenskyy-of-tweets-september-11-september-18-2026', 'fecha': '2026-09-11', 'bin_titulo': '80-99', 'lo': 80, 'hi': 99, 'lado': 'YES', 'precio': 0.295, 'cuota': 3.39, 'p_modelo': 0.7088, 'paso': 5, 'stake': 10.0, 'motor': 'motor_v2_ev_escalones_tope10', 'ev': 2.403, 'order_id': '0xc1c02e2724864f70bdcb2d1cca71b801ca24376e4d62a81c659289d25aec1cbe', 'token_id': '73985914927945810194625586237985773860069531575861796797261292258441153963343', 'pendiente': False, 'fecha_orden_ts': 1789142808.5374973, 'ventana_fin': '2026-09-18T16:00:00+00:00'}
+  historial: 7 ops
+
+== 3. ¿Existe service poly-zelenskyy.service? ==
+[Unit]
+Description=Bot Polymarket Zelenskyy SEMANAL
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-zelenskyy
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+Restart=always
+TimeoutStartSec=300
+RestartSec=30
+StandardOutput=append:/var/log/poly-zelenskyy.log
+StandardError=append:/var/log/poly-zelenskyy.log
+
+[Install]
+WantedBy=multi-user.target
+
+== 4. Backup del real_zelen.json actual ==
+backup: /opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json.bak_20260912_073559
+
+== 5. Crear config_real.json con wallet real ==
+config_real.json creado con confirmado=true y bankroll=228.45
+-rw------- 1 root root 333 Sep 12 07:36 /opt/polymarket/bot-polymarket-zelenskyy/config_real.json
+
+== 6. ¿Actualizar real_zelen.json? (mantener historial) ==
+  actualizado:
+    saldo: $281.19 → $228.45
+    bankroll_inicial: $311.39 → $228.45
+    pnl_acumulado: $-82.94
+    historial: 7 ops (preservado)
+-rw------- 1 root root 5914 Sep 12 07:36 /opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json
+
+== 7. Crear /etc/default/poly-zelenskyy con la clave ==
+/etc/default/poly-zelenskyy creado (permisos 600)
+
+== 8. Actualizar poly-zelenskyy.service para cargar /etc/default/poly-zelenskyy ==
+  ya tiene EnvironmentFile, no se modifica
+[Unit]
+Description=Bot Polymarket Zelenskyy SEMANAL
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-zelenskyy
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+Restart=always
+TimeoutStartSec=300
+RestartSec=30
+StandardOutput=append:/var/log/poly-zelenskyy.log
+StandardError=append:/var/log/poly-zelenskyy.log
+
+[Install]
+WantedBy=multi-user.target
+
+== 9. Recargar systemd y reiniciar ==
+● poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL
+     Loaded: loaded (/etc/systemd/system/poly-zelenskyy.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 07:36:15 UTC; 5s ago
+   Main PID: 1506820 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 15.9M (peak: 17.5M)
+        CPU: 1.251s
+     CGroup: /system.slice/poly-zelenskyy.service
+             ├─1506820 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+             └─1506838 curl -s --max-time 40 "https://gamma-api.polymarket.com/events?slug=zelenskyy-of-tweets-september-12-september-14-2026"
+
+Sep 12 07:36:15 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+
+== 10. Verificar que el bot arranca con la clave ==
+PID: 1506820
+POLY_PRIVATE_KEY=***OCULTO***
+POLY_WALLET_ADDRESS=***OCULTO***
+POLY_RELAYER_API_KEY=***OCULTO***
+POLY_RELAYER_API_KEY_ADDRESS=***OCULTO***
+
+== 11. ¿Está en 'BLOQUEADO' o arrancando? ==
+Sep 10 14:39:48 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 06:05:49 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+Sep 12 06:05:49 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+Sep 12 06:05:49 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 06:05:49 bot-poly systemd[1]: poly-zelenskyy.service: Consumed 16min 49.611s CPU time, 104.2M memory peak, 0B memory swap peak.
+Sep 12 06:05:49 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 06:06:01 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+Sep 12 06:06:01 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+Sep 12 06:06:01 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 06:06:01 bot-poly systemd[1]: poly-zelenskyy.service: Consumed 1.980s CPU time, 17.9M memory peak, 0B memory swap peak.
+Sep 12 06:06:01 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 07:08:58 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+Sep 12 07:08:58 bot-poly systemd[1]: poly-zelenskyy.service: Consumed 47.319s CPU time.
+Sep 12 07:09:28 bot-poly systemd[1]: poly-zelenskyy.service: Scheduled restart job, restart counter is at 1.
+Sep 12 07:09:28 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 07:36:15 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+Sep 12 07:36:15 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+Sep 12 07:36:15 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 07:36:15 bot-poly systemd[1]: poly-zelenskyy.service: Consumed 22.028s CPU time, 38.1M memory peak, 0B memory swap peak.
+Sep 12 07:36:15 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+
+== 12. Verificación final ==
+
+== 13. Resumen ==
+  ✅ config_real.json: confirmado=true, bankroll=228.45
+  ✅ real_zelen.json: saldo=228.45 (historial preservado)
+  ✅ /etc/default/poly-zelenskyy: POLY_PRIVATE_KEY cargada
+  ✅ poly-zelenskyy.service: EnvironmentFile añadido
+  ✅ servicio reiniciado
+
+  ⚠️  PRÓXIMOS PASOS:
+  - Espera 5 min a la próxima pasada
+  - Verifica logs: journalctl -u poly-zelenskyy.service -f
