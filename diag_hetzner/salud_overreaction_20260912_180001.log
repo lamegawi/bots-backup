@@ -1,0 +1,40 @@
+=== SALUD poly-overreaction-bot — 2026-09-12 18:00 UTC ===
+
+== 1) SERVICIO ==
+  ✅ servicio active
+  ·  memoria: 58 MB
+
+== 2) CÓDIGO ==
+  ·  archivos .py: 9
+  ✅ código completo
+
+== 3) DATOS ==
+  ·  precios almacenados: 316 mercados
+  ✅ base de precios OK
+  ·  spikes pendientes: 18 | procesados: 100
+
+== 4) TRADES ==
+  ·  Total: 7 | Abiertas: 5 | Wins: 1 | Losses: 1
+  ·  PnL: $21.43
+
+== 5) PROXY ==
+  ✅ proxy OK (85.85.41.76)
+
+== 6) APIs ==
+  ✅ gamma-api.polymarket.com/markets?limit=1
+  ✅ gamma-api.polymarket.com/events?limit=1&closed=false
+
+== 7) RECURSOS ==
+  ✅ disco 34%
+
+== 8) ERRORES ==
+  ✅ sin errores
+
+== 9) ÚLTIMA ACTIVIDAD ==
+   17:46:59 │ INFO     │ 📉 SPIKE: Will FC Lugano vs. Young Boys Bern end in a draw?... | -14.3% | 0.280 → 0.240
+   17:50:13 │ INFO     │ 📉 SPIKE: 1H Spread: Penn State (-17.5)... | -99.5% | 0.100 → 0.001
+   17:53:04 │ INFO     │ 📊 Ciclo #255 | 100 mercados | 0 spikes nuevos | 18 pendientes | 0 resueltos
+
+==============================================
+RESULTADO: ✅ SALUD OK
+==============================================
