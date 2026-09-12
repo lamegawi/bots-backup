@@ -1,0 +1,150 @@
+=== DIAG real.json COMPLETO — 20260912_064951 UTC ===
+
+== 1. TODAS las entradas del historial ==
+total ops: 7
+saldo: 303.55
+paso: 6
+
+--- TODAS LAS OPS ---
+
+=== OP #1 ===
+  id: 9545c5c1841c
+  fecha: 2026-08-18
+  mercado: elon-musk-of-tweets-august-17-august-19
+  bin: <40
+  lado: YES
+  precio: 0.23
+  cuota: 4.35
+  p_modelo: 0.9171
+  paso: 1
+  stake: 3.3
+  real: >40 (gestor vendió 18/08)
+  resultado: P
+  beneficio: -3.3
+  saldo: 496.7
+
+=== OP #2 ===
+  id: reconc
+  fecha: 2026-08-20
+  mercado: elon-musk-of-tweets-august-20-august-22
+  bin: 90-114
+  lado: YES
+  precio: 0.212
+  cuota: 4.72
+  p_modelo: 0.6359
+  paso: 2
+  stake: 7.43
+  real: vendido por el gestor en positivo (+2.70 a nivel cuenta)
+  resultado: G
+  beneficio: 27.64
+  saldo: 524.34
+
+=== OP #3 ===
+  id: 8c677c997237
+  fecha: 2026-08-22
+  mercado: elon-musk-of-tweets-august-22-august-24-2026
+  bin: 90-114
+  lado: YES
+  precio: 0.115
+  cuota: 8.7
+  p_modelo: 0.776
+  paso: 1
+  stake: 6.6
+  real: 40-64
+  motor: motor_v2_ev_escalones_tope10
+  ev: 6.748
+  resultado: P
+  beneficio: -6.6
+  saldo: 517.74
+
+=== OP #4 ===
+  id: reconc
+  fecha: 2026-08-30
+  mercado: elon-musk-of-tweets-august-29-august-31-2026
+  bin: <40
+  lado: YES
+  precio: 0.056
+  cuota: 17.86
+  p_modelo: 0.7143
+  paso: 2
+  stake: 9.9
+  real: vendido por el gestor
+  resultado: P
+  beneficio: -9.9
+  saldo: 507.84
+
+=== OP #5 ===
+  id: reconc
+  fecha: 2026-08-30
+  mercado: elon-musk-of-tweets-august-29-august-31-2026
+  bin: 40-64
+  lado: NO
+  precio: 0.28
+  cuota: 3.57
+  p_modelo: 0.1429
+  paso: 3
+  stake: 10.0
+  real: vendido/desaparecido (sin registro del gestor)
+  resultado: P
+  beneficio: -10.0
+  saldo: 497.84
+
+=== OP #6 ===
+  id: reconc
+  fecha: 2026-09-01
+  mercado: elon-musk-of-tweets-august-31-september-2-2026
+  bin: 40-64
+  lado: NO
+  precio: 0.325
+  cuota: 3.08
+  p_modelo: 0.0
+  paso: 4
+  stake: 10.0
+  real: vendido/desaparecido (sin registro del gestor)
+  resultado: P
+  beneficio: -10.0
+  saldo: 487.84
+
+=== OP #7 ===
+  id: 7fabd7fc2966
+  fecha: 2026-09-02
+  mercado: elon-musk-of-tweets-august-31-september-2-2026
+  bin: 40-64
+  lado: NO
+  precio: 0.22
+  cuota: 4.55
+  p_modelo: 0.0
+  paso: 5
+  stake: 10.0
+  real: 40-64
+  motor: motor_v2_ev_escalones_tope10
+  ev: 4.545
+  resultado: P
+  beneficio: -10.0
+  saldo: 477.84
+
+== 2. Posición actual (si hay alguna) ==
+activa: None
+abierta: None
+claves top-level: ['saldo', 'paso', 'activa', 'historial', '_sincronizado_con_real', '_sincronizado_ts', '_bankroll_inicial_real', '_pnl_historico_acumulado']
+
+== 3. ¿Hay otras posiciones en otras ventanas? ==
+mercado_activo.json:   "slug": "elon-musk-of-tweets-september-10-september-12-2026",
+mercado_activo.json:   "slug": "elon-musk-of-tweets-september-8-september-15-2026",
+mercado_activo.json:   "slug": "elon-musk-of-tweets-september-11-september-18-2026",
+mercado_activo.json:   "slug": "elon-musk-of-tweets-september-4-september-11-2026",
+ventanas_vistas.json:  "elon-musk-of-tweets-august-28-september-4-2026": {
+ventanas_vistas.json:  "elon-musk-of-tweets-september-1-september-8-2026": {
+ventanas_vistas.json:  "elon-musk-of-tweets-september-3-september-5-2026": {
+ventanas_vistas.json:  "elon-musk-of-tweets-september-4-september-11-2026": {
+ventanas_vistas.json:  "elon-musk-of-tweets-september-5-september-7-2026": {
+ventanas_vistas.json:  "elon-musk-of-tweets-september-8-september-15-2026": {
+ventanas_vistas.json:  "elon-musk-of-tweets-september-7-september-9-2026": {
+ventanas_vistas.json:  "elon-musk-of-tweets-september-11-september-18-2026": {
+ventanas_vistas.json:  "elon-musk-of-tweets-september-10-september-12-2026": {
+
+== 4. ¿Hay logs en /opt/polymarket/logs/? ==
+ls: cannot access '/opt/polymarket/logs/': No such file or directory
+-rw-r--r-- 1 root root 5870721 Sep 12 06:46 /opt/polymarket/bot-polymarket-elon/bot.log
+
+== 5. ¿Servicio systemd tiene logs de la operación 4-11? ==
