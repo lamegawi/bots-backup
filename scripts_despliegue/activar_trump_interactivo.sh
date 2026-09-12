@@ -21,22 +21,27 @@ BANNER
 # pedir clave privada de forma segura
 echo
 echo "🔑 Pega tu clave privada de https://reveal.magic.link/polymarket"
-echo "   (empieza por 0x..., 66 caracteres)"
+echo "   (66 caracteres hexadecimales, con o sin prefijo 0x)"
 echo "   NO se mostrará, NO se guardará en el log, NO irá a GitHub"
 echo
-read -rs -p "POLY_PRIVATE_KEY=0x" PK_HEX
+read -rs -p "POLY_PRIVATE_KEY=" PK_INPUT
 echo
-if [ -z "$PK_HEX" ]; then
+if [ -z "$PK_INPUT" ]; then
     echo "❌ No se proporcionó clave. Abortando."
     exit 1
 fi
-# validación básica
+# quitar prefijo 0x si lo tiene
+PK_HEX="${PK_INPUT#0x}"
+# limpiar espacios y newlines
+PK_HEX="$(echo -n "$PK_HEX" | tr -d '[:space:]')"
+unset PK_INPUT
+# validación: 64 caracteres hex
 if [[ ! "$PK_HEX" =~ ^[0-9a-fA-F]{64}$ ]]; then
-    echo "❌ La clave no tiene 64 caracteres hexadecimales. Abortando."
+    LEN=${#PK_HEX}
+    echo "❌ La clave no tiene 64 caracteres hexadecimales (tiene $LEN). Abortando."
     exit 1
 fi
 PK_FULL="0x${PK_HEX}"
-# limpiar de memoria
 unset PK_HEX
 
 {
