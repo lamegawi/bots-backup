@@ -1,0 +1,70 @@
+=== ACTIVACIÓN BOT ELON SEMANAL — 20260912_081015 UTC ===
+(clave privada NO se loguea)
+
+== 1. Verificar que el directorio existe ==
+total 6520
+drwxr-xr-x  6 1000 1000    4096 Sep 12 08:09 .
+drwxr-xr-x 17 1000 1000    4096 Sep 12 08:08 ..
+-rw-r--r--  1 root root     879 Sep 12 05:37 avisos_cooldown.json
+-rw-r--r--  1 root root 5886642 Sep 12 07:08 bot_semanal.log
+-rwxr-xr-x  1 root root    2900 Sep 12 08:09 bot_semanal.py
+-rw-r--r--  1 root root    6394 Aug 17 20:24 chequear_cuenta.py
+-rw-r--r--  1 root root     219 Sep 12 08:09 config.json
+-rw-------  1 root root     333 Sep 12 08:09 config_real.json
+-rw-r--r--  1 root root     942 Aug 17 20:24 config_real.json.example
+
+== 2. Crear /etc/default/poly-elon-semanal ==
+creado
+-rw------- 1 root root 199 Sep 12 08:10 /etc/default/poly-elon-semanal
+
+== 3. Recargar systemd y arrancar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 08:10:41 UTC; 5s ago
+   Main PID: 1509612 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 5.5M (peak: 5.6M)
+        CPU: 37ms
+     CGroup: /system.slice/poly-elon-semanal.service
+             └─1509612 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+Sep 12 08:10:11 bot-poly systemd[1]: poly-elon-semanal.service: Failed with result 'resources'.
+Sep 12 08:10:11 bot-poly systemd[1]: Failed to start poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 08:10:41 bot-poly systemd[1]: poly-elon-semanal.service: Scheduled restart job, restart counter is at 3.
+Sep 12 08:10:41 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] 🤖 BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+
+== 4. Verificar variables de entorno del proceso ==
+PID: 1509612
+POLY_PRIVATE_KEY=***OCULTO***
+POLY_WALLET_ADDRESS=***OCULTO***
+
+== 5. Log del servicio ==
+Sep 12 08:09:10 bot-poly systemd[1]: poly-elon-semanal.service: Failed to load environment files: No such file or directory
+Sep 12 08:09:10 bot-poly systemd[1]: poly-elon-semanal.service: Failed to spawn 'start' task: No such file or directory
+Sep 12 08:09:10 bot-poly systemd[1]: poly-elon-semanal.service: Failed with result 'resources'.
+Sep 12 08:09:10 bot-poly systemd[1]: Failed to start poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 08:09:41 bot-poly systemd[1]: poly-elon-semanal.service: Scheduled restart job, restart counter is at 1.
+Sep 12 08:09:41 bot-poly systemd[1]: poly-elon-semanal.service: Failed to load environment files: No such file or directory
+Sep 12 08:09:41 bot-poly systemd[1]: poly-elon-semanal.service: Failed to spawn 'start' task: No such file or directory
+Sep 12 08:09:41 bot-poly systemd[1]: poly-elon-semanal.service: Failed with result 'resources'.
+Sep 12 08:09:41 bot-poly systemd[1]: Failed to start poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 08:10:11 bot-poly systemd[1]: poly-elon-semanal.service: Scheduled restart job, restart counter is at 2.
+Sep 12 08:10:11 bot-poly systemd[1]: poly-elon-semanal.service: Failed to load environment files: No such file or directory
+Sep 12 08:10:11 bot-poly systemd[1]: poly-elon-semanal.service: Failed to spawn 'start' task: No such file or directory
+Sep 12 08:10:11 bot-poly systemd[1]: poly-elon-semanal.service: Failed with result 'resources'.
+Sep 12 08:10:11 bot-poly systemd[1]: Failed to start poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 08:10:41 bot-poly systemd[1]: poly-elon-semanal.service: Scheduled restart job, restart counter is at 3.
+Sep 12 08:10:41 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] 🤖 BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] ════════════════════════════════════════════
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] ════════════════════════════════════════════
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] ERROR: cargar_csv() missing 1 required positional argument: 'path'
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] Próxima pasada en 15 min…
+
+== 6. Resumen ==
+  ✅ /etc/default/poly-elon-semanal creado
+  ✅ servicio poly-elon-semanal.service arrancado
+
+  Esperar 15 min a la primera pasada
