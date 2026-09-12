@@ -1,0 +1,44 @@
+=== VERIFICACIÓN CRON MONITOREO — 20260912_074731 UTC ===
+
+== 1. ¿Existe /etc/cron.d/poly_monitoreo? ==
+-rw-r--r-- 1 root root 156 Sep 12 07:45 /etc/cron.d/poly_monitoreo
+
+== 2. Contenido del archivo ==
+# Monitoreo cada 5 min de los 3 bots (Elon/Zelenskyy/Trump)
+*/5 * * * * /usr/bin/bash /opt/polymarket/scripts_despliegue/monitorear_bots.sh >/dev/null 2>&1
+
+== 3. ¿Aparece en /etc/cron.d/? ==
+-rw-r--r--   1 root root  156 Sep 12 07:45 poly_monitoreo
+
+== 4. ¿Aparece en crontab? ==
+(no está en crontab del usuario)
+
+== 5. ¿Está en los crontabs de otros usuarios? ==
+--- /var/spool/cron/crontabs/root ---
+(vacío)
+
+== 6. ¿El script monitorear_bots.sh existe en Hetzner? ==
+ls: cannot access '/opt/polymarket/scripts_despliegue/monitorear_bots.sh': No such file or directory
+
+== 7. ¿Hay logs recientes del monitoreo? ==
+-rw-r--r-- 1 root root 2063 Sep 12 07:45 /tmp/mon_bots_20260912_074545.log
+-rw-r--r-- 1 root root 1604 Sep 12 07:45 /tmp/instalar_cron_monitoreo_20260912_074532.log
+
+== 8. ¿Hay procesos cron ejecutándose? ==
+root     1498633  0.0  0.0   8180  3624 ?        Ss   06:06   0:00 /usr/sbin/cron -f -P
+
+== 9. Última línea de logs del cron ==
+Sep 12 07:40:01 bot-poly CRON[1507029]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 12 07:40:02 bot-poly CRON[1507028]: pam_unix(cron:session): session closed for user root
+Sep 12 07:45:01 bot-poly CRON[1507279]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+Sep 12 07:45:01 bot-poly CRON[1507281]: (root) CMD (command -v debian-sa1 > /dev/null && debian-sa1 1 1)
+Sep 12 07:45:01 bot-poly CRON[1507280]: pam_unix(cron:session): session opened for user root(uid=0) by root(uid=0)
+Sep 12 07:45:01 bot-poly CRON[1507282]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 12 07:45:01 bot-poly CRON[1507279]: pam_unix(cron:session): session closed for user root
+Sep 12 07:45:01 bot-poly CRON[1507280]: pam_unix(cron:session): session closed for user root
+Sep 12 07:46:01 bot-poly cron[1498633]: Error: bad username; while reading /etc/cron.d/poly_monitoreo
+Sep 12 07:46:01 bot-poly cron[1498633]: (*system*poly_monitoreo) ERROR (Syntax error, this crontab file will be ignored)
+
+== 10. Resumen ==
+  ✅ /etc/cron.d/poly_monitoreo EXISTE
+  ✅ cron está configurado para ejecutarse cada 5 min
