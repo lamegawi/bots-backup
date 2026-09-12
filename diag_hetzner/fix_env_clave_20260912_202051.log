@@ -1,0 +1,96 @@
+=== FIX LEER CLAVE DE ENVFILE — 20260912_202051 UTC ===
+
+== 1. Ver la clave del envfile ==
+POLY_PRIVATE_KEY="0x5a140fd5482dd565f6abe8ddd100b63fe451bff399be5609e56a0cfafc888af3"
+
+== 2. Ver config_real.json actual ==
+{
+  "wallet_address": "0xb0E1197098E6d427c01720F1631cAD24CE740FA0",
+  "wallet_private_key": "PLACEHOLDER_OCULTO_POR_SEGURIDAD",
+  "relayer_api_key": "",
+  "relayer_api_key_address": "",
+  "api_key": "",
+  "api_secret": "",
+  "api_passphrase": "",
+  "bankroll": 228.45,
+  "fee_pct": 0.0,
+  "signature_type": 1,
+  "confirmado": true
+}
+
+== 3. Reescribir config_real.json con clave real ==
+  clave leída del envfile: 66 chars
+  empieza con: 0x5a140fd5
+  address: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+  ✅ config_real.json reescrito
+{
+  "wallet_private_key": "0x5a140fd5482dd565f6abe8ddd100b63fe451bff399be5609e56a0cfafc888af3",
+  "wallet_address": "0xb0E1197098E6d427c01720F1631cAD24CE740FA0",
+  "signature_type": 1,
+  "confirmado": true
+}
+== 4. Verificar clave es válida ==
+  longitud: 66
+  empieza: 0x5a140fd5
+  chars no-hex: []
+  ✅ Account.from_key OK
+     address: 0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6
+  ❌ NO coincide: 0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6 vs 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+  ✅ Signer OK
+
+== 5. Probar ClobClient completo con clave correcta ==
+  ✅ ClobClient creado
+     address: 0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6
+  ✅ API creds derivadas
+  [aviso] no pude leer balance: 'NoneType' object has no attribute 'signature_type'
+
+== 6. Probar pasada única del bot semanal ==
+[2026-09-12 20:20:58]    proxy configurado: no
+[2026-09-12 20:20:59]    importando ClobClient + OrderArgs OK
+[2026-09-12 20:20:59]    cliente creado
+[2026-09-12 20:20:59]    API creds derivadas
+[2026-09-12 20:20:59]    enviando orden BUY 60.55 shares @ $0.0545
+[2026-09-12 20:20:59]    ERROR ejecutando: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[2026-09-12 20:20:59] Traceback (most recent call last):
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 173, in try_ejecutar_orden
+    resp = client.create_and_post_order(order)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/client.py", line 661, in create_and_post_order
+    return self.post_order(ord)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/client.py", line 648, in post_order
+    return post(
+           ^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/http_helpers/helpers.py", line 69, in post
+    return request(endpoint, POST, headers, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/http_helpers/helpers.py", line 57, in request
+    raise PolyApiException(resp)
+py_clob_client.exceptions.PolyApiException: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+
+[2026-09-12 20:20:59] ════════════════════════════════════════════
+[2026-09-12 20:20:59] Pasada completada
+
+== 7. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 20:20:59 UTC; 5s ago
+   Main PID: 1565143 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 9.4M (peak: 10.0M)
+        CPU: 963ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 8. Verificar log ==
+Sep 12 20:16:39 bot-poly python3[1564515]: [2026-09-12 20:16:39] Pasada completada
+Sep 12 20:16:39 bot-poly python3[1564515]: [2026-09-12 20:16:39] Próxima pasada en 15 min
+Sep 12 20:20:59 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 12 20:20:59 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 12 20:20:59 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:20:59 bot-poly systemd[1]: poly-elon-semanal.service: Consumed 4.521s CPU time, 9.9M memory peak, 0B memory swap peak.
+Sep 12 20:20:59 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:20:59 bot-poly python3[1565143]: [2026-09-12 20:20:59] BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+Sep 12 20:20:59 bot-poly python3[1565143]: [2026-09-12 20:20:59] ════════════════════════════════════════════
+Sep 12 20:20:59 bot-poly python3[1565143]: [2026-09-12 20:20:59] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 20:20:59 bot-poly python3[1565143]: [2026-09-12 20:20:59] ════════════════════════════════════════════
+Sep 12 20:20:59 bot-poly python3[1565143]: [2026-09-12 20:20:59] AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
