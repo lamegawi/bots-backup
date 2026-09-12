@@ -52,8 +52,32 @@ for k, v in list(rc.items())[:10]:
         print(f"      {str(v.get('titulo') or v.get('nota') or k)[:52]:54} "
               f"${float(v.get('importe') or 0):7.2f} · {str(v.get('ts'))[:16]}")
 print(f"   config: max_ops_día={d.get('max_ops_dia')} · prob_min_auto={d.get('prob_min_auto')} "
-      f"· intervalo={d.get('intervalo_min')} min · modo={d.get('modo_auto')} · "
+      f"· intervalo={d.get('intervalo_min') or int(d.get('intervalo_auto_s', 600)) // 60} min · "
+      f"modo={d.get('modo') or d.get('modo_auto') or '?'} · "
       f"próxima pasada={str(d.get('proximo_paso_ts'))[:19]}")
+# 📡 v12.9.0: estado del copy-trading EN PAPEL (sólo lectura, como todo este script)
+cp = d.get("copy") or {}
+se = d.get("copy_señales") or []
+res = [x for x in se if x.get("resuelta") and not x.get("anulada")]
+anu = [x for x in se if x.get("anulada")]
+pnl = sum(float(x.get("pnl_papel_nuestro") or 0) for x in res)
+tr = cp.get("traders") or []
+print(f"   📡 copy en papel: {len(tr)} traders · {len(se)} señales ({len(res)} resueltas, "
+      f"{len(anu)} anuladas) · dedup {len(cp.get('vistos') or {})} fills · "
+      f"{int(cp.get('informes') or 0)} informes · gasto $0 (COPY_DINERO=False)")
+for t in tr[:6]:
+    print(f"      · {str(t.get('nombre'))[:22]:<22} #{t.get('puesto')} · "
+          f"{t.get('compras48h')} compras/48h · {t.get('mercados')} mercados · "
+          f"{t.get('deporte_pct')}% deporte")
+for x in se[-8:]:
+    estado_x = ("resuelta " + str(x.get("senal_acerto"))) if x.get("resuelta") else "ABIERTA"
+    print(f"      {str(x.get('titulo'))[:44]:<44} {x.get('dia')} · él {x.get('precio_trader')} → "
+          f"nosotros {x.get('precio_nuestro')} ({x.get('deriva_pts')} pts) · {estado_x} · "
+          f"{x.get('escaladas')} escaladas · ${x.get('usd_trader')}")
+if res:
+    print(f"      acierto {sum(1 for x in res if x.get('senal_acerto')) / len(res) * 100:.1f}% · "
+          f"PnL teórico al precio nuestro ${pnl:+.2f} "
+          f"(ROI {pnl / (len(res) * 5.0) * 100:+.1f}%)")
 ops = [o for o in hi if o.get('tags') and 'inyectada-agosto' in o.get('tags')]
 if ops:
     print(f"   💉 inyectadas de agosto: {len(ops)} · "
