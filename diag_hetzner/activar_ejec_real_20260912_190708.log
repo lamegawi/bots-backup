@@ -1,0 +1,101 @@
+=== ACTIVAR EJECUCIÓN REAL BOT SEMANAL ELON — 20260912_190708 UTC ===
+
+== 1. ¿py_clob_client está instalado en otro bot? ==
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/py_clob_client_v2-1.1.0.dist-info
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/py_clob_client_v2
+
+== 2. Ver cómo Zelenskyy obtiene token_id ==
+174:def token_id_para_bin(slug, bin_titulo):
+175-    """Devuelve (token_id_YES, token_id_NO) del bin pedido, o None."""
+176-    r = subprocess.run(["curl", "-s", "--max-time", "40",
+177-                        f"https://gamma-api.polymarket.com/events?slug={slug}"],
+178-                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+179-    try:
+180-        evs = json.loads(r.stdout)
+181-        ev = evs[0]
+182-        for m in ev.get("markets", []):
+183-            if (m.get("groupItemTitle") or "") == bin_titulo:
+184-                tokens = json.loads(m.get("clobTokenIds") or "[]")
+185-                if len(tokens) >= 2:
+186-                    return tokens[0], tokens[1]
+187-    except Exception:
+188-        pass
+189-    return None
+
+== 3. Instalar py_clob_client ==
+
+note: If you believe this is a mistake, please contact your Python installation or OS distribution provider. You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages.
+hint: See PEP 668 for the detailed specification.
+
+== 4. Verificar instalación ==
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'py_clob_client'
+
+== 5. ¿Cómo Zelenskyy hace las llamadas? ==
+551:            resp = client.create_and_post_order(
+552-                OrderArgs(price=c["precio"], size=size_shares,
+553-                          side="BUY", token_id=token_id))
+554-            order_id = resp.get("orderID") or resp.get("order_id")
+--
+829:        resp = client.create_and_post_order(
+830-            OrderArgs(token_id=token_id, price=0.01, size=5, side="BUY"))
+831-        oid = resp.get("orderID") or resp.get("order_id")
+832-        print(f"  ✔ Orden de prueba enviada: {oid}")
+--
+910:        resp = client.create_and_post_order(
+911-            OrderArgs(price=precio_venta, size=size, side="SELL", token_id=token_id))
+912-        order_id = resp.get("orderID") or resp.get("order_id")
+913-        print(f"  [FIXWIN] orden SELL enviada: {order_id}")
+
+== 6. Mercado activo JSON actual ==
+  Elon Musk # tweets September 12 - September 14, 20
+    bin: 0-39
+    keys: ['titulo', 'lo', 'hi', 'precio_yes', 'precio_no', 'cuota_yes', 'cuota_no', 'volumen']
+  Elon Musk # tweets September 8 - September 15, 202
+    bin: 0-19
+    keys: ['titulo', 'lo', 'hi', 'precio_yes', 'precio_no', 'cuota_yes', 'cuota_no', 'volumen']
+
+== 7. Reescribir mercado_polymarket.py para obtener token_id desde Polymarket API ==
+  ✅ mercado_polymarket.py reescrito con Gamma API
+
+== 8. Probar mercado_polymarket.py ==
+Mercados semanales abiertos: 2
+  · Elon Musk # tweets September 8 - September 15, 2026?
+    cierre: ?
+    slug: elon-musk-of-tweets-september-8-september-15-2026
+    primer bin: 0-19 token_id_yes=?
+  · Elon Musk # tweets September 11 - September 18, 2026?
+    cierre: ?
+    slug: elon-musk-of-tweets-september-11-september-18-2026
+    primer bin: 0-19 token_id_yes=?
+
+== 9. Verificar py_clob_client + test conexión ==
+  ❌ ERROR: No module named 'py_clob_client'
+
+== 10. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 19:07:12 UTC; 5s ago
+   Main PID: 1556135 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 11.2M (peak: 11.7M)
+        CPU: 476ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 11. Verificar log ==
+Sep 12 19:07:12 bot-poly python3[1556135]: [2026-09-12 19:07:12] ════════════════════════════════════════════
+Sep 12 19:07:12 bot-poly python3[1556135]: [2026-09-12 19:07:12] 📊 AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14] 📈 2 mercados semanales abiertos
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14] 💰 saldo=$228.45  paso=1  activa=no
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]   🎯 Elon Musk # tweets September 8 - September 15, 202 | bin 120-139 | YES @ 0.045 (cuota 22.22/1.05)
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]      EV=+12.536 | ventaja 56%pp
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]   🎯 Elon Musk # tweets September 11 - September 18, 20 | bin 120-139 | YES @ 0.055 (cuota 18.18/1.06)
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]      EV=+10.075 | ventaja 55%pp
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]
+Sep 12 19:07:14 bot-poly python3[1556135]: 🚀 Mejor señal: Elon Musk # tweets September 8 - September 15, 202
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]    bin 120-139 YES EV=+12.536
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14]    ⚠️ sin token_id para YES, saltamos
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14] ════════════════════════════════════════════
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14] Pasada completada
+Sep 12 19:07:14 bot-poly python3[1556135]: [2026-09-12 19:07:14] Próxima pasada en 15 min…
