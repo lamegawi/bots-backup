@@ -1,0 +1,60 @@
+=== FIX DEFINITIVO BOT SEMANAL — 20260912_081838 UTC ===
+
+== 1. Backup de bot_semanal.py ==
+backup: /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_20260912_081838
+
+== 2. Reescribir bot_semanal.py (sin import de ELON_DIR) ==
+bot_semanal.py reescrito
+
+== 3. Validar sintaxis ==
+  ✅ compila
+
+== 4. Borrar __pycache__ ==
+  ✅ caches borrados
+
+== 5. Probar manualmente con pasada única ==
+[2026-09-12 08:18:38] 🤖 BOT SEMANAL ELON arrancado (loop=False, intervalo=15 min)
+[2026-09-12 08:18:38] ════════════════════════════════════════════
+[2026-09-12 08:18:38] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+[2026-09-12 08:18:38] ════════════════════════════════════════════
+[2026-09-12 08:18:38] senal importado desde: /opt/polymarket/bot-polymarket-elon-semanal/senal.py
+[2026-09-12 08:18:38] tiene CSV_PATH? True
+[2026-09-12 08:18:38] AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
+[2026-09-12 08:18:38] días en CSV: 48
+[2026-09-12 08:18:38] stakes: [3.3, 4.62, 6.47, 9.06, 12.68, 17.75]
+[2026-09-12 08:18:38] 2 mercados semanales abiertos
+[2026-09-12 08:18:38]   · Elon Musk # tweets September 8 - September 15, 2026?
+[2026-09-12 08:18:38]   · Elon Musk # tweets September 11 - September 18, 2026?
+[2026-09-12 08:18:38] 3/4 · Evaluando señales semanales…
+[2026-09-12 08:18:38]   · (lógica de trading pendiente)
+[2026-09-12 08:18:38] ════════════════════════════════════════════
+[2026-09-12 08:18:38] Pasada completada
+
+== 6. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 08:18:38 UTC; 5s ago
+   Main PID: 1510308 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 5.6M (peak: 5.9M)
+        CPU: 33ms
+     CGroup: /system.slice/poly-elon-semanal.service
+             └─1510308 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+
+== 7. Verificar log ==
+Sep 12 08:18:38 bot-poly python3[1510308]: [2026-09-12 08:18:38] días en CSV: 48
+Sep 12 08:18:38 bot-poly python3[1510308]: [2026-09-12 08:18:38] stakes: [3.3, 4.62, 6.47, 9.06, 12.68, 17.75]
+Sep 12 08:18:38 bot-poly python3[1510308]: [2026-09-12 08:18:38] 2 mercados semanales abiertos
+Sep 12 08:18:38 bot-poly python3[1510308]: [2026-09-12 08:18:38]   · Elon Musk # tweets September 8 - September 15, 2026?
+Sep 12 08:18:38 bot-poly python3[1510308]: [2026-09-12 08:18:38]   · Elon Musk # tweets September 11 - September 18, 2026?
+Sep 12 08:18:38 bot-poly python3[1510308]: [2026-09-12 08:18:38] 3/4 · Evaluando señales semanales…
+Sep 12 08:18:38 bot-poly python3[1510308]: [2026-09-12 08:18:38]   · (lógica de trading pendiente)
+Sep 12 08:18:38 bot-poly python3[1510308]: [2026-09-12 08:18:38] ════════════════════════════════════════════
+Sep 12 08:18:38 bot-poly python3[1510308]: [2026-09-12 08:18:38] Pasada completada
+Sep 12 08:18:38 bot-poly python3[1510308]: [2026-09-12 08:18:38] Próxima pasada en 15 min…
+
+== 8. Resumen ==
+  ✅ bot_semanal.py reescrito (sys.path sin ELON_DIR)
+  ✅ caches borrados
+  ✅ servicio reiniciado
