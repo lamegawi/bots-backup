@@ -1,0 +1,72 @@
+=== DIAG SALDO REAL ON-CHAIN — 20260912_071520 UTC ===
+
+== 1. Saldo on-chain vía data-api (mismo método) ==
+wallet: 0xb0E148FEb4bE59fD617c8Ad6ce5Cf2b5f0BB2Ae1
+valor total: $[{'user': '0xb0e148feb4be59fd617c8ad6ce5cf2b5f0bb2ae1', 'value': 0}]
+
+== 2. Saldo CLOB vía clob.polymarket.com ==
+/balance: [ERROR] HTTP Error 404: Not Found
+/positions: [ERROR] HTTP Error 404: Not Found
+/trades: [ERROR] HTTP Error 401: Unauthorized
+
+== 3. Saldo que reporta CADA bot ==
+--- bot Elon ---
+/opt/polymarket/bot-polymarket-elon/real.json
+  saldo: $303.55  paso: 6  activa: None
+  bankroll_inicial_real: $325.71
+  pnl_historico_acumulado: $-22.16
+
+--- bot Zelenskyy ---
+ls: cannot access '/opt/polymarket/bot-polymarket-zelenskyy/real.json': No such file or directory
+  [ERROR] [Errno 2] No such file or directory: '/opt/polymarket/bot-polymarket-zelenskyy/real.json'
+
+--- bot Trump ---
+ls: cannot access '/opt/polymarket/bot-polymarket-trump/real.json': No such file or directory
+  real.json: no existe
+  real_semanal.json: no existe
+  estado_bot_trump.json: {'ultimo_resumen': '2026-09-12'}
+
+== 4. ¿Dónde está el saldo REAL que todos deben compartir? ==
+--- buscar '303.55' ---
+/opt/polymarket/bot-polymarket-elon/real.json: "saldo": 303.55,
+
+--- buscar '500' ---
+
+== 5. ¿Qué dice bot_trump.log sobre el saldo? ==
+
+== 6. ¿Qué ventana tiene ACTIVA Trump? (mercado_activo.json) ==
+  [ABIERTO] Donald Trump # Truth Social posts September 8 - September 15
+    fin: ?
+    [error parseando fin: Invalid isoformat string: '?']
+  [ABIERTO] Donald Trump # Truth Social posts September 11 - September 1
+    fin: ?
+    [error parseando fin: Invalid isoformat string: '?']
+  [ABIERTO] Donald Trump # Truth Social posts September 15 - September 2
+    fin: ?
+    [error parseando fin: Invalid isoformat string: '?']
+  [CERRADO] Donald Trump # Truth Social posts March 24 - March 31, 2026?
+    fin: ?
+  [CERRADO] Donald Trump # Truth Social posts September 4 - September 11
+    fin: ?
+
+== 7. ¿Qué señales detectó en la última pasada? ==
+[2026-09-12 01:46:05 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-12 01:46:13 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-12 02:01:13 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-12 02:01:20 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-12 02:05:50 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-12 02:05:54 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-12 02:07:44 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-12 02:07:51 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-12 02:22:52 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-12 02:22:58 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-12 02:37:59 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-12 02:38:06 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-12 02:53:07 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-12 02:53:14 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-12 03:08:15 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-12 03:08:22 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-12 03:09:28 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-12 03:09:32 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+
+== 8. ¿Por qué no abrió posición si AVG7=23? ==
