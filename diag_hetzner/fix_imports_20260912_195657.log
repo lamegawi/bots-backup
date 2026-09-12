@@ -1,0 +1,72 @@
+=== FIX IMPORTS PY_CLOB_CLIENT — 20260912_195657 UTC ===
+
+== 1. ¿Qué versión de py_clob_client está? ==
+path: /usr/local/lib/python3.12/dist-packages/py_clob_client/__init__.py
+
+== 2. ¿Qué submódulos tiene? ==
+módulos: ['client', 'clob_types', 'config', 'constants', 'endpoints', 'exceptions', 'headers', 'http_helpers', 'order_builder', 'rfq', 'signer', 'signing', 'utilities']
+
+== 3. ¿Dónde está OrderArgs? ==
+encontrado en: /usr/local/lib/python3.12/dist-packages/py_clob_client/clob_types.py
+
+== 4. Backup y corrección bot_semanal.py ==
+backup: bot_semanal.py.bak_imp_20260912_195657
+
+== 5. Cambiar imports ==
+imports parcheados
+
+== 6. Verificar imports ==
+156:            from py_clob_client.client import ClobClient
+158:                from py_clob_client.order_args import OrderArgs
+160:                from py_clob_client.clob_types import OrderArgs
+
+== 7. Probar import manualmente ==
+  ✅ ClobClient
+  ✅ OrderArgs (clob_types)
+
+== 8. Validar ==
+  compila OK
+
+== 9. Probar pasada única ==
+[2026-09-12 19:56:59] 🤖 BOT SEMANAL ELON arrancado (loop=False, intervalo=15 min, modo=real)
+[2026-09-12 19:56:59] ════════════════════════════════════════════
+[2026-09-12 19:56:59] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+[2026-09-12 19:56:59] ════════════════════════════════════════════
+[2026-09-12 19:56:59] 📊 AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
+[2026-09-12 19:57:04] 📈 2 mercados semanales abiertos
+[2026-09-12 19:57:04] 💰 saldo=$228.45  paso=1  activa=no
+[2026-09-12 19:57:04]   🎯 Elon Musk # tweets September 8 - September 15, 202 | bin 120-139 | YES @ 0.050 (cuota 20.20/1.05)
+[2026-09-12 19:57:04]      EV=+11.305 | ventaja 56%pp
+[2026-09-12 19:57:04]   🎯 Elon Musk # tweets September 11 - September 18, 20 | bin 120-139 | YES @ 0.054 (cuota 18.35/1.06)
+[2026-09-12 19:57:04]      EV=+10.176 | ventaja 55%pp
+[2026-09-12 19:57:04] 
+🚀 Mejor señal: Elon Musk # tweets September 8 - September 15, 202
+[2026-09-12 19:57:04]    bin 120-139 YES EV=+11.305
+[2026-09-12 19:57:04]    💵 stake=$3.3  paso=1
+[2026-09-12 19:57:05]    ❌ ERROR ejecutando orden: Non-hexadecimal digit found
+[2026-09-12 19:57:05] ════════════════════════════════════════════
+[2026-09-12 19:57:05] Pasada completada
+
+== 10. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 19:57:05 UTC; 5s ago
+   Main PID: 1561827 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 9.4M (peak: 10.0M)
+        CPU: 973ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 11. Log final ==
+Sep 12 19:50:46 bot-poly python3[1560914]: [2026-09-12 19:50:46] Pasada completada
+Sep 12 19:50:46 bot-poly python3[1560914]: [2026-09-12 19:50:46] Próxima pasada en 15 min…
+Sep 12 19:57:05 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 12 19:57:05 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 12 19:57:05 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 19:57:05 bot-poly systemd[1]: poly-elon-semanal.service: Consumed 4.204s CPU time, 10.0M memory peak, 0B memory swap peak.
+Sep 12 19:57:05 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 19:57:05 bot-poly python3[1561827]: [2026-09-12 19:57:05] 🤖 BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min, modo=real)
+Sep 12 19:57:05 bot-poly python3[1561827]: [2026-09-12 19:57:05] ════════════════════════════════════════════
+Sep 12 19:57:05 bot-poly python3[1561827]: [2026-09-12 19:57:05] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 19:57:05 bot-poly python3[1561827]: [2026-09-12 19:57:05] ════════════════════════════════════════════
+Sep 12 19:57:05 bot-poly python3[1561827]: [2026-09-12 19:57:05] 📊 AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
