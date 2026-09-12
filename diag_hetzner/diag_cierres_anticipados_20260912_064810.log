@@ -1,0 +1,45 @@
+=== DIAG CIERRES ANTICIPADOS 4-11 SEPT — 20260912_064810 UTC ===
+
+== 1. EXCEL HISTORIAL COMPLETO ==
+hojas: ['Operaciones', 'Resumen', 'Equity', 'Notas']
+Operaciones: 8 filas
+
+--- todas las ops con detalle ---
+  Tipo                                | Mercado  | Bin | precio=Lado | Real | benef=Resultado
+  GENERAL                             | elon-musk-of-tweets-august-17-august-19 | <40 | precio=YES | >40 (gestor vendió 18/08) | benef=P
+  GENERAL                             | elon-musk-of-tweets-august-20-august-22 | 90-114 | precio=YES | vendido por el gestor en positivo (+2.70 a nivel cuenta) | benef=G
+  GENERAL                             | elon-musk-of-tweets-august-22-august-24-2026 | 90-114 | precio=YES | 40-64 | benef=P
+  GENERAL                             | elon-musk-of-tweets-august-31-september-2-2026 | 40-64 | precio=NO | 40-64 | benef=P
+
+== 2. operar_real.py — funciones de cierre ==
+109:        sys.exit(f"Falta el SDK V2 de Polymarket ({e}).\n"
+114:        sys.exit("Sin clave privada del firmante: en config_real.json pon "
+259:# ------------------------------------------------------------------ resolver
+267:        if not ev.get("closed"):
+360:def resolver(estado, fee_pct=0.0):
+548:                    print(f"  · canceladas {len(_abiertas)} órdenes previas sin cerrar")
+716:        resolver(estado, fee_pct=cfg.get("fee_pct", 0.0))
+821:def cerrar_anticipado(estado, motivo, dry=False):
+844:    print(f"  [FIXWIN] cierre anticipado: {size:.2f} shares "
+876:            "real": f"FIXWIN-anticipado @ {precio_real:.3f} ({motivo[:40]})",
+886:                f"\u26a1 FIXWIN: cierre anticipado ({res} ${benef:+.2f})\n"
+901:    otro bin con p >= FIXWIN_P_GANADOR, cierra anticipadamente y reasigna."""
+929:            cerrar_anticipado(estado, motivo, dry=dry)
+
+== 3. ¿hay lógica de 'cierre anticipado'? ==
+senal_vivo.py:135:    - evaluados: lista de dicts {titulo, tipo, inicio, fin, horas_rest,
+senal_vivo.py:151:        horas_rest = (fin - ahora).total_seconds() / 3600
+senal_vivo.py:156:            lam_rest = lam48 * max(0.0, horas_rest) / 48.0
+senal_vivo.py:158:            lam_rest = 7 * avg7 * ajuste * max(0.0, horas_rest) / 168.0
+senal_vivo.py:160:            lam_rest = lam48 * max(0.0, horas_rest) / 48.0
+senal_vivo.py:223:                          "inicio": inicio, "fin": fin, "horas_rest": horas_rest,
+senal_vivo.py:295:        print(f"  {etiq} → λ restante={ev['lam_rest']:.1f} · horas restantes: {ev['horas_rest']:.1f} "
+
+== 4. POSICIÓN CERRADA EN CLOB 4-11 ==
+  [ERROR] HTTP Error 403: Forbidden
+
+== 5. ESTADO BOT ACTUAL ==
+real.json: saldo=303.55 paso=6 activa=None historial=7
+estado_bot.json: {'ultimo_resumen': '2026-08-22'}
+
+== 6. BOT LOG: últimas líneas con 'cerrada'/'resuelta' ==
