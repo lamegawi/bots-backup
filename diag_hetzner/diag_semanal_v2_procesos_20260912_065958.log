@@ -1,0 +1,153 @@
+=== DIAG PROCESOS SEMANAL V2 — 20260912_065958 UTC ===
+
+== 1. Los 3 procesos con detalles ==
+root     1498655  0.0  1.2 167696 48216 ?        Ssl  06:06   0:02 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root     1498670  0.1  1.2 172564 50036 ?        Ssl  06:06   0:03 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root     1498672  0.0  0.8  50824 35028 ?        Ss   06:06   0:01 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+== 2. ¿Qué ficheros tienen abiertos los procesos? ==
+--- PID 1498655 ---
+total 0
+dr-x------ 2 root root  3 Sep 12 06:06 .
+dr-xr-xr-x 9 root root  0 Sep 12 06:06 ..
+lr-x------ 1 root root 64 Sep 12 06:06 0 -> /dev/null
+l-wx------ 1 root root 64 Sep 12 06:06 1 -> /var/log/poly-semanal.log
+l-wx------ 1 root root 64 Sep 12 06:06 2 -> /var/log/poly-semanal.log
+Name:	python3
+Umask:	0022
+State:	S (sleeping)
+--- PID 1498670 ---
+total 0
+dr-x------ 2 root root  3 Sep 12 06:06 .
+dr-xr-xr-x 9 root root  0 Sep 12 06:06 ..
+lr-x------ 1 root root 64 Sep 12 06:06 0 -> /dev/null
+l-wx------ 1 root root 64 Sep 12 06:06 1 -> /var/log/poly-zelenskyy.log
+l-wx------ 1 root root 64 Sep 12 06:06 2 -> /var/log/poly-zelenskyy.log
+Name:	python3
+Umask:	0022
+State:	S (sleeping)
+--- PID 1498672 ---
+total 0
+dr-x------ 2 root root  3 Sep 12 06:06 .
+dr-xr-xr-x 9 root root  0 Sep 12 06:06 ..
+lr-x------ 1 root root 64 Sep 12 06:06 0 -> /dev/null
+Name:	python3
+Umask:	0022
+State:	S (sleeping)
+
+== 3. real_semanal.json completo ==
+{
+    "saldo": 497.0,
+    "paso": 2,
+    "activa": null,
+    "historial": [
+        {
+            "id": "reconc",
+            "fecha": "2026-08-18",
+            "mercado": "elon-musk-of-tweets-august-14-august-21",
+            "bin": "100-119",
+            "lado": "YES",
+            "precio": 0.1895,
+            "cuota": 5.28,
+            "p_modelo": 0.8051,
+            "paso": 1,
+            "stake": 3.0,
+            "real": "vendido/desaparecido (sin registro del gestor)",
+            "resultado": "P",
+            "beneficio": -3.0,
+            "saldo": 497.0
+        }
+    ]
+}
+
+== 4. ¿A dónde escriben los 3 procesos? ==
+l-wx------ 1 root root 64 Sep 12 06:06 /proc/1498655/fd/1 -> /var/log/poly-semanal.log
+l-wx------ 1 root root 64 Sep 12 06:06 /proc/1498655/fd/2 -> /var/log/poly-semanal.log
+l-wx------ 1 root root 64 Sep 12 06:06 /proc/1498670/fd/1 -> /var/log/poly-zelenskyy.log
+l-wx------ 1 root root 64 Sep 12 06:06 /proc/1498670/fd/2 -> /var/log/poly-zelenskyy.log
+lrwx------ 1 root root 64 Sep 12 06:06 /proc/1498672/fd/1 -> socket:[13542851]
+lrwx------ 1 root root 64 Sep 12 06:06 /proc/1498672/fd/2 -> socket:[13542851]
+
+== 5. ¿Quién los lanzó? ==
+/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real 
+/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real 
+/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real 
+
+== 6. ¿Cuánto tiempo llevan corriendo? ==
+PID 1498655:
+    PID     ELAPSED CMD
+1498655       53:57 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+PID 1498670:
+    PID     ELAPSED CMD
+1498670       53:57 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+PID 1498672:
+    PID     ELAPSED CMD
+1498672       53:57 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+== 7. ¿El servicio poly-semanal.service está activo? ==
+● poly-semanal.service - Bot Polymarket Elon SEMANAL (v1)
+     Loaded: loaded (/etc/systemd/system/poly-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 06:06:01 UTC; 53min ago
+   Main PID: 1498655 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 31.2M (peak: 34.2M)
+        CPU: 37.407s
+     CGroup: /system.slice/poly-semanal.service
+             └─1498655 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+
+○ poly-semanal-v2.service - Bot Polymarket Elon SEMANAL (v2)
+     Loaded: loaded (/etc/systemd/system/poly-semanal-v2.service; disabled; preset: enabled)
+     Active: inactive (dead)
+
+== 8. ¿Algún screen/tmux del semanal v2? ==
+No Sockets found in /run/screen/S-root.
+
+error connecting to /tmp/tmux-0/default (No such file or directory)
+
+== 9. ¿Hay algún log nuevo en /root/ ? ==
+-rw-r--r-- 1 root root     144 Sep  5 04:30 /root/backup_poly.log
+-rw-r--r-- 1 root root     485 Sep  3 18:40 /root/consultar_saldo_clob.log
+-rw-r--r-- 1 root root    1468 Sep  3 18:04 /root/diag_v4.log
+-rw-r--r-- 1 root root    1452 Sep  3 18:26 /root/diag_v5.log
+-rw-r--r-- 1 root root    3329 Sep  3 19:46 /root/hist.log
+-rw-r--r-- 1 root root 6979214 Sep  3 18:43 /root/insp.log
+-rw-r--r-- 1 root root    2064 Sep 12 01:00 /root/limpieza.log
+-rw-r--r-- 1 root root     852 Sep  3 19:07 /root/saldo_v2.log
+-rw-r--r-- 1 root root    1110 Sep  3 19:11 /root/saldo_v3.log
+-rw-r--r-- 1 root root    1194 Sep  3 19:18 /root/saldo_v4.log
+  saldo: $303.55
+  ops totales: 4
+  activa: SÍ
+  cerradas: 4, G: 1, P: 3
+  win rate: 25.0%
+  PnL cerrado: $-7.84
+  filtros descartados (semana): p_lado<10%=0, cuota>25=0
+  TOTAL descartes: 0
+
+--- Trump mens (poly-trump) ---
+  servicio: active
+  sin JSON (/opt/polymarket/bot-polymarket-trump/real.json)
+
+======================================================================
+RESUMEN SEMANAL
+======================================================================
+Bot                   WinRate        PnL    Filtros      Saldo
+------------------------------------------------------------
+Elon 48h                14.3% $  -22.16          0 $  303.55
+Zelenskyy sem           25.0% $   -7.84          0 $  303.55
+
+PROYECCION (asumiendo mismas condiciones):
+  Elon 48h: $-94.97/mes ($-3.17/dia)
+  Zelenskyy sem: $-33.60/mes ($-1.12/dia)
+
+RECOMENDACIONES:
+  ⚠️  Elon: win rate 14.3% — considera reducir stake
+
+======================================================================
+publicado: True
+
+== 10. ¿Hay procesos 'seguimiento_semanal.py'? ==
+
+== 11. ¿Qué versión de los .py está corriendo? ==
+e03ffdca4a3ea045cc8d12371882fb9a  /opt/polymarket/bot-polymarket-elon-semanal-v2/bot_semanal.py
+-rw-r--r-- 1 root root 13707 Aug 20 07:29 /opt/polymarket/bot-polymarket-elon-semanal-v2/bot_semanal.py
