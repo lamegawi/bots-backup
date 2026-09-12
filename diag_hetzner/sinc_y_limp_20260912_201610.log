@@ -1,0 +1,123 @@
+=== SINCRONIZAR Y LIMPIAR — 20260912_201610 UTC ===
+
+== 1. Sincronizar saldo del bot semanal con el real actual ==
+  no pude leer API: HTTP Error 403: Forbidden
+  saldo actual en real_semanal.json: $228.45
+  nuevo saldo: $186.49
+  ✅ actualizado a $186.49
+
+== 2. Ver posiciones abiertas de TODOS los bots ==
+  ERROR: HTTP Error 403: Forbidden
+
+== 3. Backup y limpieza de la clave ==
+  ✅ backups hechos
+
+== 4. Limpiar config_real.json ==
+  longitud antes: 32
+  ❌ chars no-hex: ['P', 'L', 'H', 'O', 'L', 'R', '_', 'O', 'U', 'L', 'T', 'O', '_', 'P', 'O', 'R', '_', 'S', 'G', 'U', 'R', 'I']
+
+== 5. Probar Signer con la clave limpia ==
+  ❌ ERROR: Non-hexadecimal digit found
+
+== 6. Probar ClobClient completo con clave limpia ==
+Traceback (most recent call last):
+  File "<stdin>", line 8, in <module>
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/client.py", line 142, in __init__
+    self.signer = Signer(key, chain_id) if key else None
+                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/signer.py", line 9, in __init__
+    self.account = Account.from_key(private_key)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_utils/decorators.py", line 30, in _wrapper
+    return self.method(objtype, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_account/account.py", line 310, in from_key
+    key = self._parse_private_key(private_key)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_utils/decorators.py", line 30, in _wrapper
+    return self.method(objtype, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_account/account.py", line 894, in _parse_private_key
+    hb_key = HexBytes(key)
+             ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/main.py", line 35, in __new__
+    bytesval = to_bytes(val)
+               ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/_utils.py", line 17, in to_bytes
+    return hexstr_to_bytes(val)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/_utils.py", line 54, in hexstr_to_bytes
+    return binascii.unhexlify(ascii_hex)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Non-hexadecimal digit found
+  ❌ ERROR: Non-hexadecimal digit found
+
+== 7. Probar pasada única del bot semanal ==
+    self.signer = Signer(key, chain_id) if key else None
+                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/signer.py", line 9, in __init__
+    self.account = Account.from_key(private_key)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_utils/decorators.py", line 30, in _wrapper
+    return self.method(objtype, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_account/account.py", line 310, in from_key
+    key = self._parse_private_key(private_key)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_utils/decorators.py", line 30, in _wrapper
+    return self.method(objtype, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_account/account.py", line 894, in _parse_private_key
+    hb_key = HexBytes(key)
+             ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/main.py", line 35, in __new__
+    bytesval = to_bytes(val)
+               ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/_utils.py", line 17, in to_bytes
+    return hexstr_to_bytes(val)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/_utils.py", line 54, in hexstr_to_bytes
+    return binascii.unhexlify(ascii_hex)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Non-hexadecimal digit found
+
+[2026-09-12 20:16:18] ════════════════════════════════════════════
+[2026-09-12 20:16:18] Pasada completada
+
+== 8. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 20:16:18 UTC; 5s ago
+   Main PID: 1564515 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 9.4M (peak: 9.9M)
+        CPU: 990ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 9. Verificar log ==
+Sep 12 20:13:05 bot-poly python3[1564066]: [2026-09-12 20:13:05] Pasada completada
+Sep 12 20:13:05 bot-poly python3[1564066]: [2026-09-12 20:13:05] Próxima pasada en 15 min
+Sep 12 20:16:18 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 12 20:16:18 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 12 20:16:18 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:16:18 bot-poly systemd[1]: poly-elon-semanal.service: Consumed 4.277s CPU time, 10.0M memory peak, 0B memory swap peak.
+Sep 12 20:16:18 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:16:18 bot-poly python3[1564515]: [2026-09-12 20:16:18] BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+Sep 12 20:16:18 bot-poly python3[1564515]: [2026-09-12 20:16:18] ════════════════════════════════════════════
+Sep 12 20:16:18 bot-poly python3[1564515]: [2026-09-12 20:16:18] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 20:16:18 bot-poly python3[1564515]: [2026-09-12 20:16:18] ════════════════════════════════════════════
+Sep 12 20:16:18 bot-poly python3[1564515]: [2026-09-12 20:16:18] AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
+
+== 10. Verificar log Trump ==
+Sep 12 20:06:40 bot-poly python3[1560927]: 2026-09-04       22
+Sep 12 20:06:40 bot-poly python3[1560927]: 2026-09-05        1
+Sep 12 20:06:40 bot-poly python3[1560927]: 2026-09-06       64
+Sep 12 20:06:40 bot-poly python3[1560927]: 2026-09-07       39
+Sep 12 20:06:40 bot-poly python3[1560927]: 2026-09-08       17
+Sep 12 20:06:40 bot-poly python3[1560927]: 2026-09-09        7
+Sep 12 20:06:40 bot-poly python3[1560927]: 2026-09-10       25
+Sep 12 20:06:40 bot-poly python3[1560927]: 2026-09-11       11
+Sep 12 20:06:40 bot-poly python3[1560927]: AVG7 = 23.43  V2 = 36  R = 0.768  ajuste = 0.884  λ48 = 41.4
+Sep 12 20:06:40 bot-poly python3[1560927]: Días completos en CSV: 224
+Sep 12 20:06:40 bot-poly python3[1560927]: [2026-09-12 16:06:40 EDT] Pasada completada en 21.1 s
+Sep 12 20:06:40 bot-poly python3[1560927]: [2026-09-12 16:06:40 EDT] Próxima pasada en 15 min…
