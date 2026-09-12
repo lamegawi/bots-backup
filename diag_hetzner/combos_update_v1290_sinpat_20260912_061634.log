@@ -1,0 +1,192 @@
+=== DESPLIEGUE v12.9.0 SIN PAT (🟡 SEMI de verdad · ⚖️ ventaja 5%) - Sat Sep 12 06:16:34 AM UTC 2026 ===
+md5 esperado antes: e08cb649f4838a963135e2f301498092 · después: 1b30eafa1fe1fca1dcb29a4f6d79c880
+
+=== Paso 0: copia de seguridad del estado + situación actual ===
+   OK copia del estado
+   ANTES: 1 abiertas · 51 archivadas · PnL $+18.16
+   modo AUTO · intervalo 10 min · stake AUTO · tope 10/día
+   💰 avisos de reclamo: 7 · con dinero de verdad 4 ($82.98)
+
+=== Paso 1: extraer el parche y validar el bot desplegado ===
+   parche: 741 líneas · md5 87e15304f12eb24345b08c3dfd9251ce
+   md5 del bot en el server: e08cb649f4838a963135e2f301498092
+   OK copia previa: poly_combos_bot.pre_v1290_20260912_061634.py
+
+=== Paso 2: aplicar el parche sobre una copia y VALIDAR ===
+✅ v12.9.0 generado: /tmp/bot_v1290.py · 17 cambios:
+     · cabecera v12.9.0
+     · log de arranque v12.9.0
+     · título /reclamar v12.9.0
+     · título /start v12.9.0
+     · título /status v12.9.0
+     · línea 'cargado' v12.9.0
+     · changelog v12.9.0 en la cabecera
+     · sección v12.9.0 (top real + seguimiento en papel) sustituye al cmd_top falso
+     · teclado: botón 📡 Copy
+     · handler del botón 📡 Copy
+     · comando /copy
+     · procesar_callback: lb:<ventana>
+     · auto_loop: global NEXT_COPY_TS
+     · auto_loop: ronda de seguimiento en papel
+     · docstring auto_loop (copy en papel)
+     · main() programa la primera ronda 📡
+     · ayuda /start: 🏆 Top real + 📡 Copy en papel
+   líneas: 5783 · md5 1b30eafa1fe1fca1dcb29a4f6d79c880
+   md5 del parcheado: 1b30eafa1fe1fca1dcb29a4f6d79c880
+   OK compila
+   OK    def proponer_combo_semi
+   OK    def ejecutar_semi_aprobado
+   OK    def respuesta_propuesta
+   OK    def _marcar_propuesta
+   OK    def _prune_propuestas
+   OK    def _sin_tick
+   OK    PROPUESTA_VALIDA_S
+   OK    VENTAJA_MIN_EV
+   OK    ventaja insuficiente
+   OK    CUENTAS DE COMPENSACIÓN
+   OK    pnl_wins
+   OK    v12.9.0 cargado
+   OK    def restaurar_modo
+   OK    restaurar_modo(_est0)
+   OK    def teclado_fijo
+   OK    def cmd_leer_ahora
+   OK    def curar_abiertas
+   OK    def _reparto_mapa
+   OK    def top_traders
+   OK    def nombre_lb
+   OK    def perfil_trader
+   OK    def filtros_perfil
+   OK    def copy_elegir
+   OK    def fills_recientes
+   OK    def registrar_señal
+   OK    def resolver_señales
+   OK    def resumen_copy
+   OK    def texto_copy
+   OK    def cmd_copy
+   OK    def copy_pasada
+   OK    def programar_copy_inicio
+   OK    def _caras_de
+   OK    def _lb_get
+   OK    LB_API
+   OK    COPY_DINERO = False
+   OK    COPY_ACTIVO = True
+   OK    COPY_N_TRADERS = 5
+   OK    COPY_TOPE_DIA = 5
+   OK    COPY_DERIVA_MAX = 0.05
+   OK    COPY_MAX_VISTOS
+   OK    copy_señales
+   OK    copy_pasada(CHAT_ID)
+   OK    programar_copy_inicio()
+   OK    data.startswith("lb:")
+   OK    {"text": "📡 Copy"}
+   OK    NEXT_COPY_TS
+   OK    la lista falsa del Top ya no está (ahora es lb-api en vivo)
+   🔒 llamadas a compra en TODA la sección 📡: 0 (tiene que ser 0)
+
+=== Paso 3: parar, dejar el modo en 🟡 SEMI, sustituir y arrancar ===
+   modo AUTO → SEMI · próxima pasada (propuesta) en ~2 min
+   → v12.9.0 restaura el modo al arrancar; antes el bot volvía SIEMPRE en AUTO
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 06:16:34 UTC; 8s ago
+   Main PID: 1499904 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 27.0M (peak: 27.9M)
+        CPU: 277ms
+     CGroup: /system.slice/poly-combos-bot.service
+
+=== Paso 4: log (arranque + 1ª auto-curación ~25 s) ===
+[06:06:02] v12.8.4 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[06:06:02] Proxy: http://100.83.57.99:8888
+[06:06:03] Test proxy: 200
+[06:06:03] v12.8.4 iniciado
+[06:10:23] [AUTO] pasada (combos RFQ v11)
+[06:10:24]   pagina 1: +50 mercados, 0 legs de deportes
+[06:10:24]   pagina 2: +50 mercados, 1 legs de deportes
+[06:10:24]   pagina 3: +50 mercados, 14 legs de deportes
+[06:10:25]   pagina 4: +50 mercados, 57 legs de deportes
+[06:10:25]   pagina 5: +50 mercados, 102 legs de deportes
+[06:10:25] [COMBO] 2 legs · cuota est. 1.47 · stake $9.08 (AUTO)
+[06:10:25]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$133k)
+[06:10:25]   · Will Chelsea FC win on 2026-09-12? (p=0.80 vol=$73k)
+[06:10:26]   RFQ: identidad lista (signer 0x8a22F798... maker 0xb0E11970...)
+[06:10:27]   RFQ create -> 200 {"rfq_id":"rfq-66d5a768c614f3cf62afd541","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789193432488,"request":{"rfq_id":"rfq-66d5a768c614f3cf62afd541",
+[06:10:27]   quote: cuota=1.44 blended=0.697 shares=12.84 total=$9.08
+[06:10:27]   ⚖️ ventaja insuficiente: RFQ 1.44 vs mercado ~1.47 = EV -2.0% < 5% exigidos — NO se acepta ($0)
+[06:10:27]   ❌ combo: ventaja_-2.0_insuficiente
+[06:16:34] intervalo AUTO restaurado: 10 min
+[06:16:34]   modo restaurado del estado: SEMI
+[06:16:34] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+[06:16:34]   horario restaurado: próxima pasada en 1 min
+[06:16:34]   auto-curación: primera auditoría en 25s (después cada 4h)
+[06:16:35]   v12.8.3: 478 fills reales de la wallet (evidencia de cadena)
+[06:16:35]   verdad: 27 cobros REDEEM>0 por token + 79 por título (79 registros)
+[06:16:35] v12.9.0 cargado · modo=SEMI · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[06:16:35] Proxy: http://100.83.57.99:8888
+[06:16:36] Test proxy: 200
+[06:16:36] v12.9.0 iniciado
+[06:17:06]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=51 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas +18.16→+18.16
+   --- v12.9.0 cargado / modo / curación ---
+[05:50:20]   ⚖️ ventaja insuficiente: RFQ 1.32 vs mercado ~1.34 = EV -1.5% < 5% exigidos — NO se acepta ($0)
+[06:05:49]   auto-curación: la última fue hace 1 min → próxima en 4.0h
+[06:05:50] v12.8.4 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[06:06:02]   auto-curación: la última fue hace 1 min → próxima en 4.0h
+[06:06:02] v12.8.4 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[06:10:27]   ⚖️ ventaja insuficiente: RFQ 1.44 vs mercado ~1.47 = EV -2.0% < 5% exigidos — NO se acepta ($0)
+[06:16:34]   auto-curación: primera auditoría en 25s (después cada 4h)
+[06:16:35] v12.9.0 cargado · modo=SEMI · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+
+=== Paso 5: estado tras la cura + 🧮 cuentas de compensación ===
+   AHORA: 1 abiertas · 51 archivadas (↩️ anuladas 4) · 🧹 descartadas 3 · PnL $+18.16
+   🧮 29 ganadas (+$5.03 de media) · 18 pérdidas (-$7.08 de media)
+      ⇒ 1.41 victorias por derrota · equilibrio 58.5% · tu win-rate 61.7%
+      stake medio $7.82 → para recuperar -$7.08: cuota 1.5 → 1.8 · cuota 2.0 → 0.9 · cuota 2.5 → 0.6
+      ⚖️ v12.9.0 sólo compra si prob × cuota_real ≥ 1.05
+   💰 sin cobrar: 4 posiciones ($82.98) · 3 avisos de importe 0 ya no cuentan
+
+=== Paso 6: EN VIVO — qué exigiría el filtro del 5% con el catálogo real ===
+   catálogo RFQ (HTTP 200): 50 legs
+   legs aprovechables (prob 0.70-0.995): 2
+   mejor combo base ahora: Will Mojtaba Khamenei be head of state in Iran end o (0.85) + Will Nicolás Maduro be the leader of Venezuela end o (0.84)
+   prob 70.9% · cuota est. 1.41 · stake $9.26 · gana +$3.79
+   ⚖️ exigiría cuota REAL ≥ 1.48; por debajo se omite ($0)
+   🟡 en SEMI eso llegaría como PROPUESTA con ✅/❌ (caduca a los 10 min)
+=== Paso 7: EN VIVO v12.9.0 (top real + a quien vigilaria + señales ahora) ===
+   1) top REAL de 30 dias (lb-api): 12 filas
+      #1  00gringo00                $1.91M ·  116 compras /  47 ventas ·   1 mercados ·   0% dep · fuera (concentrado en 1)
+      #2  ripley86alien             $1.87M ·   40 compras /   0 ventas ·   1 mercados · 100% dep · fuera (concentrado en 1)
+      #3  sainttroplay             $941.2K ·    0 compras /   0 ventas ·   0 mercados ·   0% dep · fuera (inactivo)
+      #4  pleaseplease123          $939.6K ·  300 compras /   0 ventas ·   6 mercados · 100% dep · ELEGIDO
+      #5  totoro3miyazaki          $877.1K ·   17 compras /   0 ventas ·   1 mercados ·   0% dep · fuera (concentrado en 1)
+      #6  TheReturnOfDarthMaul     $775.7K ·  160 compras /   5 ventas ·  10 mercados ·   0% dep · fuera (0% deporte)
+      #7  balthazar                $668.9K ·  194 compras / 106 ventas · 174 mercados ·  16% dep · fuera (market maker)
+      #8  BreakTheBank             $576.7K ·  287 compras /  13 ventas ·  16 mercados · 100% dep · ELEGIDO
+      #9  Diabolical-Prize         $575.0K ·  300 compras /   0 ventas ·   5 mercados ·  30% dep · fuera (30% deporte)
+      #10 0x2c335066               $567.7K ·  300 compras /   0 ventas ·  40 mercados ·  87% dep · ELEGIDO
+      #11 beachboy4                $531.1K ·    0 compras /   0 ventas ·   0 mercados ·   0% dep · fuera (inactivo)
+      #12 Flaznorp                 $501.1K ·  300 compras /   0 ventas · 161 mercados ·   9% dep · fuera (9% deporte)
+   2) vigilando a 3: pleaseplease123, BreakTheBank, 0x2c335066
+   3) señales que habria AHORA (ultima hora, 1ª entrada por posicion): 1
+      · 0x2c335066       Chelsea FC vs. Hull City AFC: O/U 4.5        el 0.710 -> nosotros 0.725 (+1.5 pts) · cuota 1.38 · papel $5
+      (tardias descartadas 4 · sin libro 0)
+   4) 🔒 gastado: $0.00 · COPY_DINERO=False · tope 5 señales/dia · Fase 2 = combos propios, nunca lineas sueltas
+
+=== EN TELEGRAM ===
+  🏆 Top         → ranking REAL (lb-api) con botones 24 h / 7 días / 30 días /
+                   histórico: beneficio, volumen, margen y wallet de cada uno.
+                   La lista de antes estaba escrita a mano y ya no se parecía a nada.
+  📡 Copy        → panel del seguimiento EN PAPEL: a quiénes vigila, señales de hoy
+                   (tope 5), acierto, ROI AL PRECIO NUESTRO, deriva, retraso medio y
+                   desglose por trader. También con /copy (o /señales).
+  🕐 1ª ronda    → ~90 s después de arrancar: elige los traders y te lo dice en el
+                   chat. Después sondea cada 3 min e informa automáticamente cada 24 h.
+  🔒 Dinero      → CERO. COPY_DINERO=False: el copy no firma ni envía ninguna orden,
+                   sólo lee ranking, fills y mids públicos (ni usa el proxy).
+  🎯 Fase 2      → con ≥30 señales resueltas y ROI positivo AL PRECIO NUESTRO, la
+                   señal se convertiría en un COMBO PROPIO por RFQ. Nunca líneas
+                   sueltas: la regla de los combos multi-leg sigue intacta.
+  📊 Tus combos  → TODO sigue igual: 🟡 SEMI con propuesta ✅/❌ cada 10 min, filtro
+                   de ventaja 5%, stake -10 y tope de 10 ops/día. El copy tiene su
+                   propio tope (5 señales/día) y NO toca ese contador.
+  🟡 Modo        → sigues en SEMI: este despliegue no lo cambia (el bot restaura el
+                   modo guardado al arrancar).
