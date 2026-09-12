@@ -1,0 +1,214 @@
+════════════════════════════════════════════
+  ACTUALIZACIÓN FILTROS TRUMP + DIAG VENTANAS ELON — 20260912_080302 UTC
+════════════════════════════════════════════
+
+########################################
+# PARTE 1: ACTUALIZAR FILTROS DE TRUMP
+########################################
+
+== 1. Filtros actuales de Trump ==
+26:STAKE_INICIAL  = 3.00          # $, primera apuesta de cada ciclo
+27:FACTOR         = 1.40          # multiplicador tras cada fallo
+28:CUOTA_MINIMA   = 2.80          # cuota mínima aceptada
+33:EDGE_MIN       = 0.12          # ventaja mínima p_modelo − precio (12 pp)
+34:P_FLOOR        = 0.15          # p mínimo para entrar en un bin (evita colas)
+
+== 2. Backup del senal.py ==
+backup: /opt/polymarket/bot-polymarket-trump/senal.py.bak_20260912_080302
+
+== 3. Actualizar filtros (alineado con Zelenskyy/Elon 10-sept) ==
+filtros actualizados:
+26:STAKE_INICIAL  = 3.00          # $, primera apuesta de cada ciclo
+27:FACTOR         = 1.40          # multiplicador tras cada fallo
+28:CUOTA_MINIMA   = 3.00          # cuota mínima aceptada — SUBIDA de 2.80 a 3.00 (12/09)
+29:PRECIO_MAX     = 0.30          # precio máximo del lado que compramos — NUEVO (12/09)
+34:EDGE_MIN       = 0.15          # ventaja mínima p_modelo − precio — SUBIDA de 0.12 a 0.15 (12/09)
+35:P_FLOOR        = 0.20          # p mínimo para entrar en un bin — SUBIDA de 0.15 a 0.20 (12/09)
+
+== 4. Verificar que no hay errores de sintaxis ==
+  ✅ compila correctamente
+
+== 5. ¿Hay que reiniciar el servicio? ==
+● poly-trump.service - Bot Polymarket Trump Truth Social posts
+     Loaded: loaded (/etc/systemd/system/poly-trump.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 07:31:18 UTC; 31min ago
+   Main PID: 1506561 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 60.1M (peak: 69.5M)
+        CPU: 11.741s
+     CGroup: /system.slice/poly-trump.service
+
+== 6. NO reiniciar todavía — esperar al diag de ventanas ==
+
+########################################
+# PARTE 2: DIAGNÓSTICO VENTANAS 48H EN ELON
+########################################
+
+== 1. ¿Qué archivo muestra el botón 'ventanas'? ==
+/opt/polymarket/bot-polymarket-elon/bot.py
+/opt/polymarket/bot-polymarket-elon/construir_serie.py
+/opt/polymarket/bot-polymarket-elon/generar_excel_resultados.py
+/opt/polymarket/bot-polymarket-elon/generar_xlsx.py
+/opt/polymarket/bot-polymarket-elon/mercado_polymarket.py
+/opt/polymarket/bot-polymarket-elon/mercado_ultima_oportunidad.py
+/opt/polymarket/bot-polymarket-elon/notificar.py
+/opt/polymarket/bot-polymarket-elon/operar_real.py
+/opt/polymarket/bot-polymarket-elon/papel.py
+/opt/polymarket/bot-polymarket-elon/probar_orden.py
+
+== 2. ¿Qué tipo de mercado usa el bot de Elon? ==
+306:# en 48h) cuando Musk se mueve realmente +-40. El modelo compraba
+
+== 3. mercados_activos de Elon: ¿cuáles son? ==
+total: 6
+  [48h] [ABIERTO] Elon Musk # tweets September 10 - September 12, 2026?
+  [semanal] [ABIERTO] Elon Musk # tweets September 8 - September 15, 2026?
+  [semanal] [ABIERTO] Elon Musk # tweets September 11 - September 18, 2026?
+  [mensual] [ABIERTO] Elon Musk # tweets in October 2026?
+  [48h] [CERRADO] Elon Musk # tweets February 21 - February 23, 2026?
+  [semanal] [CERRADO] Elon Musk # tweets September 4 - September 11, 2026?
+
+== 4. ¿Cómo clasifica el bot las ventanas (48h vs semanal)? ==
+306:# en 48h) cuando Musk se mueve realmente +-40. El modelo compraba
+
+== 5. ¿Qué ventana se muestra en el panel '4/4 Estado'? ==
+[2026-09-12 03:48:14 EDT]       · nitter: 20 items
+[2026-09-12 03:48:14 EDT]       · tweets únicos: 771 (reposts 477) · CSV: 48 días (nuevos/mejorados: 0)
+[2026-09-12 03:48:14 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-12 03:48:31 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-12 03:48:31 EDT] 3/5 · Trading REAL…
+[2026-09-12 03:48:31 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-12 03:48:31 EDT] 4/5 · Estado:
+[2026-09-12 03:48:31 EDT] Pasada completada en 22.8 s
+[2026-09-12 03:48:31 EDT] Próxima pasada en 5 min…
+--
+[2026-09-12 03:53:37 EDT]       · nitter: 20 items
+[2026-09-12 03:53:37 EDT]       · tweets únicos: 771 (reposts 477) · CSV: 48 días (nuevos/mejorados: 0)
+[2026-09-12 03:53:37 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-12 03:53:53 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-12 03:53:53 EDT] 3/5 · Trading REAL…
+[2026-09-12 03:53:53 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-12 03:53:53 EDT] 4/5 · Estado:
+[2026-09-12 03:53:53 EDT] Pasada completada en 22.0 s
+[2026-09-12 03:53:53 EDT] Próxima pasada en 5 min…
+--
+[2026-09-12 04:00:04 EDT]       · nitter: 20 items
+[2026-09-12 04:00:04 EDT]       · tweets únicos: 771 (reposts 477) · CSV: 48 días (nuevos/mejorados: 0)
+[2026-09-12 04:00:04 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-12 04:00:20 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-12 04:00:20 EDT] 3/5 · Trading REAL…
+[2026-09-12 04:00:20 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-12 04:00:20 EDT] 4/5 · Estado:
+[2026-09-12 04:00:20 EDT] Pasada completada en 87.4 s
+[2026-09-12 04:00:20 EDT] Próxima pasada en 5 min…
+
+== 6. ¿El log muestra el TIPO de mercado? ==
+
+== 7. mercado_activo.json: claves 'tipo' vs realidad ==
+distribución por tipo:
+  48h: 2
+  semanal: 3
+  mensual: 1
+
+== 8. ¿bot.py tiene la lista de mercados en pantalla? ==
+62:def cargar_estado_bot():
+69:def guardar_estado_bot(d):
+189:        abiertos = [m for m in mks if not m["cerrado"] and m["tipo"] == "48h"]
+190:        log(f"      · {len(mks)} mercados · {len(abiertos)} de 48 h abiertos "
+252:def mostrar_estado():
+261:    """Avisa al móvil si hay un mercado 48 h cerca de cumplir las reglas
+335:def ver_estado():
+353:            print("  Sin apuesta activa (esperando señal 48 h con cuota ≥ 3.00)")
+
+== 9. ¿Qué imprime '4/4 Estado:' exactamente? ==
+62:def cargar_estado_bot():
+69:def guardar_estado_bot(d):
+252:def mostrar_estado():
+335:def ver_estado():
+360:    print("\nArchivos clave: datos_elon.csv · estado_tweets.json · mercado_activo.json · "
+390:        print("Config:", notificar.estado_texto())
+
+== 10. ¿El bot muestra TODOS los mercados activos o solo uno? ==
+    log(f"      · tweets únicos: {len(vistos)} (reposts {n_rep}) · "
+        f"CSV: {total} días (nuevos/mejorados: {nuevos})")
+
+
+# ------------------------------------------------------------------- 2) mercado
+def actualizar_mercado():
+    log("2/5 · Actualizando mercados de Polymarket…")
+    try:
+        mks = mp.actualizar_mercado()
+        abiertos = [m for m in mks if not m["cerrado"] and m["tipo"] == "48h"]
+        log(f"      · {len(mks)} mercados · {len(abiertos)} de 48 h abiertos "
+            f"→ mercado_activo.json")
+        return mks
+    except Exception as e:
+        log(f"      · ERROR {e}")
+        try:
+            notificar.alerta_error(
+                f"⚠️ No se pudo actualizar el mercado de Polymarket: {e}")
+        except Exception:
+            pass
+        return None
+
+
+# ------------------------------------------------------------------- 3) trading
+def trading(opts):
+    excel_al_cambio = opts.excel
+    if opts.modo == "real":
+        log("3/5 · Trading REAL" + (" (MODO SECO)" if opts.simular else "") + "…")
+        try:
+            import operar_real
+            estado = operar_real.pasada_real(dry=opts.simular, actualizar=False,
+                                             excel=False)
+            if excel_al_cambio:
+                try:
+                    from excel_historial import generar as gen_hist
+                    ruta, anadidas, total = gen_hist(operar_real.HISTORIAL,
+                                                     salida=EXCEL_HIST,
+                                                     bankroll=operar_real.BANKROLL,
+                                                     titulo_extra="trading REAL")
+                    log(f"      · Excel historial actualizado: {ruta} "
+                        f"(añadidas {anadidas}, total {total})")
+
+== 11. Última pasada completa ==
+[2026-09-12 03:48:31 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-12 03:48:31 EDT] 3/5 · Trading REAL…
+[2026-09-12 03:48:31 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-12 03:48:31 EDT] 4/5 · Estado:
+[2026-09-12 03:48:31 EDT] Pasada completada en 22.8 s
+[2026-09-12 03:48:31 EDT] Próxima pasada en 5 min…
+[2026-09-12 03:53:31 EDT] ==============================================================
+[2026-09-12 03:53:31 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-12 03:53:31 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-12 03:53:31 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-12 03:53:32 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-12 03:53:32 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-12 03:53:32 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-12 03:53:32 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-12 03:53:37 EDT]       · nitter: 20 items
+[2026-09-12 03:53:37 EDT]       · tweets únicos: 771 (reposts 477) · CSV: 48 días (nuevos/mejorados: 0)
+[2026-09-12 03:53:37 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-12 03:53:53 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-12 03:53:53 EDT] 3/5 · Trading REAL…
+[2026-09-12 03:53:53 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-12 03:53:53 EDT] 4/5 · Estado:
+[2026-09-12 03:53:53 EDT] Pasada completada en 22.0 s
+[2026-09-12 03:53:53 EDT] Próxima pasada en 5 min…
+[2026-09-12 03:58:53 EDT] ==============================================================
+[2026-09-12 03:58:53 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-12 03:58:53 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-12 03:58:53 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-12 03:58:55 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-12 03:58:55 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-12 04:00:00 EDT]       · jina-tw: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-09-12 04:00:00 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-12 04:00:04 EDT]       · nitter: 20 items
+[2026-09-12 04:00:04 EDT]       · tweets únicos: 771 (reposts 477) · CSV: 48 días (nuevos/mejorados: 0)
+[2026-09-12 04:00:04 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-12 04:00:20 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-12 04:00:20 EDT] 3/5 · Trading REAL…
+[2026-09-12 04:00:20 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-12 04:00:20 EDT] 4/5 · Estado:
+[2026-09-12 04:00:20 EDT] Pasada completada en 87.4 s
+[2026-09-12 04:00:20 EDT] Próxima pasada en 5 min…
