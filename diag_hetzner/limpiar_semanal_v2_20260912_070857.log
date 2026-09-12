@@ -1,0 +1,56 @@
+=== LIMPIEZA SEMANAL V2 — 20260912_070857 UTC ===
+
+== 1. Backup completo del bot semanal v2 ==
+destino: /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857
+tamaño backup:
+23M	/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/
+
+== 2. Matar los 3 procesos del semanal v2 ==
+--- procesos antes ---
+root     1498655  0.0  1.2 167944 48764 ?        Ssl  06:06   0:03 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root     1498670  0.1  1.2 172564 50084 ?        Ssl  06:06   0:04 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root     1498672  0.0  0.9  51096 36344 ?        Ss   06:06   0:01 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+  matando PID 1498655...
+  matando PID 1498670...
+  matando PID 1498672...
+--- procesos después ---
+  (ninguno)
+
+== 3. Desactivar servicio poly-semanal.service ==
+Removed "/etc/systemd/system/multi-user.target.wants/poly-semanal.service".
+○ poly-semanal.service - Bot Polymarket Elon SEMANAL (v1)
+     Loaded: loaded (/etc/systemd/system/poly-semanal.service; disabled; preset: enabled)
+     Active: inactive (dead)
+
+Sep 12 06:05:49 bot-poly systemd[1]: poly-semanal.service: Consumed 30min 34.361s CPU time, 90.3M memory peak, 0B memory swap peak.
+
+== 4. Eliminar definición del servicio systemd ==
+-rw-r--r-- 1 root root 527 Aug 17 20:52 /etc/systemd/system/poly-semanal.service
+
+== 5. Mover directorio del bot a /opt/polymarket/_archivado/ ==
+movido a: /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/
+
+== 6. Verificación final ==
+--- procesos del semanal ---
+  ✅ ninguno
+--- servicio poly-semanal ---
+Unit poly-semanal.service could not be found.
+--- directorio origen ---
+bot-polymarket-elon-semanal
+--- backup ---
+total 16
+drwxr-xr-x  4 root root 4096 Sep 12 07:09 .
+drwxr-xr-x 16 1000 1000 4096 Sep 12 07:09 ..
+drwxr-xr-x  5 1000 1000 4096 Aug 30 08:30 bot-polymarket-elon-semanal-v2
+drwxr-xr-x  4 1000 1000 4096 Aug 30 08:30 bot-polymarket-elon-semanal-v2_20260912_070857
+
+== 7. Verificar que el bot de Elon principal sigue corriendo ==
+● poly-elon.service - Bot Polymarket Elon 48h (v1)
+     Loaded: loaded (/etc/systemd/system/poly-elon.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 06:06:01 UTC; 1h 3min ago
+   Main PID: 1498638 (python3)
+      Tasks: 2 (limit: 4538)
+root     1498638  0.1  1.3 171584 52504 ?        Ssl  06:06   0:05 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+root     1498668  0.0  0.6  32312 23704 ?        Ss   06:06   0:00 /usr/bin/python3 /opt/polymarket/poly_telegram_bot.py
+root     1499904  0.1  2.0 225556 80856 ?        Ssl  06:16   0:03 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
