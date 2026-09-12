@@ -21,6 +21,18 @@ echo ""
 echo "--- servicio ---"
 systemctl status poly-combos-bot --no-pager 2>&1 | head -8 || true
 echo ""
+echo "--- reinicios (historial real, no sólo el arranque actual) ---"
+systemctl show poly-combos-bot -p NRestarts -p Result -p ExecMainPID \
+        -p ExecMainStartTimestamp -p ActiveEnterTimestamp --no-pager 2>/dev/null || true
+echo "   arranques/paradas que vio systemd (últimas 12 h):"
+journalctl -u poly-combos-bot --since "12 hours ago" --no-pager 2>/dev/null \
+  | grep -aiE "Started|Stopped|Stopping|Starting|Killing|Failed|oom|Main process exited|Scheduled restart|Consumed" \
+  | tail -20 || echo "   (journalctl no disponible o sin líneas)"
+echo "   arranques del bot según SU propio log (cada uno = un proceso nuevo):"
+grep -a "cargado · modo=" /var/log/poly-combos-bot.log 2>/dev/null | tail -14 || true
+echo "   reinicios por systemd (si el bot se cayera solo, se vería aquí):"
+grep -ac "cargado · modo=" /var/log/poly-combos-bot.log 2>/dev/null || true
+echo ""
 echo "--- versión instalada ---"
 grep -m1 "POLY COMBOS BOT" "$INSTALL_DIR/poly_combos_bot.py" 2>/dev/null || echo "   (sin fichero)"
 md5sum "$INSTALL_DIR/poly_combos_bot.py" 2>/dev/null || true
