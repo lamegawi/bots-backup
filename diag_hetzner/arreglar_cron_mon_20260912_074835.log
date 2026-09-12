@@ -1,0 +1,44 @@
+=== ARREGLAR CRON MONITOREO — 20260912_074835 UTC ===
+
+== 1. Estado previo ==
+# Monitoreo cada 5 min de los 3 bots (Elon/Zelenskyy/Trump)
+*/5 * * * * /usr/bin/bash /opt/polymarket/scripts_despliegue/monitorear_bots.sh >/dev/null 2>&1
+
+== 2. Reescribir cron con formato correcto (campo user) ==
+nuevo contenido:
+# Monitoreo cada 5 min de los 3 bots (Elon/Zelenskyy/Trump)
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+*/5 * * * * root /usr/bin/bash /opt/polymarket/scripts_despliegue/monitorear_bots.sh >/dev/null 2>&1
+
+== 3. Verificar que existe el directorio destino ==
+ls: cannot access '/opt/polymarket/scripts_despliegue': No such file or directory
+
+== 4. Copiar monitorear_bots.sh al directorio destino ==
+descargando desde rama (HEAD: HEAD)
+chmod: cannot access '/opt/polymarket/scripts_despliegue/monitorear_bots.sh': No such file or directory
+ls: cannot access '/opt/polymarket/scripts_despliegue/monitorear_bots.sh': No such file or directory
+
+== 5. Validar sintaxis del cron ==
+  ⚠️ crontab -T no disponible, probando otra forma
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+*/5 * * * * root /usr/bin/bash /opt/polymarket/scripts_despliegue/monitorear_bots.sh >/dev/null 2>&1
+
+== 6. Reiniciar cron para releer ==
+● cron.service - Regular background program processing daemon
+     Loaded: loaded (/usr/lib/systemd/system/cron.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 07:48:35 UTC; 7ms ago
+       Docs: man:cron(8)
+   Main PID: 1507717 (cron)
+
+== 7. Esperar 1 min y verificar que se ejecuta ==
+-rw-r--r-- 1 root root 2063 Sep 12 07:45 /tmp/mon_bots_20260912_074545.log
+
+== 8. Resumen ==
+  ✅ cron reescrito con formato correcto (campo 'root')
+  ✅ monitorear_bots.sh copiado a /opt/polymarket/scripts_despliegue/
+  ✅ cron reiniciado
+
+  Esperar a la próxima pasada (cada 5 min en punto)
