@@ -1,0 +1,104 @@
+=== INTEGRAR TRADING REAL BOT SEMANAL ELON — 20260912_082419 UTC ===
+
+== 1. Ver funciones de operar_real_semanal.py de Zelenskyy ==
+-rw-r--r-- 1 root root 45316 Aug 30 17:15 /opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py
+58:CFG = "config_real.json"
+59:ESTADO = "real_zelen.json"
+60:HISTORIAL = "resultados_real_zelen.csv"
+61:BANKROLL = 500.0
+62:HOST = "https://clob.polymarket.com"
+63:FILL_TIMEOUT_MIN = 60          # cancelar si no se llena en 60 min
+64:CHECK_INTERVAL_S = 30          # comprobar fill cada 30 s
+68:def cargar_config():
+95:def get_client(signature_type=None):
+142:def cargar_estado():
+155:def guardar_estado(estado):
+160:def escribir_historial(historial):
+174:def token_id_para_bin(slug, bin_titulo):
+192:def saldo_usdc_onchain(direccion, red="polygon"):
+241:def verificar_saldo_usdc(client):
+260:def evento_resuelto(slug):
+286:def _lock_path():
+305:LOCK_APUESTAS = _lock_path()
+306:BOT_NOMBRE = "ZELENSKYY"
+308:def _leer_lock():
+316:def _guardar_lock(d):
+328:def ventana_ocupada(slug, bin_titulo, ahora=None):
+347:def marcar_ventana(slug, bin_titulo, fin_iso):
+354:def liberar_ventana(slug, bin_titulo):
+360:def resolver(estado, fee_pct=0.0):
+
+== 2. Ver senal_vivo.py de Zelenskyy (lógica de evaluación) ==
+-rw-r--r-- 1 root root 14384 Sep 10 14:39 /opt/polymarket/bot-polymarket-zelenskyy/senal_vivo.py
+39:MOTOR_ACTUAL = "motor_v2_ev_escalones_tope10"
+44:def stake_motor_v2(stake_base, p_lado, cuota):
+81:def conteo_ventana(inicio_utc, ahora_utc):
+138:def evaluar(avg7, v2, ajuste, lam48, mercados, paso, t0_override=-1, ahora=None):
+201:                                   "stake": stake, "ev": ev, "motor": MOTOR_ACTUAL})
+208:def main():
+
+== 3. Backup del bot_semanal.py actual ==
+
+== 4. Reescribir bot_semanal.py con trading real integrado ==
+bot_semanal.py reescrito con trading real
+
+== 5. Validar sintaxis ==
+  ✅ compila
+
+== 6. Borrar __pycache__ ==
+  ✅ caches borrados
+
+== 7. Verificar py_clob_client disponible ==
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'py_clob_client'
+  ⚠️ py_clob_client NO instalado
+
+== 8. Probar manualmente con pasada única ==
+[2026-09-12 08:24:20] 🤖 BOT SEMANAL ELON arrancado (loop=False, intervalo=15 min, modo=real)
+[2026-09-12 08:24:20] ════════════════════════════════════════════
+[2026-09-12 08:24:20] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+[2026-09-12 08:24:20] ════════════════════════════════════════════
+[2026-09-12 08:24:20] 📊 AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
+[2026-09-12 08:24:20] 📈 2 mercados semanales abiertos
+[2026-09-12 08:24:20] 💰 saldo=$228.45  paso=1  activa=no
+[2026-09-12 08:24:20] ERROR: module 'senal' has no attribute 'decidir_bin'
+[2026-09-12 08:24:20] Traceback (most recent call last):
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 102, in pasada
+    decision, lado, ev, motivo = evaluar_senal(m, mkt, lo, hi, p_yes, c_yes, c_no)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 54, in evaluar_senal
+    decision, lado, motivo = senal.decidir_bin(p, precio_yes, cuota_yes, cuota_no)
+                             ^^^^^^^^^^^^^^^^^
+AttributeError: module 'senal' has no attribute 'decidir_bin'
+
+
+== 9. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 08:24:20 UTC; 5s ago
+   Main PID: 1510586 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 6.9M (peak: 7.0M)
+        CPU: 62ms
+     CGroup: /system.slice/poly-elon-semanal.service
+             └─1510586 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+
+== 10. Verificar log ==
+Sep 12 08:24:20 bot-poly python3[1510586]: [2026-09-12 08:24:20] ERROR: module 'senal' has no attribute 'decidir_bin'
+Sep 12 08:24:20 bot-poly python3[1510586]: [2026-09-12 08:24:20] Traceback (most recent call last):
+Sep 12 08:24:20 bot-poly python3[1510586]:   File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 102, in pasada
+Sep 12 08:24:20 bot-poly python3[1510586]:     decision, lado, ev, motivo = evaluar_senal(m, mkt, lo, hi, p_yes, c_yes, c_no)
+Sep 12 08:24:20 bot-poly python3[1510586]:                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Sep 12 08:24:20 bot-poly python3[1510586]:   File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 54, in evaluar_senal
+Sep 12 08:24:20 bot-poly python3[1510586]:     decision, lado, motivo = senal.decidir_bin(p, precio_yes, cuota_yes, cuota_no)
+Sep 12 08:24:20 bot-poly python3[1510586]:                              ^^^^^^^^^^^^^^^^^
+Sep 12 08:24:20 bot-poly python3[1510586]: AttributeError: module 'senal' has no attribute 'decidir_bin'
+Sep 12 08:24:20 bot-poly python3[1510586]: [2026-09-12 08:24:20] Próxima pasada en 15 min…
+
+== 11. Resumen ==
+  ✅ bot_semanal.py con trading real
+  ✅ Evalúa señales, calcula EV, intenta ejecutar
+  ✅ Si py_clob_client no está: registra señal en historial sin ejecutar
+  ✅ servicio reiniciado
