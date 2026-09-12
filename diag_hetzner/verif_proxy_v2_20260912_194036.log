@@ -1,0 +1,70 @@
+=== VERIFICAR PROXY PC v2 — 20260912_194036 UTC ===
+
+== 1. ¿Tailscale está instalado? ==
+/usr/bin/tailscale
+
+== 2. ¿Tailscale activo? ==
+100.77.186.117  bot-poly  lamegawi@  linux    -                                 
+100.82.235.16   bot-vm3   lamegawi@  linux    offline, last seen 26d ago        
+100.83.57.99    ferpc     lamegawi@  windows  idle, tx 336785108 rx 3656020108  
+
+== 3. Puerto 8888 del PC accesible? ==
+  probando localhost:8888...
+    ❌ no accesible
+  probando 127.0.0.1:8888...
+    ❌ no accesible
+  probando 100.64.0.1:8888...
+    ❌ no accesible
+  probando 100.100.100.100:8888...
+    ❌ no accesible
+
+== 4. Proxy ya configurado? ==
+  HTTP_PROXY=no
+  HTTPS_PROXY=no
+  NO_PROXY=no
+
+== 5. ¿proxy_pc.py existe? ==
+-rw-r--r-- 1 root root 5362 Aug 18 18:39 /opt/polymarket/proxy_pc.py
+ls: cannot access '/root/proxy_pc.py': No such file or directory
+/opt/polymarket/proxy_pc.py
+
+== 6. ¿Cómo Zelenskyy configura el proxy? ==
+POLY_PRIVATE_KEY=0x5a140fd5482dd565f6abe8ddd100b63fe451bff399be5609e56a0cfafc888af3
+POLY_WALLET_ADDRESS=0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+POLY_RELAYER_API_KEY=019fe5ab-ea44-7450-8e9c-103a516cd37e
+POLY_RELAYER_API_KEY_ADDRESS=0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6
+REAL_CONFIRMADO=1
+# Proxy del PC (se añade al confirmar puerto)
+HTTP_PROXY=http://100.83.57.99:8888
+HTTPS_PROXY=http://100.83.57.99:8888
+ALL_PROXY=http://100.83.57.99:8888
+NO_PROXY=localhost,127.0.0.1,api.telegram.org,ntfy.sh
+LOCK_APUESTAS=/opt/polymarket/apuestas_compartidas.json
+TELEGRAM_BOT_TOKEN=8932364064:AAEE1iuyNX0beaVzFVcYMu_A4eNXCpEw8XE
+TELEGRAM_CHAT_ID=250818720
+8982773230:AAGfqqMxn3cgxcYDU_WAS2aWlkcl1UlGTxM
+TRUMP_BOT_TOKEN=8982773230:AAGfqqMxn3cgxcYDU_WAS2aWlkcl1UlGTxM
+
+MENTION_TELEGRAM_BOT_TOKEN=8831921552:AAHbBQ7jqhanDC_m8n738lbOQYK4MYbpjJI
+MENTION_TELEGRAM_CHAT_ID=250818720
+MENTION_DRY_RUN=true
+
+OVERREACTION_TELEGRAM_TOKEN=8632830261:AAF8TWBdrsByaMkmTC0qVi3TqTMwJ6Eva-o
+OVERREACTION_DRY_RUN=true
+
+== 7. Variables de entorno del bot Zelenskyy ==
+PID Zelenskyy: 1506820
+HTTP_PROXY=http://100.83.57.99:8888
+HTTPS_PROXY=http://100.83.57.99:8888
+ALL_PROXY=http://100.83.57.99:8888
+NO_PROXY=localhost,127.0.0.1,api.telegram.org,ntfy.sh
+
+== 8. ¿Otros bots usan proxy? ==
+
+== 9. ¿Cómo Zelenskyy hace requests HTTP? ==
+
+== 10. IPs salientes de Hetzner ==
+46.225.146.21
+== Conclusión ==
+  Si proxy_pc.py:8888 responde, configuramos HTTP_PROXY para el bot
+  Si NO responde, NO podemos ejecutar órdenes reales
