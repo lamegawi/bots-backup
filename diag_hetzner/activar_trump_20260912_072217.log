@@ -1,0 +1,86 @@
+=== ACTIVAR BOT TRUMP — 20260912_072217 UTC ===
+wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+
+== 1. Verificar saldo real on-chain con la wallet correcta ==
+  0xb0e1197098e6d427c01720f1631cad24ce740fa0: $25.6645
+
+== 2. Verificar posiciones existentes ==
+total posiciones: 42
+  Will Elon Musk post 120-139 tweets from September 4 to Septe | size=5060.847 avg=0.0011 cur=0 pnl=0
+  Will Elon Musk post 140-159 tweets from September 4 to Septe | size=806.3275 avg=0.0062 cur=0 pnl=0
+  Will Romeu Zema win the 2026 Brazilian presidential election | size=36.2108 avg=0.0828 cur=0.0015 pnl=0
+  Will Elon Musk post 180-199 tweets from May 19 to May 26, 20 | size=33.6666 avg=0.1485 cur=0 pnl=0
+  Will Elon Musk post 180-199 tweets from May 12 to May 19, 20 | size=33.3333 avg=0.1499 cur=0 pnl=0
+  Will Elon Musk post 40-64 tweets from July 30 to August 1, 2 | size=33.3333 avg=0.2999 cur=0 pnl=0
+  Will Elon Musk post 180-199 tweets from July 28 to August 4, | size=33.3333 avg=0.1499 cur=0 pnl=0
+  Will Elon Musk post 200-219 tweets from July 31 to August 7, | size=31.25 avg=0.16 cur=0 pnl=0
+  Will Elon Musk post 220-239 tweets from June 16 to June 23,  | size=31.25 avg=0.16 cur=0 pnl=0
+  Will Elon Musk post 40-64 tweets from July 2 to July 4, 2026 | size=31.1818 avg=0.2199 cur=0 pnl=0
+
+== 3. ¿Existe config_real.json en Trump? ==
+ls: cannot access 'config_real.json': No such file or directory
+
+== 4. ¿Existe .env con la clave privada? ==
+ls: cannot access '/opt/polymarket/.env': No such file or directory
+ls: cannot access '/opt/polymarket/.env.trump': No such file or directory
+ls: cannot access '/root/.env': No such file or directory
+
+== 5. ¿El servicio usa variables de entorno? ==
+[Unit]
+Description=Bot Polymarket Trump Truth Social posts
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-trump
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+== 6. ¿Cómo carga POLY_PRIVATE_KEY? ==
+
+== 7. ¿Hay claves en /etc/default/poly-trump? ==
+
+== 8. ¿Qué env tiene el proceso activo? ==
+PID del bot: 1505133
+
+== 9. ¿Qué saldo usan los demás bots? ==
+--- bot Elon (de real.json) ---
+  saldo: $303.55  bankroll_inicial: $325.71  pnl: $-22.16
+--- bot Zelenskyy (de real_zelen.json) ---
+  saldo: $281.19  bankroll_inicial: $311.39  pnl: $-7.84
+
+== 10. CONFIGURACIÓN ACTUAL DEL SISTEMA ==
+
+Variables de entorno del bot Trump:
+LANG=en_US.UTF-8
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin
+USER=root
+LOGNAME=root
+HOME=/root
+SHELL=/usr/bin/bash
+INVOCATION_ID=63d90bb0eb3348e38108d4a400ed78d8
+JOURNAL_STREAM=8:13613798
+SYSTEMD_EXEC_PID=1505133
+MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/system.slice/poly-trump.service/memory.pressure
+MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=
+
+== 11. Resumen de la activación ==
+Para ACTIVAR el bot de Trump completamente, hay que:
+1. Crear /opt/polymarket/bot-polymarket-trump/config_real.json con:
+   - wallet_address: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+   - confirmado: true
+   - bankroll: 228.45 (el real de tu screenshot)
+2. Crear /opt/polymarket/bot-polymarket-trump/real.json con:
+   - saldo: 228.45
+   - activa: null
+   - historial: []
+   - paso: 1
+3. Reiniciar el servicio: systemctl restart poly-trump.service
