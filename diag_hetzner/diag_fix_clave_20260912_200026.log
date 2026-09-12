@@ -1,0 +1,68 @@
+=== DIAG Y FIX CLAVE PRIVADA — 20260912_200026 UTC ===
+
+== 1. ¿Cómo está la clave en /etc/default/poly-elon-semanal? ==
+  contenido completo:
+# Variables de entorno para el bot semanal Elon$
+POLY_PRIVATE_KEY="0x5a140fd5482dd565f6abe8ddd100b63fe451bff399be5609e56a0cfafc888af3"$
+POLY_WALLET_ADDRESS="0xb0E1197098E6d427c01720F1631cAD24CE740FA0"$
+
+  longitud de POLY_PRIVATE_KEY:
+69
+
+== 2. ¿Cómo está en /etc/polymarket.env? ==
+POLY_PRIVATE_KEY=0x5a140fd5482dd565f6abe8ddd100b63fe451bff399be5609e56a0cfafc888af3$
+
+== 3. ¿Cómo está en /etc/default/poly-zelenskyy? ==
+POLY_PRIVATE_KEY="0x5a140fd5482dd565f6abe8ddd100b63fe451bff399be5609e56a0cfafc888af3"$
+
+== 4. ¿Cómo está en /etc/default/poly-trump? ==
+POLY_PRIVATE_KEY="0x5a140fd5482dd565f6abe8ddd100b63fe451bff399be5609e56a0cfafc888af3"$
+
+== 5. Probar firma con la clave del bot semanal ==
+longitud leída: 68
+primeros 10 chars: '"0x5a140fd'
+últimos 5 chars: '8af3"'
+❌ ERROR: Non-hexadecimal digit found
+
+== 6. ¿Y con la clave de /etc/polymarket.env? ==
+longitud: 66
+❌ ERROR: 'Signer' object has no attribute 'get_address'
+
+== 7. Limpiar clave del bot semanal (quitar espacios/saltos) ==
+  ⚠️ no se encontró POLY_PRIVATE_KEY="..."
+  encontrada sin comillas: 68 chars
+  ✅ clave reescrita con formato limpio
+
+== 8. Verificar tras limpieza ==
+POLY_PRIVATE_KEY="0x5a140fd5482dd565f6abe8ddd100b63fe451bff399be5609e56a0cfafc888af3"$
+
+== 9. Probar firma tras limpieza ==
+longitud: 66
+❌ ERROR: 'Signer' object has no attribute 'get_address'
+
+== 10. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 20:00:29 UTC; 5s ago
+   Main PID: 1562451 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 9.5M (peak: 10.0M)
+        CPU: 914ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 11. Verificar log ==
+Sep 12 19:57:25 bot-poly python3[1561827]: [2026-09-12 19:57:25]    💵 stake=$3.3  paso=1
+Sep 12 19:57:26 bot-poly python3[1561827]: [2026-09-12 19:57:26]    ❌ ERROR ejecutando orden: Non-hexadecimal digit found
+Sep 12 19:57:26 bot-poly python3[1561827]: [2026-09-12 19:57:26] ════════════════════════════════════════════
+Sep 12 19:57:26 bot-poly python3[1561827]: [2026-09-12 19:57:26] Pasada completada
+Sep 12 19:57:26 bot-poly python3[1561827]: [2026-09-12 19:57:26] Próxima pasada en 15 min…
+Sep 12 20:00:29 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 12 20:00:29 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 12 20:00:29 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:00:29 bot-poly systemd[1]: poly-elon-semanal.service: Consumed 4.431s CPU time, 10.0M memory peak, 0B memory swap peak.
+Sep 12 20:00:29 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:00:29 bot-poly python3[1562451]: [2026-09-12 20:00:29] 🤖 BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min, modo=real)
+Sep 12 20:00:29 bot-poly python3[1562451]: [2026-09-12 20:00:29] ════════════════════════════════════════════
+Sep 12 20:00:29 bot-poly python3[1562451]: [2026-09-12 20:00:29] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 20:00:29 bot-poly python3[1562451]: [2026-09-12 20:00:29] ════════════════════════════════════════════
+Sep 12 20:00:29 bot-poly python3[1562451]: [2026-09-12 20:00:29] 📊 AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
