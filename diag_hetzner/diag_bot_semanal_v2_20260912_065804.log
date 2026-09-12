@@ -1,0 +1,161 @@
+=== DIAG BOT SEMANAL V2 — 20260912_065804 UTC ===
+
+== 1. ¿Está corriendo? (systemd / procesos) ==
+Unit poly-elon-semanal-v2.service could not be found.
+root     1498655  0.0  1.2 167696 48216 ?        Ssl  06:06   0:02 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root     1498670  0.1  1.2 172416 49840 ?        Ssl  06:06   0:03 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root     1498672  0.0  0.8  50824 35028 ?        Ss   06:06   0:01 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+== 2. ¿Cron del semanal v2? ==
+0 9 * * 1 /usr/bin/python3 -u /root/seguimiento_semanal.py >> /root/semanal.log 2>&1
+e2scrub_all
+sysstat
+
+== 3. Última actividad ==
+-rw-r--r-- 1 root root  13707 Aug 20 07:29 bot_semanal.py
+-rw-r--r-- 1 root root  19480 Aug 20 07:29 recoger_tweets.py
+-rw-r--r-- 1 root root 423391 Aug 19 18:30 bot_semanal_v2.log
+-rw-r--r-- 1 root root   8301 Aug 19 18:30 Historial_Operaciones_Semanal_V2.xlsx
+-rw-r--r-- 1 root root  35422 Aug 19 18:30 mercado_activo.json
+-rw-r--r-- 1 root root   1472 Aug 19 18:30 ventanas_vistas.json
+-rw-r--r-- 1 root root    402 Aug 19 18:29 datos_elon.csv
+-rw-r--r-- 1 root root  64741 Aug 19 18:29 estado_tweets.json
+-rw-r--r-- 1 root root    432 Aug 19 18:24 real_semanal.json
+-rw-r--r-- 1 1000 1000  36114 Aug 19 17:47 operar_real_semanal.py
+-rw-r--r-- 1 1000 1000  13682 Aug 19 17:47 senal_vivo.py
+-rw-r--r-- 1 root root    319 Aug 19 10:12 avisos_cooldown.json
+-rw-r--r-- 1 root root    218 Aug 19 07:32 config.json
+-rw-r--r-- 1 root root     35 Aug 19 04:03 estado_bot_semanal_v2.json
+-rw-r--r-- 1 root root  17545 Aug 18 17:05 notificar.py
+-rw-r--r-- 1 root root  10143 Aug 17 20:24 papel_semanal.py
+-rw-r--r-- 1 root root   4869 Aug 17 20:24 probar_orden_semanal.py
+-rw-r--r-- 1 root root   4217 Aug 17 20:24 saldo_ntfy.py
+-rw-r--r-- 1 root root  13522 Aug 17 20:24 senal.py
+-rw-r--r-- 1 root root  12245 Aug 17 20:24 notificar_v2_semanal.py
+
+== 4. estado_bot_semanal_v2.json ==
+{
+ "ultimo_resumen": "2026-08-19"
+}
+== 5. config.json ==
+{
+  "ntfy": {
+    "topic": "elon-poly-ple5k5aw",
+    "token": null
+  },
+  "telegram": {
+    "token": "8932364064:AAEE1iuyNX0beaVzFVcYMu_A4eNXCpEw8XE",
+    "chat_id": "250818720"
+  },
+  "resumen": {
+    "hora": 20
+  }
+}
+== 6. Excel historial Semanal V2 ==
+hojas: ['Operaciones', 'Resumen', 'Equity', 'Notas']
+4 filas
+--- todas las ops ---
+  Tipo                                | Mercado  | Bin | precio=Lado | Real | benef=Resultado
+
+== 7. avisos_cooldown.json del semanal v2 ==
+{
+ "error_general": 1787080830.1674523,
+ "casi_Elon Musk # tweets August 13 - August 15": 1786762991.5374398,
+ "casi_Elon Musk # tweets August 11 - August 18": 1787062019.895175,
+ "casi_Elon Musk # tweets August 14 - August 21": 1787131252.0515013,
+ "casi_Elon Musk # tweets August 18 - August 25": 1787134345.6825497
+}
+== 8. bot_semanal.py: funciones clave ==
+62:def cargar_estado_bot():
+69:def guardar_estado_bot(d):
+77:def log(msg):
+88:def recoger(opts):
+120:def actualizar_mercado():
+139:def trading(opts):
+187:def mostrar_estado():
+195:def avisar_casi_senal():
+209:def avisar_resumen_diario():
+255:def pasada(opts):
+268:def ver_estado():
+297:def main():
+
+== 9. ¿Tiene archivo de balance/estado? ==
+avisos_cooldown.json
+config.json
+estado_bot_semanal_v2.json
+estado_tweets.json
+mercado_activo.json
+real_semanal.json
+ventanas_vistas.json
+
+== 10. bot_semanal_v2.log: últimas 30 líneas ==
+[2026-08-19 14:19:30 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal_V2.xlsx (añadidas 0, total 0)
+[2026-08-19 14:19:30 EDT] 4/4 · Estado:
+[2026-08-19 14:19:30 EDT] Pasada completada en 27.9 s
+[2026-08-19 14:19:30 EDT] Próxima pasada en 5 min…
+[2026-08-19 14:24:30 EDT] ==============================================================
+[2026-08-19 14:24:30 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+[2026-08-19 14:24:30 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-08-19 14:24:31 EDT]       · jina: 5 items
+[2026-08-19 14:24:32 EDT]       · xcancel: 21 items
+[2026-08-19 14:24:32 EDT]       · tweets únicos: 305 (reposts 161) · CSV: 26 días (nuevos/mejorados: 0)
+[2026-08-19 14:24:32 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-08-19 14:24:53 EDT]       · 7 mercados · 2 de 48 h abiertos → mercado_activo.json
+[2026-08-19 14:24:53 EDT] 3/4 · Trading REAL…
+[2026-08-19 14:24:53 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal_V2.xlsx (añadidas 0, total 0)
+[2026-08-19 14:24:53 EDT] 4/4 · Estado:
+[2026-08-19 14:24:53 EDT] Pasada completada en 22.3 s
+[2026-08-19 14:24:53 EDT] Próxima pasada en 5 min…
+[2026-08-19 14:29:53 EDT] ==============================================================
+[2026-08-19 14:29:53 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+[2026-08-19 14:29:53 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-08-19 14:29:53 EDT]       · jina: 5 items
+[2026-08-19 14:29:54 EDT]       · xcancel: 21 items
+[2026-08-19 14:29:54 EDT]       · tweets únicos: 305 (reposts 161) · CSV: 26 días (nuevos/mejorados: 0)
+[2026-08-19 14:29:54 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-08-19 14:30:14 EDT]       · 7 mercados · 2 de 48 h abiertos → mercado_activo.json
+[2026-08-19 14:30:14 EDT] 3/4 · Trading REAL…
+[2026-08-19 14:30:14 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal_V2.xlsx (añadidas 0, total 0)
+[2026-08-19 14:30:14 EDT] 4/4 · Estado:
+[2026-08-19 14:30:14 EDT] Pasada completada en 21.5 s
+[2026-08-19 14:30:14 EDT] Próxima pasada en 5 min…
+
+== 11. ¿Qué dice bot_semanal_v2.log sobre errores? ==
+[2026-08-19 11:24:36 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 11:31:05 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 11:37:31 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 11:43:58 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 11:50:24 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 11:56:50 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 12:03:16 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 12:09:42 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 12:16:12 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 12:22:42 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 13:12:19 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 13:18:44 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 13:25:09 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 13:31:33 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 13:37:59 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 13:44:23 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 13:48:51 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 13:55:19 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 14:01:46 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-08-19 14:08:17 EDT]       · jina: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+
+== 12. ¿Frecuencia de pasadas? ==
+861
+
+== 13. ¿Tiene servicio o solo es manual? ==
+/etc/systemd/system/poly-semanal-v2.service
+/etc/systemd/system/multi-user.target.wants/poly-semanal.service
+/etc/systemd/system/poly-semanal.service
+
+== 14. ¿Está en repositorio Git? ==
+fatal: detected dubious ownership in repository at '/opt/polymarket/bot-polymarket-elon-semanal-v2'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /opt/polymarket/bot-polymarket-elon-semanal-v2
+fatal: detected dubious ownership in repository at '/opt/polymarket/bot-polymarket-elon-semanal-v2'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /opt/polymarket/bot-polymarket-elon-semanal-v2
