@@ -1,0 +1,56 @@
+=== ACTIVAR EJECUCIÓN REAL v2 — 20260912_191231 UTC ===
+
+== 1. Instalar py_clob_client con --break-system-packages ==
+Downloading py_builder_signing_sdk-0.0.2-py3-none-any.whl (9.1 kB)
+Downloading python_dotenv-1.2.3-py3-none-any.whl (22 kB)
+Installing collected packages: python-dotenv, py-builder-signing-sdk, py-clob-client
+Successfully installed py-builder-signing-sdk-0.0.2 py-clob-client-0.34.6 python-dotenv-1.2.3
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+== 2. Verificar instalación ==
+Traceback (most recent call last):
+  File "<string>", line 3, in <module>
+ModuleNotFoundError: No module named 'py_clob_client.order_args'
+
+== 3. Reescribir mercado_polymarket.py (basado en Zelenskyy) ==
+  ✅ mercado_polymarket.py reescrito (método Zelenskyy)
+
+== 4. Probar mercado_polymarket.py ==
+Mercados semanales abiertos: 2
+  · Elon Musk # tweets September 8 - September 15, 2026? [elon-musk-of-tweets-september-8-september-15-2026]
+    bin <20: token_id_yes=1127667468723498269399958
+    bin 20-39: token_id_yes=6298858921967004812628282
+    bin 40-59: token_id_yes=1126873462010214904393864
+  · Elon Musk # tweets September 11 - September 18, 2026? [elon-musk-of-tweets-september-11-september-18-2026]
+    bin <20: token_id_yes=5665803022491947810567868
+    bin 20-39: token_id_yes=5644066480582822975752974
+    bin 40-59: token_id_yes=4974737834997898547412518
+
+== 5. Verificar mercado_activo.json actualizado ==
+
+== 6. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 19:12:39 UTC; 5s ago
+   Main PID: 1556935 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 12.0M (peak: 12.0M)
+        CPU: 3.210s
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 7. Verificar log ==
+Sep 12 19:12:39 bot-poly python3[1556935]: [2026-09-12 19:12:39] 🤖 BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min, modo=real)
+Sep 12 19:12:39 bot-poly python3[1556935]: [2026-09-12 19:12:39] ════════════════════════════════════════════
+Sep 12 19:12:39 bot-poly python3[1556935]: [2026-09-12 19:12:39] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 19:12:39 bot-poly python3[1556935]: [2026-09-12 19:12:39] ════════════════════════════════════════════
+Sep 12 19:12:39 bot-poly python3[1556935]: [2026-09-12 19:12:39] 📊 AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44] 📈 2 mercados semanales abiertos
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44] 💰 saldo=$228.45  paso=1  activa=no
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]   🎯 Elon Musk # tweets September 8 - September 15, 202 | bin 120-139 | YES @ 0.045 (cuota 22.22/1.05)
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]      EV=+12.536 | ventaja 56%pp
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]   🎯 Elon Musk # tweets September 11 - September 18, 20 | bin 120-139 | YES @ 0.057 (cuota 17.54/1.06)
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]      EV=+9.686 | ventaja 55%pp
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]
+Sep 12 19:12:44 bot-poly python3[1556935]: 🚀 Mejor señal: Elon Musk # tweets September 8 - September 15, 202
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]    bin 120-139 YES EV=+12.536
+Sep 12 19:12:44 bot-poly python3[1556935]: [2026-09-12 19:12:44]    💵 stake=$3.3  paso=1
