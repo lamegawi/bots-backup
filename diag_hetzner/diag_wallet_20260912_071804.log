@@ -1,0 +1,107 @@
+=== DIAG WALLET Y SALDO REAL — 20260912_071804 UTC ===
+
+== 1. ¿Qué wallet usa CADA bot? ==
+--- bot Elon ---
+/opt/polymarket/bot-polymarket-elon/operar_real.py:        "wallet_private_key": os.environ.get("POLY_PRIVATE_KEY", ""),
+/opt/polymarket/bot-polymarket-elon/operar_real.py:        "wallet_address": os.environ.get("POLY_WALLET_ADDRESS", ""),
+/opt/polymarket/bot-polymarket-elon/operar_real.py:        "relayer_api_key_address": os.environ.get("POLY_RELAYER_API_KEY_ADDRESS", ""),
+/opt/polymarket/bot-polymarket-elon/operar_real.py:    wallet), el firmante y el dueño de los fondos son distintos. Hay que
+/opt/polymarket/bot-polymarket-elon/operar_real.py:    usa POLY_PROXY cuando hay wallet_address (funder); puedes forzarlo
+/opt/polymarket/bot-polymarket-elon/operar_real.py:    signer = (cfg.get("wallet_private_key") or "").strip()
+/opt/polymarket/bot-polymarket-elon/operar_real.py:                 "wallet_private_key (la clave privada exportada en "
+/opt/polymarket/bot-polymarket-elon/operar_real.py:    wallet = (cfg.get("wallet_address") or cfg.get("funder_address") or "").strip()
+/opt/polymarket/bot-polymarket-elon/operar_real.py:    if wallet:
+/opt/polymarket/bot-polymarket-elon/operar_real.py:        kwargs["funder"] = wallet
+
+--- bot Zelenskyy ---
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:    campos = ["wallet_private_key", "wallet_address", "relayer_api_key",
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:              "relayer_api_key_address", "api_key", "api_secret",
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:        elif k in ("wallet_private_key", "api_secret", "relayer_api_key"):
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:    if not cfg.get("wallet_private_key"):
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:        print("\n❌ Falta wallet_private_key. Revisa config_real.json (debe ser un JSON válido).")
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:    if not cfg.get("wallet_address"):
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:        print("\n⚠️ Falta wallet_address: pon la dirección 0x... de tu perfil de Polymarket.")
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:        addr = client.get_address()
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:        wa = cfg.get("wallet_address", "")
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:            print("   ✅ Coincide con wallet_address: firma correcta para esta cuenta.")
+
+--- bot Trump ---
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:    campos = ["wallet_private_key", "wallet_address", "relayer_api_key",
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:              "relayer_api_key_address", "api_key", "api_secret",
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:        elif k in ("wallet_private_key", "api_secret", "relayer_api_key"):
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:    if not cfg.get("wallet_private_key"):
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:        print("\n❌ Falta wallet_private_key. Revisa config_real.json (debe ser un JSON válido).")
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:    if not cfg.get("wallet_address"):
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:        print("\n⚠️ Falta wallet_address: pon la dirección 0x... de tu perfil de Polymarket.")
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:        addr = client.get_address()
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:        wa = cfg.get("wallet_address", "")
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:            print("   ✅ Coincide con wallet_address: firma correcta para esta cuenta.")
+
+== 2. ¿Qué wallets hay en /opt/polymarket/.polymarket/ ? ==
+
+== 3. ¿Hay claves privadas? ==
+
+== 4. Buscar wallet address en TODOS los archivos ==
+                0x000000f411f2ac2eb971a267b80297ba67c322dba4bb21cec8b70073bf88fc1ca5fde3ba09e5df6d39acb2c0762c03d7bc224a3e197feaf760d6324006fe3be9a548c7d5,
+                0x00000144b7770963c63a39248865ff36b074151eac33549b224af5c8664c54012b818ed037b2b7c1a63ac89ebaa11e07db89fcee5b556e49764ee3fa66ea7ae61ac01823,
+                0x000001d5c693f66c08ed03ad0f031f937443458f601fd098d3d0227b4bf62873af50740b0bb84aa157fc847bcf8dc16a8b2b8bfd8e2d0a7d39af04b089930ef6dad5c1b4,
+                0x000001fdf842769c707c93c630df6d02eff399a06f1b36fb9684f0b373ed064889629abb92b1ae328fdb45534268384943f0e9222afe03259b32274d35d1b9584c65e305,
+    "0x005f267db689efa57eefb4d391d0fed46c5b295bd77bd78285307d46ee4d3271": [
+            ...                 "0x0100000000000000000000000000000000000000000000000000000000000000",
+    "0x01ca20b3656a55689ee302c482b703865fcb5c5cf1807a9629a999431ed6b310": [
+            "0x02ca1d1aa31103804173ad1acd70066cb6c1258a4be6dada055111f9a7ea4e55"
+    "0x04085211a9f50bee7036cb2b8552b86990ffdca169cf461942f7b8bc1709f40e": [
+    "0x065d9dd17c032b2f1263689781175b47ccd0a601f0cb3fc00b8d65c2d7f426d3": [
+    "0x0749295975b4afadda3c3d69a8ef2a755a0c4474cc875cdbad0798c9825349f5": [
+    "0x07523881adf6be752d11583d75772571de9964ec84d5866c27c0a08d8973ac48": [
+    "0x0883ec95c8a03d0a903017062a70947505d8ebd8922113f180b55518ae90d1df": [
+    "0x0ad0b6ad1e8a14876ca690c0f79acf703cb832d12f0ea70822f5be8f4a85efa8": [
+    "0x0b9d6b11bd372136b6ae0a6358b3d5547eb2b29397d4a4e3093238d84aac0f71": [
+    "0x0bf5cb76bab75ed620f5c8eec4dad8101f6fb9f5ed2ca89783f84661f1a2e022": [
+    "0x0fb57467745754243f06d71eb772d8a27609070f89cbf51f7fc552b2ce9e4f86": [
+    (0x1000000000000000000000000000000014def9dea2f79cd65812631a5cf5d3ed + 1, 9),
+    (0x10101, 0x113bb172c9dc52ab45bd665dd9751ed44e33b8596f943c6cb2f8dd329160ece802960b3eb0d2c21ef3a3ac12c20fccbc2a271fc2f061c1b2),
+    (0x10101, 0xa679e9d7e043bf76c03362576e2c88abe9093c5d4f6b4a202c64a8397467cf),
+
+== 5. Probar otras wallets con el data-api ==
+wallets encontradas: 425
+  0xb0E148FEb4bE59fD617c8Ad6ce5Cf2b5f0BB2Ae1: $0
+  0xb0E1197098E6d427c01720F1631cAD24CE740FA0: $25.6645
+  0xb0e1197098e6d427c01720f1631cad24ce740fa0: $25.6645
+  0xe3333700cA9d93003F00f0F71f8515005F6c00Aa: $0
+  0x006f54f7f9a22e0000cc2ab60031000000ae9fef: $0
+  0x4D97DCd97eC945f40cF65F87097ACe5EA0476045: $0
+  0xa1200000d0002264c9a1698e001292d00e1b00af: $37415.8356
+  0xac9930b2ae455a671b62de86876a7e8587825294: $0
+  0x296d4dbb60a05221539fec73e76a96cbfa1c4f8e: $0
+  0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB: $0
+
+== 6. ¿El bot de Trump tiene config_real.json? ==
+{
+  "_comentario": "FLUJO OFICIAL (docs.polymarket.com, cuentas por email): 1) wallet_address = tu dirección 0x... en el perfil de Polymarket. 2) signer_private_key = tu clave privada del firmante, exportada en https://reveal.magic.link/polymarket (¡guardarla en secreto!). 3) relayer_api_key + relayer_api_key_address = opcionales, de Settings > API Keys > Relayer API Keys (te permiten operar sin pagar gas). Las CLOB api_key/secret/passphrase son OPCIONALES: si las dejas vacías, el bot las deriva automáticamente de la clave privada. NUNCA subas este archivo a GitHub.",
+  "api_key": "",
+  "api_secret": "",
+  "api_passphrase": "",
+  "wallet_private_key": "0x_CLAVE_PRIVADA_DEL_FIRMANTE_(reveal.magic.link/polymarket)",
+  "wallet_address": "0x_DIRECCION_DE_TU_CUENTA_(perfil_de_Polymarket)",
+  "relayer_api_key": "",
+  "relayer_api_key_address": "",
+  "bankroll": 500,
+  "fee_pct": 0.0,
+  "signature_type": 1,
+  "confirmado": false
+}
+
+ls: cannot access '/opt/polymarket/bot-polymarket-trump/config_real.json': No such file or directory
+
+== 7. ¿Qué saldo muestra el bot de Zelenskyy? ==
+/opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json
+  real_zelen.json.bak_20260903_194943: saldo=759.96 bankroll=None
+  real_zelen.json.bak_20260822_044155: saldo=476.58 bankroll=None
+  real_zelen.json.bak.20260904_160545: saldo=756.34 bankroll=None
+  config_real.json.example: saldo=None bankroll=None
+  real_zelen.json.bakR: saldo=759.96 bankroll=None
+  real_zelen.json.bakZ: saldo=751.91 bankroll=None
+  papel_semanal.json: saldo=500.0 bankroll=None
+  real_zelen.json.bak.20260904_151757: saldo=759.96 bankroll=None
+  real_zelen.json: saldo=281.19 bankroll=311.39
