@@ -1,0 +1,86 @@
+=== FIX poisson_cdf INT — 20260912_083320 UTC ===
+
+== 1. Backup ==
+
+== 2. Ver poisson_cdf actual ==
+30:def poisson_cdf(k, lam):
+31-    if lam <= 0:
+32-        return 1.0
+33-    s = math.exp(-lam)
+34-    cdf = s
+35-    for i in range(1, k + 1):
+36-        s *= lam / i
+37-        cdf += s
+38-    return clamp(cdf, 0, 1)
+
+== 3. Aplicar fix (int() en k) ==
+  ✅ poisson_cdf fixed
+
+== 4. Verificar ==
+30:def poisson_cdf(k, lam):
+31-    if lam <= 0:
+32-        return 1.0
+33-    k = int(k)  # aceptar floats del JSON
+34-    s = math.exp(-lam)
+35-    cdf = s
+36-    for i in range(1, k + 1):
+37-        s *= lam / i
+38-        cdf += s
+
+== 5. Validar ==
+  ✅ compila
+
+== 6. Test unitario ==
+  p_bin(120, 139, λ=150): 0.1915
+  p_bin(120, 139, λ=150) int: 0.1915
+  decision: ('PASAR', None, 'sin ventaja suficiente')
+
+== 7. Borrar __pycache__ ==
+  ✅ caches borrados
+
+== 8. Probar bot completo ==
+[2026-09-12 08:33:20] 🤖 BOT SEMANAL ELON arrancado (loop=False, intervalo=15 min, modo=real)
+[2026-09-12 08:33:20] ════════════════════════════════════════════
+[2026-09-12 08:33:20] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+[2026-09-12 08:33:20] ════════════════════════════════════════════
+[2026-09-12 08:33:20] 📊 AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
+[2026-09-12 08:33:20] 📈 2 mercados semanales abiertos
+[2026-09-12 08:33:20] 💰 saldo=$228.45  paso=1  activa=no
+[2026-09-12 08:33:20]   🎯 Elon Musk # tweets September 8 - September 15, 202 | bin 120-139 | YES @ 0.043 (cuota 22.99/1.05)
+[2026-09-12 08:33:20]      EV=+13.002 | ventaja 57%pp
+[2026-09-12 08:33:20] ERROR: cannot convert float infinity to integer
+[2026-09-12 08:33:20] Traceback (most recent call last):
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 102, in pasada
+    decision, lado, ev, motivo = evaluar_senal(m, mkt, lo, hi, p_yes, c_yes, c_no)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 52, in evaluar_senal
+    p = senal.p_bin(bin_lo, bin_hi, lam)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/bot-polymarket-elon-semanal/senal.py", line 43, in p_bin
+    return clamp(poisson_cdf(hi, lam) - poisson_cdf(lo - 1, lam), 0, 1)
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/bot-polymarket-elon-semanal/senal.py", line 33, in poisson_cdf
+    k = int(k)  # aceptar floats del JSON
+        ^^^^^^
+OverflowError: cannot convert float infinity to integer
+
+
+== 9. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 08:33:20 UTC; 5s ago
+   Main PID: 1511327 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 6.9M (peak: 7.2M)
+        CPU: 36ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 10. Verificar log ==
+Sep 12 08:33:20 bot-poly python3[1511327]:   File "/opt/polymarket/bot-polymarket-elon-semanal/senal.py", line 43, in p_bin
+Sep 12 08:33:20 bot-poly python3[1511327]:     return clamp(poisson_cdf(hi, lam) - poisson_cdf(lo - 1, lam), 0, 1)
+Sep 12 08:33:20 bot-poly python3[1511327]:                  ^^^^^^^^^^^^^^^^^^^^
+Sep 12 08:33:20 bot-poly python3[1511327]:   File "/opt/polymarket/bot-polymarket-elon-semanal/senal.py", line 33, in poisson_cdf
+Sep 12 08:33:20 bot-poly python3[1511327]:     k = int(k)  # aceptar floats del JSON
+Sep 12 08:33:20 bot-poly python3[1511327]:         ^^^^^^
+Sep 12 08:33:20 bot-poly python3[1511327]: OverflowError: cannot convert float infinity to integer
+Sep 12 08:33:20 bot-poly python3[1511327]: [2026-09-12 08:33:20] Próxima pasada en 15 min…
