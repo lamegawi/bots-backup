@@ -1,0 +1,213 @@
+=== DIAG CIERRES ANTICIPADOS GLOBAL — 20260912_065512 UTC ===
+
+== 1. /opt/polymarket/cierres_anticipados.json ==
+{
+    "cierres": [
+        {
+            "fecha": "2026-08-18",
+            "titulo": "Elon 140-159 (14-21 ago)",
+            "bin": "140-159",
+            "lado": "Yes",
+            "invertido": 6.38,
+            "valor": 10.0,
+            "pnl": 3.62
+        },
+        {
+            "fecha": "2026-08-18",
+            "titulo": "Elon <40 (17-19 ago)",
+            "bin": "0-39",
+            "lado": "Yes",
+            "invertido": 5.97,
+            "valor": 2.74,
+            "pnl": -3.23
+        },
+        {
+            "fecha": "2026-08-18",
+            "titulo": "Elon 100-119 (14-21 ago)",
+            "bin": "100-119",
+            "lado": "Yes",
+            "invertido": 6.26,
+            "valor": 0.85,
+            "pnl": -5.41
+        },
+        {
+            "fecha": "2026-08-18",
+            "titulo": "Elon 740-759 (agosto)",
+            "bin": "740-759",
+            "lado": "Yes",
+            "invertido": 2.0,
+            "valor": 1.05,
+            "pnl": -0.95
+        },
+        {
+            "fecha": "2026-08-18",
+            "titulo": "Elon 660-679 (agosto)",
+            "bin": "660-679",
+            "lado": "Yes",
+            "invertido": 2.47,
+            "valor": 1.86,
+            "pnl": -0.61
+        },
+        {
+            "fecha": "2026-08-21",
+            "titulo": "Will Elon Musk post 90-114 tweets from August 20 to August 22, 2026",
+            "bin": "90-114",
+            "lado": "Yes",
+            "invertido": 7.43,
+            "valor": 10.13,
+            "pnl": 2.7
+        },
+        {
+            "fecha": "2026-08-26",
+            "titulo": "Will Elon Musk post 220-239 tweets from August 25 to September 1, 2026",
+            "bin": "220-239",
+            "lado": "Yes",
+            "invertido": 8.0,
+            "valor": 8.25,
+            "pnl": 0.25
+        },
+        {
+            "fecha": "2026-08-26",
+            "titulo": "Will Elon Musk post 220-239 tweets from August 25 to September 1, 2026",
+            "bin": "220-239",
+            "lado": "Yes",
+            "invertido": 1.7,
+            "valor": 1.64,
+            "pnl": -0.05
+        },
+        {
+            "fecha": "2026-08-29",
+            "titulo": "Will Elon Musk post 160-179 tweets from August 28 to September 4, 2026",
+            "bin": "160-179",
+            "lado": "Yes",
+            "invertido": 1.08,
+            "valor": 1.05,
+            "pnl": -0.03
+        },
+        {
+            "fecha": "2026-08-29",
+            "titulo": "Will Elon Musk post 120-139 tweets from August 28 to September 4, 2026",
+            "bin": "120-139",
+            "lado": "Yes",
+            "invertido": 0.0,
+            "valor": 5.66,
+            "pnl": 5.66
+        },
+        {
+            "fecha": "2026-08-29",
+            "titulo": "Will Elon Musk post 120-139 tweets from August 28 to September 4, 2026",
+            "bin": "120-139",
+            "lado": "Yes",
+            "invertido": 0.0,
+            "valor": 1.41,
+            "pnl": 1.41
+
+--- resumen ---
+claves: ['cierres']
+  cierres: 91
+
+== 2. bot-polymarket-elon-semanal-v2/ (segundo bot) ==
+total 832
+drwxr-xr-x  5 1000 1000   4096 Aug 30 08:30 .
+drwxr-xr-x 16 1000 1000   4096 Sep 12 06:54 ..
+-rw-r--r--  1 root root    319 Aug 19 10:12 avisos_cooldown.json
+-rw-r--r--  1 root root  13707 Aug 20 07:29 bot_semanal.py
+-rw-r--r--  1 root root 423391 Aug 19 18:30 bot_semanal_v2.log
+-rw-r--r--  1 root root   6394 Aug 17 20:24 chequear_cuenta.py
+-rw-r--r--  1 root root    218 Aug 19 07:32 config.json
+-rw-r--r--  1 root root    942 Aug 17 20:24 config_real.json.example
+-rw-r--r--  1 root root    402 Aug 19 18:29 datos_elon.csv
+drwxr-xr-x  2 root root  28672 Aug 19 18:29 datos_raw
+-rw-r--r--  1 root root   3021 Aug 17 20:24 diagnostico.py
+-rw-r--r--  1 root root     35 Aug 19 04:03 estado_bot_semanal_v2.json
+-rw-r--r--  1 root root  64741 Aug 19 18:29 estado_tweets.json
+-rw-r--r--  1 root root  13000 Aug 17 20:24 excel_historial.py
+drwxr-xr-x  8 root root   4096 Aug 17 20:24 .git
+drwxr-xr-x  3 root root   4096 Aug 17 20:24 .github
+-rw-r--r--  1 root root    287 Aug 17 20:24 .gitignore
+-rw-r--r--  1 root root   8301 Aug 19 18:30 Historial_Operaciones_Semanal_V2.xlsx
+-rw-r--r--  1 root root  35422 Aug 19 18:30 mercado_activo.json
+
+== 2.1. ¿tiene real.json? ==
+ls: cannot access '/opt/polymarket/bot-polymarket-elon-semanal-v2/real.json': No such file or directory
+[ERROR] [Errno 2] No such file or directory: '/opt/polymarket/bot-polymarket-elon-semanal-v2/real.json'
+
+== 3. ¿Qué hay en poly_overreaction_bot/data/spike_queue.json (120-139)? ==
+{
+  "pending": [
+    {
+      "market_id": "0xd6462ce5f423e1971d54ab48b405a5489d32615b7a1c8c7eceb303736c138ba5",
+      "question": "Spread: KKS Lech Pozna\u0144 (-1.5)",
+      "yes_token_id": "52660019938401718328108270437218750028911571000700625727062525417847380739954",
+      "no_token_id": "16280843169298832569490643220963294502710356529630615817543988814196952198128",
+      "end_date": "2026-09-17T19:00:00Z",
+      "spike_detected_at": 1789191782.126478,
+      "evaluate_at": 1789197182.126478,
+      "reference_price": 0.0653,
+      "spike_price": 0.055,
+      "change_pct": -0.1571,
+      "direction": "DOWN"
+    },
+    {
+      "market_id": "0xd91e874029d4d084803ed75d8979e3a3d161f1760132031c7cd58dbbf7a36853",
+      "question": "Exact Score: Al Khaleej Saudi Club 3 - 2 Al Nassr Saudi Club?",
+      "yes_token_id": "42233577192479455416999005129191993979066311766853969238268270207005852001322",
+      "no_token_id": "37800806633060056138907631420609422357579785438136322730078489525048696768873",
+      "end_date": "2026-09-12T18:00:00Z",
+      "spike_detected_at": 1789192773.77596,
+      "evaluate_at": 1789198173.77596,
+      "reference_price": 0.0089,
+      "spike_price": 0.01,
+      "change_pct": 0.1173,
+      "direction": "UP"
+    },
+    {
+      "market_id": "0xe3cad824f963bd5a7215a46c118c76a88323244339f064de8e25c16b459dd693",
+      "question": "FC S\u00fcdtirol vs. Modena FC 2018: FC S\u00fcdtirol 1st Half O/U 0.5",
+      "yes_token_id": "45927491759498885899845933632658561108921038056594474563611159017258147719254",
+      "no_token_id": "67307813842060246317683962181954140253698354379242387698228843579999581207771",
+      "end_date": "2026-09-12T13:00:00Z",
+      "spike_detected_at": 1789193328.699675,
+      "evaluate_at": 1789198728.699675,
+      "reference_price": 0.3848,
+      "spike_price": 0.425,
+      "change_pct": 0.1046,
+      "direction": "UP"
+    },
+    {
+      "market_id": "0xc21b1de46743918b5e2b817f54a78e9d05cd2a83c8a2a3e7694ca3c2f7df9cf2",
+      "quest
+
+== 4. ¿Hay logs de CLOB en bot.log? ==
+
+== 5. ¿Último log del bot? ==
+[2026-09-12 02:45:48 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-12 02:45:48 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-12 02:45:48 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-12 02:45:48 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-12 02:45:52 EDT]       · nitter: 20 items
+[2026-09-12 02:45:52 EDT]       · tweets únicos: 770 (reposts 476) · CSV: 48 días (nuevos/mejorados: 0)
+[2026-09-12 02:45:52 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-12 02:46:09 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-12 02:46:09 EDT] 3/5 · Trading REAL…
+[2026-09-12 02:46:09 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-12 02:46:09 EDT] 4/5 · Estado:
+[2026-09-12 02:46:09 EDT] Pasada completada en 22.4 s
+[2026-09-12 02:46:09 EDT] Próxima pasada en 5 min…
+[2026-09-12 02:51:09 EDT] ==============================================================
+[2026-09-12 02:51:09 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-12 02:51:09 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-12 02:51:09 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-12 02:51:11 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-12 02:51:11 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-12 02:52:14 EDT]       · jina-tw: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-09-12 02:52:14 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-12 02:52:18 EDT]       · nitter: 20 items
+[2026-09-12 02:52:18 EDT]       · tweets únicos: 771 (reposts 477) · CSV: 48 días (nuevos/mejorados: 0)
+[2026-09-12 02:52:18 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-12 02:52:35 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+[2026-09-12 02:52:35 EDT] 3/5 · Trading REAL…
+[2026-09-12 02:52:35 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-12 02:52:35 EDT] 4/5 · Estado:
+[2026-09-12 02:52:35 EDT] Pasada completada en 86.4 s
+[2026-09-12 02:52:35 EDT] Próxima pasada en 5 min…
