@@ -1,0 +1,102 @@
+=== DIAGNÓSTICO PROXY TODOS LOS BOTS — 20260912_194652 UTC ===
+
+== 1. Servicios activos ==
+  poly-elon: active
+  poly-elon-semanal: active
+  poly-zelenskyy: active
+  poly-trump: active
+
+== 2. Archivos /etc/default/poly-* ==
+--- /etc/default/poly-elon-semanal ---
+
+--- /etc/default/poly-trump ---
+
+--- /etc/default/poly-zelenskyy ---
+
+--- /etc/polymarket.env ---
+HTTP_PROXY=http://100.83.57.99:8888
+HTTPS_PROXY=http://100.83.57.99:8888
+ALL_PROXY=http://100.83.57.99:8888
+NO_PROXY=localhost,127.0.0.1,api.telegram.org,ntfy.sh
+
+
+== 3. Servicios systemd: EnvironmentFile ==
+--- poly-elon.service ---
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+
+--- poly-elon-semanal.service ---
+EnvironmentFile=/etc/default/poly-elon-semanal
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+--- poly-zelenskyy.service ---
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+
+--- poly-trump.service ---
+EnvironmentFile=/etc/default/poly-trump
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+
+== 4. Variables de entorno de CADA bot activo ==
+--- poly-elon (PID 1498638) ---
+ALL_PROXY=http://100.83.57.99:8888
+HTTP_PROXY=http://100.83.57.99:8888
+HTTPS_PROXY=http://100.83.57.99:8888
+NO_PROXY=localhost,127.0.0.1,api.telegram.org,ntfy.sh
+
+--- poly-elon-semanal (PID 1556935) ---
+
+--- poly-zelenskyy (PID 1506820) ---
+ALL_PROXY=http://100.83.57.99:8888
+HTTP_PROXY=http://100.83.57.99:8888
+HTTPS_PROXY=http://100.83.57.99:8888
+NO_PROXY=localhost,127.0.0.1,api.telegram.org,ntfy.sh
+
+--- poly-trump (PID 1506561) ---
+
+
+== 5. ¿Qué bot fue el primero en tener proxy? (git log /etc/polymarket.env) ==
+fatal: not a git repository (or any of the parent directories): .git
+
+== 6. ¿Cómo Zelenskyy IMPLEMENTA el proxy en su código? ==
+
+== 7. ¿Cómo Elon 48h maneja el proxy? ==
+
+== 8. ¿Cómo bot_semanal.py del semanal Elon maneja el proxy? ==
+
+== 9. ¿py_clob_client usa proxy por defecto? ==
+HTTP_PROXY (env): no
+HTTPS_PROXY (env): no
+⚠️ py_clob_client NO lee variables PROXY automáticamente
+
+== 10. ¿Cómo Zelenskyy firma y envía órdenes? ==
+130:    client = ClobClient(HOST, chain_id=137, key=signer, **kwargs)
+131-    if "creds" not in kwargs:
+132-        try:
+133-            creds = client.derive_api_key()
+--
+551:            resp = client.create_and_post_order(
+552-                OrderArgs(price=c["precio"], size=size_shares,
+553-                          side="BUY", token_id=token_id))
+554-            order_id = resp.get("orderID") or resp.get("order_id")
+--
+829:        resp = client.create_and_post_order(
+830-            OrderArgs(token_id=token_id, price=0.01, size=5, side="BUY"))
+831-        oid = resp.get("orderID") or resp.get("order_id")
+832-        print(f"  ✔ Orden de prueba enviada: {oid}")
+--
+910:        resp = client.create_and_post_order(
+911-            OrderArgs(price=precio_venta, size=size, side="SELL", token_id=token_id))
+912-        order_id = resp.get("orderID") or resp.get("order_id")
+913-        print(f"  [FIXWIN] orden SELL enviada: {order_id}")
+
+== 11. ¿Qué IP ve Polymarket cuando Zelenskyy opera? ==
+  Zelenskyy reporta: IP local en Hetzner = 46.225.146.21
+  IP por proxy = 100.83.57.99 (tu PC)
+
+== 12. ¿Por qué Zelenskyy SÍ envía órdenes pero el semanal no? ==
+  - Zelenskyy tiene /etc/default/poly-zelenskyy apuntando a /etc/polymarket.env
+  - /etc/polymarket.env contiene HTTP_PROXY=...:8888
+  - El bot semanal tiene /etc/default/poly-elon-semanal SIN líneas de proxy
+  - Por eso el semanal va directo a Hetzner (46.225.146.21)
