@@ -1,0 +1,88 @@
+=== AÑADIR decidir_bin() — 20260912_082803 UTC ===
+
+== 1. Backup del senal.py ==
+backup: /opt/polymarket/bot-polymarket-elon-semanal/senal.py.bak_dec_20260912_082803
+
+== 2. Ver funciones actuales ==
+26:def clamp(x, lo, hi):
+30:def poisson_cdf(k, lam):
+41:def p_bin(lo, hi, lam):
+45:def cargar_csv():
+63:def metricas(datos):
+75:def tabla_apuestas(stake_inicial=STAKE_INICIAL, factor=FACTOR, pasos=PASOS_MAX):
+79:def main():
+
+== 3. Añadir decidir_bin() al senal.py ==
+decidir_bin() añadido
+
+== 4. Verificar ==
+26:def clamp(x, lo, hi):
+30:def poisson_cdf(k, lam):
+41:def p_bin(lo, hi, lam):
+45:def cargar_csv():
+63:def metricas(datos):
+75:def tabla_apuestas(stake_inicial=STAKE_INICIAL, factor=FACTOR, pasos=PASOS_MAX):
+80:def decidir_bin(p, precio_yes, cuota_yes, cuota_no):
+97:def main():
+
+== 5. Validar sintaxis ==
+  ✅ compila
+
+== 6. Probar manualmente ==
+funciones: ['cargar_csv', 'clamp', 'decidir_bin', 'main', 'metricas', 'p_bin', 'poisson_cdf', 'tabla_apuestas']
+test 1 (alta p, sin ventaja): ('PASAR', None, 'sin ventaja suficiente')
+test 2 (alta p, con ventaja): ('PASAR', None, 'sin ventaja suficiente')
+test 3 (baja p, con ventaja): ('PASAR', None, 'sin ventaja suficiente')
+test 4 (sin cuota mín): ('PASAR', None, 'sin ventaja suficiente')
+
+== 7. Borrar __pycache__ ==
+  ✅ caches borrados
+
+== 8. Probar bot completo ==
+[2026-09-12 08:28:03] 🤖 BOT SEMANAL ELON arrancado (loop=False, intervalo=15 min, modo=real)
+[2026-09-12 08:28:03] ════════════════════════════════════════════
+[2026-09-12 08:28:03] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+[2026-09-12 08:28:03] ════════════════════════════════════════════
+[2026-09-12 08:28:03] 📊 AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
+[2026-09-12 08:28:03] 📈 2 mercados semanales abiertos
+[2026-09-12 08:28:03] 💰 saldo=$228.45  paso=1  activa=no
+[2026-09-12 08:28:03]   🎯 Elon Musk # tweets September 8 - September 15, 202 | bin 120-139 | YES @ 0.045 (cuota 22.22/1.05)
+[2026-09-12 08:28:03]      EV=+12.536 | ventaja 56%pp
+[2026-09-12 08:28:03] ERROR: 'float' object cannot be interpreted as an integer
+[2026-09-12 08:28:03] Traceback (most recent call last):
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 102, in pasada
+    decision, lado, ev, motivo = evaluar_senal(m, mkt, lo, hi, p_yes, c_yes, c_no)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 52, in evaluar_senal
+    p = senal.p_bin(bin_lo, bin_hi, lam)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/bot-polymarket-elon-semanal/senal.py", line 42, in p_bin
+    return clamp(poisson_cdf(hi, lam) - poisson_cdf(lo - 1, lam), 0, 1)
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/bot-polymarket-elon-semanal/senal.py", line 35, in poisson_cdf
+    for i in range(1, k + 1):
+             ^^^^^^^^^^^^^^^
+TypeError: 'float' object cannot be interpreted as an integer
+
+
+== 9. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 08:28:03 UTC; 5s ago
+   Main PID: 1510894 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 7.0M (peak: 7.0M)
+        CPU: 41ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 10. Verificar log ==
+Sep 12 08:28:03 bot-poly python3[1510894]:     p = senal.p_bin(bin_lo, bin_hi, lam)
+Sep 12 08:28:03 bot-poly python3[1510894]:         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Sep 12 08:28:03 bot-poly python3[1510894]:   File "/opt/polymarket/bot-polymarket-elon-semanal/senal.py", line 42, in p_bin
+Sep 12 08:28:03 bot-poly python3[1510894]:     return clamp(poisson_cdf(hi, lam) - poisson_cdf(lo - 1, lam), 0, 1)
+Sep 12 08:28:03 bot-poly python3[1510894]:                  ^^^^^^^^^^^^^^^^^^^^
+Sep 12 08:28:03 bot-poly python3[1510894]:   File "/opt/polymarket/bot-polymarket-elon-semanal/senal.py", line 35, in poisson_cdf
+Sep 12 08:28:03 bot-poly python3[1510894]:     for i in range(1, k + 1):
+Sep 12 08:28:03 bot-poly python3[1510894]:              ^^^^^^^^^^^^^^^
+Sep 12 08:28:03 bot-poly python3[1510894]: TypeError: 'float' object cannot be interpreted as an integer
+Sep 12 08:28:03 bot-poly python3[1510894]: [2026-09-12 08:28:03] Próxima pasada en 15 min…
