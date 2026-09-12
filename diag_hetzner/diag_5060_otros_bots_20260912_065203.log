@@ -1,0 +1,61 @@
+=== BUSCAR 5060 EN TODOS LOS BOTS — 20260912_065203 UTC ===
+
+== 1. Bot Zelenskyy ==
+[ERROR] [Errno 2] No such file or directory: 'real.json'
+
+== 2. Bot Trump ==
+[ERROR] [Errno 2] No such file or directory: 'real.json'
+
+== 3. grep 5060 en TODO el árbol ==
+/opt/polymarket/poly_overreaction_bot/data/spike_queue.json:      "question": "Will Zelenskyy post 120-139 posts from September 15 to September 22, 2026?",
+/opt/polymarket/poly_overreaction_bot/data/spike_queue.json:      "no_token_id": "33803345747318947506093476411836192566541461980050489758057625901562589201203",
+/opt/polymarket/poly_overreaction_bot/logs/bot.log:06:48:01 │ INFO     │ 📈 SPIKE: Will Zelenskyy post 120-139 posts from September 1... | +28.0% | 0.125 → 0.160
+/opt/polymarket/bot-polymarket-elon-semanal-v2/mercado_activo.json:     "titulo": "120-139",
+/opt/polymarket/bot-polymarket-elon-semanal-v2/mercado_activo.json:     "titulo": "120-139",
+/opt/polymarket/bot-polymarket-elon-semanal-v2/mercado_activo.json:     "titulo": "120-139",
+/opt/polymarket/bot-polymarket-elon-semanal-v2/mercado_activo.json:     "titulo": "120-139",
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/py_ecc/secp256k1/secp256k1.py:Gx = 55066263022277343669578718895168534326250603453777594175500187360389116729240
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/py_ecc/bls12_381/bls12_381_curve.py:            1985150602287291935568054521177171638300868978215655730859378665066344726373823718423869104263333984641494340347905,  # noqa: E501
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/py_ecc/optimized_bls12_381/optimized_curve.py:            1985150602287291935568054521177171638300868978215655730859378665066344726373823718423869104263333984641494340347905,  # noqa: E501
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/eth_account/typed_transactions/blob_transactions/kzg_trusted_setup.txt:a0313eeadd39c720c9c27b3d671215331ab8d0a794e71e7e690f06bcd87722b531d6525060c358f35f5705dbb7109ccb
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/eth_account/typed_transactions/blob_transactions/kzg_trusted_setup.txt:ab6223dca8bd6a4f969e21ccd9f8106fc5251d321f9e90cc42cea2424b3a9c4e5060a47eeef6b23c7976109b548498e8
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/eth_account/typed_transactions/blob_transactions/kzg_trusted_setup.txt:90ce664f5e4628a02278f5cf5060d1a34f123854634b1870906e5723ac9afd044d48289be283b267d45fcbf3f4656aaf
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/eth_account/typed_transactions/blob_transactions/kzg_trusted_setup.txt:b9cf00f8fb5e2ef2b836659fece15e735060b2ea39b8e901d3dcbdcf612be8bf82d013833718c04cd46ffaa70b85f42e
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/eth_account/typed_transactions/blob_transactions/kzg_trusted_setup.txt:9495639e3939fad2a3df00a88603a5a180f3c3a0fe4d424c35060e2043e0921788003689887b1ed5be424d9a89bb18bb
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/eth_account/typed_transactions/blob_transactions/kzg_trusted_setup.txt:82f69c06209c28f64874e850601dda56af44ffc864f42efa8f9c6a0758207bf0a00f583840982dec0a517ab899a98e5b
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/eth_account/typed_transactions/blob_transactions/kzg_trusted_setup.txt:802c5b13f22be7be0e5db11eb3be0f0ea7f9182c932265060ba05fba20ea093dd2810d3b969ee3e387e60fe6ee834e8d
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/eth_account/typed_transactions/blob_transactions/kzg_trusted_setup.txt:a0a6945bbede3bb09a4a09ef27baa20619d3e15af5673b9350601bcebe952597c989870746cf75767ffb73b32c6c9c6f
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/certifi/cacert.pem:# Serial: 10572350602393338211
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/certifi/cacert.pem:# Serial: 582948710642506000014504
+
+== 4. ¿Hay un archivo de órdenes pendientes? ==
+/opt/polymarket/poly_overreaction_bot/data/spike_queue.json
+/opt/polymarket/combos_estado.json
+/opt/polymarket/bot-polymarket-elon-mensual/mercado_activo.json
+/opt/polymarket/combos_estado.pre_v1284_20260911_220408.json
+/opt/polymarket/combos_estado.pre_v1283_20260911_211948.json
+/opt/polymarket/cierres_anticipados.json
+/opt/polymarket/combos_estado.pre_v1290_20260912_061634.json
+/opt/polymarket/bot-polymarket-elon/polymarket_oficial.json
+/opt/polymarket/bot-polymarket-elon/mercado_activo.json
+/opt/polymarket/combos_estado.bak.json
+
+== 5. ¿Qué hay en avisos_cooldown.json? ==
+{
+ "error_general": 1789182967.4400835,
+ "casi_Elon Musk # tweets August 8 - August 10,": 1786356241.233011,
+ "casi_Elon Musk # tweets August 13 - August 15": 1786787683.720911,
+ "casi_Elon Musk # tweets August 15 - August 17": 1786856615.9866416,
+ "casi_Elon Musk # tweets August 17 - August 19": 1787115600.5449479,
+ "casi_Elon Musk # tweets August 20 - August 22": 1787263373.1766832,
+ "casi_Elon Musk # tweets August 22 - August 24": 1787456483.9448962,
+ "casi_Elon Musk # tweets August 24 - August 26": 1787594114.3788767,
+ "casi_Elon Musk # tweets August 27 - August 29": 1787885578.6139889,
+ "casi_Elon Musk # tweets August 29 - August 31": 1788176388.8254972,
+ "casi_Elon Musk # tweets August 31 - September": 1788350216.745332,
+ "casi_Elon Musk # tweets September 3 - Septemb": 1788529868.942558,
+ "casi_Elon Musk # tweets September 5 - Septemb": 1788658701.3741605,
+ "casi_Elon Musk # tweets September 10 - Septem": 1789083907.4162748
+}
+== 6. ¿La wallet aparece en trades de CLOB públicos? ==
+trades: 0
