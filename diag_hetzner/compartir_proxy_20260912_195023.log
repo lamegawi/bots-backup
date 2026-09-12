@@ -1,0 +1,94 @@
+=== COMPARTIR PROXY ENV — 20260912_195023 UTC ===
+
+== 1. Backup de los .service ==
+total 16
+drwxr-xr-x  2 root root 4096 Sep 12 19:50 .
+drwxr-xr-x 27 root root 4096 Sep 12 19:50 ..
+-rw-r--r--  1 root root  470 Sep 12 19:50 poly-elon-semanal.service.bak_20260912_195023
+-rw-r--r--  1 root root  430 Sep 12 19:50 poly-trump.service.bak_20260912_195023
+
+== 2. Modificar poly-elon-semanal.service ==
+  modificado
+[Unit]
+Description=Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon-semanal
+EnvironmentFile=/etc/polymarket.env
+EnvironmentFile=-/etc/default/poly-elon-semanal
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+== 3. Modificar poly-trump.service ==
+  modificado
+[Unit]
+Description=Bot Polymarket Trump Truth Social posts
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=/etc/polymarket.env
+EnvironmentFile=-/etc/default/poly-trump
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-trump
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+== 4. Recargar systemd ==
+
+== 5. Reiniciar los 2 servicios ==
+
+== 6. Verificar que tienen proxy ==
+--- poly-elon-semanal (PID 1560914) ---
+ALL_PROXY=http://100.83.57.99:8888
+HTTP_PROXY=http://100.83.57.99:8888
+HTTPS_PROXY=http://100.83.57.99:8888
+--- poly-trump (PID 1560927) ---
+ALL_PROXY=http://100.83.57.99:8888
+HTTP_PROXY=http://100.83.57.99:8888
+HTTPS_PROXY=http://100.83.57.99:8888
+
+== 7. Probar bot semanal con proxy ==
+[2026-09-12 19:50:29] 🤖 BOT SEMANAL ELON arrancado (loop=False, intervalo=15 min, modo=real)
+[2026-09-12 19:50:29] ════════════════════════════════════════════
+[2026-09-12 19:50:29] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+[2026-09-12 19:50:29] ════════════════════════════════════════════
+[2026-09-12 19:50:29] 📊 AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
+[2026-09-12 19:50:34] 📈 2 mercados semanales abiertos
+[2026-09-12 19:50:34] 💰 saldo=$228.45  paso=1  activa=no
+[2026-09-12 19:50:34]   🎯 Elon Musk # tweets September 8 - September 15, 202 | bin 120-139 | YES @ 0.048 (cuota 21.05/1.05)
+[2026-09-12 19:50:34]      EV=+11.823 | ventaja 56%pp
+[2026-09-12 19:50:34]   🎯 Elon Musk # tweets September 11 - September 18, 20 | bin 120-139 | YES @ 0.063 (cuota 15.87/1.07)
+[2026-09-12 19:50:34]      EV=+8.668 | ventaja 55%pp
+[2026-09-12 19:50:34] 
+🚀 Mejor señal: Elon Musk # tweets September 8 - September 15, 202
+[2026-09-12 19:50:34]    bin 120-139 YES EV=+11.823
+[2026-09-12 19:50:34]    💵 stake=$3.3  paso=1
+[2026-09-12 19:50:35]    ⚠️ py_clob_client no disponible
+[2026-09-12 19:50:35]    💡 registrando señal en historial sin ejecutar
+[2026-09-12 19:50:35] ════════════════════════════════════════════
+[2026-09-12 19:50:35] Pasada completada
+
+== 8. Resumen ==
+  poly-elon-semanal.service: ahora usa /etc/polymarket.env (con proxy)
+  poly-trump.service: ahora usa /etc/polymarket.env (con proxy)
+  Backups guardados en /etc/systemd/system/backups/
+
+  ⚠️  Para que funcione realmente, proxy_pc.py debe estar corriendo en 100.83.57.99:8888
