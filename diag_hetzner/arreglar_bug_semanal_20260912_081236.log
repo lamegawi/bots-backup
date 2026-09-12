@@ -1,0 +1,71 @@
+=== ARREGLAR BUG BOT SEMANAL ELON — 20260912_081236 UTC ===
+
+== 1. Estado actual del bot_semanal.py ==
+46:def cargar_csv():
+90:    datos = cargar_csv()
+
+== 2. Bug ==
+  bot_semanal.py llama: senal.cargar_csv()
+  senal.py define:      def cargar_csv(path=None):
+  → falta argumento
+
+== 3. Corregir bot_semanal.py (sustituir cargar_csv() por cargar_csv(CSV_PATH)) ==
+cambio aplicado:
+40:    datos = senal.cargar_csv(senal.CSV_PATH)
+
+== 4. Validar sintaxis ==
+  ✅ senal.py compila
+  ✅ bot_semanal.py compila
+
+== 5. Probar manualmente ==
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+TypeError: cargar_csv() takes 0 positional arguments but 1 was given
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 114, in apport_excepthook
+    report["ExecutableTimestamp"] = str(int(os.stat(binary).st_mtime))
+                                            ^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/polymarket/bot-polymarket-elon-semanal/-c'
+
+Original exception was:
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+TypeError: cargar_csv() takes 0 positional arguments but 1 was given
+
+== 6. Reiniciar servicio para que tome el cambio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 08:12:36 UTC; 5s ago
+   Main PID: 1509810 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 5.5M (peak: 5.6M)
+        CPU: 30ms
+     CGroup: /system.slice/poly-elon-semanal.service
+             └─1509810 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+
+== 7. Verificar log tras reinicio ==
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] ════════════════════════════════════════════
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] ════════════════════════════════════════════
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] ERROR: cargar_csv() missing 1 required positional argument: 'path'
+Sep 12 08:10:41 bot-poly python3[1509612]: [2026-09-12 08:10:41] Próxima pasada en 15 min…
+Sep 12 08:12:36 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 12 08:12:36 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 12 08:12:36 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 08:12:36 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 08:12:36 bot-poly python3[1509810]: [2026-09-12 08:12:36] 🤖 BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+Sep 12 08:12:36 bot-poly python3[1509810]: [2026-09-12 08:12:36] ════════════════════════════════════════════
+Sep 12 08:12:36 bot-poly python3[1509810]: [2026-09-12 08:12:36] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 08:12:36 bot-poly python3[1509810]: [2026-09-12 08:12:36] ════════════════════════════════════════════
+Sep 12 08:12:36 bot-poly python3[1509810]: [2026-09-12 08:12:36] ERROR: module 'senal' has no attribute 'CSV_PATH'
+Sep 12 08:12:36 bot-poly python3[1509810]: [2026-09-12 08:12:36] Próxima pasada en 15 min…
+
+== 8. Resumen ==
+  ✅ bot_semanal.py corregido
+  ✅ servicio reiniciado
+  Esperar 15 min a la próxima pasada
