@@ -1,0 +1,72 @@
+=== RESTAURAR Y FIX ADDRESS — 20260912_200845 UTC ===
+
+== 1. Listar backups ==
+-rwxr-xr-x 1 root root 9703 Sep 12 20:06 /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_sign_20260912_200631
+-rwxr-xr-x 1 root root 9586 Sep 12 19:56 /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_imp_20260912_195657
+-rwxr-xr-x 1 root root 3376 Sep 12 08:24 /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_int_20260912_082419
+-rwxr-xr-x 1 root root 2914 Sep 12 08:18 /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_20260912_081838
+
+== 2. Buscar backup SIN syntax error ==
+  backup válido: /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_sign_20260912_200631
+
+== 3. Restaurar backup bueno ==
+  ✅ restaurado desde /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_sign_20260912_200631
+
+== 4. Reescribir bot_semanal.py con fix correcto ==
+  bot_semanal.py reescrito completamente
+
+== 5. Validar ==
+  ✅ compila OK
+
+== 6. Borrar caches ==
+
+== 7. Probar pasada única ==
+  File "/usr/local/lib/python3.12/dist-packages/eth_utils/decorators.py", line 30, in _wrapper
+    return self.method(objtype, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_account/account.py", line 310, in from_key
+    key = self._parse_private_key(private_key)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_utils/decorators.py", line 30, in _wrapper
+    return self.method(objtype, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/eth_account/account.py", line 894, in _parse_private_key
+    hb_key = HexBytes(key)
+             ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/main.py", line 35, in __new__
+    bytesval = to_bytes(val)
+               ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/_utils.py", line 17, in to_bytes
+    return hexstr_to_bytes(val)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/hexbytes/_utils.py", line 54, in hexstr_to_bytes
+    return binascii.unhexlify(ascii_hex)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Non-hexadecimal digit found
+
+[2026-09-12 20:08:51] ════════════════════════════════════════════
+[2026-09-12 20:08:51] Pasada completada
+
+== 8. Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 20:08:51 UTC; 5s ago
+   Main PID: 1563448 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 9.4M (peak: 9.9M)
+        CPU: 823ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 9. Verificar log ==
+Sep 12 20:08:33 bot-poly python3[1563299]:     else:
+Sep 12 20:08:33 bot-poly python3[1563299]:     ^^^^
+Sep 12 20:08:33 bot-poly python3[1563299]: SyntaxError: invalid syntax
+Sep 12 20:08:33 bot-poly systemd[1]: poly-elon-semanal.service: Main process exited, code=exited, status=1/FAILURE
+Sep 12 20:08:33 bot-poly systemd[1]: poly-elon-semanal.service: Failed with result 'exit-code'.
+Sep 12 20:08:51 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:08:51 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 20:08:51 bot-poly python3[1563448]: [2026-09-12 20:08:51] BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+Sep 12 20:08:51 bot-poly python3[1563448]: [2026-09-12 20:08:51] ════════════════════════════════════════════
+Sep 12 20:08:51 bot-poly python3[1563448]: [2026-09-12 20:08:51] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 20:08:51 bot-poly python3[1563448]: [2026-09-12 20:08:51] ════════════════════════════════════════════
+Sep 12 20:08:51 bot-poly python3[1563448]: [2026-09-12 20:08:51] AVG7=20.86  AVG30=27.50  R=0.758  ajuste=0.903
