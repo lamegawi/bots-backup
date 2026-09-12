@@ -1,0 +1,160 @@
+════════════════════════════════════════════
+  DESPLIEGUE BOT SEMANAL ELON — 20260912_080910 UTC
+════════════════════════════════════════════
+
+== 1. Verificar directorio origen Elon ==
+total 6904
+drwxr-xr-x  6 1000 1000    4096 Sep 12 07:42 .
+drwxr-xr-x 17 1000 1000    4096 Sep 12 08:08 ..
+
+== 2. Crear directorio del nuevo bot ==
+total 6564
+drwxr-xr-x  6 1000 1000    4096 Sep 12 06:05 .
+drwxr-xr-x 17 1000 1000    4096 Sep 12 08:08 ..
+-rw-r--r--  1 root root     879 Sep 12 05:37 avisos_cooldown.json
+-rw-r--r--  1 root root 5886642 Sep 12 07:08 bot_semanal.log
+-rw-r--r--  1 root root   13696 Aug 20 07:29 bot_semanal.py
+-rw-r--r--  1 root root    6394 Aug 17 20:24 chequear_cuenta.py
+-rw-r--r--  1 root root     218 Aug 19 07:32 config.json
+-rw-r--r--  1 root root     942 Aug 17 20:24 config_real.json.example
+-rw-r--r--  1 root root     698 Sep 12 07:08 datos_elon.csv
+drwxr-xr-x  2 root root  188416 Sep 12 07:08 datos_raw
+-rw-r--r--  1 root root    3021 Aug 17 20:24 diagnostico.py
+-rw-r--r--  1 root root      35 Sep 12 04:02 estado_bot_semanal.json
+-rw-r--r--  1 root root  163835 Sep 12 07:08 estado_tweets.json
+-rw-r--r--  1 root root   13000 Aug 17 20:24 excel_historial.py
+drwxr-xr-x  8 root root    4096 Aug 17 20:24 .git
+drwxr-xr-x  3 root root    4096 Aug 17 20:24 .github
+-rw-r--r--  1 root root     287 Aug 17 20:24 .gitignore
+-rw-r--r--  1 root root    4292 Aug 17 20:24 GUIA_SEMANAL.md
+-rw-r--r--  1 root root   12262 Sep 12 07:08 Historial_Operaciones_Semanal.xlsx
+-rw-r--r--  1 root root   33016 Sep 12 07:08 mercado_activo.json
+-rw-r--r--  1 root root   12721 Aug 17 20:24 mercado_polymarket.py
+-rw-r--r--  1 root root   17542 Aug 18 17:05 notificar.py
+-rw-r--r--  1 root root   12245 Aug 17 20:24 notificar_semanal.py
+-rw-r--r--  1 1000 1000   36105 Aug 19 17:47 operar_real_semanal.py
+-rw-r--r--  1 root root     347 Aug 17 20:24 papel_semanal.json
+-rw-r--r--  1 root root   10137 Aug 17 20:24 papel_semanal.py
+-rw-r--r--  1 root root    4869 Aug 17 20:24 probar_orden_semanal.py
+drwxr-xr-x  2 root root    4096 Sep 12 06:07 __pycache__
+-rw-r--r--  1 root root   15016 Sep 12 07:57 real_semanal.json
+-rw-r--r--  1 root root   22055 Aug 27 15:02 recoger_tweets.py
+-rw-r--r--  1 root root   19480 Aug 26 19:33 recoger_tweets.py.bakT
+-rw-r--r--  1 root root   21923 Aug 26 19:50 recoger_tweets.py.bakT2
+-rw-r--r--  1 root root   21993 Aug 27 15:02 recoger_tweets.py.bakT3
+-rw-r--r--  1 root root    3741 Sep  4 18:09 resultados_real_semanal.csv
+-rw-r--r--  1 root root    4217 Aug 17 20:24 saldo_ntfy.py
+-rw-r--r--  1 root root   20314 Aug 30 13:08 senal.py
+-rw-r--r--  1 root root   13522 Aug 29 08:33 senal.py.bakS
+-rw-r--r--  1 1000 1000   14071 Aug 30 17:35 senal_vivo.py
+-rw-r--r--  1 root root   11766 Aug 19 10:33 senal_vivo.py.bak_20260819103324
+-rw-r--r--  1 root root    3747 Sep 12 07:08 ventanas_vistas.json
+
+== 3. Crear senal.py (basado en Zelenskyy, adaptado para Elon) ==
+-rwxr-xr-x 1 root root 4218 Sep 12 08:09 /opt/polymarket/bot-polymarket-elon-semanal/senal.py
+
+== 4. Crear mercado_polymarket.py (filtra solo tipo='semanal') ==
+
+== 5. Crear bot_semanal.py (loop principal) ==
+total 6528
+drwxr-xr-x  6 1000 1000    4096 Sep 12 06:05 .
+drwxr-xr-x 17 1000 1000    4096 Sep 12 08:08 ..
+-rw-r--r--  1 root root     879 Sep 12 05:37 avisos_cooldown.json
+-rw-r--r--  1 root root 5886642 Sep 12 07:08 bot_semanal.log
+-rwxr-xr-x  1 root root    2900 Sep 12 08:09 bot_semanal.py
+-rw-r--r--  1 root root    6394 Aug 17 20:24 chequear_cuenta.py
+-rw-r--r--  1 root root     218 Aug 19 07:32 config.json
+-rw-r--r--  1 root root     942 Aug 17 20:24 config_real.json.example
+-rw-r--r--  1 root root     698 Sep 12 07:08 datos_elon.csv
+drwxr-xr-x  2 root root  188416 Sep 12 07:08 datos_raw
+-rw-r--r--  1 root root    3021 Aug 17 20:24 diagnostico.py
+-rw-r--r--  1 root root      35 Sep 12 04:02 estado_bot_semanal.json
+-rw-r--r--  1 root root  163835 Sep 12 07:08 estado_tweets.json
+-rw-r--r--  1 root root   13000 Aug 17 20:24 excel_historial.py
+drwxr-xr-x  8 root root    4096 Aug 17 20:24 .git
+drwxr-xr-x  3 root root    4096 Aug 17 20:24 .github
+-rw-r--r--  1 root root     287 Aug 17 20:24 .gitignore
+-rw-r--r--  1 root root    4292 Aug 17 20:24 GUIA_SEMANAL.md
+-rw-r--r--  1 root root   12262 Sep 12 07:08 Historial_Operaciones_Semanal.xlsx
+-rw-r--r--  1 root root   33016 Sep 12 07:08 mercado_activo.json
+-rwxr-xr-x  1 root root    1010 Sep 12 08:09 mercado_polymarket.py
+-rw-r--r--  1 root root   17542 Aug 18 17:05 notificar.py
+-rw-r--r--  1 root root   12245 Aug 17 20:24 notificar_semanal.py
+-rw-r--r--  1 1000 1000   36105 Aug 19 17:47 operar_real_semanal.py
+-rw-r--r--  1 root root     347 Aug 17 20:24 papel_semanal.json
+-rw-r--r--  1 root root   10137 Aug 17 20:24 papel_semanal.py
+-rw-r--r--  1 root root    4869 Aug 17 20:24 probar_orden_semanal.py
+drwxr-xr-x  2 root root    4096 Sep 12 06:07 __pycache__
+-rw-r--r--  1 root root   15016 Sep 12 07:57 real_semanal.json
+-rw-r--r--  1 root root   22055 Aug 27 15:02 recoger_tweets.py
+-rw-r--r--  1 root root   19480 Aug 26 19:33 recoger_tweets.py.bakT
+-rw-r--r--  1 root root   21923 Aug 26 19:50 recoger_tweets.py.bakT2
+-rw-r--r--  1 root root   21993 Aug 27 15:02 recoger_tweets.py.bakT3
+-rw-r--r--  1 root root    3741 Sep  4 18:09 resultados_real_semanal.csv
+-rw-r--r--  1 root root    4217 Aug 17 20:24 saldo_ntfy.py
+-rwxr-xr-x  1 root root    4218 Sep 12 08:09 senal.py
+-rw-r--r--  1 root root   13522 Aug 29 08:33 senal.py.bakS
+-rw-r--r--  1 1000 1000   14071 Aug 30 17:35 senal_vivo.py
+-rw-r--r--  1 root root   11766 Aug 19 10:33 senal_vivo.py.bak_20260819103324
+-rw-r--r--  1 root root    3747 Sep 12 07:08 ventanas_vistas.json
+
+== 6. Crear config.json ==
+config.json creado
+
+== 7. Crear config_real.json ==
+
+== 8. Crear real_semanal.json ==
+-rw------- 1 root root 242 Sep 12 08:09 /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json
+
+== 9. Crear servicio systemd poly-elon-semanal.service ==
+poly-elon-semanal.service creado
+[Unit]
+Description=Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon-semanal
+EnvironmentFile=/etc/default/poly-elon-semanal
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+== 10. Recargar systemd y arrancar ==
+Created symlink /etc/systemd/system/multi-user.target.wants/poly-elon-semanal.service → /etc/systemd/system/poly-elon-semanal.service.
+Job for poly-elon-semanal.service failed because of unavailable resources or another system error.
+See "systemctl status poly-elon-semanal.service" and "journalctl -xeu poly-elon-semanal.service" for details.
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: activating (auto-restart) (Result: resources) since Sat 2026-09-12 08:09:10 UTC; 3s ago
+        CPU: 0
+
+Sep 12 08:09:10 bot-poly systemd[1]: poly-elon-semanal.service: Failed with result 'resources'.
+Sep 12 08:09:10 bot-poly systemd[1]: Failed to start poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+
+== 11. Verificación ==
+
+== 12. Última línea del log ==
+Sep 12 08:09:10 bot-poly systemd[1]: poly-elon-semanal.service: Failed to load environment files: No such file or directory
+Sep 12 08:09:10 bot-poly systemd[1]: poly-elon-semanal.service: Failed to spawn 'start' task: No such file or directory
+Sep 12 08:09:10 bot-poly systemd[1]: poly-elon-semanal.service: Failed with result 'resources'.
+Sep 12 08:09:10 bot-poly systemd[1]: Failed to start poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+
+== 13. Resumen ==
+  ✅ Directorio creado: /opt/polymarket/bot-polymarket-elon-semanal
+  ✅ senal.py (motor Poisson para semanal)
+  ✅ mercado_polymarket.py (filtra solo tipo='semanal')
+  ✅ bot_semanal.py (loop 15 min)
+  ✅ config.json + config_real.json
+  ✅ real_semanal.json (saldo 228.45)
+  ✅ Servicio systemd: poly-elon-semanal.service
+
+  ⚠️  FALTA: /etc/default/poly-elon-semanal con POLY_PRIVATE_KEY
+     (lo crearemos con el script de activación)
