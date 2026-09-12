@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # fix_imports_ejecucion_real.sh — corrige imports de py_clob_client y reintenta
-set -u
 TS=$(date -u +%Y%m%d_%H%M%S)
 LOG=/tmp/fix_imports_${TS}.log
 
