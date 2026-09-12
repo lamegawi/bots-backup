@@ -1,0 +1,93 @@
+=== VERIFICAR SENAL.PY ACTUAL — 20260912_081703 UTC ===
+
+== 1. ¿Qué archivo Python importa el bot? ==
+6:import os
+7:import sys
+8:import json
+9:import time
+10:import argparse
+11:from datetime import datetime, timezone
+
+== 2. Hash y contenido actual de senal.py ==
+1aec47469c9b67d8d98262eeaa441f0d  /opt/polymarket/bot-polymarket-elon-semanal/senal.py
+91 /opt/polymarket/bot-polymarket-elon-semanal/senal.py
+
+== 3. ¿Qué funciones tiene? ==
+11:VENTANA = "semanal"
+12:STAKE_INICIAL = 3.30
+13:FACTOR = 1.40
+14:CUOTA_MINIMA = 3.00
+15:PRECIO_MAX = 0.30
+16:EDGE_MIN = 0.15
+17:P_FLOOR = 0.20
+18:PASOS_MAX = 6
+19:REGLA = "ventaja"
+22:DATA_DIR = "/opt/polymarket/bot-polymarket-elon"
+23:CSV_PATH = os.path.join(DATA_DIR, "datos_elon.csv")
+26:def clamp(x, lo, hi):
+30:def poisson_cdf(k, lam):
+41:def p_bin(lo, hi, lam):
+45:def cargar_csv():
+63:def metricas(datos):
+75:def tabla_apuestas(stake_inicial=STAKE_INICIAL, factor=FACTOR, pasos=PASOS_MAX):
+79:def main():
+
+== 4. ¿Hay otro senal.py en otro sitio? ==
+/opt/polymarket/bot-polymarket-elon-mensual-v2/senal.py
+/opt/polymarket/bot-polymarket-elon-mensual/senal.py
+/opt/polymarket/backup_trump_20260831_201030/senal.py
+/opt/polymarket/bot-polymarket-elon-v2/senal.py
+/opt/polymarket/bot-polymarket-elon/senal.py
+/opt/polymarket/bot-polymarket-elon-semanal/senal.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/senal.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/senal.py
+/opt/polymarket/bot-polymarket-zelenskyy/senal.py
+/opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal-v2/senal.py
+/opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-mensual-v2/senal.py
+/opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-mensual/senal.py
+/opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-v2/senal.py
+/opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon/senal.py
+/opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal/senal.py
+/opt/polymarket/bot-polymarket-trump/senal.py
+
+== 5. ¿sys.path incluye NEW_DIR? ==
+15:sys.path.insert(0, NEW_DIR)
+16:sys.path.insert(0, ELON_DIR)
+
+== 6. ¿Qué ve Python si hace 'import senal' desde NEW_DIR? ==
+sys.path: ['.', '', '/usr/lib/python312.zip']
+senal.__file__: /opt/polymarket/bot-polymarket-elon-semanal/senal.py
+tiene CSV_PATH? True
+dir(senal)[:10]: ['CSV_PATH', 'CUOTA_MINIMA', 'DATA_DIR', 'EDGE_MIN', 'FACTOR', 'PASOS_MAX', 'PRECIO_MAX', 'P_FLOOR', 'REGLA', 'STAKE_INICIAL']
+
+== 7. ¿Qué ve el proceso en ejecución? ==
+PID: 1510016
+  working dir:
+/opt/polymarket/bot-polymarket-elon-semanal
+  binary:
+/usr/bin/python3.12
+  argumentos:
+/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real 
+  entorno PYTHONPATH:
+
+== 8. ¿El servicio sigue vivo? ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 08:15:47 UTC; 1min 15s ago
+   Main PID: 1510016 (python3)
+      Tasks: 1 (limit: 4538)
+
+== 9. Última línea de journal ==
+Sep 12 08:15:47 bot-poly python3[1510016]: [2026-09-12 08:15:47] ════════════════════════════════════════════
+Sep 12 08:15:47 bot-poly python3[1510016]: [2026-09-12 08:15:47] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 08:15:47 bot-poly python3[1510016]: [2026-09-12 08:15:47] ════════════════════════════════════════════
+Sep 12 08:15:47 bot-poly python3[1510016]: [2026-09-12 08:15:47] ERROR: module 'senal' has no attribute 'CSV_PATH'
+Sep 12 08:15:47 bot-poly python3[1510016]: [2026-09-12 08:15:47] Próxima pasada en 15 min…
+
+== 10. Conclusión ==
+  El bot importa 'senal' pero el módulo no tiene 'CSV_PATH'
+  Esto indica que el archivo que se está importando NO es el actual
+  Posibles causas:
+    a) Hay otro senal.py en el path
+    b) El servicio está usando un working directory diferente
+    c) Hay caché en algún sitio
