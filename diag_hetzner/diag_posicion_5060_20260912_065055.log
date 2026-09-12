@@ -1,0 +1,49 @@
+=== DIAG POSICIÓN 5060 — 20260912_065055 UTC ===
+
+== 1. Buscar posición vía Gamma API con wallet ==
+[ERROR gamma] HTTP Error 404: Not Found
+
+== 2. Buscar posición con CLOB API ==
+[ERROR clob] HTTP Error 404: Not Found
+
+== 3. ¿Qué dice bot.log sobre la posición 5060? ==
+
+== 4. Buscar id 7fabd7fc2966 (la única con id real del sept) ==
+
+== 5. Buscar todas las id reales (no 'reconc') ==
+todas las ids:
+  ('9545c5c1841c', '2026-08-18', 'elon-musk-of-tweets-august-17-august-19', '<40', 'YES', 'P')
+  ('reconc', '2026-08-20', 'elon-musk-of-tweets-august-20-august-22', '90-114', 'YES', 'G')
+  ('8c677c997237', '2026-08-22', 'elon-musk-of-tweets-august-22-august-24-2026', '90-114', 'YES', 'P')
+  ('reconc', '2026-08-30', 'elon-musk-of-tweets-august-29-august-31-2026', '<40', 'YES', 'P')
+  ('reconc', '2026-08-30', 'elon-musk-of-tweets-august-29-august-31-2026', '40-64', 'NO', 'P')
+  ('reconc', '2026-09-01', 'elon-musk-of-tweets-august-31-september-2-2026', '40-64', 'NO', 'P')
+  ('7fabd7fc2966', '2026-09-02', 'elon-musk-of-tweets-august-31-september-2-2026', '40-64', 'NO', 'P')
+
+== 6. ¿Hay archivo de trades/orders? ==
+-rw-r--r-- 1 root root    946 Sep 12 03:16 avisos_cooldown.json
+-rw-r--r-- 1 root root    211 Aug 17 20:24 carpeta del bot.txt
+-rw-r--r-- 1 root root    202 Aug 22 04:36 config.json
+-rw-r--r-- 1 root root     35 Aug 22 04:01 estado_bot.json
+-rw-r--r-- 1 root root 164683 Sep 12 06:45 estado_tweets.json
+-rw-r--r-- 1 root root   1383 Aug 17 20:24 fuentes_serie.json
+-rw-r--r-- 1 root root  33015 Sep 12 06:46 mercado_activo.json
+-rw-r--r-- 1 root root    695 Sep 10 20:00 polymarket_oficial.json
+-rw-r--r-- 1 root root   2796 Sep  4 20:45 real.json
+-rw-r--r-- 1 root root   3747 Sep 12 06:46 ventanas_vistas.json
+
+== 7. Buscar en logs del cron ==
+-rw-r--r-- 1 root root  922 Sep 10 20:03 /tmp/arreglar_cron_csv_20260910_200307.log
+-rw-r--r-- 1 root root 1081 Sep 10 19:45 /tmp/instalar_cron_20260910_194536.log
+-rw-r--r-- 1 root root  3426 Sep 10 17:37 /tmp/scraper_tweets_pm_20260910_173653.log
+-rw-r--r-- 1 root root  3569 Sep 10 17:40 /tmp/scraper_tweets_pm_20260910_174015.log
+-rw-r--r-- 1 root root  3569 Sep 10 17:43 /tmp/scraper_tweets_pm_20260910_174232.log
+-rw-r--r-- 1 root root   918 Sep 10 15:26 /tmp/senal_detalle_20260910_152627.log
+-rw-r--r-- 1 root root   918 Sep 10 15:30 /tmp/senal_detalle_20260910_153020.log
+-rw-r--r-- 1 root root  5069 Sep 10 17:51 /tmp/verificar_elon_20260910_175117.log
+-rw-r--r-- 1 root root  2622 Sep 10 18:14 /tmp/verificar_tweets_20260910_181437.log
+-rw-r--r-- 1 root root  1106 Sep 10 16:31 /tmp/volcar_estado_20260910_163144.log
+-rw-r--r-- 1 root root  1152 Sep 10 16:34 /tmp/volcar_estado_20260910_163433.log
+-rw-r--r-- 1 root root  1881 Sep 10 16:38 /tmp/volcar_estado_20260910_163807.log
+
+== 8. ¿Algún log con 'compra' en sept 4-11? ==
