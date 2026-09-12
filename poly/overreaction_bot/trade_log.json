@@ -1,0 +1,100 @@
+{
+  "trades": [
+    {
+      "trade_id": "or_1789168545",
+      "market_id": "0xe3cad824f963bd5a7215a46c118c76a88323244339f064de8e25c16b459dd693",
+      "question": "FC Südtirol vs. Modena FC 2018: FC Südtirol 1st Half O/U 0.5",
+      "side": "YES",
+      "entry_price": 0.35,
+      "size": 25.0,
+      "edge": 0.1864,
+      "spike_change": -0.2133,
+      "end_date": "2026-09-12T13:00:00Z",
+      "status": "open",
+      "timestamp": "2026-09-11 23:15:45 UTC",
+      "dry_run": true
+    },
+    {
+      "trade_id": "or_1789173387",
+      "market_id": "0xd6462ce5f423e1971d54ab48b405a5489d32615b7a1c8c7eceb303736c138ba5",
+      "question": "Spread: KKS Lech Poznań (-1.5)",
+      "side": "NO",
+      "entry_price": 0.935,
+      "size": 25.0,
+      "edge": 0.0833,
+      "spike_change": 0.1538,
+      "end_date": "2026-09-17T19:00:00Z",
+      "status": "open",
+      "timestamp": "2026-09-12 00:36:27 UTC",
+      "dry_run": true
+    },
+    {
+      "trade_id": "or_1789175232",
+      "market_id": "0xaea13df856fafbff1e5d25e4fc4f113e5772184745df20ed1511ce4aea9ac634",
+      "question": "Will the Democratic Party candidate win the 2026 RI-02 House election by 10%-15%?",
+      "side": "YES",
+      "entry_price": 0.145,
+      "size": 25.0,
+      "edge": 0.3182,
+      "spike_change": -0.2308,
+      "end_date": "2026-11-03T12:00:00Z",
+      "status": "open",
+      "timestamp": "2026-09-12 01:07:12 UTC",
+      "dry_run": true
+    },
+    {
+      "trade_id": "or_1789175908",
+      "market_id": "0x8df9304df951fad0dce1762641fa4fba338ea75affacadd1f23d972ff5179133",
+      "question": "New York Mets vs. New York Yankees: O/U 7.5",
+      "side": "NO",
+      "entry_price": 0.26,
+      "size": 25.0,
+      "edge": 0.1345,
+      "spike_change": 0.2574,
+      "end_date": "2026-09-11T23:05:00Z",
+      "status": "lost",
+      "timestamp": "2026-09-12 01:18:28 UTC",
+      "dry_run": true,
+      "pnl": -25.0,
+      "payout": 0,
+      "resolved_at": "2026-09-12 02:06:17 UTC"
+    },
+    {
+      "trade_id": "or_1789176749",
+      "market_id": "0x1ae2205eb38e5da8ddbc4e1c03e50f4da0db890179c3081b50db7034eb794525",
+      "question": "Instituto AC Córdoba vs. AA Estudiantes: O/U 5.5",
+      "side": "NO",
+      "entry_price": 0.555,
+      "size": 25.0,
+      "edge": 0.0825,
+      "spike_change": 0.1466,
+      "end_date": "2026-09-15T00:15:00Z",
+      "status": "open",
+      "timestamp": "2026-09-12 01:32:29 UTC",
+      "dry_run": true
+    },
+    {
+      "trade_id": "or_1789184169",
+      "market_id": "0xc55037d438cbf1cd99052a89a2b245decb196f378022b31db9985cfa2a84272b",
+      "question": "1st Half Spread: Cagliari Calcio (-2.5)",
+      "side": "NO",
+      "entry_price": 0.74,
+      "size": 25.0,
+      "edge": 0.4747,
+      "spike_change": 0.9038,
+      "end_date": "2026-09-19T13:00:00Z",
+      "status": "open",
+      "timestamp": "2026-09-12 03:36:09 UTC",
+      "dry_run": true
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "open": 5,
+    "wins": 0,
+    "losses": 1,
+    "win_rate": 0.0,
+    "total_pnl": -25.0,
+    "total_invested": 150.0
+  }
+}
