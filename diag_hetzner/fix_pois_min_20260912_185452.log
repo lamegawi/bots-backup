@@ -1,0 +1,46 @@
+=== FIX poisson MINIMO — 20260912_185452 UTC ===
+
+== poisson_cdf ANTES ==
+30:def poisson_cdf(k, lam):
+31-    if lam <= 0:
+32-        return 1.0
+33-    k = int(k)  # aceptar floats del JSON
+34-    s = math.exp(-lam)
+35-    cdf = s
+
+poisson_cdf FIXED
+
+== poisson_cdf DESPUES ==
+30:def poisson_cdf(k, lam):
+31-    if lam <= 0:
+32-        return 1.0
+33-    if k is None or (isinstance(k, float) and (k != k or k == float('inf'))): return 1.0
+34-    try: k = int(k)
+35-    except (ValueError, OverflowError): return 1.0
+36-    if k < 0: return 0.0
+37-    if k > 1000: return 1.0
+38-    s = math.exp(-lam)
+39-    cdf = s
+40-    for i in range(1, k + 1):
+41-        s *= lam / i
+42-        cdf += s
+
+compila OK
+test p_bin(120, 139, 150): 0.1915
+test p_bin(120, inf, 150): 0.9949
+test decision: ('PASAR', None, 'sin ventaja suficiente')
+
+== Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 18:54:52 UTC; 3s ago
+   Main PID: 1555015 (python3)
+      Tasks: 1 (limit: 4538)
+
+== Log final ==
+Sep 12 18:54:52 bot-poly python3[1555015]: 🚀 Mejor señal: Elon Musk # tweets September 8 - September 15, 202
+Sep 12 18:54:52 bot-poly python3[1555015]: [2026-09-12 18:54:52]    bin 120-139 YES EV=+15.462
+Sep 12 18:54:52 bot-poly python3[1555015]: [2026-09-12 18:54:52]    ⚠️ sin token_id para YES, saltamos
+Sep 12 18:54:52 bot-poly python3[1555015]: [2026-09-12 18:54:52] ════════════════════════════════════════════
+Sep 12 18:54:52 bot-poly python3[1555015]: [2026-09-12 18:54:52] Pasada completada
+Sep 12 18:54:52 bot-poly python3[1555015]: [2026-09-12 18:54:52] Próxima pasada en 15 min…
