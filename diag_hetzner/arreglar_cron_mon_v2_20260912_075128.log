@@ -1,0 +1,77 @@
+=== ARREGLAR CRON MONITOREO v2 — 20260912_075128 UTC ===
+
+== 1. Crear directorio scripts_despliegue ==
+total 8
+drwxr-xr-x  2 root root 4096 Sep 12 07:51 .
+drwxr-xr-x 17 1000 1000 4096 Sep 12 07:51 ..
+
+== 2. Descargar monitorear_bots.sh ==
+-rwxr-xr-x 1 root root 6545 Sep 12 07:51 /opt/polymarket/scripts_despliegue/monitorear_bots.sh
+
+== 3. Verificar contenido ==
+#!/usr/bin/env bash
+# monitorear_bots.sh — verifica estado de los 3 bots (Elon/Zelenskyy/Trump)
+# Salida compacta para diag-public
+set -u
+TS=$(date -u +%Y%m%d_%H%M%S)
+LOG=/tmp/mon_bots_${TS}.log
+
+WALLET="0xb0E1197098E6d427c01720F1631cAD24CE740FA0"
+
+{
+...
+183 /opt/polymarket/scripts_despliegue/monitorear_bots.sh
+
+== 4. Estado del cron ==
+# Monitoreo cada 5 min de los 3 bots (Elon/Zelenskyy/Trump)
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+*/5 * * * * root /usr/bin/bash /opt/polymarket/scripts_despliegue/monitorear_bots.sh >/dev/null 2>&1
+
+== 5. Reiniciar cron ==
+
+== 6. Probar el script manualmente AHORA ==
+  Elon: sin pasadas en la última hora
+  Zelenskyy: sin pasadas en la última hora
+  Trump: Sep 12 07:46:35
+    [2026-09-12 03:46:35 EDT] Pasada completada en 8.5 s
+
+== ERRORES RECIENTES (1h) ==
+  ✅ elon: sin errores
+  ✅ zelenskyy: sin errores
+  ⚠️ trump: 4 errores
+
+== POSICIONES ABIERTAS (data-api) ==
+  posiciones con valor: 3
+    Will Romeu Zema win the 2026 Brazilian presidentia
+      36 @ avg 0.0828 → cur 0.0015 (pnl 0)
+    2026 Balance of Power: D Senate, D House
+      31 @ avg 0.4899 → cur 0.495 (pnl 0)
+    Will Zelenskyy post 80-99 posts from September 11 
+      5 @ avg 0.3 → cur 0.365 (pnl 0)
+
+== VERIFICACIÓN DE CONSISTENCIA ==
+  ✅ Elon: saldo=$228.45, bankroll=$228.45 (consistente)
+  ✅ Zelenskyy: saldo=$228.45, bankroll=$228.45 (consistente)
+  ✅ Trump: saldo=$228.45, bankroll=$228.45 (consistente)
+
+════════════════════════════════════════════
+  FIN MONITOREO
+════════════════════════════════════════════
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/mon_bots.log'
+
+== 7. Esperar al próximo minuto y verificar ejecución ==
+¡nuevo log creado! /tmp/mon_bots_20260912_075128.log
+
+== 8. Estado final ==
+-rw-r--r-- 1 root root 2064 Sep 12 07:51 /tmp/mon_bots_20260912_075128.log
+-rw-r--r-- 1 root root 2063 Sep 12 07:45 /tmp/mon_bots_20260912_074545.log
+
+== 9. Resumen ==
+  ✅ directorio creado: /opt/polymarket/scripts_despliegue
+  ✅ script copiado
+  ✅ cron reiniciado
+  Esperar hasta 5 min para confirmar ejecución automática
