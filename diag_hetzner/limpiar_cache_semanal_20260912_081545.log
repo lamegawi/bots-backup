@@ -1,0 +1,57 @@
+=== LIMPIAR CACHE BOT SEMANAL ELON — 20260912_081545 UTC ===
+
+== 1. Ver caches __pycache__ ==
+/opt/polymarket/bot-polymarket-elon-semanal/__pycache__
+/opt/polymarket/bot-polymarket-elon-semanal/__pycache__/mercado_polymarket.cpython-312.pyc
+/opt/polymarket/bot-polymarket-elon-semanal/__pycache__/papel_semanal.cpython-312.pyc
+/opt/polymarket/bot-polymarket-elon-semanal/__pycache__/operar_real_semanal.cpython-312.pyc
+/opt/polymarket/bot-polymarket-elon-semanal/__pycache__/saldo_ntfy.cpython-312.pyc
+/opt/polymarket/bot-polymarket-elon-semanal/__pycache__/bot_semanal.cpython-312.pyc
+/opt/polymarket/bot-polymarket-elon-semanal/__pycache__/excel_historial.cpython-312.pyc
+/opt/polymarket/bot-polymarket-elon-semanal/__pycache__/senal.cpython-312.pyc
+/opt/polymarket/bot-polymarket-elon-semanal/__pycache__/recoger_tweets.cpython-312.pyc
+/opt/polymarket/bot-polymarket-elon-semanal/__pycache__/notificar.cpython-312.pyc
+
+== 2. Borrar TODOS los caches ==
+caches borrados
+
+== 3. Verificar que no quedan ==
+
+== 4. Verificar que senal.py tiene CSV_PATH ==
+23:CSV_PATH = os.path.join(DATA_DIR, "datos_elon.csv")
+47:    if not os.path.exists(CSV_PATH):
+51:        with open(CSV_PATH) as f:
+
+== 5. Probar manualmente con import fresh ==
+  CSV_PATH en senal: /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+  cargar_csv() filas: 48
+  ✅ funciona
+
+== 6. Reiniciar servicio (reload completo) ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-12 08:15:47 UTC; 5s ago
+   Main PID: 1510016 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 5.5M (peak: 5.5M)
+        CPU: 46ms
+     CGroup: /system.slice/poly-elon-semanal.service
+             └─1510016 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+
+== 7. Verificar log ==
+Sep 12 08:15:45 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 12 08:15:45 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 12 08:15:45 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 08:15:47 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 12 08:15:47 bot-poly python3[1510016]: [2026-09-12 08:15:47] 🤖 BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+Sep 12 08:15:47 bot-poly python3[1510016]: [2026-09-12 08:15:47] ════════════════════════════════════════════
+Sep 12 08:15:47 bot-poly python3[1510016]: [2026-09-12 08:15:47] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 12 08:15:47 bot-poly python3[1510016]: [2026-09-12 08:15:47] ════════════════════════════════════════════
+Sep 12 08:15:47 bot-poly python3[1510016]: [2026-09-12 08:15:47] ERROR: module 'senal' has no attribute 'CSV_PATH'
+Sep 12 08:15:47 bot-poly python3[1510016]: [2026-09-12 08:15:47] Próxima pasada en 15 min…
+
+== 8. Resumen ==
+  ✅ __pycache__ borrado
+  ✅ *.pyc borrados
+  ✅ servicio reiniciado completamente
