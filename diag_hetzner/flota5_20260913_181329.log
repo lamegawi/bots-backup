@@ -1,0 +1,309 @@
+=== DIAG FLOTA 5 Sun Sep 13 06:13:29 PM UTC 2026 ===
+
+-- A) bot_semanal.py del elon-semanal TAL CUAL (con numeros de linea)
+     1	#!/usr/bin/env python3
+     2	"""
+     3	Loop principal del bot semanal de Elon con TRADING REAL.
+     4	"""
+     5	import os
+     6	import sys
+     7	import json
+     8	import time
+     9	import argparse
+    10	from datetime import datetime
+    11	
+    12	NEW_DIR = "/opt/polymarket/bot-polymarket-elon-semanal"
+    13	REAL_JSON = os.path.join(NEW_DIR, "real_semanal.json")
+    14	CONFIG_PATH = os.path.join(NEW_DIR, "config_real.json")
+    15	
+    16	# Solo NEW_DIR en sys.path
+    17	sys.path = [NEW_DIR] + [p for p in sys.path if p not in ("", NEW_DIR, "/opt/polymarket/bot-polymarket-elon")]
+    18	
+    19	
+    20	def log(msg):
+    21	    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    22	    print(f"[{ts}] {msg}", flush=True)
+    23	
+    24	
+    25	def cargar_estado():
+    26	    if not os.path.exists(REAL_JSON):
+    27	        return {"saldo": 228.45, "paso": 1, "activa": None, "historial": []}
+    28	    try:
+    29	        with open(REAL_JSON) as f:
+    30	            return json.load(f)
+    31	    except Exception:
+    32	        return {"saldo": 228.45, "paso": 1, "activa": None, "historial": []}
+    33	
+    34	
+    35	def guardar_estado(d):
+    36	    with open(REAL_JSON, 'w') as f:
+    37	        json.dump(d, f, indent=2)
+    38	
+    39	
+    40	def evaluar_senal(metricas, bin_lo, bin_hi, precio_yes, cuota_yes, cuota_no):
+    41	    import senal
+    42	    if not metricas:
+    43	        return None, None, 0, "sin métricas"
+    44	    avg7 = metricas['avg7']
+    45	    ajuste = metricas['ajuste']
+    46	    lam = 7 * avg7 * ajuste
+    47	    p = senal.p_bin(bin_lo, bin_hi, lam)
+    48	    decision, lado, motivo = senal.decidir_bin(p, precio_yes, cuota_yes, cuota_no)
+    49	    if decision in ("APOSTAR YES", "APOSTAR NO"):
+    50	        cuota = cuota_yes if lado == "YES" else cuota_no
+    51	        ev = p * (cuota - 1) - (1 - p) if lado == "YES" else (1 - p) * (cuota - 1) - p
+    52	        return decision, lado, ev, motivo
+    53	    return None, None, 0, motivo
+    54	
+    55	
+    56	def pasada(opts):
+    57	    log("════════════════════════════════════════════")
+    58	    log("PASADA COMPLETA (ELON SEMANAL) · MODO: REAL")
+    59	    log("════════════════════════════════════════════")
+    60	    try:
+    61	        for m in ('senal', 'mercado_polymarket'):
+    62	            if m in sys.modules:
+    63	                del sys.modules[m]
+    64	        import senal
+    65	        import mercado_polymarket as mp
+    66	
+    67	        datos = senal.cargar_csv()
+    68	        m = senal.metricas(datos)
+    69	        if m:
+    70	            log(f"AVG7={m['avg7']:.2f}  AVG30={m['avg30']:.2f}  R={m['R']:.3f}  ajuste={m['ajuste']:.3f}")
+    71	        semanales = mp.actualizar_mercado()
+    72	        log(f"{len(semanales)} mercados semanales abiertos")
+    73	        estado = cargar_estado()
+    74	        log(f"saldo=${estado['saldo']}  paso={estado['paso']}  activa={'sí' if estado.get('activa') else 'no'}")
+    75	
+    76	        if estado.get('activa'):
+    77	            log(f"Ya hay posición activa en {estado['activa'].get('slug','?')[:50]}")
+    78	            return
+    79	
+    80	        mejor = None
+    81	        for mkt in semanales:
+    82	            titulo = mkt.get('titulo', '?')[:50]
+    83	            bins = mkt.get('bins', [])
+    84	            for b in bins:
+    85	                lo = b.get('lo', 0)
+    86	                hi = b.get('hi', 0)
+    87	                p_yes = b.get('precio_yes', 0)
+    88	                c_yes = b.get('cuota_yes', 0)
+    89	                c_no = b.get('cuota_no', 0)
+    90	                decision, lado, ev, motivo = evaluar_senal(m, lo, hi, p_yes, c_yes, c_no)
+    91	                if decision and ev > 0:
+    92	                    log(f"  bin {lo}-{hi} | {lado} @ {p_yes:.3f} | EV={ev:+.3f}")
+    93	                    if not mejor or ev > mejor[4]:
+    94	                        mejor = (mkt, b, decision, lado, ev, motivo)
+    95	
+    96	        if mejor:
+    97	            log(f"\nMejor señal: {mejor[0].get('titulo','?')[:50]}")
+    98	            log(f"   bin {mejor[1].get('lo')}-{mejor[1].get('hi')} {mejor[3]} EV={mejor[4]:+.3f}")
+    99	            if opts.modo == "real":
+   100	                try_ejecutar_orden(mejor, estado, m)
+   101	            else:
+   102	                log("   (modo != real, no se ejecuta)")
+   103	        else:
+   104	            log("Sin señales válidas")
+   105	        log("════════════════════════════════════════════")
+   106	        log("Pasada completada")
+   107	    except Exception as e:
+   108	        log(f"ERROR: {e}")
+   109	        import traceback
+   110	        log(traceback.format_exc())
+   111	
+   112	
+   113	
+   114	def inyectar_proxy_sdk(proxy_url=None):
+   115	    """Inyecta proxy en el cliente httpx del SDK. Patrón del agente de combos."""
+   116	    import os, httpx
+   117	    if proxy_url is None:
+   118	        proxy_url = os.environ.get("HTTP_PROXY") or os.environ.get("HTTPS_PROXY") or "http://100.83.57.99:8888"
+   119	    for k in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY",
+   120	              "http_proxy", "https_proxy", "all_proxy"):
+   121	        os.environ[k] = proxy_url
+   122	    try:
+   123	        from py_clob_client.http_helpers import helpers as _hh
+   124	    except ImportError:
+   125	        log("  ⚠️ no se pudo importar helpers del SDK")
+   126	        return False
+   127	    for kw in ({"http2": True, "proxy": proxy_url},
+   128	               {"http2": True, "proxies": {"all://": proxy_url}},
+   129	               {"http2": True, "proxies": proxy_url},
+   130	               {"proxy": proxy_url},
+   131	               {"proxies": {"all://": proxy_url}}):
+   132	        try:
+   133	            _hh._http_client = httpx.Client(**kw)
+   134	            log(f"  ✅ proxy SDK inyectado con {kw}")
+   135	            return True
+   136	        except (TypeError, ImportError):
+   137	            continue
+   138	    log("  ❌ no se pudo inyectar proxy en SDK")
+   139	    return False
+   140	
+   141	def try_ejecutar_orden(mejor, estado, metricas):
+   142	    import senal
+   143	    mkt, b, decision, lado, ev, motivo = mejor
+   144	    slug = mkt.get('slug', '')
+   145	    lo, hi = b.get('lo'), b.get('hi')
+   146	    precio = b.get('precio_yes') if lado == "YES" else 1 - b.get('precio_yes', 0)
+   147	    cuota = b.get('cuota_yes') if lado == "YES" else b.get('cuota_no')
+   148	    token_id = b.get('token_id_yes') if lado == "YES" else b.get('token_id_no')
+   149	
+   150	    if not token_id:
+   151	        log(f"   sin token_id para {lado}, saltamos")
+   152	        return
+   153	
+   154	    paso = estado.get('paso', 1)
+   155	    stake = senal.tabla_apuestas()[min(paso-1, 5)]
+   156	    log(f"   stake=${stake}  paso={paso}")
+   157	    log(f"   token_id: {str(token_id)[:30]}...")
+   158	    log(f"   proxy configurado: {os.environ.get('HTTP_PROXY', 'no')[:50]}")
+   159	
+   160	    try:
+   161	        with open(CONFIG_PATH) as f:
+   162	            cfg = json.load(f)
+   163	        if not cfg.get('confirmado'):
+   164	            log(f"   config_real.json sin confirmado=true")
+   165	            return
+   166	
+   167	        inyectar_proxy_sdk()
+   168	        from py_clob_client.client import ClobClient
+   169	        try:
+   170	            from py_clob_client.order_args import OrderArgs
+   171	        except ImportError:
+   172	            from py_clob_client.clob_types import OrderArgs
+   173	
+   174	        log(f"   importando ClobClient + OrderArgs OK")
+   175	
+   176	        client = ClobClient(
+   177	            'https://clob.polymarket.com',
+   178	            key=cfg.get('wallet_private_key', '').strip().strip('"').strip("'").lstrip('0x') and ('0x' + cfg.get('wallet_private_key', '').strip().strip('"').strip("'").lstrip('0x')),
+   179	            chain_id=137,
+   180	            signature_type=cfg.get('signature_type', 1),
+   181	            funder=cfg.get('wallet_address'),
+   182	        )
+   183	        log(f"   cliente creado")
+   184	
+   185	        # derive API key
+   186	        try:
+   187	            try:
+   188	                creds = client.create_or_derive_api_keys()
+   189	            except (AttributeError, Exception):
+   190	                creds = client.derive_api_key()
+   191	            client.set_api_creds(creds)
+   192	            log(f"   ✅ API creds derivadas")
+   193	        except Exception as e:
+   194	            log(f"   [aviso] no se pudieron derivar API creds: {e}")
+   195	
+   196	        # crear orden
+   197	        order = OrderArgs(
+   198	            token_id=str(token_id),
+   199	            price=float(precio),
+   200	            side="BUY",
+   201	            size=float(stake / precio),
+   202	        )
+   203	        log(f"   enviando orden BUY {stake/precio:.2f} shares @ ${precio}")
+   204	
+   205	        resp = client.create_and_post_order(order)
+   206	        order_id = resp.get("orderID") or resp.get("order_id") or "?"
+   207	        log(f"   ✅ ORDEN ENVIADA: {order_id}")
+   208	
+   209	        estado['activa'] = {
+   210	            'slug': slug,
+   211	            'bin': f"{lo}-{hi}",
+   212	            'lado': lado,
+   213	            'precio': precio,
+   214	            'cuota': cuota,
+   215	            'stake': stake,
+   216	            'paso': paso,
+   217	            'order_id': order_id,
+   218	            'token_id': str(token_id),
+   219	            'fecha': datetime.now().isoformat(),
+   220	        }
+   221	        guardar_estado(estado)
+   222	        log(f"   estado guardado")
+   223	    except Exception as e:
+   224	        log(f"   ERROR ejecutando: {e}")
+   225	        import traceback
+   226	        log(traceback.format_exc())
+   227	
+   228	
+   229	def main():
+   230	    ap = argparse.ArgumentParser()
+   231	    ap.add_argument("--loop", action="store_true")
+   232	    ap.add_argument("--intervalo", type=int, default=15)
+   233	    ap.add_argument("--modo", default="real")
+   234	    ap.add_argument("--excel", action="store_true")
+   235	    args = ap.parse_args()
+   236	    log(f"BOT SEMANAL ELON arrancado (loop={args.loop}, intervalo={args.intervalo} min)")
+   237	    if args.loop:
+   238	        while True:
+   239	            pasada(args)
+   240	            log(f"Próxima pasada en {args.intervalo} min")
+   241	            time.sleep(args.intervalo * 60)
+   242	    else:
+   243	        pasada(args)
+   244	
+   245	
+   246	if __name__ == "__main__":
+   247	    main()
+
+-- B) patron que FUNCIONA hoy: constructor de cliente de trump (lineas 95-140)
+        1	def get_client(signature_type=None):
+        2	    """Cliente CLOB (import diferido: solo se necesita para dinero real).
+        3	    IMPORTANTE (Polymarket V2, 28-abr-2026): se necesita el SDK V2:
+        4	    pip install py-clob-client-v2
+        5	    FIRMAS SMART WALLET: si tu cuenta se creó por email (deposit/proxy
+        6	    wallet), el firmante y el dueño de los fondos son distintos. Hay que
+        7	    usar signature_type=1 (POLY_PROXY) o 3 (POLY_1271). Por defecto se
+        8	    usa POLY_PROXY cuando hay wallet_address (funder); puedes forzarlo
+        9	    con el campo "signature_type" (0-3) en config_real.json."""
+       10	    try:
+       11	        from py_clob_client_v2.client import ClobClient
+       12	        from py_clob_client_v2.clob_types import ApiCreds
+       13	        from py_clob_client_v2 import SignatureTypeV2
+       14	    except ImportError as e:
+       15	        sys.exit(f"Falta el SDK V2 de Polymarket ({e}).\n"
+       16	                 f"Ejecuta:  python -m pip install py-clob-client-v2")
+       17	    cfg = cargar_config()
+       18	    signer = (cfg.get("wallet_private_key") or "").strip()
+       19	    if not signer:
+       20	        sys.exit("Sin clave privada del firmante: en config_real.json pon "
+       21	                 "wallet_private_key (la clave privada exportada en "
+       22	                 "https://reveal.magic.link/polymarket para cuentas por email).")
+       23	    kwargs = {}
+       24	    if cfg.get("api_key") and cfg.get("api_secret") and cfg.get("api_passphrase"):
+       25	        kwargs["creds"] = ApiCreds(cfg["api_key"], cfg["api_secret"],
+       26	                                   cfg["api_passphrase"])
+       27	    wallet = (cfg.get("wallet_address") or cfg.get("funder_address") or "").strip()
+       28	    if wallet:
+       29	        kwargs["funder"] = wallet
+       30	    if signature_type is None:
+       31	        signature_type = cfg.get("signature_type")
+       32	    if signature_type is None:
+       33	        # auto: smart wallet (funder distinto del signer) → POLY_PROXY; EOA puro → EOA
+       34	        signature_type = int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA)
+       35	    kwargs["signature_type"] = int(signature_type)
+       36	    client = ClobClient(HOST, chain_id=137, key=signer, **kwargs)
+       37	    if "creds" not in kwargs:
+       38	        try:
+       39	            creds = client.derive_api_key()
+       40	            client.set_api_creds(creds)
+       41	            print("  · Credenciales CLOB derivadas automáticamente de la clave privada.")
+       42	        except Exception as e:
+       43	            print(f"  [aviso] no se pudieron derivar credenciales API: {e}")
+       44	    return client
+       45	
+       46	
+
+-- C) zelenskyy: que cliente usa
+   105:        from py_clob_client_v2.client import ClobClient
+   106:        from py_clob_client_v2.clob_types import ApiCreds
+   107:        from py_clob_client_v2 import SignatureTypeV2
+   249:        from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
+   528:            from py_clob_client_v2.clob_types import OrderArgs
+
+-- D) md5 de los ficheros que se tocarian
+   d76a3c2d77b7bfdce431c2815c680f75  /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py
+=== FIN DIAG FLOTA 5 ===
