@@ -1,0 +1,552 @@
+=== DIAG SEMANAL 2 + REINICIO DEL GESTOR · Sun Sep 13 08:16:44 PM UTC 2026 · host bot-poly ===
+
+-- 0) REINICIO VIGILADO DEL GESTOR (para que cargue la cirugía de las 19:54)
+   ■ últimas 3 líneas antes de tocar nada:
+       próxima pasada en 5 min
+     [16:16 EDT] gestor pasada
+       próxima pasada en 5 min
+   ■ el gestor está dormido entre pasadas: momento seguro para reiniciar.
+   ■ huella en disco antes del reinicio (debe ser 5a38bf3d…):
+     5a38bf3d3bb227344c36a003cc46667f  /opt/polymarket/gestionar_posiciones.py
+   ■ estado tras el reinicio: active
+     MainPID=58738
+     NRestarts=0
+     ExecMainStartTimestamp=Sun 2026-09-13 20:16:44 UTC
+   ■ sus primeras líneas con el código nuevo (debe aparecer una pasada fresca):
+     [16:06 EDT] gestor pasada
+       próxima pasada en 5 min
+     [16:11 EDT] gestor pasada
+       próxima pasada en 5 min
+     [16:16 EDT] gestor pasada
+       próxima pasada en 5 min
+     [16:16 EDT] gestor pasada
+       próxima pasada en 5 min
+
+-- 1) TODAS las unidades del sistema con nombres de la flota (nombres REALES)
+     poly-backup-cruzado.service                  static          -
+     poly-backup-github.service                   static          -
+     poly-backup.service                          static          -
+     poly-combos-bot.service                      enabled         enabled
+     poly-elon-semanal.service                    enabled         enabled
+     poly-elon-v2.service                         disabled        enabled
+     poly-elon.service                            enabled         enabled
+     poly-fantasmas-trump.service                 static          -
+     poly-fantasmas-zelen.service                 static          -
+     poly-fantasmas.service                       static          -
+     poly-gestor.service                          enabled         enabled
+     poly-mensual-v2.service                      disabled        enabled
+     poly-mensual.service                         enabled         enabled
+     poly-mention-bot.service                     enabled         enabled
+     poly-overreaction-bot.service                enabled         enabled
+     poly-salud-diario.service                    static          -
+     poly-salud-trump.service                     static          -
+     poly-salud-zelen.service                     static          -
+     poly-salud.service                           disabled        enabled
+     poly-semanal-v2.service                      disabled        enabled
+     poly-telegram-trump.service                  enabled         enabled
+     poly-telegram-zelen.service                  enabled         enabled
+     poly-telegram.service                        enabled         enabled
+     poly-test-diario-trump.service               static          -
+     poly-test-diario-zelen.service               static          -
+     poly-test-diario.service                     static          -
+     poly-trump.service                           enabled         enabled
+     poly-zelenskyy.service                       enabled         enabled
+     poly-backup-2h.timer                         enabled         enabled
+     poly-backup-cruzado.timer                    enabled         enabled
+     poly-backup-github.timer                     enabled         enabled
+     poly-backup.timer                            enabled         enabled
+     poly-fantasmas-trump.timer                   enabled         enabled
+     poly-fantasmas-zelen.timer                   enabled         enabled
+     poly-fantasmas.timer                         enabled         enabled
+     poly-salud-diario.timer                      enabled         enabled
+     poly-salud-trump.timer                       enabled         enabled
+     poly-salud-zelen.timer                       enabled         enabled
+     poly-salud.timer                             enabled         enabled
+     poly-test-diario-trump.timer                 enabled         enabled
+     poly-test-diario-zelen.timer                 enabled         enabled
+     poly-test-diario.timer                       enabled         enabled
+   ■ y su estado ahora mismo:
+       poly-backup-cruzado.service                                                                               loaded    inactive dead      Replica el backup de bot-poly a vm4
+     ● poly-backup-github.service                                                                                loaded    failed   failed    Backup semanal del código a GitHub
+       poly-backup.service                                                                                       loaded    inactive dead      Backup diario bot-poly
+       poly-combos-bot.service                                                                                   loaded    active   running   Poly Combos Bot (Telegram copy-trading)
+       poly-elon-semanal.service                                                                                 loaded    active   running   Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+       poly-elon.service                                                                                         loaded    active   running   Bot Polymarket Elon 48h (v1)
+       poly-fantasmas-trump.service                                                                              loaded    inactive dead      Comprobación de posiciones fantasma de Trump (auto-reparación)
+       poly-fantasmas-zelen.service                                                                              loaded    inactive dead      Comprobación de posiciones fantasma de Zelenskyy (auto-reparación)
+       poly-fantasmas.service                                                                                    loaded    inactive dead      Comprobación de posiciones fantasma de Polymarket (auto-reparación)
+       poly-gestor.service                                                                                       loaded    active   running   Gestor de cierre anticipado de posiciones Polymarket
+       poly-mensual.service                                                                                      loaded    active   running   Bot Polymarket Elon MENSUAL (v1)
+       poly-mention-bot.service                                                                                  loaded    active   running   Polymarket Mention Bot
+       poly-overreaction-bot.service                                                                             loaded    active   running   Polymarket Overreaction Bot
+       poly-salud-diario.service                                                                                 loaded    inactive dead      Informe de salud diario Polymarket (08:00 y 22:00 Madrid)
+       poly-salud-trump.service                                                                                  loaded    inactive dead      Chequeo de salud Trump (bot-poly)
+       poly-salud-zelen.service                                                                                  loaded    inactive dead      Chequeo de salud Zelenskyy (bot-poly)
+       poly-salud.service                                                                                        loaded    inactive dead      Chequeo de salud Polymarket (bot-poly)
+       poly-telegram-trump.service                                                                               loaded    active   running   Bot Telegram de Polymarket Trump (con botones)
+       poly-telegram-zelen.service                                                                               loaded    active   running   Bot Telegram de Polymarket Zelenskyy
+       poly-telegram.service                                                                                     loaded    active   running   Bot Telegram de Polymarket (Elon_polymarket_bot)
+       poly-test-diario-trump.service                                                                            loaded    inactive dead      Test integral diario de Trump (detección y auto-reparación)
+       poly-test-diario-zelen.service                                                                            loaded    inactive dead      Test integral diario de Zelenskyy (detección y auto-reparación)
+       poly-test-diario.service                                                                                  loaded    inactive dead      Test integral diario de Polymarket (detección y auto-reparación)
+       poly-trump.service                                                                                        loaded    active   running   Bot Polymarket Trump Truth Social posts
+       poly-zelenskyy.service                                                                                    loaded    active   running   Bot Polymarket Zelenskyy SEMANAL
+       poly-backup-2h.timer                                                                                      loaded    active   waiting   Backup de codigo a GitHub cada 2h (08:00-00:00 Madrid, ademas del diario)
+       poly-backup-cruzado.timer                                                                                 loaded    active   waiting   Copia doble bot-poly->vm4 cada día (05:15)
+       poly-backup-github.timer                                                                                  loaded    active   waiting   Backup semanal del código a GitHub (domingos)
+       poly-backup.timer                                                                                         loaded    active   waiting   Backup diario bot-poly (04:15 Madrid)
+       poly-fantasmas-trump.timer                                                                                loaded    active   waiting   Comprobación de posiciones fantasma de Trump cada 30 min
+       poly-fantasmas-zelen.timer                                                                                loaded    active   waiting   Comprobación de posiciones fantasma de Zelenskyy cada 30 min
+       poly-fantasmas.timer                                                                                      loaded    active   waiting   Comprobación de posiciones fantasma cada 30 min
+       poly-salud-diario.timer                                                                                   loaded    active   waiting   Informe de salud diario Polymarket (08:00 y 22:00 Madrid)
+       poly-salud-trump.timer                                                                                    loaded    active   waiting   Chequeo de salud Trump cada 10 min
+       poly-salud-zelen.timer                                                                                    loaded    active   waiting   Chequeo de salud Zelenskyy cada 10 min
+       poly-salud.timer                                                                                          loaded    active   waiting   Chequeo de salud Polymarket cada 10 min
+       poly-test-diario-trump.timer                                                                              loaded    active   waiting   Test integral diario de Trump (09:10 y 21:10 Madrid)
+       poly-test-diario-zelen.timer                                                                              loaded    active   waiting   Test integral diario de Zelenskyy (09:05 y 21:05 Madrid)
+       poly-test-diario.timer                                                                                    loaded    active   waiting   Test integral diario de Polymarket (09:00 y 21:00 Madrid)
+
+-- 2) AUTOPSIA de cada unidad con 'seman' en el nombre
+   ■ unidad: poly-elon-semanal.service
+     # /etc/systemd/system/poly-elon-semanal.service
+     [Unit]
+     Description=Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     After=network-online.target
+     Wants=network-online.target
+     
+     [Service]
+     Type=simple
+     User=root
+     WorkingDirectory=/opt/polymarket/bot-polymarket-elon-semanal
+     EnvironmentFile=/etc/polymarket.env
+     EnvironmentFile=-/etc/default/poly-elon-semanal
+     ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+     Restart=always
+     RestartSec=30
+     StandardOutput=journal
+     StandardError=journal
+     
+     [Install]
+     WantedBy=multi-user.target
+     Result=success
+     NRestarts=0
+     ExecMainStartTimestamp=Sun 2026-09-13 18:28:48 UTC
+     ActiveState=active
+     SubState=running
+     --- diario (últimas 40 líneas) ---
+     Sep 13 19:31:34 bot-poly python3[50339]: [2026-09-13 19:31:34] 3 mercados semanales abiertos
+     Sep 13 19:31:34 bot-poly python3[50339]: [2026-09-13 19:31:34] saldo=$249.86  paso=1  activa=sí
+     Sep 13 19:31:34 bot-poly python3[50339]: [2026-09-13 19:31:34] Ya hay posición activa en elon-musk-of-tweets-september-8-september-15-2026
+     Sep 13 19:31:34 bot-poly python3[50339]: [2026-09-13 19:31:34] Próxima pasada en 15 min
+     Sep 13 19:46:34 bot-poly python3[50339]: [2026-09-13 19:46:34] ════════════════════════════════════════════
+     Sep 13 19:46:34 bot-poly python3[50339]: [2026-09-13 19:46:34] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+     Sep 13 19:46:34 bot-poly python3[50339]: [2026-09-13 19:46:34] ════════════════════════════════════════════
+     Sep 13 19:46:34 bot-poly python3[50339]: [2026-09-13 19:46:34] AVG7=22.43  AVG30=27.43  R=0.818  ajuste=0.927
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06] 3 mercados semanales abiertos
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06] saldo=$300.22  paso=1  activa=no
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]   bin 120-139 | YES @ 0.061 | EV=+3.893
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]   bin 120-139 | YES @ 0.084 | EV=+2.575
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]   bin 140-159 | YES @ 0.175 | EV=+2.211
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]   bin 120-139 | YES @ 0.069 | EV=+3.357
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]   bin 140-159 | YES @ 0.125 | EV=+3.509
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]
+     Sep 13 19:47:06 bot-poly python3[50339]: Mejor señal: Elon Musk # tweets September 8 - September 15, 202
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]    bin 120-139 YES EV=+3.893
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]    stake=$3.3  paso=1
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]    token_id: 307299272390187311366034413909...
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]    proxy configurado: http://100.83.57.99:8888
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]   ✅ proxy SDK inyectado con {'http2': True, 'proxy': 'http://100.83.57.99:8888'}
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]    usando SDK V2 (formato de orden moderno)
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]    importando ClobClient + OrderArgs OK
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]    cliente creado
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]    ✅ API creds derivadas
+     Sep 13 19:47:06 bot-poly python3[50339]: [2026-09-13 19:47:06]    enviando orden BUY 54.10 shares @ $0.061
+     Sep 13 19:47:07 bot-poly python3[50339]: [2026-09-13 19:47:07]    ✅ ORDEN ENVIADA: 0xeb54117b489604c0ef7e4bdcb85c699f6ba59634ca10da6ad588d296f98ea1ac
+     Sep 13 19:47:07 bot-poly python3[50339]: [2026-09-13 19:47:07]    estado guardado
+     Sep 13 19:47:07 bot-poly python3[50339]: [2026-09-13 19:47:07] ════════════════════════════════════════════
+     Sep 13 19:47:07 bot-poly python3[50339]: [2026-09-13 19:47:07] Pasada completada
+     Sep 13 19:47:07 bot-poly python3[50339]: [2026-09-13 19:47:07] Próxima pasada en 15 min
+     Sep 13 20:02:07 bot-poly python3[50339]: [2026-09-13 20:02:07] ════════════════════════════════════════════
+     Sep 13 20:02:07 bot-poly python3[50339]: [2026-09-13 20:02:07] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+     Sep 13 20:02:07 bot-poly python3[50339]: [2026-09-13 20:02:07] ════════════════════════════════════════════
+     Sep 13 20:02:07 bot-poly python3[50339]: [2026-09-13 20:02:07] AVG7=22.43  AVG30=27.43  R=0.818  ajuste=0.927
+     Sep 13 20:02:39 bot-poly python3[50339]: [2026-09-13 20:02:39] 3 mercados semanales abiertos
+     Sep 13 20:02:39 bot-poly python3[50339]: [2026-09-13 20:02:39] saldo=$300.22  paso=1  activa=sí
+     Sep 13 20:02:39 bot-poly python3[50339]: [2026-09-13 20:02:39] Ya hay posición activa en elon-musk-of-tweets-september-8-september-15-2026
+     Sep 13 20:02:39 bot-poly python3[50339]: [2026-09-13 20:02:39] Próxima pasada en 15 min
+
+   ■ unidad: poly-semanal-v2.service
+     # /etc/systemd/system/poly-semanal-v2.service
+     [Unit]
+     Description=Bot Polymarket Elon SEMANAL (v2)
+     After=network-online.target
+     Wants=network-online.target
+     StartLimitIntervalSec=0
+     
+     [Service]
+     Type=simple
+     User=root
+     WorkingDirectory=/opt/polymarket/bot-polymarket-elon-semanal-v2
+     EnvironmentFile=/etc/polymarket.env
+     ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+     Restart=always
+     TimeoutStartSec=300
+     RestartSec=30
+     StandardOutput=append:/var/log/poly-semanal-v2.log
+     StandardError=append:/var/log/poly-semanal-v2.log
+     
+     [Install]
+     WantedBy=multi-user.target
+     Result=success
+     NRestarts=0
+     ExecMainStartTimestamp=
+     ActiveState=inactive
+     SubState=dead
+     --- diario (últimas 40 líneas) ---
+     -- No entries --
+
+
+-- 3) EL CRON DE CADA 5 MINUTOS: ¿solo raspa tweets o también mueve el bot?
+     #!/usr/bin/env bash
+     # Ejecuta el scraper de Polymarket SIN --actualizar-csv.
+     # El TWEET_COUNT es el TOTAL del periodo, no el conteo de un día.
+     # Si activamos --actualizar-csv, sobreescribe 09-10 con el TOTAL.
+     TS=$(date -u +%Y%m%d_%H%M%S)
+     LOG=/var/log/poly/scraper_elon_${TS}.log
+     cd /opt/polymarket/bot-polymarket-elon
+     python3 scraper_tweets_pm.py --user elonmusk >> "$LOG" 2>&1
+     # limpiar logs de más de 7 días
+     find /var/log/poly/scraper_elon_*.log -mtime +7 -delete 2>/dev/null
+
+-- 4) CARPETA DEL BOT SEMANAL: qué hay y qué se ha movido desde el 12-sep
+     total 6656
+     drwxr-xr-x  6 1000 1000    4096 Sep 13 18:52 .
+     drwxr-xr-x 17 1000 1000    4096 Sep 13 20:16 ..
+     -rw-r--r--  1 root root     879 Sep 12 05:37 avisos_cooldown.json
+     -rw-r--r--  1 root root 5886642 Sep 12 07:08 bot_semanal.log
+     -rw-r--r--  1 root root    9458 Sep 13 18:28 bot_semanal.py
+     -rwxr-xr-x  1 root root    2914 Sep 12 08:18 bot_semanal.py.bak_20260912_081838
+     -rwxr-xr-x  1 root root    7595 Sep 12 20:12 bot_semanal.py.bak_clave_v2_20260912_201237
+     -rwxr-xr-x  1 root root    7732 Sep 12 20:16 bot_semanal.py.bak_clavev2_20260912_201610
+     -rwxr-xr-x  1 root root    9115 Sep 13 17:49 bot_semanal.py.bak_creds_20260913_174939
+     -rwxr-xr-x  1 root root    9703 Sep 12 20:08 bot_semanal.py.bak_final_20260912_200845
+     -rwxr-xr-x  1 root root    9021 Sep 13 17:58 bot_semanal.py.bak_flota_20260913_182848
+     -rwxr-xr-x  1 root root    9586 Sep 12 19:56 bot_semanal.py.bak_imp_20260912_195657
+     -rwxr-xr-x  1 root root    3376 Sep 12 08:24 bot_semanal.py.bak_int_20260912_082419
+     -rwxr-xr-x  1 root root    7732 Sep 13 16:31 bot_semanal.py.bak_inyproxy_20260913_163126
+     -rwxr-xr-x  1 root root    9703 Sep 12 20:06 bot_semanal.py.bak_sign_20260912_200631
+     -rwxr-xr-x  1 root root    8901 Sep 13 17:17 bot_semanal.py.bak_v2_20260913_171750
+     -rw-r--r--  1 root root    6394 Aug 17 20:24 chequear_cuenta.py
+     -rw-r--r--  1 root root     219 Sep 12 08:09 config.json
+     -rw-------  1 root root     207 Sep 12 20:20 config_real.json
+     -rw-------  1 root root     333 Sep 12 20:16 config_real.json.bak_clavev2_20260912_201610
+     -rw-r--r--  1 root root     942 Aug 17 20:24 config_real.json.example
+     -rw-r--r--  1 root root     698 Sep 12 07:08 datos_elon.csv
+     drwxr-xr-x  2 root root  188416 Sep 12 07:08 datos_raw
+     -rw-r--r--  1 root root    3021 Aug 17 20:24 diagnostico.py
+     -rw-r--r--  1 root root      35 Sep 12 04:02 estado_bot_semanal.json
+     -rw-r--r--  1 root root  163835 Sep 12 07:08 estado_tweets.json
+     -rw-r--r--  1 root root   13000 Aug 17 20:24 excel_historial.py
+     drwxr-xr-x  8 root root    4096 Aug 17 20:24 .git
+     drwxr-xr-x  3 root root    4096 Aug 17 20:24 .github
+     -rw-r--r--  1 root root     287 Aug 17 20:24 .gitignore
+     -rw-r--r--  1 root root    4292 Aug 17 20:24 GUIA_SEMANAL.md
+     -rw-r--r--  1 root root   12262 Sep 12 07:08 Historial_Operaciones_Semanal.xlsx
+     -rw-r--r--  1 root root   33016 Sep 12 07:08 mercado_activo.json
+     -rwxr-xr-x  1 root root    2731 Sep 12 19:12 mercado_polymarket.py
+     -rw-r--r--  1 root root   17542 Aug 18 17:05 notificar.py
+     -rw-r--r--  1 root root   12245 Aug 17 20:24 notificar_semanal.py
+     -rw-r--r--  1 1000 1000   36105 Aug 19 17:47 operar_real_semanal.py
+     -rw-r--r--  1 root root     347 Aug 17 20:24 papel_semanal.json
+     -rw-r--r--  1 root root   10137 Aug 17 20:24 papel_semanal.py
+     -rw-r--r--  1 root root    4869 Aug 17 20:24 probar_orden_semanal.py
+     drwxr-xr-x  2 root root    4096 Sep 13 19:22 __pycache__
+     -rw-------  1 root root    3286 Sep 13 20:15 real_semanal.json
+     -rw-------  1 root root    2444 Sep 13 18:44 real_semanal.json.bak_cura_20260913_185221
+     -rw-r--r--  1 root root   22055 Aug 27 15:02 recoger_tweets.py
+     -rw-r--r--  1 root root   19480 Aug 26 19:33 recoger_tweets.py.bakT
+     -rw-r--r--  1 root root   21923 Aug 26 19:50 recoger_tweets.py.bakT2
+     -rw-r--r--  1 root root   21993 Aug 27 15:02 recoger_tweets.py.bakT3
+     -rw-r--r--  1 root root    3741 Sep  4 18:09 resultados_real_semanal.csv
+     -rw-r--r--  1 root root    4217 Aug 17 20:24 saldo_ntfy.py
+     -rwxr-xr-x  1 root root    3567 Sep 12 18:54 senal.py
+     -rwxr-xr-x  1 root root    2323 Sep 12 08:28 senal.py.bak_dec_20260912_082803
+     -rwxr-xr-x  1 root root    3396 Sep 12 18:54 senal.py.bak_min_20260912_185452
+     -rwxr-xr-x  1 root root    3354 Sep 12 08:33 senal.py.bak_pois_20260912_083320
+     -rw-r--r--  1 root root   13522 Aug 29 08:33 senal.py.bakS
+     -rwxr-xr-x  1 root root    4218 Sep 12 08:14 senal.py.bak_v2_20260912_081406
+     -rw-r--r--  1 1000 1000   14071 Aug 30 17:35 senal_vivo.py
+     -rw-r--r--  1 root root   11766 Aug 19 10:33 senal_vivo.py.bak_20260819103324
+     -rw-r--r--  1 root root    3747 Sep 12 07:08 ventanas_vistas.json
+   ■ ficheros tocados desde el 12-sep 08:00 UTC (si el bot corriera, habría rastros frescos):
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_flota_20260913_182848
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_sign_20260912_200631
+     /opt/polymarket/bot-polymarket-elon-semanal/mercado_polymarket.py
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_v2_20260913_171750
+     /opt/polymarket/bot-polymarket-elon-semanal/senal.py.bak_v2_20260912_081406
+     /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json
+     /opt/polymarket/bot-polymarket-elon-semanal/config_real.json
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_clave_v2_20260912_201237
+     /opt/polymarket/bot-polymarket-elon-semanal/config.json
+     /opt/polymarket/bot-polymarket-elon-semanal/config_real.json.bak_clavev2_20260912_201610
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_creds_20260913_174939
+     /opt/polymarket/bot-polymarket-elon-semanal/senal.py.bak_pois_20260912_083320
+     /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json.bak_cura_20260913_185221
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_int_20260912_082419
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_inyproxy_20260913_163126
+     /opt/polymarket/bot-polymarket-elon-semanal/senal.py
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_final_20260912_200845
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_20260912_081838
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_imp_20260912_195657
+     /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_clavev2_20260912_201610
+     /opt/polymarket/bot-polymarket-elon-semanal/__pycache__/mercado_polymarket.cpython-312.pyc
+     /opt/polymarket/bot-polymarket-elon-semanal/__pycache__/operar_real_semanal.cpython-312.pyc
+     /opt/polymarket/bot-polymarket-elon-semanal/__pycache__/saldo_ntfy.cpython-312.pyc
+     /opt/polymarket/bot-polymarket-elon-semanal/__pycache__/bot_semanal.cpython-312.pyc
+   ■ mercado_activo.json (qué mercado cree activo y desde cuándo):
+     {
+      "actualizado": "2026-09-12T07:08:42.575621+00:00",
+      "mercados": [
+       {
+        "id": "983380",
+        "titulo": "Elon Musk # tweets September 10 - September 12, 2026?",
+        "slug": "elon-musk-of-tweets-september-10-september-12-2026",
+        "cerrado": false,
+        "volumen": 410172.65957700013,
+        "endDate": "2026-09-12T16:00:00Z",
+        "inicio_iso": "2026-09-10T12:00:00-04:00",
+        "fin_iso": "2026-09-12T12:00:00-04:00",
+        "duracion_h": 48.0,
+        "tipo": "48h",
+        "bins": [
+         {
+          "titulo": "<40",
+          "lo": 0,
+          "hi": 39,
+          "precio_yes": 0.0005,
+          "precio_no": 0.9995,
+          "cuota_yes": 2000.0,
+          "cuota_no": 1.0005002501250624,
+          "volumen": 146400.3906740001
+         },
+         {
+          "titulo": "40-64",
+          "lo": 40,
+          "hi": 64,
+          "precio_yes": 0.9815,
+          "precio_no": 0.0185,
+          "cuota_yes": 1.0188487009679061,
+          "cuota_no": 54.05405405405417,
+          "volumen": 65122.316389999985
+         },
+         {
+          "titulo": "65-89",
+          "lo": 65,
+          "hi": 89,
+          "precio_yes": 0.0175,
+          "precio_no": 0.9825,
+          "cuota_yes": 57.14285714285714,
+          "cuota_no": 1.0178117048346056,
+          "volumen": 87867.55127599995
+         },
+         {
+          "titulo": "90-114",
+          "lo": 90,
+          "hi": 114,
+         
+   ■ su log más reciente: /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.log (últimas 50 líneas)
+     [2026-09-12 02:52:18 EDT]       · tweets únicos: 766 (reposts 474) · CSV: 46 días (nuevos/mejorados: 0)
+     [2026-09-12 02:52:18 EDT] 2/4 · Actualizando mercados de Polymarket…
+     [2026-09-12 02:52:35 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+     [2026-09-12 02:52:35 EDT] 3/4 · Trading REAL…
+     [2026-09-12 02:52:36 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal.xlsx (añadidas 0, total 17)
+     [2026-09-12 02:52:36 EDT] 4/4 · Estado:
+     [2026-09-12 02:52:36 EDT] Pasada completada en 86.3 s
+     [2026-09-12 02:52:36 EDT] Próxima pasada en 5 min…
+     [2026-09-12 02:57:36 EDT] ==============================================================
+     [2026-09-12 02:57:36 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+     [2026-09-12 02:57:36 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+     [2026-09-12 02:57:36 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+     [2026-09-12 02:57:36 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+     [2026-09-12 02:57:40 EDT]       · nitter: 20 items
+     [2026-09-12 02:57:40 EDT]       · tweets únicos: 766 (reposts 474) · CSV: 46 días (nuevos/mejorados: 0)
+     [2026-09-12 02:57:40 EDT] 2/4 · Actualizando mercados de Polymarket…
+     [2026-09-12 02:57:57 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+     [2026-09-12 02:57:57 EDT] 3/4 · Trading REAL…
+     [2026-09-12 02:57:58 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal.xlsx (añadidas 0, total 17)
+     [2026-09-12 02:57:58 EDT] 4/4 · Estado:
+     [2026-09-12 02:57:58 EDT] Pasada completada en 22.0 s
+     [2026-09-12 02:57:58 EDT] Próxima pasada en 5 min…
+     [2026-09-12 03:02:58 EDT] ==============================================================
+     [2026-09-12 03:02:58 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+     [2026-09-12 03:02:58 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+     [2026-09-12 03:02:58 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+     [2026-09-12 03:02:58 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+     [2026-09-12 03:03:02 EDT]       · nitter: 20 items
+     [2026-09-12 03:03:02 EDT]       · tweets únicos: 766 (reposts 474) · CSV: 46 días (nuevos/mejorados: 0)
+     [2026-09-12 03:03:02 EDT] 2/4 · Actualizando mercados de Polymarket…
+     [2026-09-12 03:03:19 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+     [2026-09-12 03:03:19 EDT] 3/4 · Trading REAL…
+     [2026-09-12 03:03:19 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal.xlsx (añadidas 0, total 17)
+     [2026-09-12 03:03:19 EDT] 4/4 · Estado:
+     [2026-09-12 03:03:19 EDT] Pasada completada en 21.6 s
+     [2026-09-12 03:03:19 EDT] Próxima pasada en 5 min…
+     [2026-09-12 03:08:19 EDT] ==============================================================
+     [2026-09-12 03:08:19 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+     [2026-09-12 03:08:19 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+     [2026-09-12 03:08:19 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+     [2026-09-12 03:08:19 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+     [2026-09-12 03:08:24 EDT]       · nitter: 20 items
+     [2026-09-12 03:08:24 EDT]       · tweets únicos: 766 (reposts 474) · CSV: 46 días (nuevos/mejorados: 0)
+     [2026-09-12 03:08:24 EDT] 2/4 · Actualizando mercados de Polymarket…
+     [2026-09-12 03:08:42 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+     [2026-09-12 03:08:42 EDT] 3/4 · Trading REAL…
+     [2026-09-12 03:08:43 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal.xlsx (añadidas 0, total 17)
+     [2026-09-12 03:08:43 EDT] 4/4 · Estado:
+     [2026-09-12 03:08:43 EDT] Pasada completada en 23.3 s
+     [2026-09-12 03:08:43 EDT] Próxima pasada en 5 min…
+
+-- 5) MENSUAL: el servicio vive desde las 07:08, pero no hay posiciones de septiembre
+     # /etc/systemd/system/poly-mensual.service
+     [Unit]
+     Description=Bot Polymarket Elon MENSUAL (v1)
+     After=network-online.target
+     Wants=network-online.target
+     StartLimitIntervalSec=0
+     
+     [Service]
+     Type=simple
+     User=root
+     WorkingDirectory=/opt/polymarket/bot-polymarket-elon-mensual
+     EnvironmentFile=/etc/polymarket.env
+     ExecStart=/usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+     Restart=always
+     TimeoutStartSec=300
+     RestartSec=30
+     StandardOutput=append:/var/log/poly-mensual.log
+     StandardError=append:/var/log/poly-mensual.log
+     
+     [Install]
+     WantedBy=multi-user.target
+   ■ últimas 60 líneas de /var/log/poly-mensual.log:
+     [2026-09-13 16:09:58 EDT] 2/4 · Actualizando mercados de Polymarket…
+     [2026-09-13 16:10:18 EDT]       · 6 mercados · 1 mensuales abiertos → mercado_activo.json
+     [2026-09-13 16:10:18 EDT] 3/4 · Trading REAL…
+     [2026-09-13 16:10 EDT] Trading REAL MENSUAL  · saldo $495.30 · paso 3
+       (sin señal mensual → no se abre apuesta real · paso 3)
+       Historial REAL: 2 apuestas · 0G/2P · beneficio $-4.70
+     [2026-09-13 16:10:19 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+     [2026-09-13 16:10:19 EDT] 4/4 · Estado:
+     fecha        tweets
+     2026-08-28        7
+     2026-08-29       16
+     2026-08-30        9
+     2026-09-03        1
+     2026-09-05        5
+     2026-09-06       21
+     2026-09-07       21
+     2026-09-08       25
+     2026-09-09       22
+     2026-09-10       22
+     2026-09-11       30
+     2026-09-12       16
+     
+     AVG7 = 22.43  V2 = 46  R = 1.025  ajuste = 1.013  λ48 = 45.4
+     Días completos en CSV: 47
+     [2026-09-13 16:10:19 EDT] Pasada completada en 90.0 s
+     [2026-09-13 16:10:19 EDT] Próxima pasada en 5 min…
+     [2026-09-13 16:15:19 EDT] ==============================================================
+     [2026-09-13 16:15:19 EDT] PASADA COMPLETA (MENSUAL)  ·  MODO: REAL
+     [2026-09-13 16:15:19 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+     [2026-09-13 16:15:19 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+     [2026-09-13 16:15:19 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+       nitter nitter.tiekoetter.com: sin items
+     [2026-09-13 16:15:23 EDT]       · nitter: 20 items
+     [2026-09-13 16:15:23 EDT]       · tweets únicos: 678 (reposts 432) · CSV: 47 días (nuevos/mejorados: 0)
+     [2026-09-13 16:15:23 EDT] 2/4 · Actualizando mercados de Polymarket…
+     [2026-09-13 16:15:43 EDT]       · 6 mercados · 1 mensuales abiertos → mercado_activo.json
+     [2026-09-13 16:15:43 EDT] 3/4 · Trading REAL…
+     [2026-09-13 16:15 EDT] Trading REAL MENSUAL  · saldo $495.30 · paso 3
+       (sin señal mensual → no se abre apuesta real · paso 3)
+       Historial REAL: 2 apuestas · 0G/2P · beneficio $-4.70
+     [2026-09-13 16:15:43 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+     [2026-09-13 16:15:43 EDT] 4/4 · Estado:
+     fecha        tweets
+     2026-08-28        7
+     2026-08-29       16
+     2026-08-30        9
+     2026-09-03        1
+     2026-09-05        5
+     2026-09-06       21
+     2026-09-07       21
+     2026-09-08       25
+     2026-09-09       22
+     2026-09-10       22
+     2026-09-11       30
+     2026-09-12       16
+     
+     AVG7 = 22.43  V2 = 46  R = 1.025  ajuste = 1.013  λ48 = 45.4
+     Días completos en CSV: 47
+     [2026-09-13 16:15:43 EDT] Pasada completada en 24.2 s
+     [2026-09-13 16:15:43 EDT] Próxima pasada en 5 min…
+
+-- 6) LA PUERTA DEL 48h: sus huellas viven en /var/log/poly-elon.log (no en el diario)
+   ■ menciones de puerta/candidatas/compras (últimas 120 líneas):
+   ■ últimas 20 líneas en bruto:
+     [2026-09-13 16:16:21 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+     [2026-09-13 16:16:21 EDT] 4/5 · Estado:
+     fecha        tweets
+     2026-08-28        7
+     2026-08-29       16
+     2026-08-30        9
+     2026-09-03        1
+     2026-09-05        5
+     2026-09-06       21
+     2026-09-07       21
+     2026-09-08       25
+     2026-09-09       22
+     2026-09-10       22
+     2026-09-11       30
+     2026-09-12       16
+     
+     AVG7 = 22.43  V2 = 46  R = 1.025  ajuste = 1.013  λ48 = 45.4
+     Días completos en CSV: 49
+     [2026-09-13 16:16:21 EDT] Pasada completada en 23.1 s
+     [2026-09-13 16:16:21 EDT] Próxima pasada en 5 min…
+
+-- 7) QUÉ LISTA DE SERVICIOS USA EL AVISO DE SALUD (para corregir el fantasma)
+     334:    import check_salud as CS
+   ■ módulo de salud: /opt/polymarket/check_salud.py — qué servicios mira:
+     6:  - por defecto (--elon): vigila SOLO los servicios de Elon
+     8:  - --zelen: vigila SOLO los servicios de Zelenskyy
+     33:SERVICIOS_TRUMP = ["poly-trump"]
+     37:SERVICIOS_ELON = ["poly-elon", "poly-semanal", "poly-mensual",
+     38:                  "poly-telegram", "poly-gestor"]
+     39:SERVICIOS_ZELEN = ["poly-zelenskyy", "poly-telegram-zelen"]
+     57:def check(servicios=None):
+     58:    if servicios is None:
+     59:        servicios = SERVICIOS_ELON
+     62:    # 1) servicios
+     63:    for s in servicios:
+     68:            res["fallos"].append(f"servicio {s}: {estado}")
+     134:        servicios = SERVICIOS_ZELEN
+     145:        servicios = SERVICIOS_TRUMP
+     150:        servicios = SERVICIOS_ELON
+     154:    res = check(servicios)
+
+-- 8) LA ORDEN DE LAS 18:29 (66.67 sh @0.0495): ¿quién la firmó y qué fue de ella?
+     /var/log/poly-semanal.log:89394:  Orden enviada: 0xd11dba02e95ec74ed660677e54c49ac1baa727d4cb9c26f5c8f62151b67dfe9b  (respuesta: {'errorMsg': '', 'orderID': '0xd11dba02e95ec74ed660677e54c49ac1baa727d4cb9c26f5c8f62151b67dfe9b', 'takingAmount': '20', )
+     /var/log/poly-semanal.log:107280:  → Orden REAL: Elon Musk # tweets August 25 - September 1, 2026? · 120-139 YES @0.002 (cuota 666.67) · size 6.00 USDC · token 881455682560…
+     /var/log/poly-semanal.log:107509:  → Orden REAL: Elon Musk # tweets August 25 - September 1, 2026? · 120-139 YES @0.002 (cuota 666.67) · size 6.00 USDC · token 881455682560…
+     /var/log/poly-semanal.log:205177:  → Orden REAL: Elon Musk # tweets September 4 - September 11, 2026? · 120-139 YES @0.002 (cuota 666.67) · size 6.00 USDC · token 281181078285…
+     /var/log/poly-semanal.log:205384:  → Orden REAL: Elon Musk # tweets September 4 - September 11, 2026? · 120-139 YES @0.002 (cuota 666.67) · size 8.40 USDC · token 281181078285…
+     /var/log/poly-semanal.log:207918:  → Orden REAL: Elon Musk # tweets September 4 - September 11, 2026? · 120-139 YES @0.002 (cuota 666.67) · size 10.00 USDC · token 281181078285…
+     /var/log/poly-semanal.log:207919:  (stake $10.00 → 6666.67 shares a 0.002)
+     /var/log/poly-semanal.log:208259:  → Orden REAL: Elon Musk # tweets September 4 - September 11, 2026? · 120-139 YES @0.002 (cuota 666.67) · size 6.00 USDC · token 281181078285…
+     /var/log/poly-semanal.log:208467:  → Orden REAL: Elon Musk # tweets September 4 - September 11, 2026? · 120-139 YES @0.002 (cuota 666.67) · size 6.00 USDC · token 281181078285…
+     /var/log/poly-semanal.log:208992:  → Orden REAL: Elon Musk # tweets September 4 - September 11, 2026? · 120-139 YES @0.002 (cuota 666.67) · size 10.00 USDC · token 281181078285…
+     /var/log/poly-semanal.log:208993:  (stake $10.00 → 6666.67 shares a 0.002)
+     /var/log/poly-semanal.log:211333:  → Orden REAL: Elon Musk # tweets September 4 - September 11, 2026? · 120-139 YES @0.002 (cuota 666.67) · size 10.00 USDC · token 281181078285…
+     /var/log/poly-semanal.log:211334:  (stake $10.00 → 6666.67 shares a 0.002)
+=== FIN DIAG SEMANAL 2 ===
