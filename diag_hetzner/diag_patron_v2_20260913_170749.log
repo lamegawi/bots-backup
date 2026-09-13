@@ -1,0 +1,126 @@
+=== DIAG PATRON V2 · 20260913_170749 UTC ===
+
+== 1. Cómo Zelenskyy crea el ClobClient v2 ==
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:130:    client = ClobClient(HOST, chain_id=137, key=signer, **kwargs)
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-131-    if "creds" not in kwargs:
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-132-        try:
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-133-            creds = client.derive_api_key()
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-134-            client.set_api_creds(creds)
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-135-            print("  · Credenciales CLOB derivadas automáticamente de la clave privada.")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-136-        except Exception as e:
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-137-            print(f"  [aviso] no se pudieron derivar credenciales API: {e}")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-138-    return client
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-139-
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-140-
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-141-# ------------------------------------------------------------------ estado
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-142-def cargar_estado():
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-143-    if not os.path.exists(ESTADO):
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-144-        return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-145-    try:
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-146-        d = json.load(open(ESTADO, encoding="utf-8"))
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-147-        for k in ("saldo", "paso", "activa", "historial"):
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-148-            d.setdefault(k, [] if k == "historial" else (None if k == "activa"
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-149-                        else (1 if k == "paso" else BANKROLL)))
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-150-        return d
+
+== 2. Cómo Zelenskyy crea una orden v2 ==
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:528:            from py_clob_client_v2.clob_types import OrderArgs
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:529:            # SDK V2: el 'size' de OrderArgs son SHARES, no dólares.
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-530-            # stake $X a precio P → shares = X/P (redondeo a 2 dec).
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-531-            size_shares = round(c["stake"] / c["precio"], 2)
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-532-            if size_shares < 5:
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-533-                print(f"  [BLOQUEADO] tamaño {size_shares} shares < mínimo 5 "
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-534-                      f"(stake ${c['stake']:.2f} a precio {c['precio']:.3f}).")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-535-                return False
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-536-            print(f"  (stake ${c['stake']:.2f} → {size_shares} shares a "
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-537-                  f"{c['precio']:.3f})")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-538-            # limpiar órdenes abiertas previas (restos de runs cancelados)
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-539-            try:
+--
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:551:            resp = client.create_and_post_order(
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:552:                OrderArgs(price=c["precio"], size=size_shares,
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-553-                          side="BUY", token_id=token_id))
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-554-            order_id = resp.get("orderID") or resp.get("order_id")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-555-            print(f"  Orden enviada: {order_id}  (respuesta: {str(resp)[:120]})")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-556-            # NOTIFICAR INMEDIATAMENTE (no esperar al fill)
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-557-            try:
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-558-                notificar.enviar(
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-559-                    f"💰 ORDEN REAL enviada\n"
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-560-                    f"Mercado: {c['slug']}\nBin {c['bin_titulo']} · {c['lado']} "
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-561-                    f"@ {c['precio']:.3f} (cuota {c['cuota']:.2f})\n"
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-562-                    f"Paso {estado['paso']} · stake ${c['stake']:.2f} · vigilando fill (60 min)\n"
+--
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:828:        from py_clob_client_v2.clob_types import OrderArgs
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:829:        resp = client.create_and_post_order(
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:830:            OrderArgs(token_id=token_id, price=0.01, size=5, side="BUY"))
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-831-        oid = resp.get("orderID") or resp.get("order_id")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-832-        print(f"  ✔ Orden de prueba enviada: {oid}")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-833-        print("  Si no hay error, la firma V2 funciona → puedes activar confirmado:true.")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-834-        time.sleep(8)
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-835-        try:
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-836-            client.cancel_order(oid)
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-837-            print("  ✔ Orden de prueba cancelada (sin riesgo).")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-838-        except Exception as e:
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-839-            print(f"  (aviso al cancelar: {e})")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-840-    except Exception as e:
+--
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:908:        from py_clob_client_v2.clob_types import OrderArgs
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-909-        client = get_client()
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:910:        resp = client.create_and_post_order(
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:911:            OrderArgs(price=precio_venta, size=size, side="SELL", token_id=token_id))
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-912-        order_id = resp.get("orderID") or resp.get("order_id")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-913-        print(f"  [FIXWIN] orden SELL enviada: {order_id}")
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-914-        time.sleep(12)
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-915-        sz_matched, precio_real = size, precio_venta
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-916-        try:
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py-917-            det = client.get_order(order_id)
+
+== 3. ¿Cómo Zelenskyy inyecta proxy? ==
+/opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py:99:    FIRMAS SMART WALLET: si tu cuenta se creó por email (deposit/proxy
+
+== 4. ¿Cómo gestiona el cliente httpx de py_clob_client_v2? ==
+helpers del v2: ['BalanceAllowanceParams', 'DELETE', 'DropNotificationParams', 'GET', 'OpenOrderParams', 'Optional', 'OrderScoringParams', 'OrdersScoringParams', 'POST', 'PUT', 'PolyApiException', 'TradeParams', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', '_http_client', '_is_transient_error', '_overload_headers', 'add_balance_allowance_params_to_url', 'add_order_scoring_params_to_url', 'add_orders_scoring_params_to_url', 'add_query_open_orders_params', 'add_query_trade_params', 'build_query_params', 'delete', 'drop_notifications_query_params', 'get', 'httpx', 'logger', 'logging', 'parse_drop_notification_params', 'parse_orders_scoring_params', 'post', 'put', 'request', 'time']
+_http_client: <httpx.Client object at 0x717d219e3890>
+
+== 5. ¿Cómo envía Trump realmente? ==
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-549-            except Exception as e:
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-550-                print(f"  (aviso limpiando órdenes previas: {e})")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:551:            resp = client.create_and_post_order(
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-552-                OrderArgs(price=c["precio"], size=size_shares,
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-553-                          side="BUY", token_id=token_id))
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-554-            order_id = resp.get("orderID") or resp.get("order_id")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-555-            print(f"  Orden enviada: {order_id}  (respuesta: {str(resp)[:120]})")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-556-            # NOTIFICAR INMEDIATAMENTE (no esperar al fill)
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-557-            try:
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-558-                notificar.enviar(
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-559-                    f"💰 ORDEN REAL enviada\n"
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-560-                    f"Mercado: {c['slug']}\nBin {c['bin_titulo']} · {c['lado']} "
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-561-                    f"@ {c['precio']:.3f} (cuota {c['cuota']:.2f})\n"
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-562-                    f"Paso {estado['paso']} · stake ${c['stake']:.2f} · vigilando fill (60 min)\n"
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-563-                    f"{saldo_ntfy.saldo_real_texto()}",
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-564-                    titulo="[TRUMP] 💰 Apuesta REAL abierta",
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-565-                    etiqueta="moneybag")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-566-            except Exception as e:
+--
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-827-    try:
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-828-        from py_clob_client_v2.clob_types import OrderArgs
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:829:        resp = client.create_and_post_order(
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-830-            OrderArgs(token_id=token_id, price=0.01, size=5, side="BUY"))
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-831-        oid = resp.get("orderID") or resp.get("order_id")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-832-        print(f"  ✔ Orden de prueba enviada: {oid}")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-833-        print("  Si no hay error, la firma V2 funciona → puedes activar confirmado:true.")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-834-        time.sleep(8)
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-835-        try:
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-836-            client.cancel_order(oid)
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-837-            print("  ✔ Orden de prueba cancelada (sin riesgo).")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-838-        except Exception as e:
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-839-            print(f"  (aviso al cancelar: {e})")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-840-    except Exception as e:
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-841-        print(f"  ✖ ERROR al enviar la orden de prueba: {e}")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-842-        print("  → Si es un error de firma/dominio, el SDK V2 no está bien instalado")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-843-        print("    o las credenciales no corresponden. Pega el error aquí.")
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-844-
+--
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-908-        from py_clob_client_v2.clob_types import OrderArgs
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py-909-        client = get_client()
+
