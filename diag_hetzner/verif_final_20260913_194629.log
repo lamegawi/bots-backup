@@ -1,0 +1,96 @@
+=== VERIFICACION FINAL · 20260913_194629 UTC ===
+
+== 1. Estado de poly-elon-semanal ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-13 18:28:48 UTC; 1h 17min ago
+   Main PID: 50339 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 43.8M (peak: 47.2M)
+        CPU: 27.614s
+     CGroup: /system.slice/poly-elon-semanal.service
+             └─50339 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+
+== 2. Versión del SDK en uso (v1 o v2) ==
+            from py_clob_client_v2.http_helpers import helpers as _hh
+            from py_clob_client.http_helpers import helpers as _hh
+            from py_clob_client_v2.client import ClobClient
+            from py_clob_client_v2.clob_types import OrderArgs
+            from py_clob_client.client import ClobClient
+
+== 3. Últimas 30 líneas del log ==
+Sep 13 19:00:29 bot-poly python3[50339]: [2026-09-13 19:00:29]    stake=$3.3  paso=1
+Sep 13 19:00:29 bot-poly python3[50339]: [2026-09-13 19:00:29]    token_id: 307299272390187311366034413909...
+Sep 13 19:00:29 bot-poly python3[50339]: [2026-09-13 19:00:29]    proxy configurado: http://100.83.57.99:8888
+Sep 13 19:00:29 bot-poly python3[50339]: [2026-09-13 19:00:29]   ✅ proxy SDK inyectado con {'http2': True, 'proxy': 'http://100.83.57.99:8888'}
+Sep 13 19:00:29 bot-poly python3[50339]: [2026-09-13 19:00:29]    usando SDK V2 (formato de orden moderno)
+Sep 13 19:00:29 bot-poly python3[50339]: [2026-09-13 19:00:29]    importando ClobClient + OrderArgs OK
+Sep 13 19:00:29 bot-poly python3[50339]: [2026-09-13 19:00:29]    cliente creado
+Sep 13 19:00:29 bot-poly python3[50339]: [2026-09-13 19:00:29]    ✅ API creds derivadas
+Sep 13 19:00:29 bot-poly python3[50339]: [2026-09-13 19:00:29]    enviando orden BUY 53.66 shares @ $0.0615
+Sep 13 19:00:30 bot-poly python3[50339]: [2026-09-13 19:00:30]    ✅ ORDEN ENVIADA: 0xddbafbf6d0fcedaf4cd932b52b704eea927a29ebfa21f2cf9402e99f5a4de5e5
+Sep 13 19:00:30 bot-poly python3[50339]: [2026-09-13 19:00:30]    estado guardado
+Sep 13 19:00:30 bot-poly python3[50339]: [2026-09-13 19:00:30] ════════════════════════════════════════════
+Sep 13 19:00:30 bot-poly python3[50339]: [2026-09-13 19:00:30] Pasada completada
+Sep 13 19:00:30 bot-poly python3[50339]: [2026-09-13 19:00:30] Próxima pasada en 15 min
+Sep 13 19:15:30 bot-poly python3[50339]: [2026-09-13 19:15:30] ════════════════════════════════════════════
+Sep 13 19:15:30 bot-poly python3[50339]: [2026-09-13 19:15:30] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 13 19:15:30 bot-poly python3[50339]: [2026-09-13 19:15:30] ════════════════════════════════════════════
+Sep 13 19:15:30 bot-poly python3[50339]: [2026-09-13 19:15:30] AVG7=22.43  AVG30=27.43  R=0.818  ajuste=0.927
+Sep 13 19:16:02 bot-poly python3[50339]: [2026-09-13 19:16:02] 3 mercados semanales abiertos
+Sep 13 19:16:02 bot-poly python3[50339]: [2026-09-13 19:16:02] saldo=$249.86  paso=1  activa=sí
+Sep 13 19:16:02 bot-poly python3[50339]: [2026-09-13 19:16:02] Ya hay posición activa en elon-musk-of-tweets-september-8-september-15-2026
+Sep 13 19:16:02 bot-poly python3[50339]: [2026-09-13 19:16:02] Próxima pasada en 15 min
+Sep 13 19:31:02 bot-poly python3[50339]: [2026-09-13 19:31:02] ════════════════════════════════════════════
+Sep 13 19:31:02 bot-poly python3[50339]: [2026-09-13 19:31:02] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 13 19:31:02 bot-poly python3[50339]: [2026-09-13 19:31:02] ════════════════════════════════════════════
+Sep 13 19:31:02 bot-poly python3[50339]: [2026-09-13 19:31:02] AVG7=22.43  AVG30=27.43  R=0.818  ajuste=0.927
+Sep 13 19:31:34 bot-poly python3[50339]: [2026-09-13 19:31:34] 3 mercados semanales abiertos
+Sep 13 19:31:34 bot-poly python3[50339]: [2026-09-13 19:31:34] saldo=$249.86  paso=1  activa=sí
+Sep 13 19:31:34 bot-poly python3[50339]: [2026-09-13 19:31:34] Ya hay posición activa en elon-musk-of-tweets-september-8-september-15-2026
+Sep 13 19:31:34 bot-poly python3[50339]: [2026-09-13 19:31:34] Próxima pasada en 15 min
+
+== 4. ¿Hay orden reciente aceptada? ==
+Sep 13 18:29:23 bot-poly python3[50339]: [2026-09-13 18:29:23]    ✅ ORDEN ENVIADA: 0x861c06a11663a4b900332704f0250c330ec2da7ccb646b5fdac0c21b9fcc0304
+Sep 13 19:00:30 bot-poly python3[50339]: [2026-09-13 19:00:30]    ✅ ORDEN ENVIADA: 0xddbafbf6d0fcedaf4cd932b52b704eea927a29ebfa21f2cf9402e99f5a4de5e5
+
+== 5. ¿Posición abierta del semanal? ==
+-rw------- 1 root root 2884 Sep 13 19:45 /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json
+{
+    "saldo": 300.22,
+    "paso": 1,
+    "activa": null,
+    "abierta": null,
+    "historial": [
+        {
+            "id": "reconc",
+            "fecha": "2026-09-13T18:29:23.205419",
+            "mercado": "elon-musk-of-tweets-september-8-september-15-2026",
+            "bin": "",
+            "lado": "YES",
+            "precio": 0.0495,
+            "cuota": 20.2020202020202,
+            "p_modelo": 0,
+            "paso": 1,
+            "stake": 3.3,
+            "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+            "resultado": "G",
+            "beneficio": 63.37,
+            "saldo": 249.86
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-09-13T19:00:30.420521",
+            "mercado": "elon-musk-of-tweets-september-8-september-15-2026",
+            "bin": "",
+            "lado": "YES",
+            "precio": 0.0615,
+            "cuota": 16.260162601626018,
+
+== 6. Saldo actual ==
+saldo: 300.22
+paso: 1
+activa: no
+historial count: 2
+
