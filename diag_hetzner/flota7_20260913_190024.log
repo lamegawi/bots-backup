@@ -1,0 +1,47 @@
+=== DIAG FLOTA 7 Sun Sep 13 07:00:24 PM UTC 2026 ===
+-- check_integral del servidor: /opt/polymarket/check_integral.py
+-- A) real_zelen.json: claves y firma 'activa'
+   claves: ['_bankroll_inicial_real', '_pnl_historico_acumulado', '_saldo_recalculado', '_sincronizado_con_real', '_sincronizado_ts', 'activa', 'historial', 'operaciones', 'paso', 'saldo']
+   activa: null
+   abierta: null
+   historial: 8 apuntes
+     · 2026-09-09 zelenskyy-of-tweets-september-8-september-15-2026 YES -> P
+     · 2026-09-09 zelenskyy-of-tweets-september-8-september-15-2026 YES -> P
+     · 2026-09-11 zelenskyy-of-tweets-september-11-september-18-2026 YES -> P
+-- B) que cuadernos lee el verificador para ZELENSKYY (BOTS_ZELEN)
+   51-    ("Mensual",   f"{BASE}/bot-polymarket-elon-mensual/real_mensual.json",  "bot-polymarket-elon-mensual"),
+   52-]
+   53:BOTS_ZELEN = [
+   54-    ("Zelenskyy", f"{BASE}/bot-polymarket-zelenskyy/real_zelen.json",       "bot-polymarket-zelenskyy"),
+   55-]
+   56-SERVICIOS_ELON = ["poly-elon", "poly-semanal", "poly-mensual",
+   57-                  "poly-telegram", "poly-gestor"]
+   58-SERVICIOS_ZELEN = ["poly-zelenskyy", "poly-telegram-zelen"]
+   59-BOTS_TRUMP = [
+   60-    ("Trump", f"{BASE}/bot-polymarket-trump/real_trump.json", "bot-polymarket-trump"),
+   61-]
+-- C) como recorta nombres el verificador (tokens_de_slug)
+   def tokens_de_slug(slug):
+       partes = (slug or "").lower().split("-")
+       toks = []
+       for i, p in enumerate(partes):
+           if p in MESES and i + 1 < len(partes) and partes[i + 1].isdigit():
+               toks.append(f"{p} {partes[i + 1]}")
+       return toks
+   
+   
+   def _orden_viva(order_id):
+       """True si la orden sigue VIVA (resting) en el CLOB y sin llenar.
+   
+       Si devuelve False puede ser porque: no existe (cancelada/expirada), ya se
+-- D) quien menciona el token o el slug de la posicion viva
+-- E) mercado_activo.json (el mercado que el bot cree tener vivo)
+    {"actualizado": "2026-09-13T18:57:01.697176+00:00", "mercados": [{"id": "967949", "titulo": "Zelenskyy # posts September 8 - September 15, 2026?", "slug": "zelenskyy-of-tweets-september-8-september-15-2026", "cerrado": false, "volumen": 12779.651454, "endDate": "2026-09-15T16:00:00Z", "inicio_iso": "2026-09-08T12:00:00-04:00", "fin_iso": "2026-09-15T12:00:00-04:00", "duracion_h": 168.0, "tipo": "semanal", "bins": [{"titulo": "<20", "lo": 0, "hi": 19, "precio_yes": 0.0, "precio_no": 1.0, "cuota_yes": null, "cuota_no": 1.0, "volumen": 393.9440000000001}, {"titulo": "20-39", "lo": 20, "hi": 39, "
+-- F) ultimas lineas del bot de zelenskyy sobre su apuesta
+   [2026-09-13 14:30:22 EDT]       · 3 mercados · 3 semanales abiertas → mercado_activo.json
+   [2026-09-13 14:35:41 EDT]       · 3 mercados · 3 semanales abiertas → mercado_activo.json
+   [2026-09-13 14:41:01 EDT]       · 3 mercados · 3 semanales abiertas → mercado_activo.json
+   [2026-09-13 14:46:21 EDT]       · 3 mercados · 3 semanales abiertas → mercado_activo.json
+   [2026-09-13 14:51:41 EDT]       · 3 mercados · 3 semanales abiertas → mercado_activo.json
+   [2026-09-13 14:57:01 EDT]       · 3 mercados · 3 semanales abiertas → mercado_activo.json
+=== FIN DIAG FLOTA 7 ===
