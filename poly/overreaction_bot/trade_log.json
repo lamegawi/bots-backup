@@ -10,9 +10,12 @@
       "edge": 0.1864,
       "spike_change": -0.2133,
       "end_date": "2026-09-12T13:00:00Z",
-      "status": "open",
+      "status": "won",
       "timestamp": "2026-09-11 23:15:45 UTC",
-      "dry_run": true
+      "dry_run": true,
+      "pnl": 46.43,
+      "payout": 71.43,
+      "resolved_at": "2026-09-12 17:02:59 UTC"
     },
     {
       "trade_id": "or_1789173387",
@@ -86,15 +89,29 @@
       "status": "open",
       "timestamp": "2026-09-12 03:36:09 UTC",
       "dry_run": true
+    },
+    {
+      "trade_id": "or_1789234082",
+      "market_id": "0xa1422c1e22ac9503f06f4365ef14ec787e4c6f667d33f1677a964f7a71e533a5",
+      "question": "Will \"BbY WOW - KAROL G, Judeline, rusowsky\" be the #2 US song this week?",
+      "side": "YES",
+      "entry_price": 0.335,
+      "size": 25.0,
+      "edge": 0.1299,
+      "spike_change": -0.5333,
+      "end_date": "2026-09-18T23:59:00Z",
+      "status": "open",
+      "timestamp": "2026-09-12 17:28:02 UTC",
+      "dry_run": true
     }
   ],
   "summary": {
-    "total": 6,
+    "total": 7,
     "open": 5,
-    "wins": 0,
+    "wins": 1,
     "losses": 1,
-    "win_rate": 0.0,
-    "total_pnl": -25.0,
-    "total_invested": 150.0
+    "win_rate": 0.5,
+    "total_pnl": 21.43,
+    "total_invested": 175.0
   }
 }
