@@ -1,0 +1,99 @@
+=== UPGRADE PY-CLOB-CLIENT — 20260913_152135 UTC ===
+
+== 1. Versión actual ==
+Name: py_clob_client
+Version: 0.34.6
+Summary: Python client for the Polymarket CLOB
+Home-page: https://github.com/Polymarket/py-clob-client
+Author: Polymarket Engineering
+
+== 2. Última versión disponible en PyPI ==
+WARNING: pip index is currently an experimental command. It may be removed/changed in a future release without prior warning.
+py-clob-client (0.34.6)
+Available versions: 0.34.6, 0.34.5, 0.34.4, 0.34.3, 0.34.1, 0.34.0, 0.33.0, 0.32.0, 0.31.0, 0.30.0, 0.28.0, 0.27.0, 0.26.0, 0.25.0, 0.24.0, 0.23.0, 0.22.0, 0.21.0, 0.20.0, 0.19.0, 0.18.0, 0.17.5, 0.17.4, 0.17.3, 0.17.2, 0.17.1, 0.17.0, 0.16.0, 0.15.1, 0.15.0, 0.14.0, 0.13.3, 0.13.2, 0.13.1, 0.13.0, 0.12.0, 0.11.0, 0.10.0, 0.9.0, 0.8.0, 0.7.0, 0.6.0, 0.5.0, 0.4.0, 0.3.0, 0.2.4, 0.2.3, 0.2.2, 0.2.1, 0.2.0, 0.1.13, 0.1.12, 0.1.11, 0.1.10, 0.1.9, 0.1.8, 0.1.7, 0.1.6, 0.1.5, 0.1.4, 0.1.3, 0.1.2, 0.1.1, 0.1.0, 0.0.28, 0.0.27, 0.0.26, 0.0.24, 0.0.23, 0.0.22, 0.0.21, 0.0.20, 0.0.19, 0.0.18, 0.0.17, 0.0.16, 0.0.15, 0.0.14, 0.0.13, 0.0.12, 0.0.11, 0.0.10, 0.0.9, 0.0.8, 0.0.7, 0.0.6, 0.0.5, 0.0.4, 0.0.3
+
+== 3. Backup versión actual ==
+  versión actual: 0.34.6
+  ✅ backup en /tmp/py_clob_client_backup_0.34.6_20260913_152135
+
+== 4. Instalar última versión estable ==
+Requirement already satisfied: hpack<5,>=4.2 in /usr/local/lib/python3.12/dist-packages (from h2<5,>=3->httpx[http2]>=0.27.0->py-clob-client) (4.2.0)
+Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.12/dist-packages (from pydantic>=2.0.0->eth-account>=0.13.0->py-clob-client) (0.8.0)
+Requirement already satisfied: pydantic-core==2.46.4 in /usr/local/lib/python3.12/dist-packages (from pydantic>=2.0.0->eth-account>=0.13.0->py-clob-client) (2.46.4)
+Requirement already satisfied: typing-inspection>=0.4.2 in /usr/local/lib/python3.12/dist-packages (from pydantic>=2.0.0->eth-account>=0.13.0->py-clob-client) (0.4.4)
+Requirement already satisfied: iniconfig>=1.0.1 in /usr/local/lib/python3.12/dist-packages (from pytest->poly_eip712_structs>=0.0.1->py-clob-client) (2.3.0)
+Requirement already satisfied: packaging>=22 in /usr/lib/python3/dist-packages (from pytest->poly_eip712_structs>=0.0.1->py-clob-client) (24.0)
+Requirement already satisfied: pluggy<2,>=1.5 in /usr/local/lib/python3.12/dist-packages (from pytest->poly_eip712_structs>=0.0.1->py-clob-client) (1.6.0)
+Requirement already satisfied: pygments>=2.7.2 in /usr/lib/python3/dist-packages (from pytest->poly_eip712_structs>=0.0.1->py-clob-client) (2.17.2)
+Requirement already satisfied: regex>=2022.3.15 in /usr/local/lib/python3.12/dist-packages (from parsimonious<0.11.0,>=0.10.0->eth-abi>=4.0.0-b.2->eth-account>=0.13.0->py-clob-client) (2026.7.19)
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+== 5. Verificar nueva versión ==
+Name: py_clob_client
+Version: 0.34.6
+Summary: Python client for the Polymarket CLOB
+
+== 6. Probar imports ==
+  ✅ ClobClient OK
+  ✅ OrderArgs (clob_types) OK
+
+== 7. Probar ClobClient firma y conexión ==
+  clave len: 66
+  ✅ ClobClient creado
+  ✅ API creds OK
+  [aviso] balance: 'NoneType' object has no attribute 'signature_type'
+
+== 8. Probar pasada única del bot semanal ==
+[2026-09-13 15:21:56]    proxy configurado: no
+[2026-09-13 15:21:57]    importando ClobClient + OrderArgs OK
+[2026-09-13 15:21:57]    cliente creado
+[2026-09-13 15:21:57]    API creds derivadas
+[2026-09-13 15:21:57]    enviando orden BUY 88.00 shares @ $0.0375
+[2026-09-13 15:21:57]    ERROR ejecutando: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+[2026-09-13 15:21:57] Traceback (most recent call last):
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 173, in try_ejecutar_orden
+    resp = client.create_and_post_order(order)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/client.py", line 661, in create_and_post_order
+    return self.post_order(ord)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/client.py", line 648, in post_order
+    return post(
+           ^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/http_helpers/helpers.py", line 69, in post
+    return request(endpoint, POST, headers, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/http_helpers/helpers.py", line 57, in request
+    raise PolyApiException(resp)
+py_clob_client.exceptions.PolyApiException: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+
+[2026-09-13 15:21:57] ════════════════════════════════════════════
+[2026-09-13 15:21:57] Pasada completada
+
+== 9. Reiniciar servicio poly-elon-semanal ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-13 15:21:57 UTC; 5s ago
+   Main PID: 35625 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 8.8M (peak: 9.9M)
+        CPU: 830ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== 10. Verificar log post-upgrade ==
+Sep 13 15:21:57 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 13 15:21:57 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 13 15:21:57 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 13 15:21:57 bot-poly systemd[1]: poly-elon-semanal.service: Consumed 2min 8.273s CPU time, 72.7M memory peak, 0B memory swap peak.
+Sep 13 15:21:57 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 13 15:21:57 bot-poly python3[35625]: [2026-09-13 15:21:57] BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+Sep 13 15:21:57 bot-poly python3[35625]: [2026-09-13 15:21:57] ════════════════════════════════════════════
+Sep 13 15:21:57 bot-poly python3[35625]: [2026-09-13 15:21:57] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 13 15:21:57 bot-poly python3[35625]: [2026-09-13 15:21:57] ════════════════════════════════════════════
+Sep 13 15:21:57 bot-poly python3[35625]: [2026-09-13 15:21:57] AVG7=22.43  AVG30=27.43  R=0.818  ajuste=0.927
+
+== 11. Resumen ==
+  versión anterior: 0.34.6
+  versión nueva:    0.34.6
+  backup:           /tmp/py_clob_client_backup_0.34.6_20260913_152135
+  para revertir:    pip install --break-system-packages py-clob-client==0.34.6
