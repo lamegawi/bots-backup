@@ -1,0 +1,155 @@
+=== ARREGLO NOCTURNO DEL SEMANAL · Sun Sep 13 08:30:49 PM UTC 2026 · host bot-poly ===
+
+-- 1) PUERTA DEL GESTOR para el bot semanal
+=== PARCHE PUERTA SEMANAL · 20260913_203049 ===
+  fichero: /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py
+  ✅ huella reconocida: 2fb45a71714b3384f0a1f99c80b00808
+  ✅ ancla localizada (1 sola vez, en abrir())
+  ✅ copia de seguridad: /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py.bak_puerta_20260913_203049
+  ✅ el parche compila (py_compile)
+  ✅ instalado · huella nueva: b55a889aae713e6612ef52a14045b16f
+  ✅ el ancla original sigue intacta tras la puerta
+RESUMEN: ✅ 6 · ❌ 0
+Vuelta atrás: cp /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py.bak_puerta_20260913_203049 /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py
+   · el parche de la puerta terminó bien.
+
+-- 2) ÓRDENES EN DESCANSO: inventario y cancelación de la envenenada
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+   órdenes en descanso AHORA MISMO: 3
+     · {"id": "0x8185ba7c3d1642fa3d6d6c4167fdb2eb289d1dfa7937716a4286069c28c39e7b", "market": "0xa7c55e3018132fc97c7ed7567e5b37eeed4ff22e286d06dc21464489cc62ad64", "side": "BUY", "price": "0.12", "original_size": "26.4", "size_matched": 
+     · {"id": "0xeb54117b489604c0ef7e4bdcb85c699f6ba59634ca10da6ad588d296f98ea1ac", "market": "0x03334475ac38309c4f616d3ba5c383227fe6bd852dc57cb22bac020246d5fed7", "side": "BUY", "price": "0.061", "original_size": "54.09", "size_matched"
+     · {"id": "0x861c06a11663a4b900332704f0250c330ec2da7ccb646b5fdac0c21b9fcc0304", "market": "0x03334475ac38309c4f616d3ba5c383227fe6bd852dc57cb22bac020246d5fed7", "side": "BUY", "price": "0.05", "original_size": "66.66", "size_matched":
+   ❌ CANCELADA la orden 0xeb54117b489604… → respuesta: {'not_canceled': {}, 'canceled': ['0xeb54117b489604c0ef7e4bdcb85c699f6ba59634ca10da6ad588d296f98ea1ac']}
+   órdenes en descanso DESPUÉS: 2
+   estado final de la orden 0xeb54117b4896…: CANCELED · llenado 0
+
+-- 3) CUADERNO SEMANAL (real_semanal.json)
+   claves del cuaderno: ['saldo', 'paso', 'activa', 'abierta', 'historial', '_sincronizado_con_real', '_sincronizado_ts', '_bankroll_inicial_real', '_pnl_historico_acumulado', '_purgadas_20260913_185221']
+   copia de seguridad: /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json.bak_noche_20260913_203050
+   activa ANTES: {"slug": "elon-musk-of-tweets-september-15-september-22-2026", "bin": "140-159", "lado": "YES", "precio": 0.125, "cuota": 8.0, "stake": 3.3, "paso": 1, "order_id": "0x8185ba7c3d1642fa3d6d6c4167fdb2eb289d1dfa7937716a4286069c28c39e7b", "token_id": "303744128528580062283060375354650
+   activa DESPUÉS: None (limpiada a mano; la marca de ventana del bin
+   120-139 sigue 'ocupada', así que esta noche hay doble candado)
+   paso: 1 · saldo: 351.02
+   · reinicio el semanal para que cargue la puerta nueva…
+   poly-elon-semanal: active
+     MainPID=59739
+     NRestarts=0
+     ExecMainStartTimestamp=Sun 2026-09-13 20:30:50 UTC
+
+-- 4) VIGILANTE DE SALUD: nombre fantasma corregido
+   antes: 1 apariciones del nombre viejo · después: 0 viejas / 1 nuevas · compila: OK
+   copia: /opt/polymarket/check_salud.py.bak_salud_20260913_203049
+   · reinicio poly-telegram para que estrene la lista corregida (5 s sin bot)…
+   poly-telegram: active
+   · prueba del chequeo de salud SIN enviar Telegram:
+     resultado: TODO OK
+     · poly-elon: active
+     · poly-elon-semanal: active
+     · poly-mensual: active
+     · poly-telegram: active
+     · poly-gestor: active
+     · tailscale ferpc: OK
+     · IP de salida: 85.85.41.76
+     · proxy + IP casa: OK
+     · clob via proxy: OK (HTTP 200)
+
+-- 5) PRIMERA PASADA DEL SEMANAL NUEVO (espero ~2 min para capturarla)
+   ■ diario de poly-elon-semanal (últimas 70 líneas — buscad las 🚪 puertas):
+     Sep 13 20:02:07 bot-poly python3[50339]: [2026-09-13 20:02:07] ════════════════════════════════════════════
+     Sep 13 20:02:07 bot-poly python3[50339]: [2026-09-13 20:02:07] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+     Sep 13 20:02:07 bot-poly python3[50339]: [2026-09-13 20:02:07] ════════════════════════════════════════════
+     Sep 13 20:02:07 bot-poly python3[50339]: [2026-09-13 20:02:07] AVG7=22.43  AVG30=27.43  R=0.818  ajuste=0.927
+     Sep 13 20:02:39 bot-poly python3[50339]: [2026-09-13 20:02:39] 3 mercados semanales abiertos
+     Sep 13 20:02:39 bot-poly python3[50339]: [2026-09-13 20:02:39] saldo=$300.22  paso=1  activa=sí
+     Sep 13 20:02:39 bot-poly python3[50339]: [2026-09-13 20:02:39] Ya hay posición activa en elon-musk-of-tweets-september-8-september-15-2026
+     Sep 13 20:02:39 bot-poly python3[50339]: [2026-09-13 20:02:39] Próxima pasada en 15 min
+     Sep 13 20:17:39 bot-poly python3[50339]: [2026-09-13 20:17:39] ════════════════════════════════════════════
+     Sep 13 20:17:39 bot-poly python3[50339]: [2026-09-13 20:17:39] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+     Sep 13 20:17:39 bot-poly python3[50339]: [2026-09-13 20:17:39] ════════════════════════════════════════════
+     Sep 13 20:17:39 bot-poly python3[50339]: [2026-09-13 20:17:39] AVG7=22.43  AVG30=27.43  R=0.818  ajuste=0.927
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11] 3 mercados semanales abiertos
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11] saldo=$351.02  paso=1  activa=no
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]   bin 120-139 | YES @ 0.082 | EV=+2.640
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]   bin 120-139 | YES @ 0.093 | EV=+2.192
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]   bin 140-159 | YES @ 0.178 | EV=+2.157
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]   bin 120-139 | YES @ 0.069 | EV=+3.357
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]   bin 140-159 | YES @ 0.125 | EV=+3.509
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]
+     Sep 13 20:18:11 bot-poly python3[50339]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]    bin 140-159 YES EV=+3.509
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]    stake=$3.3  paso=1
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]    token_id: 303744128528580062283060375354...
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]    proxy configurado: http://100.83.57.99:8888
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]   ✅ proxy SDK inyectado con {'http2': True, 'proxy': 'http://100.83.57.99:8888'}
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]    usando SDK V2 (formato de orden moderno)
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]    importando ClobClient + OrderArgs OK
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]    cliente creado
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]    ✅ API creds derivadas
+     Sep 13 20:18:11 bot-poly python3[50339]: [2026-09-13 20:18:11]    enviando orden BUY 26.40 shares @ $0.125
+     Sep 13 20:18:12 bot-poly python3[50339]: [2026-09-13 20:18:12]    ✅ ORDEN ENVIADA: 0x8185ba7c3d1642fa3d6d6c4167fdb2eb289d1dfa7937716a4286069c28c39e7b
+     Sep 13 20:18:12 bot-poly python3[50339]: [2026-09-13 20:18:12]    estado guardado
+     Sep 13 20:18:12 bot-poly python3[50339]: [2026-09-13 20:18:12] ════════════════════════════════════════════
+     Sep 13 20:18:12 bot-poly python3[50339]: [2026-09-13 20:18:12] Pasada completada
+     Sep 13 20:18:12 bot-poly python3[50339]: [2026-09-13 20:18:12] Próxima pasada en 15 min
+     Sep 13 20:30:50 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+     Sep 13 20:30:50 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+     Sep 13 20:30:50 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+     Sep 13 20:30:50 bot-poly systemd[1]: poly-elon-semanal.service: Consumed 44.262s CPU time, 47.2M memory peak, 0B memory swap peak.
+     Sep 13 20:30:50 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+     Sep 13 20:30:50 bot-poly python3[59739]: [2026-09-13 20:30:50] BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+     Sep 13 20:30:50 bot-poly python3[59739]: [2026-09-13 20:30:50] ════════════════════════════════════════════
+     Sep 13 20:30:50 bot-poly python3[59739]: [2026-09-13 20:30:50] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+     Sep 13 20:30:50 bot-poly python3[59739]: [2026-09-13 20:30:50] ════════════════════════════════════════════
+     Sep 13 20:30:50 bot-poly python3[59739]: [2026-09-13 20:30:50] AVG7=22.43  AVG30=27.43  R=0.818  ajuste=0.927
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22] 3 mercados semanales abiertos
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22] saldo=$351.02  paso=1  activa=no
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22]   bin 120-139 | YES @ 0.077 | EV=+2.876
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22]   bin 120-139 | YES @ 0.093 | EV=+2.192
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22]   bin 140-159 | YES @ 0.178 | EV=+2.157
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22]   bin 120-139 | YES @ 0.068 | EV=+3.422
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22]   bin 140-159 | YES @ 0.125 | EV=+3.509
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22]
+     Sep 13 20:31:22 bot-poly python3[59739]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22]    bin 140-159 YES EV=+3.509
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22]    stake=$3.3  paso=1
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22]    token_id: 303744128528580062283060375354...
+     Sep 13 20:31:22 bot-poly python3[59739]: [2026-09-13 20:31:22]    proxy configurado: http://100.83.57.99:8888
+     Sep 13 20:31:23 bot-poly python3[59739]: [2026-09-13 20:31:23]   ✅ proxy SDK inyectado con {'http2': True, 'proxy': 'http://100.83.57.99:8888'}
+     Sep 13 20:31:23 bot-poly python3[59739]: [2026-09-13 20:31:23]    usando SDK V2 (formato de orden moderno)
+     Sep 13 20:31:23 bot-poly python3[59739]: [2026-09-13 20:31:23]    importando ClobClient + OrderArgs OK
+     Sep 13 20:31:23 bot-poly python3[59739]: [2026-09-13 20:31:23]    cliente creado
+     Sep 13 20:31:23 bot-poly python3[59739]: [2026-09-13 20:31:23]    ✅ API creds derivadas
+     Sep 13 20:31:23 bot-poly python3[59739]: [2026-09-13 20:31:23]    enviando orden BUY 26.40 shares @ $0.125
+     Sep 13 20:31:24 bot-poly python3[59739]: [2026-09-13 20:31:24]    ✅ ORDEN ENVIADA: 0xddcaf4ef09e42cec0baba82db94438f66d7b10f6808b033ce51cc81a7d147341
+     Sep 13 20:31:24 bot-poly python3[59739]: [2026-09-13 20:31:24]    estado guardado
+     Sep 13 20:31:24 bot-poly python3[59739]: [2026-09-13 20:31:24] ════════════════════════════════════════════
+     Sep 13 20:31:24 bot-poly python3[59739]: [2026-09-13 20:31:24] Pasada completada
+     Sep 13 20:31:24 bot-poly python3[59739]: [2026-09-13 20:31:24] Próxima pasada en 15 min
+
+-- 6) HUELLAS FINALES
+     b55a889aae713e6612ef52a14045b16f  /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py
+     d5628de34a4d9e6c0afbcdac6afa117e  /opt/polymarket/check_salud.py
+     5a38bf3d3bb227344c36a003cc46667f  /opt/polymarket/gestionar_posiciones.py
+   (la esperada del semanal parcheado: b55a889aae713e6612ef52a14045b16f)
+     poly-elon-semanal: active
+     poly-elon: active
+     poly-gestor: active
+     poly-mensual: active
+     poly-telegram: active
+     poly-zelenskyy: active
+   ■ últimas 8 líneas del gestor (ya con la verdad en los mensajes):
+     [16:16 EDT] gestor pasada
+       próxima pasada en 5 min
+     [16:21 EDT] gestor pasada
+       próxima pasada en 5 min
+     [16:26 EDT] gestor pasada
+       próxima pasada en 5 min
+     [16:31 EDT] gestor pasada
+       próxima pasada en 5 min
+
+Vuelta atrás completa:
+  cp /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py.bak_puerta_20260913_203049 /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py
+  cp /opt/polymarket/check_salud.py.bak_salud_20260913_203049 /opt/polymarket/check_salud.py
+  cp /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json.bak_noche_20260913_203049 /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json
+  systemctl restart poly-elon-semanal poly-telegram
+=== FIN ARREGLO NOCTURNO ===
