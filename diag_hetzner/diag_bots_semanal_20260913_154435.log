@@ -1,0 +1,86 @@
+=== DIAG BOTS SEMANAL — 20260913_154435 UTC ===
+
+== 1. Working directory de cada bot_semanal ==
+real | WD=788
+real | WD=790
+real | WD=35625
+
+== 2. Buscar todos los bot_semanal.py en el sistema ==
+/opt/polymarket/backup_trump_20260831_201030/bot_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/bot_semanal.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/bot_semanal.py
+/opt/polymarket/bot-polymarket-zelenskyy/bot_semanal.py
+/opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal-v2/bot_semanal.py
+/opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal/bot_semanal.py
+/opt/polymarket/bot-polymarket-trump/bot_semanal.py
+/root/gh_backup/bot_semanal.py
+/root/gh_backup/backup-bots/bot-poly/polymarket/backup_trump_20260831_201030/bot_semanal.py
+/root/gh_backup/backup-bots/bot-poly/bots/bot-polymarket-elon-semanal/bot_semanal.py
+/root/gh_backup/backup-bots/bot-poly/bots/bot-polymarket-zelenskyy/bot_semanal.py
+/root/bots-repo/poly/codigo/bot-polymarket-elon-semanal/bot_semanal.py
+/root/bots-repo/poly/codigo/bot-polymarket-zelenskyy/bot_semanal.py
+
+== 3. Comparar tamaños y md5 ==
+--- /opt/polymarket/backup_trump_20260831_201030/bot_semanal.py ---
+-rw-r--r-- 1 root root 13847 Aug 30 17:49 /opt/polymarket/backup_trump_20260831_201030/bot_semanal.py
+9dbdeac39144b9b17b8416f1f9aaaac6  /opt/polymarket/backup_trump_20260831_201030/bot_semanal.py
+--- /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py ---
+-rwxr-xr-x 1 root root 7732 Sep 12 20:12 /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py
+3b9316abda60466142bfee1f72dabfd9  /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py
+--- /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/bot_semanal.py ---
+-rw-r--r-- 1 root root 13707 Aug 20 07:29 /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/bot_semanal.py
+e03ffdca4a3ea045cc8d12371882fb9a  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/bot_semanal.py
+--- /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/bot_semanal.py ---
+-rw-r--r-- 1 root root 13707 Aug 20 07:29 /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/bot_semanal.py
+e03ffdca4a3ea045cc8d12371882fb9a  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/bot_semanal.py
+--- /opt/polymarket/bot-polymarket-zelenskyy/bot_semanal.py ---
+-rw-r--r-- 1 root root 13851 Aug 20 21:07 /opt/polymarket/bot-polymarket-zelenskyy/bot_semanal.py
+9d5e6b0f19848c77645747ba9207e7c9  /opt/polymarket/bot-polymarket-zelenskyy/bot_semanal.py
+--- /opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal-v2/bot_semanal.py ---
+-rw-r--r-- 1 root root 13669 Aug 18 10:20 /opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal-v2/bot_semanal.py
+aac1eb5ec42737f515ebd767993f1e86  /opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal-v2/bot_semanal.py
+--- /opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal/bot_semanal.py ---
+-rw-r--r-- 1 root root 13658 Aug 18 10:20 /opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal/bot_semanal.py
+d2c2f5e89ed2ae918ee1cf47594421d8  /opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal/bot_semanal.py
+--- /opt/polymarket/bot-polymarket-trump/bot_semanal.py ---
+-rw-r--r-- 1 root root 13847 Aug 30 17:49 /opt/polymarket/bot-polymarket-trump/bot_semanal.py
+9dbdeac39144b9b17b8416f1f9aaaac6  /opt/polymarket/bot-polymarket-trump/bot_semanal.py
+--- /root/gh_backup/bot_semanal.py ---
+-rw-r--r-- 1 root root 13466 Aug 21 07:08 /root/gh_backup/bot_semanal.py
+2c3fcb1e1fae46899c19b103e45638b0  /root/gh_backup/bot_semanal.py
+--- /root/gh_backup/backup-bots/bot-poly/polymarket/backup_trump_20260831_201030/bot_semanal.py ---
+-rw-r--r-- 1 root root 13847 Aug 30 17:49 /root/gh_backup/backup-bots/bot-poly/polymarket/backup_trump_20260831_201030/bot_semanal.py
+9dbdeac39144b9b17b8416f1f9aaaac6  /root/gh_backup/backup-bots/bot-poly/polymarket/backup_trump_20260831_201030/bot_semanal.py
+--- /root/gh_backup/backup-bots/bot-poly/bots/bot-polymarket-elon-semanal/bot_semanal.py ---
+-rwxr-xr-x 1 root root 7732 Sep 12 20:12 /root/gh_backup/backup-bots/bot-poly/bots/bot-polymarket-elon-semanal/bot_semanal.py
+3b9316abda60466142bfee1f72dabfd9  /root/gh_backup/backup-bots/bot-poly/bots/bot-polymarket-elon-semanal/bot_semanal.py
+--- /root/gh_backup/backup-bots/bot-poly/bots/bot-polymarket-zelenskyy/bot_semanal.py ---
+-rw-r--r-- 1 root root 13851 Aug 20 21:07 /root/gh_backup/backup-bots/bot-poly/bots/bot-polymarket-zelenskyy/bot_semanal.py
+9d5e6b0f19848c77645747ba9207e7c9  /root/gh_backup/backup-bots/bot-poly/bots/bot-polymarket-zelenskyy/bot_semanal.py
+--- /root/bots-repo/poly/codigo/bot-polymarket-elon-semanal/bot_semanal.py ---
+-rw-r--r-- 1 root root 7732 Sep 13 02:15 /root/bots-repo/poly/codigo/bot-polymarket-elon-semanal/bot_semanal.py
+3b9316abda60466142bfee1f72dabfd9  /root/bots-repo/poly/codigo/bot-polymarket-elon-semanal/bot_semanal.py
+--- /root/bots-repo/poly/codigo/bot-polymarket-zelenskyy/bot_semanal.py ---
+-rw-r--r-- 1 root root 13851 Sep 13 02:15 /root/bots-repo/poly/codigo/bot-polymarket-zelenskyy/bot_semanal.py
+9d5e6b0f19848c77645747ba9207e7c9  /root/bots-repo/poly/codigo/bot-polymarket-zelenskyy/bot_semanal.py
+
+== 4. ¿Cómo configura el proxy cada bot_semanal.py? ==
+--- /opt/polymarket/backup_trump_20260831_201030/bot_semanal.py ---
+--- /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py ---
+130:    log(f"   proxy configurado: {os.environ.get('HTTP_PROXY', 'no')[:50]}")
+--- /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/bot_semanal.py ---
+--- /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/bot_semanal.py ---
+--- /opt/polymarket/bot-polymarket-zelenskyy/bot_semanal.py ---
+--- /opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal-v2/bot_semanal.py ---
+--- /opt/polymarket/motores/motor_v2_ev_escalones_tope10/bot-polymarket-elon-semanal/bot_semanal.py ---
+--- /opt/polymarket/bot-polymarket-trump/bot_semanal.py ---
+--- /root/gh_backup/bot_semanal.py ---
+--- /root/gh_backup/backup-bots/bot-poly/polymarket/backup_trump_20260831_201030/bot_semanal.py ---
+--- /root/gh_backup/backup-bots/bot-poly/bots/bot-polymarket-elon-semanal/bot_semanal.py ---
+130:    log(f"   proxy configurado: {os.environ.get('HTTP_PROXY', 'no')[:50]}")
+--- /root/gh_backup/backup-bots/bot-poly/bots/bot-polymarket-zelenskyy/bot_semanal.py ---
+--- /root/bots-repo/poly/codigo/bot-polymarket-elon-semanal/bot_semanal.py ---
+130:    log(f"   proxy configurado: {os.environ.get('HTTP_PROXY', 'no')[:50]}")
+--- /root/bots-repo/poly/codigo/bot-polymarket-zelenskyy/bot_semanal.py ---
+
