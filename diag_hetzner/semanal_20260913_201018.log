@@ -1,0 +1,427 @@
+=== DIAG SEMANAL Y VENTANAS · Sun Sep 13 08:10:18 PM UTC 2026 · host bot-poly ===
+
+-- 1) FLOTA COMPLETA (los 7 servicios, uno a uno)
+   ■ poly-elon
+     Type=simple
+     Result=success
+     NRestarts=0
+     ExecMainCode=0
+     ExecMainStatus=0
+     ActiveState=active
+     SubState=running
+     ActiveEnterTimestamp=Sun 2026-09-13 19:54:24 UTC
+     ActiveExitTimestamp=Sun 2026-09-13 19:54:24 UTC
+     arranque-en-boot: enabled
+   ■ poly-semanal
+     Type=
+     Result=success
+     NRestarts=0
+     ExecMainCode=0
+     ExecMainStatus=0
+     ActiveState=inactive
+     SubState=dead
+     ActiveEnterTimestamp=
+     ActiveExitTimestamp=
+     arranque-en-boot: not-found
+?
+   ■ poly-mensual
+     Type=simple
+     Result=success
+     NRestarts=0
+     ExecMainCode=0
+     ExecMainStatus=0
+     ActiveState=active
+     SubState=running
+     ActiveEnterTimestamp=Sun 2026-09-13 07:08:53 UTC
+     ActiveExitTimestamp=
+     arranque-en-boot: enabled
+   ■ poly-telegram
+     Type=simple
+     Result=success
+     NRestarts=0
+     ExecMainCode=0
+     ExecMainStatus=0
+     ActiveState=active
+     SubState=running
+     ActiveEnterTimestamp=Sun 2026-09-13 07:08:54 UTC
+     ActiveExitTimestamp=
+     arranque-en-boot: enabled
+   ■ poly-gestor
+     Type=simple
+     Result=success
+     NRestarts=0
+     ExecMainCode=0
+     ExecMainStatus=0
+     ActiveState=active
+     SubState=running
+     ActiveEnterTimestamp=Sun 2026-09-13 07:08:53 UTC
+     ActiveExitTimestamp=
+     arranque-en-boot: enabled
+   ■ poly-telegram-zelen
+     Type=simple
+     Result=success
+     NRestarts=0
+     ExecMainCode=0
+     ExecMainStatus=0
+     ActiveState=active
+     SubState=running
+     ActiveEnterTimestamp=Sun 2026-09-13 07:08:54 UTC
+     ActiveExitTimestamp=
+     arranque-en-boot: enabled
+   ■ poly-zelenskyy
+     Type=simple
+     Result=success
+     NRestarts=0
+     ExecMainCode=0
+     ExecMainStatus=0
+     ActiveState=active
+     SubState=running
+     ActiveEnterTimestamp=Sun 2026-09-13 07:08:54 UTC
+     ActiveExitTimestamp=
+     arranque-en-boot: enabled
+   ■ temporizadores (timers) relacionados:
+     Sun 2026-09-13 20:11:09 UTC      50s Sun 2026-09-13 20:01:09 UTC     9min ago poly-salud-zelen.timer         poly-salud-zelen.service
+     Sun 2026-09-13 20:11:09 UTC      50s Sun 2026-09-13 20:01:09 UTC     9min ago poly-salud.timer               poly-salud.service
+     Sun 2026-09-13 20:12:39 UTC 2min 20s Sun 2026-09-13 20:02:39 UTC     7min ago poly-salud-trump.timer         poly-salud-trump.service
+     Sun 2026-09-13 20:15:36 UTC     5min Sun 2026-09-13 19:45:36 UTC    24min ago poly-fantasmas-trump.timer     poly-fantasmas-trump.service
+     Sun 2026-09-13 20:15:36 UTC     5min Sun 2026-09-13 19:45:36 UTC    24min ago poly-fantasmas-zelen.timer     poly-fantasmas-zelen.service
+     Sun 2026-09-13 20:15:36 UTC     5min Sun 2026-09-13 19:45:36 UTC    24min ago poly-fantasmas.timer           poly-fantasmas.service
+     Sun 2026-09-13 22:00:00 UTC 1h 49min Sun 2026-09-13 20:00:00 UTC    10min ago poly-backup-2h.timer           poly-backup-github.service
+     Mon 2026-09-14 02:15:00 UTC       6h Sun 2026-09-13 02:15:02 UTC            - poly-backup.timer              poly-backup.service
+     Mon 2026-09-14 02:30:00 UTC       6h Sun 2026-09-13 02:30:01 UTC            - poly-backup-github.timer       poly-backup-github.service
+     Mon 2026-09-14 03:15:00 UTC       7h Sun 2026-09-13 03:15:01 UTC            - poly-backup-cruzado.timer      poly-backup-cruzado.service
+     Mon 2026-09-14 06:00:00 UTC       9h Sun 2026-09-13 20:00:00 UTC    10min ago poly-salud-diario.timer        poly-salud-diario.service
+     Mon 2026-09-14 07:00:00 UTC      10h Sun 2026-09-13 19:00:01 UTC 1h 10min ago poly-test-diario.timer         poly-test-diario.service
+     Mon 2026-09-14 07:05:00 UTC      10h Sun 2026-09-13 19:05:01 UTC  1h 5min ago poly-test-diario-zelen.timer   poly-test-diario-zelen.service
+     Mon 2026-09-14 07:10:00 UTC      10h Sun 2026-09-13 19:10:01 UTC  1h 0min ago poly-test-diario-trump.timer   poly-test-diario-trump.service
+
+-- 2) AUTOPSIA DEL SEMANAL (por qué está parado)
+   ■ definición del servicio (con qué orden arranca):
+   ■ diario desde las 17:30 UTC (últimas 150 líneas; la cirugía fue ~18:29):
+     -- No entries --
+   ■ su fichero de log (/var/log/poly-semanal.log, últimas 80 líneas):
+     -rw-r--r-- 1 root root 10474155 Sep 12 07:08 /var/log/poly-semanal.log
+     2026-08-30        9
+     2026-09-03        1
+     2026-09-05        5
+     2026-09-06       21
+     2026-09-07       21
+     2026-09-08       25
+     2026-09-09       22
+     2026-09-10       22
+     2026-09-11       30
+     
+     AVG7 = 20.86  V2 = 52  R = 1.247  ajuste = 1.123  λ48 = 46.9
+     Días completos en CSV: 46
+     [2026-09-12 02:57:58 EDT] Pasada completada en 22.0 s
+     [2026-09-12 02:57:58 EDT] Próxima pasada en 5 min…
+     [2026-09-12 03:02:58 EDT] ==============================================================
+     [2026-09-12 03:02:58 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+     [2026-09-12 03:02:58 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+     [2026-09-12 03:02:58 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+     [2026-09-12 03:02:58 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+       nitter nitter.tiekoetter.com: sin items
+     [2026-09-12 03:03:02 EDT]       · nitter: 20 items
+     [2026-09-12 03:03:02 EDT]       · tweets únicos: 766 (reposts 474) · CSV: 46 días (nuevos/mejorados: 0)
+     [2026-09-12 03:03:02 EDT] 2/4 · Actualizando mercados de Polymarket…
+     [2026-09-12 03:03:19 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+     [2026-09-12 03:03:19 EDT] 3/4 · Trading REAL…
+     [2026-09-12 03:03 EDT] Trading REAL SEMANAL  · saldo $1997.35 · paso 1
+       Historial REAL: 41 apuestas · 10G/31P · beneficio $+1497.35
+     [2026-09-12 03:03:19 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal.xlsx (añadidas 0, total 17)
+     [2026-09-12 03:03:19 EDT] 4/4 · Estado:
+     fecha        tweets
+     2026-08-27       30
+     2026-08-28        7
+     2026-08-29       16
+     2026-08-30        9
+     2026-09-03        1
+     2026-09-05        5
+     2026-09-06       21
+     2026-09-07       21
+     2026-09-08       25
+     2026-09-09       22
+     2026-09-10       22
+     2026-09-11       30
+     
+     AVG7 = 20.86  V2 = 52  R = 1.247  ajuste = 1.123  λ48 = 46.9
+     Días completos en CSV: 46
+     [2026-09-12 03:03:19 EDT] Pasada completada en 21.6 s
+     [2026-09-12 03:03:19 EDT] Próxima pasada en 5 min…
+     [2026-09-12 03:08:19 EDT] ==============================================================
+     [2026-09-12 03:08:19 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+     [2026-09-12 03:08:19 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+     [2026-09-12 03:08:19 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+     [2026-09-12 03:08:19 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+       nitter nitter.tiekoetter.com: sin items
+     [2026-09-12 03:08:24 EDT]       · nitter: 20 items
+     [2026-09-12 03:08:24 EDT]       · tweets únicos: 766 (reposts 474) · CSV: 46 días (nuevos/mejorados: 0)
+     [2026-09-12 03:08:24 EDT] 2/4 · Actualizando mercados de Polymarket…
+     [2026-09-12 03:08:42 EDT]       · 6 mercados · 1 de 48 h abiertos → mercado_activo.json
+     [2026-09-12 03:08:42 EDT] 3/4 · Trading REAL…
+     [2026-09-12 03:08 EDT] Trading REAL SEMANAL  · saldo $1997.35 · paso 1
+       Historial REAL: 41 apuestas · 10G/31P · beneficio $+1497.35
+     [2026-09-12 03:08:43 EDT]       · Excel historial actualizado: Historial_Operaciones_Semanal.xlsx (añadidas 0, total 17)
+     [2026-09-12 03:08:43 EDT] 4/4 · Estado:
+     fecha        tweets
+     2026-08-27       30
+     2026-08-28        7
+     2026-08-29       16
+     2026-08-30        9
+     2026-09-03        1
+     2026-09-05        5
+     2026-09-06       21
+     2026-09-07       21
+     2026-09-08       25
+     2026-09-09       22
+     2026-09-10       22
+     2026-09-11       30
+     
+     AVG7 = 20.86  V2 = 52  R = 1.247  ajuste = 1.123  λ48 = 46.9
+     Días completos en CSV: 46
+     [2026-09-12 03:08:43 EDT] Pasada completada en 23.3 s
+     [2026-09-12 03:08:43 EDT] Próxima pasada en 5 min…
+   ■ huella del fichero del bot (la cirugía de hoy debía dejar 00782a19…):
+     21ae18c14e821a9aad419290590b0fa7  /opt/polymarket/backup_trump_20260831_201030/papel_semanal.py
+     7e5c78a957adb05bd1f2c24dd45736b5  /opt/polymarket/backup_trump_20260831_201030/operar_real_semanal.py
+     94e71dfd455f986c067172618eab89d9  /opt/polymarket/backup_trump_20260831_201030/notificar_semanal.py
+     9dbdeac39144b9b17b8416f1f9aaaac6  /opt/polymarket/backup_trump_20260831_201030/bot_semanal.py
+     7c0ba25ca8e6b1059382b8295c99c7ff  /opt/polymarket/backup_trump_20260831_201030/probar_orden_semanal.py
+     3990fcaafcf810ddd2909eb52e5f4583  /opt/polymarket/bot-polymarket-elon-semanal/papel_semanal.py
+     2fb45a71714b3384f0a1f99c80b00808  /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py
+     be8f8b9c040eeda1d7d1709641f59f26  /opt/polymarket/bot-polymarket-elon-semanal/notificar_semanal.py
+     00782a19e37e2fc5e9c489aa9105f199  /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py
+     7c0ba25ca8e6b1059382b8295c99c7ff  /opt/polymarket/bot-polymarket-elon-semanal/probar_orden_semanal.py
+     3b359eb4d9a25ec2a18a546df8a9137d  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/papel_semanal.py
+     be8f8b9c040eeda1d7d1709641f59f26  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/notificar_v2_semanal.py
+     5162c28bba3f92b169f372c89cfab250  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/operar_real_semanal.py
+     e03ffdca4a3ea045cc8d12371882fb9a  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/bot_semanal.py
+     7c0ba25ca8e6b1059382b8295c99c7ff  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/probar_orden_semanal.py
+     3b359eb4d9a25ec2a18a546df8a9137d  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/papel_semanal.py
+     be8f8b9c040eeda1d7d1709641f59f26  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/notificar_v2_semanal.py
+     5162c28bba3f92b169f372c89cfab250  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/operar_real_semanal.py
+     e03ffdca4a3ea045cc8d12371882fb9a  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/bot_semanal.py
+     7c0ba25ca8e6b1059382b8295c99c7ff  /opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/probar_orden_semanal.py
+     ead6f899fb7e3a73008346fdd530c42e  /opt/polymarket/bot-polymarket-zelenskyy/papel_semanal.py
+     3d4203110f65b8a7e36cc7e5e4826b2e  /opt/polymarket/bot-polymarket-zelenskyy/operar_real_semanal.py
+     94e71dfd455f986c067172618eab89d9  /opt/polymarket/bot-polymarket-zelenskyy/notificar_semanal.py
+     9d5e6b0f19848c77645747ba9207e7c9  /opt/polymarket/bot-polymarket-zelenskyy/bot_semanal.py
+     7c0ba25ca8e6b1059382b8295c99c7ff  /opt/polymarket/bot-polymarket-zelenskyy/probar_orden_semanal.py
+     21ae18c14e821a9aad419290590b0fa7  /opt/polymarket/bot-polymarket-trump/papel_semanal.py
+     7e5c78a957adb05bd1f2c24dd45736b5  /opt/polymarket/bot-polymarket-trump/operar_real_semanal.py
+     94e71dfd455f986c067172618eab89d9  /opt/polymarket/bot-polymarket-trump/notificar_semanal.py
+     9dbdeac39144b9b17b8416f1f9aaaac6  /opt/polymarket/bot-polymarket-trump/bot_semanal.py
+     7c0ba25ca8e6b1059382b8295c99c7ff  /opt/polymarket/bot-polymarket-trump/probar_orden_semanal.py
+     a50e008362c178adb4c5dfe994110f43  /opt/polymarket/_backup_motor_v1/bot-polymarket-elon-semanal-v2/operar_real_semanal.py
+     fc41036c862de0216ead36b0c3fab135  /opt/polymarket/_backup_motor_v1/bot-polymarket-elon-semanal/operar_real_semanal.py
+
+-- 3) EL GESTOR: ¿corre el código nuevo (verdad en los mensajes) o el viejo?
+   ■ definición del servicio poly-gestor:
+     # /etc/systemd/system/poly-gestor.service
+     [Unit]
+     Description=Gestor de cierre anticipado de posiciones Polymarket
+     After=network-online.target
+     Wants=network-online.target
+     StartLimitIntervalSec=0
+     
+     [Service]
+     Type=simple
+     User=root
+     WorkingDirectory=/opt/polymarket
+     EnvironmentFile=/etc/polymarket.env
+     ExecStart=/usr/bin/python3 /opt/polymarket/gestionar_posiciones.py --loop 5
+     Restart=always
+     RestartSec=30
+     StandardOutput=append:/var/log/poly-gestor.log
+     StandardError=append:/var/log/poly-gestor.log
+     SyslogIdentifier=poly-gestor
+     
+     [Install]
+     WantedBy=multi-user.target
+   ■ cuándo arrancó su proceso (si fue ANTES de 19:54 UTC, tiene el código viejo en memoria):
+     MainPID=781
+     ExecMainStartTimestamp=Sun 2026-09-13 07:08:53 UTC
+     ActiveEnterTimestamp=Sun 2026-09-13 07:08:53 UTC
+   ■ huella en disco (debe ser 5a38bf3d3bb227344c36a003cc46667f tras el parche):
+     5a38bf3d3bb227344c36a003cc46667f  /opt/polymarket/gestionar_posiciones.py
+   ■ sus últimas 50 líneas de diario (se ven las pasadas y sus horas):
+     Sep 09 17:58:59 bot-poly systemd[1]: Stopping poly-gestor.service - Gestor de cierre anticipado de posiciones Polymarket...
+     Sep 09 17:58:59 bot-poly systemd[1]: poly-gestor.service: Deactivated successfully.
+     Sep 09 17:58:59 bot-poly systemd[1]: Stopped poly-gestor.service - Gestor de cierre anticipado de posiciones Polymarket.
+     Sep 09 17:58:59 bot-poly systemd[1]: poly-gestor.service: Consumed 2min 29.649s CPU time, 47.1M memory peak, 0B memory swap peak.
+     Sep 09 17:58:59 bot-poly systemd[1]: Started poly-gestor.service - Gestor de cierre anticipado de posiciones Polymarket.
+     Sep 12 06:05:48 bot-poly systemd[1]: Stopping poly-gestor.service - Gestor de cierre anticipado de posiciones Polymarket...
+     Sep 12 06:05:48 bot-poly systemd[1]: poly-gestor.service: Deactivated successfully.
+     Sep 12 06:05:48 bot-poly systemd[1]: Stopped poly-gestor.service - Gestor de cierre anticipado de posiciones Polymarket.
+     Sep 12 06:05:48 bot-poly systemd[1]: poly-gestor.service: Consumed 50.210s CPU time, 47.8M memory peak, 0B memory swap peak.
+     Sep 12 06:05:49 bot-poly systemd[1]: Started poly-gestor.service - Gestor de cierre anticipado de posiciones Polymarket.
+     Sep 12 06:06:01 bot-poly systemd[1]: Stopping poly-gestor.service - Gestor de cierre anticipado de posiciones Polymarket...
+     Sep 12 06:06:01 bot-poly systemd[1]: poly-gestor.service: Deactivated successfully.
+     Sep 12 06:06:01 bot-poly systemd[1]: Stopped poly-gestor.service - Gestor de cierre anticipado de posiciones Polymarket.
+     Sep 12 06:06:01 bot-poly systemd[1]: Started poly-gestor.service - Gestor de cierre anticipado de posiciones Polymarket.
+     -- Boot f32c12163e2e4dfca752290cc1b50054 --
+     Sep 13 07:08:53 bot-poly systemd[1]: Started poly-gestor.service - Gestor de cierre anticipado de posiciones Polymarket.
+   ■ ¿lo lanza también algún cron? (crontab de root y /etc/cron.d):
+     0 9 * * 1 /usr/bin/python3 -u /root/seguimiento_semanal.py >> /root/semanal.log 2>&1
+     1 0 1 * * /usr/bin/python3 -u /root/reset_mensual.py >> /root/reset.log 2>&1
+     # Bot Menciones — chequeo cada 6 horas
+     0 */6 * * * /opt/polymarket/test_salud_mention.sh >> /var/log/salud_mention_cron.log 2>&1
+     # Bot Menciones — backup diario a las 04:00 UTC
+     0 4 * * * /opt/polymarket/backup_mention.sh >> /var/log/backup_mention_cron.log 2>&1
+     */5 * * * * /opt/polymarket/scraper_cron_elon.sh
+     # Overreaction bot — salud cada 6h
+     0 */6 * * * /opt/polymarket/test_salud_overreaction.sh >> /var/log/salud_overreaction_cron.log 2>&1
+     # Overreaction bot — backup diario 04:30 UTC
+     30 4 * * * /opt/polymarket/backup_overreaction.sh >> /var/log/backup_overreaction_cron.log 2>&1
+     e2scrub_all
+     poly_monitoreo
+     sysstat
+
+-- 4) ¿QUIÉN MANDA EL AVISO DE SALUD? (para ver si se equivoca con los servicios)
+   ■ fichero: /opt/polymarket/poly_telegram_bot.py
+     335-    res = CS.check()
+     336-    if res["ok"]:
+     337:        return ("🩺 *SALUD POLYMARKET: TODO OK*\n\n" +
+     338-                "\n".join(f"• {d}" for d in res["detalles"]))
+     339:    return ("🩺 *SALUD POLYMARKET: HAY FALLOS*\n\n" +
+     340-            "\n".join(f"• ❌ {f}" for f in res["fallos"]) +
+     341-            "\n\n*Detalle:*\n" +
+     342-            "\n".join(f"• {d}" for d in res["detalles"]))
+     343-
+     344-
+     345-def resumen_diario(slot):
+     346-    """Resumen diario UNIFICADO (10:00 y 20:00 hora de Madrid): un SOLO
+     347-    mensaje con saldo + abiertas + finalizadas (sin ráfaga de mensajes)."""
+     348-    hoy = datetime.now(MAD).strftime("%d/%m/%Y")
+     349-    icono = "☀️" if slot == "mañana" else "🌆"
+     350-    partes = [f"{icono} *RESUMEN DIARIO POLYMARKET (ELON) · {hoy}*", ""]
+     351-    for fn, nombre in ((PR.texto_saldo, "saldo"),
+     --- qué servicios mira y cómo decide el fallo ---
+   ■ fichero: /opt/polymarket/_backup_motor_v1/poly_telegram_bot.py
+     265-    res = CS.check()
+     266-    if res["ok"]:
+     267:        return ("🩺 *SALUD POLYMARKET: TODO OK*\n\n" +
+     268-                "\n".join(f"• {d}" for d in res["detalles"]))
+     269:    return ("🩺 *SALUD POLYMARKET: HAY FALLOS*\n\n" +
+     270-            "\n".join(f"• ❌ {f}" for f in res["fallos"]) +
+     271-            "\n\n*Detalle:*\n" +
+     272-            "\n".join(f"• {d}" for d in res["detalles"]))
+     273-
+     274-
+     275-def resumen_diario(slot):
+     276-    """Resumen diario automático (10:00 y 20:00 hora de Madrid)."""
+     277-    hoy = datetime.now(MAD).strftime("%d/%m/%Y")
+     278-    icono = "☀️" if slot == "mañana" else "🌆"
+     279-    cab = f"{icono} *RESUMEN DIARIO POLYMARKET ({slot.upper()}) · {hoy}*"
+     280-    try:
+     281-        enviar(cab)
+     --- qué servicios mira y cómo decide el fallo ---
+
+-- 5) LA PUERTA EN EL BOT 48h (huellas desde el reinicio de las 19:54)
+   ■ últimas 25 líneas del diario de poly-elon:
+     Sep 10 19:35:58 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+     Sep 10 19:35:58 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+     Sep 10 19:36:28 bot-poly systemd[1]: poly-elon.service: Scheduled restart job, restart counter is at 19.
+     Sep 10 19:36:29 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+     Sep 10 19:36:29 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+     Sep 10 19:36:59 bot-poly systemd[1]: poly-elon.service: Scheduled restart job, restart counter is at 20.
+     Sep 10 19:36:59 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+     Sep 10 19:36:59 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+     Sep 10 19:37:13 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+     Sep 10 19:37:13 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+     Sep 12 06:05:48 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+     Sep 12 06:05:49 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+     Sep 12 06:05:49 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+     Sep 12 06:05:49 bot-poly systemd[1]: poly-elon.service: Consumed 13min 31.304s CPU time, 87.8M memory peak, 0B memory swap peak.
+     Sep 12 06:05:49 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+     Sep 12 06:06:01 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+     Sep 12 06:06:01 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+     Sep 12 06:06:01 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+     Sep 12 06:06:01 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+     -- Boot f32c12163e2e4dfca752290cc1b50054 --
+     Sep 13 07:08:53 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+     Sep 13 19:54:24 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+     Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+     Sep 13 19:54:24 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+     Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Consumed 9min 1.812s CPU time, 55.8M memory peak, 0B memory swap peak.
+     Sep 13 19:54:24 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+
+-- 6) PRUEBA DE OPERATIVA: trades reales de las últimas 34 horas (registro oficial)
+   ■ cartera: 0xb0E1…0FA0 (recortada a propósito)
+     13-09 21:26 · TRADE  SELL · Will Elon Musk post 120-139 tweets from September 8 to Sep · 35.45 sh @ 0.0549 = 1.86$ · tx 0xfd82176210
+     13-09 21:22 · TRADE  BUY  · Will Elon Musk post 120-139 tweets from September 8 to Sep · 35.45 sh @ 0.0620 = 2.20$ · tx 0xc2df3389c6
+     13-09 21:16 · TRADE  SELL · Will Elon Musk post 120-139 tweets from September 8 to Sep · 18.20 sh @ 0.0623 = 1.08$ · tx 0x068987f38c
+     13-09 21:12 · TRADE  BUY  · Will Elon Musk post 120-139 tweets from September 8 to Sep · 18.20 sh @ 0.0620 = 1.13$ · tx 0x25ceb34791
+     13-09 19:58 · TRADE  BUY  · Ravens vs. Colts AND Bears vs. Panthers · 14.18 sh @ 0.6499 = 9.38$ · tx 0xadda4beb6a
+     13-09 19:56 · REDEEM      · LoL: Gen.G vs Hanwha Life Esports - Game 3 Winner AND Will · 14.48 sh @ 0.0000 = 14.48$ · tx 0x2fd5066818
+     13-09 16:48 · TRADE  BUY  · Spread: FC Barcelona (-2.5) AND Will RB Leipzig win on 202 · 13.29 sh @ 0.6953 = 9.38$ · tx 0xb6dd2b5449
+     13-09 13:03 · TRADE  BUY  · Will Donald Trump post 60-79 Truth Social posts from Septe · 58.44 sh @ 0.0770 = 4.50$ · tx 0x1136d632d3
+     13-09 09:47 · TRADE  BUY  · LoL: Gen.G vs Hanwha Life Esports - Game 3 Winner AND Will · 14.48 sh @ 0.6043 = 8.92$ · tx 0x1728289509
+     13-09 06:26 · REDEEM      · Counter-Strike: Heroic vs 1WIN (BO3) - Thunderpick World C · 14.32 sh @ 0.0000 = 14.32$ · tx 0xa78d78ac74
+     13-09 05:19 · REDEEM      · Genoa: Thiago Seyboth Wild vs Matej Dodig AND Noche UFC: C · 14.57 sh @ 0.0000 = 14.57$ · tx 0xb8a0b55989
+     13-09 03:26 · REDEEM      · Wake Forest vs. Purdue AND Will Real Madrid CF win on 2026 · 17.19 sh @ 0.0000 = 17.19$ · tx 0xe132c8ead1
+     13-09 02:35 · REDEEM      · LoL: Hanwha Life Esports vs T1 - Game 1 Winner AND Will Re · 13.87 sh @ 0.0000 = 13.87$ · tx 0xbfa8982f01
+     13-09 02:16 · YIELD       · ? · 0.00 sh @ 0.0000 = 0.00$ · tx 0xb517ae8710
+     13-09 00:05 · TRADE  BUY  · Genoa: Thiago Seyboth Wild vs Matej Dodig AND Noche UFC: C · 14.57 sh @ 0.6342 = 9.41$ · tx 0x0bb0904082
+     12-09 22:55 · TRADE  BUY  · Los Angeles Dodgers vs. Miami Marlins AND Will Arsenal FC  · 14.54 sh @ 0.6190 = 9.17$ · tx 0x375d577d6b
+     12-09 22:04 · TRADE  BUY  · Counter-Strike: Heroic vs 1WIN (BO3) - Thunderpick World C · 14.32 sh @ 0.6263 = 9.14$ · tx 0xc0693456e7
+     12-09 20:54 · TRADE  BUY  · Wake Forest vs. Purdue AND Will Real Madrid CF win on 2026 · 17.19 sh @ 0.5280 = 9.29$ · tx 0x270621dd0e
+     12-09 20:34 · TRADE  BUY  · Genoa: Laslo Djere vs Pedro Martinez AND Will FC Barcelona · 14.18 sh @ 0.6330 = 9.14$ · tx 0x0371931b73
+     12-09 17:54 · TRADE  BUY  · Oregon vs. Oklahoma State AND Counter-Strike: HOTU vs 100  · 13.94 sh @ 0.6510 = 9.23$ · tx 0x2801483260
+     12-09 16:33 · TRADE  BUY  · Cassis: Titouan Droguet vs Nicolai Budkov Kjaer AND Will C · 17.16 sh @ 0.5290 = 9.29$ · tx 0x86f9204d69
+     12-09 14:53 · TRADE  BUY  · Counter-Strike: BetBoom Team vs G2 (BO3) - FISSURE PLAYGRO · 15.48 sh @ 0.5710 = 9.03$ · tx 0xc3e134efbe
+     12-09 12:22 · REDEEM      · Counter-Strike: Legacy vs MIBR (BO3) - FISSURE PLAYGROUND  · 13.81 sh @ 0.0000 = 13.81$ · tx 0xb19b050b8e
+     --- 23 movimientos en las últimas 34 h ---
+
+-- 7) VENTANAS ABIERTAS AHORA MISMO (posiciones reales por mercado)
+     2026 Balance of Power: D Senate, D House | Yes | 30.612 sh · compra 0.4899 · ahora 0.5350 · PnL 1.38$ · cobrable no · fin 2026-11-03
+     Aarhus GF vs. KKS Lech Poznań: O/U 2.5 | Under | 24.512 sh · compra 0.4079 · ahora 0.0000 · PnL -10.00$ · cobrable SÍ · fin 2026-07-21
+     Spread: Fenerbahçe SK (-2.5) | Fenerbahçe SK | 12.195 sh · compra 0.4099 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-07-21
+     US Open ATP: Arthur Gea vs Botic van de Zandschulp | Arthur Gea | 11.760 sh · compra 0.4200 · ahora 0.0000 · PnL -4.94$ · cobrable SÍ · fin 2026-09-14
+     US Open ATP: Francisco Cerundolo vs Alexander Blockx | Francisco Ceru | 16.370 sh · compra 0.6059 · ahora 0.0000 · PnL -9.92$ · cobrable SÍ · fin 2026-09-13
+     US Open WTA: Iga Swiatek vs Qinwen Zheng | Iga Swiatek | 10.750 sh · compra 0.4600 · ahora 0.0000 · PnL -4.95$ · cobrable SÍ · fin 2026-09-13
+     Will CA Mineiro win on 2026-07-21? | Yes | 10.000 sh · compra 0.5000 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-07-21
+     Will Donald Trump post 60-79 Truth Social posts from | Yes | 58.440 sh · compra 0.0770 · ahora 0.0810 · PnL 0.23$ · cobrable no · fin 2026-09-18
+     Will Elon Musk post 100-119 tweets from May 15 to Ma | Yes | 20.833 sh · compra 0.2399 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-05-22
+     Will Elon Musk post 100-119 tweets from May 8 to May | Yes | 27.052 sh · compra 0.3696 · ahora 0.0000 · PnL -10.00$ · cobrable SÍ · fin 2026-05-15
+     Will Elon Musk post 120-139 tweets from August 7 to  | Yes | 5.000 sh · compra 0.0100 · ahora 0.0000 · PnL -0.05$ · cobrable SÍ · fin 2026-08-14
+     Will Elon Musk post 120-139 tweets from May 12 to Ma | Yes | 27.778 sh · compra 0.1799 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-05-19
+     Will Elon Musk post 120-139 tweets from May 5 to May | Yes | 23.202 sh · compra 0.4309 · ahora 0.0000 · PnL -10.00$ · cobrable SÍ · fin 2026-05-12
+     Will Elon Musk post 120-139 tweets from September 4  | Yes | 5060.847 sh · compra 0.0011 · ahora 0.0000 · PnL -5.86$ · cobrable SÍ · fin 2026-09-11
+     Will Elon Musk post 140-159 tweets from September 4  | Yes | 806.327 sh · compra 0.0062 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-09-11
+     Will Elon Musk post 180-199 tweets from April 28 to  | Yes | 29.412 sh · compra 0.1699 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-05-05
+     Will Elon Musk post 180-199 tweets from July 17 to J | Yes | 26.316 sh · compra 0.1899 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-07-24
+     Will Elon Musk post 180-199 tweets from July 28 to A | Yes | 33.333 sh · compra 0.1499 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-08-04
+     Will Elon Musk post 180-199 tweets from May 12 to Ma | Yes | 33.333 sh · compra 0.1499 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-05-19
+     Will Elon Musk post 180-199 tweets from May 19 to Ma | Yes | 33.667 sh · compra 0.1485 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-05-26
+     Will Elon Musk post 200-219 tweets from July 28 to A | Yes | 26.316 sh · compra 0.1899 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-08-04
+     Will Elon Musk post 200-219 tweets from July 31 to A | Yes | 31.250 sh · compra 0.1600 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-08-07
+     Will Elon Musk post 200-219 tweets from June 12 to J | Yes | 18.333 sh · compra 0.1799 · ahora 0.0000 · PnL -3.30$ · cobrable SÍ · fin 2026-06-19
+     Will Elon Musk post 200-219 tweets from June 19 to J | Yes | 8.919 sh · compra 0.3699 · ahora 0.0000 · PnL -3.30$ · cobrable SÍ · fin 2026-06-26
+     Will Elon Musk post 220-239 tweets from June 12 to J | Yes | 29.412 sh · compra 0.0679 · ahora 0.0000 · PnL -2.00$ · cobrable SÍ · fin 2026-06-19
+     Will Elon Musk post 220-239 tweets from June 16 to J | Yes | 31.250 sh · compra 0.1600 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-06-23
+     Will Elon Musk post 280-299 tweets from July 24 to J | Yes | 30.303 sh · compra 0.1649 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-07-31
+     Will Elon Musk post 40-64 tweets from July 2 to July | Yes | 31.182 sh · compra 0.2199 · ahora 0.0000 · PnL -6.86$ · cobrable SÍ · fin 2026-07-04
+     Will Elon Musk post 40-64 tweets from July 27 to Jul | Yes | 25.433 sh · compra 0.1965 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-07-29
+     Will Elon Musk post 40-64 tweets from July 30 to Aug | Yes | 33.333 sh · compra 0.2999 · ahora 0.0000 · PnL -10.00$ · cobrable SÍ · fin 2026-08-01
+     Will Elon Musk post 40-64 tweets from June 15 to Jun | Yes | 25.000 sh · compra 0.2000 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-06-17
+     Will Elon Musk post 65-89 tweets from June 18 to Jun | Yes | 26.316 sh · compra 0.3799 · ahora 0.0000 · PnL -10.00$ · cobrable SÍ · fin 2026-06-20
+     Will Elon Musk post 840-879 tweets in August 2026? | Yes | 8.260 sh · compra 0.3149 · ahora 0.0000 · PnL -2.60$ · cobrable SÍ · fin 2026-09-01
+     Will Elon Musk post 90-114 tweets from July 30 to Au | Yes | 6.250 sh · compra 0.1600 · ahora 0.0000 · PnL -1.00$ · cobrable SÍ · fin 2026-08-01
+     Will Elon Musk post <40 tweets from June 15 to June  | Yes | 18.333 sh · compra 0.1799 · ahora 0.0000 · PnL -3.30$ · cobrable SÍ · fin 2026-06-17
+     Will Romeu Zema win the 2026 Brazilian presidential  | Yes | 36.211 sh · compra 0.0828 · ahora 0.0015 · PnL -2.95$ · cobrable no · fin 2026-10-04
+     Will Zelenskyy post 100-119 posts from September 1 t | Yes | 30.000 sh · compra 0.1000 · ahora 0.0000 · PnL -3.00$ · cobrable SÍ · fin 2026-09-08
+     Will Zelenskyy post 140-159 posts from August 28 to  | Yes | 17.000 sh · compra 0.0920 · ahora 0.0000 · PnL -1.56$ · cobrable SÍ · fin 2026-09-04
+     Will Zelenskyy post 160-179 posts from August 28 to  | Yes | 8.850 sh · compra 0.0400 · ahora 0.0000 · PnL -0.35$ · cobrable SÍ · fin 2026-09-04
+     Will Zelenskyy post 40-59 posts from August 21 to Au | Yes | 6.000 sh · compra 0.2490 · ahora 0.0000 · PnL -1.49$ · cobrable SÍ · fin 2026-08-28
+     Will Zelenskyy post 80-99 posts from September 11 to | Yes | 4.586 sh · compra 0.3000 · ahora 0.4900 · PnL 0.87$ · cobrable no · fin 2026-09-18
+     Will the highest temperature in London be 21°C on Ma | Yes | 11.628 sh · compra 0.4299 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-05-02
+     Will the highest temperature in London be 23°C on Ma | Yes | 22.727 sh · compra 0.2199 · ahora 0.0000 · PnL -5.00$ · cobrable SÍ · fin 2026-05-01
+     --- 43 posiciones abiertas · PnL sin realizar acumulado: -194.94$ ---
+
+-- 8) MEMORIA Y DISCO (por si el semanal cayó por falta de recursos)
+                    total        used        free      shared  buff/cache   available
+     Mem:            3819        1052         124           4        2938        2767
+     Swap:              0           0           0
+     /dev/sda1        38G   13G   24G  36% /
+=== FIN DIAG SEMANAL Y VENTANAS ===
