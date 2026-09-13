@@ -1,0 +1,95 @@
+=== DIAG V2 SDK · 20260913_165805 UTC ===
+
+== 1. ¿Qué versión del SDK usa cada bot? ==
+--- poly-zelenskyy ---
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:52:    # --- crear cliente (requiere py-clob-client) ---
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:59:        print("   → Asegúrate de:  python -m pip install py-clob-client")
+/opt/polymarket/bot-polymarket-zelenskyy/chequear_cuenta.py:80:        from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
+
+--- poly-trump ---
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:52:    # --- crear cliente (requiere py-clob-client) ---
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:59:        print("   → Asegúrate de:  python -m pip install py-clob-client")
+/opt/polymarket/bot-polymarket-trump/chequear_cuenta.py:80:        from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
+
+--- poly-combos-bot ---
+/opt/polymarket/gestionar_posiciones.py:190:    from py_clob_client_v2.clob_types import MarketOrderArgsV2
+/opt/polymarket/gestionar_posiciones.py:200:            from py_clob_client_v2.clob_types import OrderArgs
+/opt/polymarket/poly_combos_bot.pre_v1281_20260911_180512.py:437:    con las env vars de proxy. Confia en que py_clob_client_v2
+
+--- poly-elon-semanal ---
+/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py:123:        from py_clob_client.http_helpers import helpers as _hh
+/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py:168:        from py_clob_client.client import ClobClient
+/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py:170:            from py_clob_client.order_args import OrderArgs
+
+--- poly-elon ---
+/opt/polymarket/bot-polymarket-elon/chequear_cuenta.py:52:    # --- crear cliente (requiere py-clob-client) ---
+/opt/polymarket/bot-polymarket-elon/chequear_cuenta.py:59:        print("   → Asegúrate de:  python -m pip install py-clob-client")
+/opt/polymarket/bot-polymarket-elon/chequear_cuenta.py:80:        from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
+
+--- poly-mensual ---
+/opt/polymarket/bot-polymarket-elon-mensual/chequear_cuenta.py:52:    # --- crear cliente (requiere py-clob-client) ---
+/opt/polymarket/bot-polymarket-elon-mensual/chequear_cuenta.py:59:        print("   → Asegúrate de:  python -m pip install py-clob-client")
+/opt/polymarket/bot-polymarket-elon-mensual/chequear_cuenta.py:80:        from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
+
+== 2. ¿Está instalado py-clob-client-v2? ==
+Name: py_clob_client_v2
+Version: 1.1.0
+Summary: Python client for the Polymarket CLOBV2
+
+== 3. Última versión de v2 en PyPI ==
+WARNING: pip index is currently an experimental command. It may be removed/changed in a future release without prior warning.
+py-clob-client-v2 (1.1.0)
+Available versions: 1.1.0, 1.0.2, 1.0.1, 1.0.0, 0.0.4, 0.0.2, 0.0.1
+
+== 4. ¿Qué dicen los logs de Zelenskyy y Trump (últimas 30 líneas)? ==
+Sep 10 14:39:48 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+Sep 10 14:39:48 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 10 14:39:48 bot-poly systemd[1]: poly-zelenskyy.service: Consumed 13min 53.568s CPU time.
+Sep 10 14:39:48 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 06:05:49 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+Sep 12 06:05:49 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+Sep 12 06:05:49 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 06:05:49 bot-poly systemd[1]: poly-zelenskyy.service: Consumed 16min 49.611s CPU time, 104.2M memory peak, 0B memory swap peak.
+Sep 12 06:05:49 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 06:06:01 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+Sep 12 06:06:01 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+Sep 12 06:06:01 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 06:06:01 bot-poly systemd[1]: poly-zelenskyy.service: Consumed 1.980s CPU time, 17.9M memory peak, 0B memory swap peak.
+Sep 12 06:06:01 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 07:08:58 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+Sep 12 07:08:58 bot-poly systemd[1]: poly-zelenskyy.service: Consumed 47.319s CPU time.
+Sep 12 07:09:28 bot-poly systemd[1]: poly-zelenskyy.service: Scheduled restart job, restart counter is at 1.
+Sep 12 07:09:28 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 07:36:15 bot-poly systemd[1]: Stopping poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL...
+Sep 12 07:36:15 bot-poly systemd[1]: poly-zelenskyy.service: Deactivated successfully.
+Sep 12 07:36:15 bot-poly systemd[1]: Stopped poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+Sep 12 07:36:15 bot-poly systemd[1]: poly-zelenskyy.service: Consumed 22.028s CPU time, 38.1M memory peak, 0B memory swap peak.
+Sep 12 07:36:15 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+-- Boot f32c12163e2e4dfca752290cc1b50054 --
+Sep 13 07:08:54 bot-poly systemd[1]: Started poly-zelenskyy.service - Bot Polymarket Zelenskyy SEMANAL.
+
+Sep 13 16:56:29 bot-poly python3[788]: [2026-09-13 12:56:29 EDT] 3/4 · Trading REAL…
+Sep 13 16:56:29 bot-poly python3[788]: [2026-09-13 12:56 EDT] Trading REAL SEMANAL  · saldo $500.00 · paso 1
+Sep 13 16:56:29 bot-poly python3[788]:   · [FILTRO] descartado 60-79 YES cuota=86.96 (>25, demasiado improbable)
+Sep 13 16:56:29 bot-poly python3[788]:   · [FILTRO] descartado 40-59 YES cuota=45.45 (>25, demasiado improbable)
+Sep 13 16:56:29 bot-poly python3[788]:   [FIXWIN] p_activa=30.3% (60-79) | mejor=60-79 p=30.3%
+Sep 13 16:56:29 bot-poly python3[788]:   · [FILTRO] descartado 60-79 YES cuota=86.96 (>25, demasiado improbable)
+Sep 13 16:56:29 bot-poly python3[788]:   · [FILTRO] descartado 40-59 YES cuota=45.45 (>25, demasiado improbable)
+Sep 13 16:56:29 bot-poly python3[788]: [2026-09-13 12:56:29 EDT] 4/4 · Estado:
+Sep 13 16:56:29 bot-poly python3[788]: fecha        tweets
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-01       41
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-02        9
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-03       12
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-04       22
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-05        1
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-06       64
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-07       39
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-08       17
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-09        7
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-10       25
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-11       11
+Sep 13 16:56:29 bot-poly python3[788]: 2026-09-12        1
+Sep 13 16:56:29 bot-poly python3[788]: AVG7 = 23.43  V2 = 12  R = 0.256  ajuste = 0.628  λ48 = 29.4
+Sep 13 16:56:29 bot-poly python3[788]: Días completos en CSV: 225
+Sep 13 16:56:29 bot-poly python3[788]: [2026-09-13 12:56:29 EDT] Pasada completada en 20.8 s
+Sep 13 16:56:29 bot-poly python3[788]: [2026-09-13 12:56:29 EDT] Próxima pasada en 15 min…
