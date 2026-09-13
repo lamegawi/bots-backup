@@ -1,0 +1,19 @@
+=== VERIF CIRUGIA SEMANAL Sun Sep 13 06:36:06 PM UTC 2026 ===
+-- huella del fichero (con el parche puesto debe ser 00782a19e37e2fc5e9c489aa9105f199)
+   00782a19e37e2fc5e9c489aa9105f199  /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py
+-- copias de seguridad del parche presentes
+   -rwxr-xr-x  1 root root    9021 Sep 13 17:58 bot_semanal.py.bak_flota_20260913_182848
+-- servicio
+   activo: active · reinicios: 0
+-- diario desde las 18:20 de hoy: cuentas
+   arrancadas: 1 · pasadas: 1 · usa V2: 1 · ERROR ejecutando: 0 · ORDEN ENVIADA: 1
+-- últimas 8 líneas del diario
+   Sep 13 18:29:22 bot-poly python3[50339]: [2026-09-13 18:29:22]    cliente creado
+   Sep 13 18:29:22 bot-poly python3[50339]: [2026-09-13 18:29:22]    ✅ API creds derivadas
+   Sep 13 18:29:22 bot-poly python3[50339]: [2026-09-13 18:29:22]    enviando orden BUY 66.67 shares @ $0.0495
+   Sep 13 18:29:23 bot-poly python3[50339]: [2026-09-13 18:29:23]    ✅ ORDEN ENVIADA: 0x861c06a11663a4b900332704f0250c330ec2da7ccb646b5fdac0c21b9fcc0304
+   Sep 13 18:29:23 bot-poly python3[50339]: [2026-09-13 18:29:23]    estado guardado
+   Sep 13 18:29:23 bot-poly python3[50339]: [2026-09-13 18:29:23] ════════════════════════════════════════════
+   Sep 13 18:29:23 bot-poly python3[50339]: [2026-09-13 18:29:23] Pasada completada
+   Sep 13 18:29:23 bot-poly python3[50339]: [2026-09-13 18:29:23] Próxima pasada en 15 min
+=== FIN VERIF ===
