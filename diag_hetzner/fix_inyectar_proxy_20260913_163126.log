@@ -1,0 +1,62 @@
+=== FIX INYECTAR PROXY · 20260913_163126 UTC ===
+
+✅ backup: bot_semanal.py.bak_inyproxy_20260913_163126
+✅ función inyectar_proxy_sdk añadida
+✅ llamada a inyectar_proxy_sdk() añadida
+
+== Verificar ==
+✅ compila OK
+
+== Probar pasada única ==
+[2026-09-13 16:31:35]   ✅ proxy SDK inyectado con {'http2': True, 'proxy': 'http://100.83.57.99:8888'}
+[2026-09-13 16:31:35]    importando ClobClient + OrderArgs OK
+[2026-09-13 16:31:35]    cliente creado
+[2026-09-13 16:31:36]    API creds derivadas
+[2026-09-13 16:31:36]    enviando orden BUY 129.41 shares @ $0.0255
+[2026-09-13 16:31:36]    ERROR ejecutando: PolyApiException[status_code=400, error_message={'error': 'invalid order version, please use the latest clob-client'}]
+[2026-09-13 16:31:36] Traceback (most recent call last):
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 202, in try_ejecutar_orden
+    resp = client.create_and_post_order(order)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/client.py", line 661, in create_and_post_order
+    return self.post_order(ord)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/client.py", line 648, in post_order
+    return post(
+           ^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/http_helpers/helpers.py", line 69, in post
+    return request(endpoint, POST, headers, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client/http_helpers/helpers.py", line 57, in request
+    raise PolyApiException(resp)
+py_clob_client.exceptions.PolyApiException: PolyApiException[status_code=400, error_message={'error': 'invalid order version, please use the latest clob-client'}]
+
+[2026-09-13 16:31:36] ════════════════════════════════════════════
+[2026-09-13 16:31:36] Pasada completada
+
+== Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-13 16:31:36 UTC; 5s ago
+   Main PID: 40823 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 9.3M (peak: 9.9M)
+        CPU: 994ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== Verificar log post-fix ==
+Sep 13 16:24:40 bot-poly python3[35625]:     raise PolyApiException(resp)
+Sep 13 16:24:40 bot-poly python3[35625]: py_clob_client.exceptions.PolyApiException: PolyApiException[status_code=400, error_message={'error': 'invalid order version, please use the latest clob-client'}]
+Sep 13 16:24:40 bot-poly python3[35625]: [2026-09-13 16:24:40] ════════════════════════════════════════════
+Sep 13 16:24:40 bot-poly python3[35625]: [2026-09-13 16:24:40] Pasada completada
+Sep 13 16:24:40 bot-poly python3[35625]: [2026-09-13 16:24:40] Próxima pasada en 15 min
+Sep 13 16:31:36 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 13 16:31:36 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 13 16:31:36 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 13 16:31:36 bot-poly systemd[1]: poly-elon-semanal.service: Consumed 28.626s CPU time, 9.9M memory peak, 0B memory swap peak.
+Sep 13 16:31:36 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 13 16:31:36 bot-poly python3[40823]: [2026-09-13 16:31:36] BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+Sep 13 16:31:36 bot-poly python3[40823]: [2026-09-13 16:31:36] ════════════════════════════════════════════
+Sep 13 16:31:36 bot-poly python3[40823]: [2026-09-13 16:31:36] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 13 16:31:36 bot-poly python3[40823]: [2026-09-13 16:31:36] ════════════════════════════════════════════
+Sep 13 16:31:36 bot-poly python3[40823]: [2026-09-13 16:31:36] AVG7=22.43  AVG30=27.43  R=0.818  ajuste=0.927
