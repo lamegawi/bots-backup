@@ -1,0 +1,42 @@
+=== DIAG FLOTA 3 Sun Sep 13 06:02:14 PM UTC 2026 ===
+
+-- 1) prueba de egreso: por donde sale REALMENTE el cliente del SDK v2
+   egreso cliente SDK v2: 85.85.41.76
+   mounts del cliente: 7 entradas
+   egreso cliente httpx nuevo: 85.85.41.76
+
+-- 2) trump: como construye su cliente y cuantas ordenes intento en 24h
+   intentos 'Orden REAL' 24h: 23
+   Sep 12 18:07:36 bot-poly python3[1506561]:   → Orden REAL: Donald Trump # Truth Social posts September 8 - September 15, 2026? · 80-99 YES @0.047 (cuota 21.28) · size 6.00 USDC · token 522303440333…
+   Sep 12 18:07:36 bot-poly python3[1506561]:   (stake $6.00 → 127.66 shares a 0.047)
+   Sep 12 18:07:36 bot-poly python3[1506561]:   [ERROR] no se pudo enviar la orden: PolyApiException[status_code=403, error_message={'error': 'Trading restricted in your region, please refer to available regions - https://docs.polymarket.com/developers/CLOB/geoblock'}]
+   Sep 12 18:07:36 bot-poly python3[1506561]:   · [FILTRO] descartado 60-79 YES cuota=200.00 (>25, demasiado improbable)
+
+-- 3) zelenskyy: su log propio (bot_zelen.log)
+   '403' en ultimas 3000 lineas: 0
+   intentos 'Orden REAL' recientes: 0
+
+-- 4) elon-semanal: la clave se lee limpia? (solo longitud y formato, nunca la clave)
+   longitud de la clave: 66
+   formato correcto (0x + 64 hex): True
+   contiene espacios/saltos/comillas: False
+   Sep 12 19:57:25 bot-poly python3[1561827]: [2026-09-12 19:57:25]
+   Sep 12 19:57:25 bot-poly python3[1561827]: 🚀 Mejor señal: Elon Musk # tweets September 8 - September 15, 202
+   Sep 12 19:57:25 bot-poly python3[1561827]: [2026-09-12 19:57:25]    bin 120-139 YES EV=+11.305
+   Sep 12 19:57:25 bot-poly python3[1561827]: [2026-09-12 19:57:25]    💵 stake=$3.3  paso=1
+   Sep 12 19:57:26 bot-poly python3[1561827]: [2026-09-12 19:57:26]    ❌ ERROR ejecutando orden: Non-hexadecimal digit found
+   Sep 12 19:57:26 bot-poly python3[1561827]: [2026-09-12 19:57:26] ════════════════════════════════════════════
+   Sep 12 19:57:26 bot-poly python3[1561827]: [2026-09-12 19:57:26] Pasada completada
+   Sep 12 19:57:26 bot-poly python3[1561827]: [2026-09-12 19:57:26] Próxima pasada en 15 min…
+   Sep 12 20:00:29 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+
+-- 5) panel de Telegram: de donde lee las posiciones
+   37:import posiciones_reales as PR
+   41:    ("48h",        f"{BASE}/bot-polymarket-elon/real.json"),
+   42:    ("48h-V2",     f"{BASE}/bot-polymarket-elon-v2/real.json"),
+   43:    ("Semanal",    f"{BASE}/bot-polymarket-elon-semanal/real_semanal.json"),
+   44:    ("Semanal-V2", f"{BASE}/bot-polymarket-elon-semanal-v2/real_semanal.json"),
+   246:    """Operaciones ABIERTAS reales, leídas de Polymarket (data-api)."""
+   250:        return f"⚠️ No pude leer las posiciones: {e}"
+   254:    """Operaciones finalizadas (cashPnl del data-api)."""
+=== FIN DIAG FLOTA 3 ===
