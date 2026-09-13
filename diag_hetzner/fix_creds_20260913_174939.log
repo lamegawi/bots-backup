@@ -1,0 +1,36 @@
+=== FIX CREDS V2 · 20260913_174939 UTC ===
+✅ backup: bot_semanal.py.bak_creds_20260913_174939
+✅ creds: usa create_or_derive_api_keys o derive_api_key
+
+== Verificar ==
+Sorry: IndentationError: expected an indented block after 'try' statement on line 184 (bot_semanal.py, line 185)
+== Probar pasada única ==
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 185
+    creds = client.create_or_derive_api_keys()
+    ^
+IndentationError: expected an indented block after 'try' statement on line 184
+
+== Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: activating (auto-restart) (Result: exit-code) since Sun 2026-09-13 17:49:39 UTC; 4s ago
+    Process: 46825 ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real (code=exited, status=1/FAILURE)
+   Main PID: 46825 (code=exited, status=1/FAILURE)
+        CPU: 202ms
+
+== Verificar log ==
+Sep 13 17:49:34 bot-poly python3[44327]: py_clob_client_v2.exceptions.PolyException: API Credentials are needed to interact with this endpoint!
+Sep 13 17:49:34 bot-poly python3[44327]: [2026-09-13 17:49:34] ════════════════════════════════════════════
+Sep 13 17:49:34 bot-poly python3[44327]: [2026-09-13 17:49:34] Pasada completada
+Sep 13 17:49:34 bot-poly python3[44327]: [2026-09-13 17:49:34] Próxima pasada en 15 min
+Sep 13 17:49:39 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 13 17:49:39 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 13 17:49:39 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 13 17:49:39 bot-poly systemd[1]: poly-elon-semanal.service: Consumed 17.713s CPU time, 47.9M memory peak, 0B memory swap peak.
+Sep 13 17:49:39 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 13 17:49:39 bot-poly python3[46825]:   File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 185
+Sep 13 17:49:39 bot-poly python3[46825]:     creds = client.create_or_derive_api_keys()
+Sep 13 17:49:39 bot-poly python3[46825]:     ^
+Sep 13 17:49:39 bot-poly python3[46825]: IndentationError: expected an indented block after 'try' statement on line 184
+Sep 13 17:49:39 bot-poly systemd[1]: poly-elon-semanal.service: Main process exited, code=exited, status=1/FAILURE
+Sep 13 17:49:39 bot-poly systemd[1]: poly-elon-semanal.service: Failed with result 'exit-code'.
