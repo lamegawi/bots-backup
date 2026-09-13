@@ -1,0 +1,104 @@
+=== TEST DE SALUD FLOTA Sun Sep 13 07:22:09 PM UTC 2026 ===
+
+################ poly-elon-semanal ################
+-- 1) salud del servicio
+   activo: active · PID 50339 · reinicios: 0 · mem: 45928448
+-- 2) OPERACION NO REAL: pasada completa en modo papel
+   [2026-09-13 19:22:09] BOT SEMANAL ELON arrancado (loop=False, intervalo=15 min)
+   [2026-09-13 19:22:09] ════════════════════════════════════════════
+   [2026-09-13 19:22:09] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+   [2026-09-13 19:22:09] ════════════════════════════════════════════
+   [2026-09-13 19:22:09] AVG7=22.43  AVG30=27.43  R=0.818  ajuste=0.927
+   [2026-09-13 19:22:41] 3 mercados semanales abiertos
+   [2026-09-13 19:22:41] saldo=$249.86  paso=1  activa=sí
+   [2026-09-13 19:22:41] Ya hay posición activa en elon-musk-of-tweets-september-8-september-15-2026
+   resumen: lineas=8 · menciones papel=0 · errores=0
+-- 3) PRUEBA DE RED SIN DINERO: firma local + egreso + credenciales
+     · Credenciales CLOB derivadas automáticamente de la clave privada.
+   cliente V2 + credenciales: OK
+   egreso a internet: 85.85.41.76
+-- 4) errores del servicio desde las 07:00
+   pasadas: 48 · ERROR: 46 · 403: 0 · orden enviada: 2
+
+################ poly-zelenskyy ################
+-- 1) salud del servicio
+   activo: active · PID 790 · reinicios: 0 · mem: 42385408
+-- 2) OPERACION NO REAL: pasada completa en modo papel
+   [2026-09-13 15:23:02 EDT] 4/4 · Estado:
+   fecha        tweets
+   2026-09-01        7
+   2026-09-02       16
+   2026-09-03       11
+   2026-09-04        8
+   2026-09-05        4
+   2026-09-06       13
+   2026-09-07       10
+   2026-09-08       12
+   2026-09-09       13
+   2026-09-10       18
+   2026-09-11       19
+   2026-09-12       10
+   
+   AVG7 = 13.57  V2 = 29  R = 1.068  ajuste = 1.034  λ48 = 28.1
+   Días completos en CSV: 177
+   [2026-09-13 15:23:02 EDT] Pasada completada en 18.8 s
+   resumen: lineas=32 · menciones papel=2 · errores=0
+-- 3) PRUEBA DE RED SIN DINERO: firma local + egreso + credenciales
+     · Credenciales CLOB derivadas automáticamente de la clave privada.
+   cliente V2 + credenciales: OK
+   egreso a internet: 85.85.41.76
+-- 4) errores del servicio desde las 07:00
+   pasadas: 0 · ERROR: 0 · 403: 0 · orden enviada: 0
+
+################ poly-trump ################
+-- 1) salud del servicio
+   activo: active · PID 788 · reinicios: 0 · mem: 86265856
+-- 2) OPERACION NO REAL: pasada completa en modo papel
+   [2026-09-13 15:23:26 EDT] 4/4 · Estado:
+   fecha        tweets
+   2026-09-01       41
+   2026-09-02        9
+   2026-09-03       12
+   2026-09-04       22
+   2026-09-05        1
+   2026-09-06       64
+   2026-09-07       39
+   2026-09-08       17
+   2026-09-09        7
+   2026-09-10       25
+   2026-09-11       11
+   2026-09-12        1
+   
+   AVG7 = 23.43  V2 = 12  R = 0.256  ajuste = 0.628  λ48 = 29.4
+   Días completos en CSV: 225
+   [2026-09-13 15:23:26 EDT] Pasada completada en 22.3 s
+   resumen: lineas=34 · menciones papel=1 · errores=0
+-- 3) PRUEBA DE RED SIN DINERO: firma local + egreso + credenciales
+   [FIXCAL] win=12% (1/8) cuota_med=10.73 kelly=0.035 factor=1.000 stake=3.0 (INFORMATIVO (faltan datos))
+     · Credenciales CLOB derivadas automáticamente de la clave privada.
+   cliente V2 + credenciales: OK
+   egreso a internet: 85.85.41.76
+-- 4) errores del servicio desde las 07:00
+   pasadas: 48 · ERROR: 3 · 403: 0 · orden enviada: 4
+
+################ CAZA DE FANTASMAS (modo mirar, no toca nada) ################
+      historial: 7 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 0 · G3 abierta fantasma: no
+   
+   -- /opt/polymarket/bot-polymarket-trump/real.json
+      historial: 0 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 0 · G3 abierta fantasma: no
+   
+   -- /opt/polymarket/bot-polymarket-trump/real_trump.json
+      historial: 0 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 0 · G3 abierta fantasma: no
+   
+   -- /opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json
+      historial: 8 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 1 · G3 abierta fantasma: no
+      G2 duplicado EJECUTADO (se conserva, solo se anota) · 2026-09-09 zelenskyy-of-tweets-september-8-septembe YES -> P
+   
+   TOTAL: G1 0 · G2 1 · G3 0
+   === FIN CURA ===
+
+################ VIGILANTE INTEGRAL (manda su parte también al Telegram) ################
+     · Credenciales CLOB derivadas automáticamente de la clave privada.
+     · Credenciales CLOB derivadas automáticamente de la clave privada.
+   resultado: AVISOS
+=== FIN TEST DE SALUD ===
