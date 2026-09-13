@@ -1,0 +1,30 @@
+=== CURA CUADERNOS 20260913_192328 · modo MIRAR ===
+registro oficial: 44 posiciones con saldo
+
+-- /opt/polymarket/bot-polymarket-elon-mensual-v2/real_mensual.json
+   historial: 1 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 0 · G3 abierta fantasma: no
+
+-- /opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json
+   historial: 2 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 0 · G3 abierta fantasma: no
+
+-- /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json
+   historial: 1 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 0 · G3 abierta fantasma: no
+
+-- /opt/polymarket/bot-polymarket-elon-v2/real.json
+   historial: 1 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 0 · G3 abierta fantasma: no
+
+-- /opt/polymarket/bot-polymarket-elon/real.json
+   historial: 7 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 0 · G3 abierta fantasma: no
+
+-- /opt/polymarket/bot-polymarket-trump/real.json
+   historial: 0 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 0 · G3 abierta fantasma: no
+
+-- /opt/polymarket/bot-polymarket-trump/real_trump.json
+   historial: 0 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 0 · G3 abierta fantasma: no
+
+-- /opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json
+   historial: 8 apuntes · G1 nunca ejecutadas: 0 · G2 duplicados: 1 · G3 abierta fantasma: no
+   G2 duplicado EJECUTADO (se conserva, solo se anota) · 2026-09-09 zelenskyy-of-tweets-september-8-septembe YES -> P
+
+TOTAL: G1 0 · G2 1 · G3 0
+=== FIN CURA ===
