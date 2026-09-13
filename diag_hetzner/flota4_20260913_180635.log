@@ -1,0 +1,42 @@
+=== DIAG FLOTA 4 Sun Sep 13 06:06:35 PM UTC 2026 ===
+
+-- poly-elon-semanal · desde las 07:00 de HOY
+   pasadas: 45 · intentos Orden REAL: 0 · ERROR ejecutando: 45 · 403: 0 · Non-hex: 0
+   ultimo error con contexto:
+     Sep 13 07:06:24 bot-poly python3[1565143]: [2026-09-13 07:06:24]    ERROR ejecutando: PolyApiException[status_code=400, error_message={'error': 'invalid order version, please use the latest clob-client'}]
+     Sep 13 07:06:24 bot-poly python3[1565143]: [2026-09-13 07:06:24] Traceback (most recent call last):
+     Sep 13 07:06:24 bot-poly python3[1565143]:   File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 173, in try_ejecutar_orden
+     Sep 13 07:06:24 bot-poly python3[1565143]:     resp = client.create_and_post_order(order)
+     Sep 13 07:06:24 bot-poly python3[1565143]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     Sep 13 07:06:24 bot-poly python3[1565143]:   File "/usr/local/lib/python3.12/dist-packages/py_clob_client/client.py", line 661, in create_and_post_order
+     Sep 13 07:06:24 bot-poly python3[1565143]:     return self.post_order(ord)
+     Sep 13 07:06:24 bot-poly python3[1565143]:            ^^^^^^^^^^^^^^^^^^^^
+     Sep 13 07:06:24 bot-poly python3[1565143]:   File "/usr/local/lib/python3.12/dist-packages/py_clob_client/client.py", line 648, in post_order
+   ultimo intento de orden con resultado:
+
+-- poly-trump · desde las 07:00 de HOY
+   pasadas: 43 · intentos Orden REAL: 5 · ERROR ejecutando: 0 · 403: 0 · Non-hex: 0
+   ultimo error con contexto:
+   ultimo intento de orden con resultado:
+     Sep 13 07:11:35 bot-poly python3[788]:   → Orden REAL: Donald Trump # Truth Social posts September 11 - September 18, 2026? · 80-99 YES @0.052 (cuota 19.23) · size 6.00 USDC · token 159912576976…
+     Sep 13 07:11:35 bot-poly python3[788]:   (stake $6.00 → 115.38 shares a 0.052)
+     Sep 13 07:11:35 bot-poly python3[788]:   Orden enviada: 0x283eeccc272e7b7a586a28c5a757679c954404808cfe008f1b19a324a86dff61  (respuesta: {'errorMsg': '', 'orderID': '0x283eeccc272e7b7a586a28c5a757679c954404808cfe008f1b19a324a86dff61', 'takingAmount': '', 'm)
+     Sep 13 07:11:35 bot-poly python3[788]:   · Credenciales CLOB derivadas automáticamente de la clave privada.
+     Sep 13 07:11:35 bot-poly python3[788]:   ⏳ Orden 0x283eeccc272e… pendiente de llenado (se vigilará cada pasada, máx 60 min)
+
+-- elon-semanal: de donde lee la clave privada (lineas de codigo, sin valores)
+   /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py:178:            key=cfg.get('wallet_private_key', '').strip().strip('"').strip("'").lstrip('0x') and ('0x' + cfg.get('wallet_private_key', '').strip().strip('"').strip("'").lstrip('0x')),
+   /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py:22:  POLY_API_PASSPHRASE, POLY_PRIVATE_KEY, REAL_CONFIRMADO=1
+   /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py:80:        "wallet_private_key": os.environ.get("POLY_PRIVATE_KEY", ""),
+   /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py:112:    signer = (cfg.get("wallet_private_key") or "").strip()
+   /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py:115:                 "wallet_private_key (la clave privada exportada en "
+
+-- zelenskyy: por que no intenta ordenes ahora
+
+-- trump: linea de codigo que envia la orden (anclas para el parche)
+   /opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:105:        from py_clob_client_v2.client import ClobClient
+   /opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:130:    client = ClobClient(HOST, chain_id=137, key=signer, **kwargs)
+   /opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:551:            resp = client.create_and_post_order(
+   /opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:829:        resp = client.create_and_post_order(
+   /opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:910:        resp = client.create_and_post_order(
+=== FIN DIAG FLOTA 4 ===
