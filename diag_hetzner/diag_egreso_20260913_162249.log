@@ -1,0 +1,17 @@
+=== DIAG EGRESO SDK · 20260913_162249 UTC ===
+
+== 1. Egreso del cliente httpx del SDK (sin fix) ==
+HTTPS_PROXY en proceso: None
+HTTP_PROXY en proceso:  None
+EGRESO DEL CLIENTE DEL SDK: 46.225.146.21
+(debería ser 85.85.41.76 si el proxy está inyectado)
+(si da 46.225.146.21 = el bug está confirmado)
+
+trust_env: True
+tipo: <class 'httpx.Client'>
+
+== 2. Probar el fix del otro agente (SIN guardar nada) ==
+  File "<stdin>", line 15
+    {"proxies": {"all://": PROXY_URL}}}):
+                                      ^
+SyntaxError: closing parenthesis '}' does not match opening parenthesis '(' on line 11
