@@ -1,0 +1,32 @@
+=== PRUEBA DE FIRMA (CERO EUROS) · Sun Sep 13 07:31:13 PM UTC 2026 ===
+Nada de lo que sigue se envía a Polymarket: las órdenes se firman y se tiran a la papelera.
+
+##### BOT: poly-elon-semanal #####
+     · Credenciales CLOB derivadas automáticamente de la clave privada.
+   credenciales del bot: CORRECTAS
+   salida a internet: 85.85.41.76 (si es la de tu casa, el túnel funciona)
+   token de prueba: cogido del mercado activo del propio bot
+   token de prueba: cogido del registro oficial (Will Elon Musk post 120-139 tweets from …)
+   ORDEN FIRMADA EN LOCAL Y NO ENVIADA · firma 0xc83de7eea2725e7ee0554547…
+   VEREDICTO: este bot puede construir y firmar órdenes ahora mismo -> CORRECTO
+
+##### BOT: poly-zelenskyy #####
+     · Credenciales CLOB derivadas automáticamente de la clave privada.
+   credenciales del bot: CORRECTAS
+   salida a internet: 85.85.41.76 (si es la de tu casa, el túnel funciona)
+   token de prueba: cogido del mercado activo del propio bot
+   token de prueba: cogido del registro oficial (Will Elon Musk post 120-139 tweets from …)
+   ORDEN FIRMADA EN LOCAL Y NO ENVIADA · firma 0x9327ce955e0cbb36f60ad226…
+   VEREDICTO: este bot puede construir y firmar órdenes ahora mismo -> CORRECTO
+
+##### BOT: poly-trump #####
+   [FIXCAL] win=12% (1/8) cuota_med=10.73 kelly=0.035 factor=1.000 stake=3.0 (INFORMATIVO (faltan datos))
+     · Credenciales CLOB derivadas automáticamente de la clave privada.
+   credenciales del bot: CORRECTAS
+   salida a internet: 85.85.41.76 (si es la de tu casa, el túnel funciona)
+   token de prueba: cogido del mercado activo del propio bot
+   token de prueba: cogido del registro oficial (Will Elon Musk post 120-139 tweets from …)
+   ORDEN FIRMADA EN LOCAL Y NO ENVIADA · firma 0x8e2735618a7dc0a8c92e0b62…
+   VEREDICTO: este bot puede construir y firmar órdenes ahora mismo -> CORRECTO
+
+=== FIN PRUEBA DE FIRMA ===
