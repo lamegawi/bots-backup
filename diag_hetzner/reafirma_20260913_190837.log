@@ -1,0 +1,28 @@
+== reafirma_zelen · 20260913_190837 · /opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json
+posición viva confirmada: 4.5857 shares @ 0.485 · token 73985914927945810194…
+copia de seguridad: /opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json.bak_reafirma_20260913_190837
+✅ firma 'activa' restaurada:
+{
+  "slug": "zelenskyy-of-tweets-september-11-september-18-2026",
+  "fecha": "2026-09-11",
+  "bin_titulo": "80-99",
+  "lo": 80,
+  "hi": 99,
+  "lado": "YES",
+  "precio": 0.295,
+  "cuota": 3.39,
+  "p_modelo": 0.7088,
+  "paso": 5,
+  "stake": 10.0,
+  "motor": "motor_v1_martingala_fijo",
+  "ev": null,
+  "order_id": "",
+  "token_id": "73985914927945810194625586237985773860069531575861796797261292258441153963343",
+  "pendiente": false,
+  "fecha_orden_ts": 1789299802.829287,
+  "ventana_fin": "2026-09-18T12:00:00-04:00",
+  "_reafirmada": "20260913_190837 por el agente de combos tras diag flota7 (posición viva sin firma)"
+}
+chequeo del vigilante: meses+día en el título: True · bin en el título: True
+no se reinicia nada: el bot relee su cuaderno en cada pasada.
+=== FIN REAFIRMA ===
