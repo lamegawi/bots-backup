@@ -1,0 +1,49 @@
+=== DIAG PROXY · 20260913_152838 UTC ===
+
+== 1. Permisos de /etc/polymarket.env ==
+-rw------- 1 root root 996 Sep 11 21:12 /etc/polymarket.env
+
+== 2. Contenido (solo vars de proxy) ==
+HTTP_PROXY=http://100.83.57.99:8888
+HTTPS_PROXY=http://100.83.57.99:8888
+ALL_PROXY=http://100.83.57.99:8888
+NO_PROXY=localhost,127.0.0.1,api.telegram.org,ntfy.sh
+
+== 3. Service file poly-elon-semanal ==
+[Unit]
+Description=Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon-semanal
+EnvironmentFile=/etc/polymarket.env
+EnvironmentFile=-/etc/default/poly-elon-semanal
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+== 4. Proceso del bot y sus env vars ==
+  PID: 788
+  --- HTTP_PROXY ---
+ALL_PROXY=http://100.83.57.99:8888
+HTTP_PROXY=http://100.83.57.99:8888
+HTTPS_PROXY=http://100.83.57.99:8888
+NO_PROXY=localhost,127.0.0.1,api.telegram.org,ntfy.sh
+
+== 5. Tailscale status ==
+100.77.186.117  bot-poly  lamegawi@  linux    -                                                            
+100.82.235.16   bot-vm3   lamegawi@  linux    offline, last seen 27d ago                                   
+100.83.57.99    ferpc     lamegawi@  windows  active; direct 85.85.41.76:7363, tx 108533376 rx 1217828672  
+
+== 6. Salida IP (sin proxy) ==
+46.225.146.21
+== 7. Salida IP (con proxy) ==
+85.85.41.76
