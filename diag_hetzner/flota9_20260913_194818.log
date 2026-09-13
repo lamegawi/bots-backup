@@ -1,0 +1,1392 @@
+=== DIAG FLOTA 9 Sun Sep 13 07:48:18 PM UTC 2026 ===
+-- A) operar_real.py del bot 48h (huella + paginas)
+   21e400a8d7f0e1aac0923c3da8605a70  /opt/polymarket/bot-polymarket-elon/operar_real.py
+   934 /opt/polymarket/bot-polymarket-elon/operar_real.py
+     1	#!/usr/bin/env python3
+     2	# -*- coding: utf-8 -*-
+     3	"""
+     4	OPERAR REAL — trading con dinero REAL en Polymarket (CLOB API)
+     5	==============================================================
+     6	Módulo para que el bot coloque APUESTAS REALES en los mercados
+     7	«Elon Musk # tweets» de Polymarket, en lugar de (o además de) el
+     8	paper trading. Incluye TODAS las salvaguardas:
+     9	
+    10	  · NUNCA coloca una orden si config_real.json no tiene "confirmado": true
+    11	  · --simular / --dry: imprime la orden sin enviarla (modo seco)
+    12	  · Verifica saldo USDC antes de operar
+    13	  · Una sola apuesta real activa (secuencial)
+    14	  · Stake según la tabla 3.30 × 1.5^(paso-1) y límite de ciclo paso 7
+    15	  · Si la orden no se llena en X minutos → CANCELA (no persigue precio)
+    16	  · Registra todo en resultados_real.csv y notifica al móvil
+    17	
+    18	REQUISITO: pip install py-clob-client
+    19	
+    20	CONFIGURACIÓN: copia config_real.json.example → config_real.json y rellena.
+    21	  También puede leer variables de entorno: POLY_API_KEY, POLY_API_SECRET,
+    22	  POLY_API_PASSPHRASE, POLY_PRIVATE_KEY, REAL_CONFIRMADO=1
+    23	
+    24	USO:
+    25	  python3 operar_real.py --simular       # modo seco (recomendado primero)
+    26	  python3 operar_real.py                 # una pasada real
+    27	  python3 bot.py --modo real --simular   # desde el bot, en seco
+    28	  python3 bot.py --modo real             # desde el bot, en serio
+    29	
+    30	⚠️ Este módulo NO ha sido probado con dinero real. Úsalo primero en
+    31	modo seco y con cantidades mínimas. No es asesoramiento financiero.
+    32	"""
+    33	import argparse
+    34	import csv
+    35	import json
+    36	import math
+    37	import os
+    38	import subprocess
+    39	import sys
+    40	import time
+    41	import uuid
+    42	from datetime import datetime, timezone
+    43	from zoneinfo import ZoneInfo
+    44	
+    45	import senal
+    46	import senal_vivo
+    47	import mercado_polymarket as mp
+    48	import notificar
+    49	import saldo_ntfy
+    50	
+    51	try:
+    52	    ET = ZoneInfo("America/New_York")
+    53	except Exception:
+    54	    # Windows sin tzdata: fallback a hora fija de verano (UTC-4)
+    55	    from datetime import timedelta
+    56	    from datetime import timezone as _tz
+    57	    ET = _tz(timedelta(hours=-4), name="EDT")
+    58	CFG = "config_real.json"
+    59	ESTADO = "real.json"
+    60	HISTORIAL = "resultados_real.csv"
+    61	BANKROLL = 500.0
+    62	HOST = "https://clob.polymarket.com"
+    63	FILL_TIMEOUT_MIN = 60          # cancelar si no se llena en 60 min
+    64	CHECK_INTERVAL_S = 30          # comprobar fill cada 30 s
+    65	
+    66	
+    67	# ------------------------------------------------------------------ config
+    68	def cargar_config():
+    69	    """Config desde archivo + variables de entorno (las env ganan)."""
+    70	    cfg = {}
+    71	    if os.path.exists(CFG):
+    72	        try:
+    73	            cfg = json.load(open(CFG, encoding="utf-8"))
+    74	        except Exception as e:
+    75	            print(f"  [ERROR] config_real.json inválido: {e}")
+    76	    env = {
+    77	        "api_key": os.environ.get("POLY_API_KEY", ""),
+    78	        "api_secret": os.environ.get("POLY_API_SECRET", ""),
+    79	        "api_passphrase": os.environ.get("POLY_API_PASSPHRASE", ""),
+    80	        "wallet_private_key": os.environ.get("POLY_PRIVATE_KEY", ""),
+    81	        "wallet_address": os.environ.get("POLY_WALLET_ADDRESS", ""),
+    82	        "relayer_api_key": os.environ.get("POLY_RELAYER_API_KEY", ""),
+    83	        "relayer_api_key_address": os.environ.get("POLY_RELAYER_API_KEY_ADDRESS", ""),
+    84	        "confirmado": os.environ.get("REAL_CONFIRMADO", "") == "1",
+    85	    }
+    86	    for k, v in env.items():
+    87	        if v:
+    88	            cfg[k] = v
+    89	    cfg.setdefault("bankroll", BANKROLL)
+    90	    cfg.setdefault("fee_pct", 0.0)
+    91	    cfg.setdefault("confirmado", False)
+    92	    return cfg
+    93	
+    94	
+    95	def get_client(signature_type=None):
+    96	    """Cliente CLOB (import diferido: solo se necesita para dinero real).
+    97	    IMPORTANTE (Polymarket V2, 28-abr-2026): se necesita el SDK V2:
+    98	    pip install py-clob-client-v2
+    99	    FIRMAS SMART WALLET: si tu cuenta se creó por email (deposit/proxy
+   100	    wallet), el firmante y el dueño de los fondos son distintos. Hay que
+   101	    usar signature_type=1 (POLY_PROXY) o 3 (POLY_1271). Por defecto se
+   102	    usa POLY_PROXY cuando hay wallet_address (funder); puedes forzarlo
+   103	    con el campo "signature_type" (0-3) en config_real.json."""
+   104	    try:
+   105	        from py_clob_client_v2.client import ClobClient
+   106	        from py_clob_client_v2.clob_types import ApiCreds
+   107	        from py_clob_client_v2 import SignatureTypeV2
+   108	    except ImportError as e:
+   109	        sys.exit(f"Falta el SDK V2 de Polymarket ({e}).\n"
+   110	                 f"Ejecuta:  python -m pip install py-clob-client-v2")
+   111	    cfg = cargar_config()
+   112	    signer = (cfg.get("wallet_private_key") or "").strip()
+   113	    if not signer:
+   114	        sys.exit("Sin clave privada del firmante: en config_real.json pon "
+   115	                 "wallet_private_key (la clave privada exportada en "
+   116	                 "https://reveal.magic.link/polymarket para cuentas por email).")
+   117	    kwargs = {}
+   118	    if cfg.get("api_key") and cfg.get("api_secret") and cfg.get("api_passphrase"):
+   119	        kwargs["creds"] = ApiCreds(cfg["api_key"], cfg["api_secret"],
+   120	                                   cfg["api_passphrase"])
+   121	    wallet = (cfg.get("wallet_address") or cfg.get("funder_address") or "").strip()
+   122	    if wallet:
+   123	        kwargs["funder"] = wallet
+   124	    if signature_type is None:
+   125	        signature_type = cfg.get("signature_type")
+   126	    if signature_type is None:
+   127	        # auto: smart wallet (funder distinto del signer) → POLY_PROXY; EOA puro → EOA
+   128	        signature_type = int(SignatureTypeV2.POLY_PROXY) if wallet else int(SignatureTypeV2.EOA)
+   129	    kwargs["signature_type"] = int(signature_type)
+   130	    client = ClobClient(HOST, chain_id=137, key=signer, **kwargs)
+   131	    if "creds" not in kwargs:
+   132	        try:
+   133	            creds = client.derive_api_key()
+   134	            client.set_api_creds(creds)
+   135	            print("  · Credenciales CLOB derivadas automáticamente de la clave privada.")
+   136	        except Exception as e:
+   137	            print(f"  [aviso] no se pudieron derivar credenciales API: {e}")
+   138	    return client
+   139	
+   140	
+   141	# ------------------------------------------------------------------ estado
+   142	def cargar_estado():
+   143	    if not os.path.exists(ESTADO):
+   144	        return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+   145	    try:
+   146	        d = json.load(open(ESTADO, encoding="utf-8"))
+   147	        for k in ("saldo", "paso", "activa", "historial"):
+   148	            d.setdefault(k, [] if k == "historial" else (None if k == "activa"
+   149	                        else (1 if k == "paso" else BANKROLL)))
+   150	        return d
+   151	    except Exception:
+   152	        return {"saldo": BANKROLL, "paso": 1, "activa": None, "historial": []}
+   153	
+   154	
+   155	def guardar_estado(estado):
+   156	    with open(ESTADO, "w", encoding="utf-8") as f:
+   157	        json.dump(estado, f, ensure_ascii=False, indent=1)
+   158	
+   159	
+   160	def escribir_historial(historial):
+   161	    with open(HISTORIAL, "w", newline="", encoding="utf-8") as f:
+   162	        w = csv.writer(f)
+   163	        w.writerow(["id", "fecha", "mercado", "bin", "lado", "precio", "cuota",
+   164	                    "p_modelo", "paso", "stake", "real", "resultado",
+   165	                    "beneficio", "saldo"])
+   166	        for tr in historial:
+   167	            w.writerow([tr.get("id", ""), tr["fecha"], tr.get("mercado", "—"),
+   168	                        tr["bin"], tr["lado"], tr["precio"], tr["cuota"],
+   169	                        tr["p_modelo"], tr["paso"], tr["stake"], tr["real"],
+   170	                        tr["resultado"], tr["beneficio"], tr["saldo"]])
+   171	
+   172	
+   173	# ------------------------------------------------------------------ mercado
+   174	def token_id_para_bin(slug, bin_titulo):
+   175	    """Devuelve (token_id_YES, token_id_NO) del bin pedido, o None."""
+   176	    r = subprocess.run(["curl", "-s", "--max-time", "40",
+   177	                        f"https://gamma-api.polymarket.com/events?slug={slug}"],
+   178	                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+   179	    try:
+   180	        evs = json.loads(r.stdout)
+   181	        ev = evs[0]
+   182	        for m in ev.get("markets", []):
+   183	            if (m.get("groupItemTitle") or "") == bin_titulo:
+   184	                tokens = json.loads(m.get("clobTokenIds") or "[]")
+   185	                if len(tokens) >= 2:
+   186	                    return tokens[0], tokens[1]
+   187	    except Exception:
+   188	        pass
+   189	    return None
+   190	
+   191	
+   192	def saldo_usdc_onchain(direccion, red="polygon"):
+   193	    """Consulta el saldo de tokens de una dirección directamente en la
+   194	    blockchain (sin API key, vía RPC público). Es la fuente de verdad.
+   195	    Devuelve dict {simbolo: float} o None si no se pudo consultar.
+   196	    IMPORTANTE (Polymarket V2, abril 2026): el colateral de trading es
+   197	    pUSD (0xC011a7E1...), no USDC. Los depósitos se convierten a pUSD."""
+   198	    rpcs = {
+   199	        "polygon": ["https://polygon-rpc.com", "https://1rpc.io/matic",
+   200	                    "https://rpc.ankr.com/polygon"],
+   201	        "ethereum": ["https://eth.llamarpc.com", "https://cloudflare-eth.com",
+   202	                     "https://rpc.ankr.com/eth"],
+   203	    }
+   204	    # tokens por red: (símbolo, contrato, decimales)
+   205	    tokens = {
+   206	        "polygon": [
+   207	            ("pUSD", "0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB", 6),   # colateral V2
+   208	            ("USDC.e", "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", 6),  # puenteado
+   209	            ("USDC", "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", 6),    # nativo
+   210	            ("POL", "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6", 18),    # gas
+   211	        ],
+   212	        "ethereum": [
+   213	            ("USDC", "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 6),
+   214	        ],
+   215	    }
+   216	    direccion = (direccion or "").lower().strip()
+   217	    if not direccion.startswith("0x") or len(direccion) != 42:
+   218	        return None
+   219	    data = "0x70a08231" + "0" * 24 + direccion[2:]
+   220	    resultado = {}
+   221	    for simbolo, contrato, decimales in tokens[red]:
+   222	        body = json.dumps({"jsonrpc": "2.0", "method": "eth_call",
+   223	                           "params": [{"to": contrato, "data": data}, "latest"],
+   224	                           "id": 1})
+   225	        for rpc in rpcs[red]:
+   226	            try:
+   227	                out = subprocess.run(
+   228	                    ["curl", "-s", "--max-time", "12", "-X", "POST", rpc,
+   229	                     "-H", "Content-Type: application/json", "-d", body],
+   230	                    capture_output=True, text=True,
+   231	                    encoding="utf-8", errors="replace").stdout
+   232	                r = json.loads(out)
+   233	                if "result" in r and r["result"] not in ("0x", "0x0", None):
+   234	                    resultado[simbolo] = int(r["result"], 16) / (10 ** decimales)
+   235	                    break
+   236	            except Exception:
+   237	                continue
+   238	    return resultado if resultado else None
+   239	
+   240	
+   241	def verificar_saldo_usdc(client):
+   242	    """Devuelve (saldo, allowance) o (None, None) si no se puede consultar.
+   243	    Compatible con py-clob-client 0.34.x: get_balance_allowance espera un
+   244	    objeto BalanceAllowanceParams (dataclass), no un dict.
+   245	    IMPORTANTE: la API CLOB consulta el saldo del FIRMANTE (signer), que en
+   246	    cuentas con deposit wallet NO es donde está el dinero. La fuente de
+   247	    verdad es el saldo on-chain del wallet_address (ver saldo_usdc_onchain)."""
+   248	    try:
+   249	        from py_clob_client_v2.clob_types import BalanceAllowanceParams, AssetType
+   250	        r = client.get_balance_allowance(
+   251	            BalanceAllowanceParams(asset_type=AssetType.COLLATERAL))
+   252	        # el balance viene en unidades base del token (6 decimales: pUSD/USDC)
+   253	        return float(r.get("balance", 0)) / 1e6, float(r.get("allowance", 0))
+   254	    except Exception as e:
+   255	        print(f"  [aviso] no se pudo consultar saldo USDC vía CLOB: {e}")
+   256	        return None, None
+   257	
+   258	
+   259	# ------------------------------------------------------------------ resolver
+   260	def evento_resuelto(slug):
+   261	    r = subprocess.run(["curl", "-s", "--max-time", "40",
+   262	                        f"https://gamma-api.polymarket.com/events?slug={slug}"],
+   263	                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+   264	    try:
+   265	        evs = json.loads(r.stdout)
+   266	        ev = evs[0]
+   267	        if not ev.get("closed"):
+   268	            return False, None
+   269	        for m in ev.get("markets", []):
+   270	            try:
+   271	                p = json.loads(m.get("outcomePrices") or "[]")
+   272	            except Exception:
+   273	                continue
+   274	            if p and p[0] == "1":
+   275	                return True, m.get("groupItemTitle")
+   276	    except Exception:
+   277	        pass
+   278	    return False, None
+   279	
+   280	
+   281	
+   282	
+   283	# ============================================================
+   284	# ANTI-DUPLICACIÓN: registro compartido entre los 6 bots
+   285	# ============================================================
+   286	def _lock_path():
+   287	    """Ruta del registro compartido: usa la configurada, o /home/bots (VM),
+   288	    o si no es escribible, un archivo local (runners GitHub/PC)."""
+   289	    p = os.environ.get("LOCK_APUESTAS", "")
+   290	    if p:
+   291	        return p
+   292	    candidatos = ["/home/bots/apuestas_compartidas.json",
+   293	                  "./apuestas_compartidas.json"]
+   294	    for c in candidatos:
+   295	        try:
+   296	            os.makedirs(os.path.dirname(c) or ".", exist_ok=True)
+   297	            with open(c, "a", encoding="utf-8") as f:
+   298	                pass
+   299	            return c
+   300	        except Exception:
+   301	            continue
+   302	    return "./apuestas_compartidas.json"
+   303	
+   304	
+   305	LOCK_APUESTAS = _lock_path()
+   306	BOT_NOMBRE = "48H"
+   307	
+   308	def _leer_lock():
+   309	    try:
+   310	        with open(_lock_path(), encoding="utf-8") as f:
+   311	            return json.load(f)
+   312	    except Exception:
+   313	        return {}
+   314	
+   315	
+   316	def _guardar_lock(d):
+   317	    try:
+   318	        ruta = _lock_path()
+   319	        os.makedirs(os.path.dirname(ruta) or ".", exist_ok=True)
+   320	        tmp = ruta + ".tmp"
+   321	        with open(tmp, "w", encoding="utf-8") as f:
+   322	            json.dump(d, f, ensure_ascii=False, indent=1)
+   323	        os.replace(tmp, ruta)
+   324	    except Exception as e:
+   325	        print(f"  [aviso] lock: {e}")
+   326	
+   327	
+   328	def ventana_ocupada(slug, bin_titulo, ahora=None):
+   329	    """Devuelve el nombre del bot que ya tiene apuesta en esa ventana/bin,
+   330	    o None si está libre. Expira cuando termina la ventana."""
+   331	    ahora = ahora or datetime.now(timezone.utc)
+   332	    d = _leer_lock()
+   333	    clave = f"{slug}|{bin_titulo}"
+   334	    ent = d.get(clave)
+   335	    if not ent:
+   336	        return None
+   337	    hasta = ent.get("hasta") or ""
+   338	    if hasta:
+   339	        try:
+   340	            if datetime.fromisoformat(hasta).astimezone(timezone.utc) < ahora:
+   341	                return None
+   342	        except Exception:
+   343	            pass
+   344	    return ent.get("bot") or "?"
+   345	
+   346	
+   347	def marcar_ventana(slug, bin_titulo, fin_iso):
+   348	    d = _leer_lock()
+   349	    d[f"{slug}|{bin_titulo}"] = {"bot": BOT_NOMBRE, "hasta": fin_iso or "",
+   350	                                  "ts": time.time()}
+   351	    _guardar_lock(d)
+   352	
+   353	
+   354	def liberar_ventana(slug, bin_titulo):
+   355	    d = _leer_lock()
+   356	    d.pop(f"{slug}|{bin_titulo}", None)
+   357	    _guardar_lock(d)
+   358	
+   359	
+   360	def resolver(estado, fee_pct=0.0):
+   361	    """Cierra la apuesta real activa si su mercado ya se resolvió.
+   362	    (Polymarket canjea automáticamente las shares ganadoras → el USDC
+   363	    vuelve solo al wallet; aquí solo anotamos el resultado.)"""
+   364	    act = estado.get("activa")
+   365	    if not act:
+   366	        return False
+   367	    resuelto, winner_titulo = evento_resuelto(act["slug"])
+   368	    if not resuelto or not winner_titulo:
+   369	        return False
+   370	    win = mp.parse_bin(winner_titulo)
+   371	    if not win:
+   372	        return False
+   373	    w_lo, w_hi = win
+   374	    w_hi = None if w_hi == float("inf") else w_hi
+   375	    if act["lado"] == "YES":
+   376	        ok = (w_lo == act["lo"] and w_hi == act["hi"])
+   377	    else:
+   378	        ok = not (w_lo == act["lo"] and w_hi == act["hi"])
+   379	    fee = round(act["stake"] * fee_pct, 2)
+   380	    if ok:
+   381	        benef = round(act["stake"] * (act["cuota"] - 1) - fee, 2)
+   382	        estado["saldo"] += benef
+   383	        res = "G"
+   384	        estado["paso"] = 1
+   385	    else:
+   386	        benef = -round(act["stake"] + fee, 2)
+   387	        estado["saldo"] += benef
+   388	        res = "P"
+   389	        estado["paso"] = 1 if act["paso"] >= 7 else act["paso"] + 1
+   390	    registro = {"id": uuid.uuid4().hex[:12], "fecha": act["fecha"],
+   391	                "mercado": act.get("slug", "—"), "bin": act["bin_titulo"],
+   392	                "lado": act["lado"], "precio": act["precio"], "cuota": act["cuota"],
+   393	                "p_modelo": act["p_modelo"], "paso": act["paso"],
+   394	                "stake": round(act["stake"], 2), "real": winner_titulo,
+   395	                "motor": act.get("motor", "motor_v1_martingala_fijo"),
+   396	                "ev": act.get("ev"),
+   397	                "resultado": res, "beneficio": benef,
+   398	                "saldo": round(estado["saldo"], 2)}
+   399	    estado["historial"].append(registro)
+   400	    estado["activa"] = None
+   401	    escribir_historial(estado["historial"])
+   402	    liberar_ventana(act.get("slug", ""), act.get("bin_titulo", ""))
+   403	    guardar_estado(estado)
+   404	    print(f"  ✔ RESUELTA apuesta REAL del {act['fecha']}: {act['bin_titulo']} "
+   405	          f"{act['lado']} → ganador {winner_titulo} → {res} ${benef:+.2f} "
+   406	          f"(saldo ${estado['saldo']:.2f})")
+   407	    try:
+   408	        notificar.enviar(
+   409	            f"{'✅ GANADA' if res == 'G' else '❌ PERDIDA'}  ${benef:+.2f} (REAL)\n"
+   410	            f"Bin {act['bin_titulo']} · {act['lado']} · ganador real {winner_titulo}\n"
+   411	            f"Stake ${act['stake']:.2f} · saldo de la operación ${benef:+.2f}\n"
+   412	            f"{saldo_ntfy.saldo_real_texto()}",
+   413	            titulo="💰 Apuesta REAL cerrada",
+   414	            etiqueta="white_check_mark" if res == "G" else "x")
+   415	    except Exception:
+   416	        pass
+   417	    return True
+   418	
+   419	
+   420	# ------------------------------------------------------------------ abrir
+   421	def abrir(estado, dry=False, actualizar=False):
+   422	    """Evalúa la señal y coloca una orden REAL (o la simula si dry=True)."""
+   423	    cfg = cargar_config()
+   424	    if not cfg.get("confirmado") and not dry:
+   425	        print("  [BLOQUEADO] config_real.json no tiene 'confirmado': true. "
+   426	              "Usa --simular para probar.")
+   427	        return False
+   428	    try:
+   429	        datos = senal.cargar_csv("datos_elon.csv")
+   430	    except SystemExit as e:
+   431	        print(f"  (sin datos suficientes: {e})")
+   432	        return False
+   433	    m = senal.metricas(datos)
+   434	    if actualizar:
+   435	        try:
+   436	            mp.actualizar_mercado()
+   437	        except Exception as e:
+   438	            print(f"  (no se pudo actualizar precios: {e})")
+   439	    try:
+   440	        mercados = json.load(open(mp.SALIDA, encoding="utf-8"))["mercados"]
+   441	    except Exception:
+   442	        print("  (sin mercado_activo.json)")
+   443	        return False
+   444	    _, candidatas = senal_vivo.evaluar(m["avg7"], m["v2"], m["ajuste"],
+   445	                                       m["lam48"], mercados, estado["paso"])
+   446	    candidatas = [c for c in candidatas if c["tipo"] == "48h"]
+   447	    if not candidatas:
+   448	        print(f"  (sin señal 48 h → no se abre apuesta real · paso {estado['paso']})")
+   449	        return False
+   450	    # Elegir la MEJOR ventana entre TODAS las disponibles (mayor EV)
+   451	    for _c in candidatas:
+   452	        _p = _c["p_modelo"] if _c["lado"] == "YES" else (1 - _c["p_modelo"])
+   453	        _c["_ev"] = round(_p * _c["cuota"], 3)
+   454	    # Elegir la mejor ventana LIBRE (sin duplicados con otros bots)
+   455	    c = None
+   456	    for _c in sorted(candidatas, key=lambda x: -x["_ev"]):
+   457	        ocup = ventana_ocupada(_c["slug"], _c["bin_titulo"])
+   458	        if ocup:
+   459	            print(f"  · {_c['bin_titulo']} {_c['lado']} ya ocupada por {ocup} → saltando")
+   460	            continue
+   461	        c = _c
+   462	        break
+   463	    if c is None:
+   464	        print("  · todas las ventanas con señal están ocupadas por otros bots")
+   465	        return False
+   466	    print(f"  · {len(candidatas)} ventana(s) con señal · elegida la de mayor EV libre: "
+   467	          f"{c['bin_titulo']} {c['lado']} · EV {c['_ev']:.2f}")
+   468	
+   469	    # ---- salvaguardas
+   470	    if estado["paso"] > 7:
+   471	        print("  [BLOQUEADO] paso > 7: stop de ciclo. Reinicia el ciclo.")
+   472	        return False
+   473	    fee = cfg.get("fee_pct", 0.0)
+   474	    coste_total = c["stake"] * (1 + fee)
+   475	    if coste_total > cfg.get("bankroll", BANKROLL) * 0.5:
+   476	        print(f"  [BLOQUEADO] el stake ${c['stake']:.2f} supera el 50% del "
+   477	              f"bankroll ${cfg.get('bankroll', BANKROLL):.0f}.")
+   478	        return False
+   479	
+   480	    # ---- orden
+   481	    client = get_client() if not dry else None
+   482	    tokens = None
+   483	    if not dry:
+   484	        tokens = token_id_para_bin(c["slug"], c["bin_titulo"])
+   485	        if not tokens:
+   486	            print(f"  [ERROR] no encontré el token del bin {c['bin_titulo']} "
+   487	                  f"en {c['slug']}")
+   488	            return False
+   489	        # Saldo real: consultar la deposit wallet (wallet_address) ON-CHAIN,
+   490	        # porque el saldo CLOB es del firmante y en deposit wallets los
+   491	        # fondos están en la wallet de la cuenta (pUSD).
+   492	        wallet = (cfg.get("wallet_address") or "").strip()
+   493	        saldo_real = 0.0
+   494	        # FUENTE PRINCIPAL (Polymarket V2, abril 2026): el colateral de
+   495	        # trading (pUSD) vive DENTRO del CLOB (balance interno), no suelto
+   496	        # on-chain en la wallet. get_balance_allowance devuelve el balance
+   497	        # real del funder. El saldo on-chain solo se usa como respaldo.
+   498	        saldo_clob, _ = verificar_saldo_usdc(client)
+   499	        if saldo_clob is not None and saldo_clob > 0:
+   500	            saldo_real = saldo_clob
+   501	            print(f"  Saldo CLOB: ${saldo_real:.2f} pUSD")
+   502	        elif wallet:
+   503	            saldos = saldo_usdc_onchain(wallet, "polygon") or {}
+   504	            saldo_real = (saldos.get("pUSD", 0) + saldos.get("USDC", 0)
+   505	                          + saldos.get("USDC.e", 0))
+   506	            print(f"  Saldo on-chain ({wallet[:10]}…): "
+   507	                  f"pUSD ${saldos.get('pUSD', 0):.2f} · "
+   508	                  f"USDC ${saldos.get('USDC', 0):.2f} · "
+   509	                  f"USDC.e ${saldos.get('USDC.e', 0):.2f}")
+   510	        else:
+   511	            saldo_real = saldo_clob or 0.0
+   512	        if saldo_real < coste_total:
+   513	            print(f"  [BLOQUEADO] saldo insuficiente en la cuenta "
+   514	                  f"(${saldo_real:.2f} < ${coste_total:.2f}).")
+   515	            print("  Deposita pUSD/USDC en Polymarket (dirección wallet_address).")
+   516	            return False
+   517	
+   518	    token_id = (tokens[0] if c["lado"] == "YES" else tokens[1]) if tokens else "TOKEN_DEMO"
+   519	    print(f"  → Orden {'SIMULADA' if dry else 'REAL'}: "
+   520	          f"{c['mercado']} · {c['bin_titulo']} {c['lado']} "
+   521	          f"@{c['precio']:.3f} (cuota {c['cuota']:.2f}) · "
+   522	          f"size {c['stake']:.2f} USDC · token {token_id[:12]}…")
+   523	    order_id = None
+   524	    if dry:
+   525	        print("  (modo seco: no se envió nada)")
+   526	    else:
+   527	        try:
+   528	            from py_clob_client_v2.clob_types import OrderArgs
+   529	            # SDK V2: el 'size' de OrderArgs son SHARES, no dólares.
+   530	            # stake $X a precio P → shares = X/P (redondeo a 2 dec).
+   531	            size_shares = round(c["stake"] / c["precio"], 2)
+   532	            if size_shares < 5:
+   533	                print(f"  [BLOQUEADO] tamaño {size_shares} shares < mínimo 5 "
+   534	                      f"(stake ${c['stake']:.2f} a precio {c['precio']:.3f}).")
+   535	                return False
+   536	            print(f"  (stake ${c['stake']:.2f} → {size_shares} shares a "
+   537	                  f"{c['precio']:.3f})")
+   538	            # limpiar órdenes abiertas previas (restos de runs cancelados)
+   539	            try:
+   540	                from py_clob_client_v2.clob_types import OrderPayload
+   541	                _abiertas = client.get_open_orders() or []
+   542	                for _o in _abiertas:
+   543	                    try:
+   544	                        client.cancel_order(OrderPayload(orderID=_o.get("id")))
+   545	                    except Exception:
+   546	                        pass
+   547	                if _abiertas:
+   548	                    print(f"  · canceladas {len(_abiertas)} órdenes previas sin cerrar")
+   549	            except Exception as e:
+   550	                print(f"  (aviso limpiando órdenes previas: {e})")
+   551	            resp = client.create_and_post_order(
+   552	                OrderArgs(price=c["precio"], size=size_shares,
+   553	                          side="BUY", token_id=token_id))
+   554	            order_id = resp.get("orderID") or resp.get("order_id")
+   555	            print(f"  Orden enviada: {order_id}  (respuesta: {str(resp)[:120]})")
+   556	            # NOTIFICAR INMEDIATAMENTE (no esperar al fill)
+   557	            try:
+   558	                notificar.enviar(
+   559	                    f"💰 ORDEN REAL enviada\n"
+   560	                    f"Mercado: {c['slug']}\nBin {c['bin_titulo']} · {c['lado']} "
+   561	                    f"@ {c['precio']:.3f} (cuota {c['cuota']:.2f})\n"
+   562	                    f"Paso {estado['paso']} · stake ${c['stake']:.2f} · vigilando fill (60 min)\n"
+   563	                    f"{saldo_ntfy.saldo_real_texto()}",
+   564	                    titulo="💰 Apuesta REAL abierta",
+   565	                    etiqueta="moneybag")
+   566	            except Exception as e:
+   567	                print(f"  [aviso] notif inmediata: {e}")
+   568	        except Exception as e:
+   569	            print(f"  [ERROR] no se pudo enviar la orden: {e}")
+   570	            return False
+   571	        # chequeo rápido del fill (sin bloquear el bot: la vigilancia
+   572	        # continúa en cada pasada vía vigilar_orden_pendiente)
+   573	        llenada = False
+   574	        if order_id:
+   575	            for _intento in range(3):
+   576	                try:
+   577	                    detalle = client.get_order(order_id)
+   578	                    st = (detalle.get("status") or "").lower()
+   579	                    sz = float(detalle.get("size_matched", 0) or 0)
+   580	                    if st in ("matched", "filled") or sz > 0:
+   581	                        llenada = True
+   582	                        break
+   583	                    if st == "cancelled":
+   584	                        break
+   585	                except Exception:
+   586	                    pass
+   587	                time.sleep(10)
+   588	            if llenada:
+   589	                try:
+   590	                    notificar.enviar(
+   591	                        f"✅ ORDEN REAL LLENADA (apuesta activa)\n"
+   592	                        f"Mercado: {c['slug']}\nBin {c['bin_titulo']} · {c['lado']} "
+   593	                        f"@ {c['precio']:.3f} (cuota {c['cuota']:.2f})\n"
+   594	                        f"Stake ${c['stake']:.2f} · se ejecutará hasta {c['ventana'][1].isoformat()[:16]}\n"
+   595	                        f"{saldo_ntfy.saldo_real_texto()}",
+   596	                        titulo="[REAL] ✅ Apuesta EJECUTADA",
+   597	                        etiqueta="white_check_mark")
+   598	                except Exception as e:
+   599	                    print(f"  [aviso] notif llenada: {e}")
+   600	            else:
+   601	                print(f"  ⏳ Orden {order_id[:14]}… pendiente de llenado "
+   602	                      f"(se vigilará cada pasada, máx {FILL_TIMEOUT_MIN} min)")
+   603	
+   604	    estado["activa"] = {"slug": c["slug"], "fecha": datetime.now(ET).strftime("%Y-%m-%d"),
+   605	                        "bin_titulo": c["bin_titulo"], "lo": c["lo"],
+   606	                        "hi": (c["hi"] if c["hi"] != math.inf else None),
+   607	                        "lado": c["lado"], "precio": round(c["precio"], 4),
+   608	                        "cuota": round(c["cuota"], 2), "p_modelo": round(c["p_modelo"], 4),
+   609	                        "paso": estado["paso"], "stake": c["stake"],
+   610	                        "motor": c.get("motor", "motor_v1_martingala_fijo"),
+   611	                        "ev": c.get("ev"),
+   612	                        "order_id": order_id, "token_id": token_id,
+   613	                        "pendiente": bool(order_id) and not llenada,
+   614	                        "fecha_orden_ts": time.time(),
+   615	                        "ventana_fin": c["ventana"][1].isoformat()}
+   616	    guardar_estado(estado)
+   617	    marcar_ventana(c["slug"], c["bin_titulo"], c["ventana"][1].isoformat())
+   618	    print(f"  ✔ ABIERTA apuesta REAL (o simulada): {c['bin_titulo']} {c['lado']} "
+   619	          f"a {c['precio']:.3f} · paso {estado['paso']} · stake ${c['stake']:.2f}")
+   620	    return True
+   621	
+   622	
+   623	# ------------------------------------------------------------------ pasada
+   624	
+   625	
+   626	def vigilar_orden_pendiente(estado, cfg):
+   627	    """Comprueba en cada pasada si la orden pendiente se llenó.
+   628	    - Llenada → notifica ✅ (apuesta activa) y deja de vigilar.
+   629	    - > FILL_TIMEOUT_MIN sin llenar → cancela y notifica ⚠️.
+   630	    - Sigue pendiente → solo informa en log (el bot continúa operando)."""
+   631	    act = estado.get("activa") or {}
+   632	    # si hay order_id y no está marcado como ya-llenado, se vigila
+   633	    if not act.get("order_id") or act.get("pendiente") is False:
+   634	        return
+   635	    try:
+   636	        from py_clob_client_v2.clob_types import OrderPayload
+   637	        client = get_client()
+   638	        detalle = client.get_order(act["order_id"])
+   639	        if detalle is None:
+   640	            # La orden ya no existe en CLOB: se canceló o expiró sin llenarse.
+   641	            liberar_ventana(act.get("slug", ""), act.get("bin_titulo", ""))
+   642	            estado["activa"] = None
+   643	            guardar_estado(estado)
+   644	            print(f"  ⚠️ Orden {act.get('bin_titulo')} {act.get('lado')} ya no existe "
+   645	                  f"en CLOB (cancelada/expiró). Estado limpiado y ventana liberada.")
+   646	            try:
+   647	                notificar.enviar(
+   648	                    f"⚠️ Orden cancelada por Polymarket (no llenada)\n"
+   649	                    f"Bin {act.get('bin_titulo')} · {act.get('lado')} @ {act.get('precio', 0):.3f}\n"
+   650	                    f"Se liberó la ventana para volver a intentarlo.",
+   651	                    titulo="⚠️ Orden cancelada por el exchange",
+   652	                    etiqueta="warning")
+   653	            except Exception:
+   654	                pass
+   655	            return
+   656	        st = (detalle.get("status") or "").lower()
+   657	        sz = float(detalle.get("size_matched", 0) or 0)
+   658	        llenada = st in ("matched", "filled") or sz > 0
+   659	        if llenada:
+   660	            act["pendiente"] = False
+   661	            act.pop("order_id", None)
+   662	            act.pop("fecha_orden_ts", None)
+   663	            guardar_estado(estado)
+   664	            print(f"  ✅ Orden REAL LLENADA (apuesta activa): {act['bin_titulo']} "
+   665	                  f"{act['lado']} @ {act['precio']:.3f}")
+   666	            try:
+   667	                notificar.enviar(
+   668	                    f"✅ ORDEN REAL LLENADA (apuesta activa)\n"
+   669	                    f"Mercado: {act['slug']}\nBin {act['bin_titulo']} · {act['lado']} "
+   670	                    f"@ {act['precio']:.3f} (cuota {act['cuota']:.2f})\n"
+   671	                    f"Stake ${act['stake']:.2f} · resuelve: {str(act.get('ventana_fin','?'))[:16]}\n"
+   672	                    f"Tweets en la ventana: {notificar.tweets_activa(act)}\n"
+   673	                    f"{saldo_ntfy.saldo_real_texto()}",
+   674	                    titulo="[REAL] ✅ Apuesta EJECUTADA",
+   675	                    etiqueta="white_check_mark")
+   676	            except Exception as e:
+   677	                print(f"  [aviso] notif llenada: {e}")
+   678	        else:
+   679	            creada = act.get("fecha_orden_ts") or time.time()
+   680	            edad_min = (time.time() - creada) / 60
+   681	            if edad_min >= FILL_TIMEOUT_MIN:
+   682	                try:
+   683	                    client.cancel_order(OrderPayload(orderID=act["order_id"]))
+   684	                    print(f"  Orden cancelada (no se llenó en {FILL_TIMEOUT_MIN} min).")
+   685	                except Exception as e:
+   686	                    print(f"  [aviso] cancel: {e}")
+   687	                try:
+   688	                    notificar.enviar(
+   689	                        f"⚠️ Orden REAL cancelada (no llenada en {FILL_TIMEOUT_MIN} min)\n"
+   690	                        f"{act['bin_titulo']} {act['lado']} @ {act['precio']:.3f}",
+   691	                        titulo="⚠️ Orden cancelada",
+   692	                        etiqueta="warning")
+   693	                except Exception:
+   694	                    pass
+   695	                liberar_ventana(act.get("slug", ""), act.get("bin_titulo", ""))
+   696	                estado["activa"] = None
+   697	                guardar_estado(estado)
+   698	            else:
+   699	                print(f"  ⏳ Orden pendiente: {act['bin_titulo']} {act['lado']} "
+   700	                      f"@ {act['precio']:.3f} ({edad_min:.0f}/{FILL_TIMEOUT_MIN} min)")
+   701	    except Exception as e:
+   702	        print(f"  [aviso] vigilar orden: {e}")
+   703	
+   704	def pasada_real(dry=False, actualizar=False, excel=False):
+   705	    """Una pasada completa de trading real."""
+   706	    cfg = cargar_config()
+   707	    estado = cargar_estado()
+   708	    print(f"[{datetime.now(ET).strftime('%Y-%m-%d %H:%M %Z')}] Trading REAL "
+   709	          f"{'(SECO)' if dry else ''} · saldo ${estado['saldo']:.2f} · "
+   710	          f"paso {estado['paso']}")
+   711	    if estado.get("activa"):
+   712	        act = estado["activa"]
+   713	        # registrar la ventana en el lock compartido (evita duplicados entre bots)
+   714	        marcar_ventana(act.get("slug", ""), act.get("bin_titulo", ""),
+   715	                       act.get("ventana_fin", ""))
+   716	        resolver(estado, fee_pct=cfg.get("fee_pct", 0.0))
+   717	        # FIXWIN_ARENA: reposicionamiento si el bin activo pierde probabilidad
+   718	        if estado.get("activa"):
+   719	            fixwin_check(estado, cfg, dry=dry)
+   720	    if not estado.get("activa"):
+   721	        abrir(estado, dry=dry, actualizar=actualizar)
+   722	    n = len(estado["historial"])
+   723	    if n:
+   724	        g = sum(1 for h in estado["historial"] if h["resultado"] == "G")
+   725	        print(f"  Historial REAL: {n} apuestas · {g}G/{n-g}P · "
+   726	              f"beneficio ${sum(h['beneficio'] for h in estado['historial']):+.2f}")
+   727	    if excel and os.path.exists(HISTORIAL):
+   728	        try:
+   729	            from excel_historial import generar as gen_hist
+   730	            ruta, anadidas, total = gen_hist(HISTORIAL,
+   731	                                             salida="Historial_Operaciones.xlsx",
+   732	                                             bankroll=cfg.get("bankroll", BANKROLL),
+   733	                                             titulo_extra="trading REAL")
+   734	            print(f"Excel historial: {ruta} (añadidas {anadidas}, total {total})")
+   735	        except Exception as e:
+   736	            print(f"  (no se pudo generar Excel: {e})")
+   737	    return estado
+   738	
+   739	
+   740	def probar_orden():
+   741	    """PRUEBA SEGURA del pipeline de órdenes reales (firma V2):
+   742	    coloca una orden límite de 5 shares a precio 0.01 (máx. 5 céntimos) en el primer bin del
+   743	    mercado 48h activo — es un precio imposible (los bins cotizan ≥ 0.10),
+   744	    por lo que NO se llenará nunca. Si se llenara, costaría 1 céntimo.
+   745	    Sirve para validar que la firma de órdenes V2 funciona antes de
+   746	    confiar dinero real. La orden se cancela a los 2 minutos."""
+   747	    print("Prueba de orden SEGURA (precio 0.01, tamaño $0.01 — no se llenará).")
+   748	    cfg = cargar_config()
+   749	    client = get_client()
+   750	    try:
+   751	        mercados = json.load(open(mp.SALIDA, encoding="utf-8"))["mercados"]
+   752	    except Exception:
+   753	        print("  (sin mercado_activo.json: ejecuta primero el bot en papel)")
+   754	        return
+   755	    ahora = datetime.now(timezone.utc)
+   756	    activo = next((m for m in mercados
+   757	                   if not m["cerrado"] and m["tipo"] == "48h"
+   758	                   and m.get("fin_iso")
+   759	                   and datetime.fromisoformat(m["fin_iso"]) > ahora), None)
+   760	
+   761	    if not activo:
+   762	        print("  (no hay mercado 48h abierto ahora mismo)")
+   763	        return
+   764	    # elegir el primer bin CON PRECIO REAL (no los bins muertos a 0.000)
+   765	    b = next((x for x in activo["bins"] if (x.get("precio_yes") or 0) >= 0.02),
+   766	             activo["bins"][0])
+   767	    tokens = token_id_para_bin(activo["slug"], b["titulo"])
+   768	    if not tokens:
+   769	        print(f"  (no encontré tokens para {b['titulo']})")
+   770	        return
+   771	    token_id = tokens[0]  # YES
+   772	    try:
+   773	        from py_clob_client_v2.clob_types import OrderArgs
+   774	        resp = client.create_and_post_order(
+   775	            OrderArgs(token_id=token_id, price=0.01, size=5, side="BUY"))
+   776	        oid = resp.get("orderID") or resp.get("order_id")
+   777	        print(f"  ✔ Orden de prueba enviada: {oid}")
+   778	        print("  Si no hay error, la firma V2 funciona → puedes activar confirmado:true.")
+   779	        time.sleep(8)
+   780	        try:
+   781	            client.cancel_order(oid)
+   782	            print("  ✔ Orden de prueba cancelada (sin riesgo).")
+   783	        except Exception as e:
+   784	            print(f"  (aviso al cancelar: {e})")
+   785	    except Exception as e:
+   786	        print(f"  ✖ ERROR al enviar la orden de prueba: {e}")
+   787	        print("  → Si es un error de firma/dominio, el SDK V2 no está bien instalado")
+   788	        print("    o las credenciales no corresponden. Pega el error aquí.")
+   789	
+   790	
+   791	def main():
+   792	    ap = argparse.ArgumentParser(description="Trading real en Polymarket (con salvaguardas)")
+   793	    ap.add_argument("--simular", action="store_true", help="modo seco (no envía órdenes)")
+   794	    ap.add_argument("--actualizar", action="store_true", help="refrescar precios")
+   795	    ap.add_argument("--excel", action="store_true", help="actualizar Excel historial")
+   796	    ap.add_argument("--probar-orden", action="store_true",
+   797	                    help="prueba SEGURA de orden real (0.01$ a precio 0.01, no se llena)")
+   798	    args = ap.parse_args()
+   799	    for _s in (sys.stdout, sys.stderr):
+   800	        try:
+   801	            _s.reconfigure(encoding="utf-8", errors="replace")
+   802	        except Exception:
+   803	            pass
+   804	    if args.probar_orden:
+   805	        probar_orden()
+   806	        return
+   807	    pasada_real(dry=args.simular, actualizar=args.actualizar, excel=args.excel)
+   808	
+   809	
+   810	
+   811	
+   812	# ================================================================
+   813	# FIXWIN_ARENA (30/08): reposicionamiento inteligente entre ventanas
+   814	# ================================================================
+   815	FIXWIN_P_ABANDONO = 0.35   # cierra la activa si p_modelo baja de este umbral
+   816	FIXWIN_P_GANADOR  = 0.68   # solo si hay bin alternativo con p >= este umbral
+   817	FIXWIN_CIERRE_H   = {"48h": 6.0, "semanal": 12.0, "mensual": 24.0}  # h ventana cierre
+   818	FIXWIN_REENTRADA  = 0.30   # % de ENTRADA_MAX_H que debe quedar para reentrada media
+   819	
+   820	
+   821	def cerrar_anticipado(estado, motivo, dry=False):
+   822	    """FIXWIN_ARENA: vende las shares activas (SELL en CLOB V2) y libera la ventana.
+   823	    La orden se pone 10% bajo el precio actual de mercado para asegurar el fill."""
+   824	    act = estado.get("activa")
+   825	    if not act or act.get("pendiente"):
+   826	        return False
+   827	    token_id = act.get("token_id")
+   828	    if not token_id or token_id == "TOKEN_DEMO":
+   829	        print("  [FIXWIN] sin token_id real — no se puede vender")
+   830	        return False
+   831	    size = act.get("size") or round(act["stake"] / max(act["precio"], 0.001), 2)
+   832	    # Precio de venta: precio actual del bin desde mercado_activo.json - 10%
+   833	    precio_venta = max(0.01, round(act["precio"] * 0.85, 3))
+   834	    try:
+   835	        mks = json.load(open(mp.SALIDA, encoding="utf-8"))["mercados"]
+   836	        mk_v = next((m for m in mks if m.get("slug") == act.get("slug")), None)
+   837	        if mk_v:
+   838	            b_v = next((b for b in mk_v.get("bins", []) if b["titulo"] == act["bin_titulo"]), None)
+   839	            if b_v:
+   840	                p_now = b_v["precio_yes"] if act["lado"] == "YES" else (1 - b_v["precio_yes"])
+   841	                precio_venta = max(0.01, round(p_now * 0.90, 3))
+   842	    except Exception:
+   843	        pass
+   844	    print(f"  [FIXWIN] cierre anticipado: {size:.2f} shares "
+   845	          f"{act['bin_titulo']} {act['lado']} @ {precio_venta:.3f} | {motivo}")
+   846	    if dry:
+   847	        print("  [FIXWIN SECO] la orden de venta no se envía")
+   848	        liberar_ventana(act.get("slug", ""), act.get("bin_titulo", ""))
+   849	        estado["activa"] = None
+   850	        guardar_estado(estado)
+   851	        return True
+   852	    try:
+   853	        from py_clob_client_v2.clob_types import OrderArgs
+   854	        client = get_client()
+   855	        resp = client.create_and_post_order(
+   856	            OrderArgs(price=precio_venta, size=size, side="SELL", token_id=token_id))
+   857	        order_id = resp.get("orderID") or resp.get("order_id")
+   858	        print(f"  [FIXWIN] orden SELL enviada: {order_id}")
+   859	        time.sleep(12)
+   860	        sz_matched, precio_real = size, precio_venta
+   861	        try:
+   862	            det = client.get_order(order_id)
+   863	            sz_matched = float(det.get("size_matched", 0) or size)
+   864	            precio_real = float(det.get("avg_price") or det.get("price") or precio_venta)
+   865	        except Exception:
+   866	            pass
+   867	        benef = round((precio_real - act["precio"]) * sz_matched, 2)
+   868	        estado["saldo"] = round(estado["saldo"] + benef, 2)
+   869	        res = "G" if benef >= 0 else "P"
+   870	        registro = {
+   871	            "id": uuid.uuid4().hex[:12], "fecha": act["fecha"],
+   872	            "mercado": act.get("slug", "—"), "bin": act["bin_titulo"],
+   873	            "lado": act["lado"], "precio": act["precio"], "cuota": act["cuota"],
+   874	            "p_modelo": act["p_modelo"], "paso": act["paso"],
+   875	            "stake": round(act["stake"], 2),
+   876	            "real": f"FIXWIN-anticipado @ {precio_real:.3f} ({motivo[:40]})",
+   877	            "motor": act.get("motor", ""), "ev": act.get("ev"),
+   878	            "resultado": res, "beneficio": benef, "saldo": estado["saldo"]}
+   879	        estado["historial"].append(registro)
+   880	        liberar_ventana(act.get("slug", ""), act.get("bin_titulo", ""))
+   881	        estado["activa"] = None
+   882	        guardar_estado(estado)
+   883	        escribir_historial(estado["historial"])
+   884	        try:
+   885	            notificar.enviar(
+   886	                f"\u26a1 FIXWIN: cierre anticipado ({res} ${benef:+.2f})\n"
+   887	                f"Motivo: {motivo}\n"
+   888	                f"Bin {act['bin_titulo']} {act['lado']} @ {precio_real:.3f}\n"
+   889	                f"Saldo ${estado['saldo']:.2f}",
+   890	                titulo="\u26a1 FIXWIN: reposicionamiento", etiqueta="zap")
+   891	        except Exception:
+   892	            pass
+   893	        return True
+   894	    except Exception as e:
+   895	        print(f"  [FIXWIN] ERROR en venta: {e}")
+   896	        return False
+   897	
+   898	
+   899	def fixwin_check(estado, cfg, dry=False):
+   900	    """FIXWIN_ARENA: si p_modelo del bin activo < FIXWIN_P_ABANDONO y hay
+   901	    otro bin con p >= FIXWIN_P_GANADOR, cierra anticipadamente y reasigna."""
+   902	    act = estado.get("activa")
+   903	    if not act or act.get("pendiente"):
+   904	        return
+   905	    try:
+   906	        csv_file = "datos_elon.csv" if BOT_NOMBRE == "48H" else "datos_zelen.csv"
+   907	        datos = senal.cargar_csv(csv_file)
+   908	        m = senal.metricas(datos)
+   909	        mercados = json.load(open(mp.SALIDA, encoding="utf-8"))["mercados"]
+   910	        evaluados, _ = senal_vivo.evaluar(m["avg7"], m["v2"], m["ajuste"],
+   911	                                           m["lam48"], mercados, 1)
+   912	        mk_e = next((e for e in evaluados if e.get("slug") == act.get("slug")), None)
+   913	        if not mk_e:
+   914	            return
+   915	        bin_act = next((b for b in mk_e["bins"] if b["titulo"] == act["bin_titulo"]), None)
+   916	        if not bin_act:
+   917	            return
+   918	        p_actual = bin_act["p_modelo"] if act["lado"] == "YES" else (1 - bin_act["p_modelo"])
+   919	        bins_ord = sorted(mk_e["bins"], key=lambda b: -b["p_modelo"])
+   920	        mejor = bins_ord[0]
+   921	        p_mejor = mejor["p_modelo"]
+   922	        print(f"  [FIXWIN] p_activa={p_actual:.1%} ({act['bin_titulo']}) | "
+   923	              f"mejor={mejor['titulo']} p={p_mejor:.1%}")
+   924	        if (p_actual < FIXWIN_P_ABANDONO and
+   925	                p_mejor >= FIXWIN_P_GANADOR and
+   926	                mejor["titulo"] != act["bin_titulo"]):
+   927	            motivo = (f"p={p_actual:.0%}<{FIXWIN_P_ABANDONO:.0%} "
+   928	                      f"-> {mejor['titulo']} p={p_mejor:.0%}")
+   929	            cerrar_anticipado(estado, motivo, dry=dry)
+   930	    except Exception as e:
+   931	        print(f"  [FIXWIN] check error: {e}")
+   932	
+   933	if __name__ == "__main__":
+   934	    main()
+
+-- B) gestionar_posiciones.py (huella + paginas) · ruta: /opt/polymarket/gestionar_posiciones.py
+   d62ebac9909f417193c678cdd4bf3864  /opt/polymarket/gestionar_posiciones.py
+   321 /opt/polymarket/gestionar_posiciones.py
+     1	#!/usr/bin/env python3
+     2	# -*- coding: utf-8 -*-
+     3	"""Gestor de cierre anticipado de posiciones de Elon en Polymarket.
+     4	
+     5	Cada N minutos:
+     6	  1. Lee las posiciones ABIERTAS de Elon del data-api.
+     7	  2. Para cada una, proyecta los tweets al final de la ventana usando el
+     8	     ritmo real de publicación (datos_elon.csv).
+     9	  3. Si la proyección queda FUERA del margen apostado (bin), vende la
+    10	     posición: en positivo si el precio actual lo permite, o con la
+    11	     mínima pérdida (mejor salir que esperar a 0).
+    12	
+    13	Reglas de seguridad:
+    14	  - No se vende en las últimas 2 horas de la ventana (se deja resolver).
+    15	  - Margen de tolerancia: no se cierra si la proyección roza el borde.
+    16	  - Solo gestiona posiciones de Elon Musk (las demás no se tocan).
+    17	
+    18	Uso:
+    19	  python3 gestionar_posiciones.py --dry      # simula (no vende)
+    20	  python3 gestionar_posiciones.py --loop N   # bucle cada N minutos
+    21	"""
+    22	import json
+    23	import re
+    24	import subprocess
+    25	import sys
+    26	import time
+    27	import urllib.parse
+    28	import urllib.request
+    29	from datetime import datetime, timedelta, timezone
+    30	from zoneinfo import ZoneInfo
+    31	
+    32	ET = ZoneInfo("America/New_York")
+    33	FUNDER = "0xb0E1197098E6d427c01720F1631cAD24CE740FA0"
+    34	TELEGRAM_BOT_TOKEN = __import__("os").environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    35	TELEGRAM_CHAT_ID = __import__("os").environ.get("TELEGRAM_CHAT_ID", "").strip()
+    36	
+    37	MARGEN_TWEETS = 2          # tolerancia en tweets para no cerrar por los pelos
+    38	MIN_HORAS_RESTANTES = 2    # no cerrar si quedan menos de 2 h (dejar resolver)
+    39	LOOP_MIN = 5
+    40	
+    41	
+    42	def _curl(url):
+    43	    r = subprocess.run(["curl", "-s", "--max-time", "40", url],
+    44	                       capture_output=True, text=True, encoding="utf-8",
+    45	                       errors="replace")
+    46	    if r.returncode != 0 or not r.stdout.strip():
+    47	        return None
+    48	    try:
+    49	        return json.loads(r.stdout)
+    50	    except Exception:
+    51	        return None
+    52	
+    53	
+    54	def tg_send(texto):
+    55	    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+    56	        return False
+    57	    try:
+    58	        data = urllib.parse.urlencode({"chat_id": TELEGRAM_CHAT_ID,
+    59	                                       "text": texto}).encode()
+    60	        req = urllib.request.Request(
+    61	            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
+    62	            data=data)
+    63	        with urllib.request.urlopen(req, timeout=20) as r:
+    64	            return json.loads(r.read().decode()).get("ok", False)
+    65	    except Exception:
+    66	        return False
+    67	
+    68	
+    69	def get_client():
+    70	    sys.path.insert(0, "/opt/polymarket/bot-polymarket-elon")
+    71	    import operar_real as op
+    72	    return op.get_client()
+    73	
+    74	
+    75	def cargar_tweets():
+    76	    tweets = {}
+    77	    try:
+    78	        for line in open("/opt/polymarket/bot-polymarket-elon/datos_elon.csv",
+    79	                         encoding="utf-8"):
+    80	            line = line.strip()
+    81	            if not line or line.lower().startswith("fecha") or "," not in line:
+    82	                continue
+    83	            f, tw = line.split(",", 1)
+    84	            try:
+    85	                tweets[f.strip()] = int(tw)
+    86	            except ValueError:
+    87	                pass
+    88	    except Exception:
+    89	        pass
+    90	    return tweets
+    91	
+    92	
+    93	def cargar_ventanas():
+    94	    """{eventSlug: (inicio_iso, fin_iso)} de mercado_activo.json."""
+    95	    out = {}
+    96	    try:
+    97	        mercados = json.load(open(
+    98	            "/opt/polymarket/bot-polymarket-elon/mercado_activo.json",
+    99	            encoding="utf-8")).get("mercados", [])
+   100	        for m in mercados:
+   101	            slug = m.get("slug", "")
+   102	            if slug and m.get("inicio_iso") and m.get("fin_iso"):
+   103	                out[slug] = (m["inicio_iso"], m["fin_iso"])
+   104	    except Exception:
+   105	        pass
+   106	    return out
+   107	
+   108	
+   109	def parse_bin(question):
+   110	    """Extrae [lo, hi] de 'Will Elon Musk post 140-159 tweets from ...'."""
+   111	    m = re.search(r"post\s+<?(\d+)-(\d+)\s+tweets", question or "")
+   112	    if m:
+   113	        return int(m.group(1)), int(m.group(2))
+   114	    m = re.search(r"post\s+<(\d+)\s+tweets", question or "")
+   115	    if m:
+   116	        return 0, int(m.group(1)) - 1
+   117	    return None
+   118	
+   119	
+   120	def proyectar(event_slug, tweets_csv, ventanas):
+   121	    """Devuelve dict con proyección o None si no hay datos suficientes.
+   122	
+   123	    Usa días COMPLETOS (hasta ayer) para el ritmo, para no sobrestimar
+   124	    el día de hoy (que aún no ha terminado)."""
+   125	    if event_slug not in ventanas:
+   126	        return None
+   127	    inicio_iso, fin_iso = ventanas[event_slug]
+   128	    try:
+   129	        ini_dt = datetime.fromisoformat(inicio_iso.replace("Z", "+00:00"))
+   130	        fin_dt = datetime.fromisoformat(fin_iso.replace("Z", "+00:00"))
+   131	    except Exception:
+   132	        return None
+   133	    if ini_dt.tzinfo is None:
+   134	        ini_dt = ini_dt.replace(tzinfo=timezone.utc)
+   135	    if fin_dt.tzinfo is None:
+   136	        fin_dt = fin_dt.replace(tzinfo=timezone.utc)
+   137	    ahora = datetime.now(timezone.utc)
+   138	    dias_totales = max((fin_dt - ini_dt).total_seconds() / 86400, 0.05)
+   139	    # días completos transcurridos (hasta ayer)
+   140	    hoy = datetime.now(ET).date()
+   141	    ini_date = ini_dt.astimezone(ET).date()
+   142	    dias_completos = (hoy - ini_date).days
+   143	    if dias_completos < 1:
+   144	        return None
+   145	    # tweets en días completos (excluye hoy)
+   146	    tweets_comp = 0
+   147	    for fecha, tw in tweets_csv.items():
+   148	        try:
+   149	            d = datetime.strptime(fecha, "%Y-%m-%d").date()
+   150	        except Exception:
+   151	            continue
+   152	        if ini_date <= d < hoy:
+   153	            tweets_comp += tw
+   154	    ritmo = tweets_comp / dias_completos
+   155	    proyeccion = ritmo * dias_totales
+   156	    horas_rest = (fin_dt - ahora).total_seconds() / 3600
+   157	    return {
+   158	        "tweets_comp": tweets_comp,
+   159	        "dias_completos": dias_completos,
+   160	        "dias_totales": dias_totales,
+   161	        "ritmo": ritmo,
+   162	        "proyeccion": proyeccion,
+   163	        "horas_rest": horas_rest,
+   164	        "fin": fin_dt,
+   165	    }
+   166	
+   167	
+   168	def posiciones_elon():
+   169	    pos = _curl(f"https://data-api.polymarket.com/positions?user={FUNDER}") or []
+   170	    out = []
+   171	    for p in pos:
+   172	        try:
+   173	            cur = float(p.get("currentValue", 0) or 0)
+   174	        except Exception:
+   175	            continue
+   176	        if cur <= 0.001:
+   177	            continue
+   178	        title = (p.get("title") or "").lower()
+   179	        if "elon musk" not in title:
+   180	            continue
+   181	        out.append(p)
+   182	    return out
+   183	
+   184	
+   185	def vender(token_id, shares, cur_price, dry):
+   186	    """Vende shares a mercado. Devuelve (ok, detalle)."""
+   187	    if dry:
+   188	        return True, f"(seco) vendería {shares} shares @ ~{cur_price}"
+   189	    client = get_client()
+   190	    from py_clob_client_v2.clob_types import MarketOrderArgsV2
+   191	    try:
+   192	        resp = client.create_and_post_market_order(
+   193	            MarketOrderArgsV2(token_id=token_id, amount=shares, side="SELL",
+   194	                              order_type="FOK"))
+   195	        oid = resp.get("orderID") or resp.get("order_id") or str(resp)[:80]
+   196	        return True, f"vendidas {shares} shares (order {oid})"
+   197	    except Exception as e:
+   198	        # fallback: orden límite al precio actual
+   199	        try:
+   200	            from py_clob_client_v2.clob_types import OrderArgs
+   201	            resp = client.create_and_post_order(
+   202	                OrderArgs(token_id=token_id, price=round(cur_price, 4),
+   203	                          size=shares, side="SELL"))
+   204	            oid = resp.get("orderID") or resp.get("order_id") or str(resp)[:80]
+   205	            return True, f"orden límite SELL {shares} @ {cur_price} (order {oid})"
+   206	        except Exception as e2:
+   207	            return False, f"no se pudo vender: {e} / {e2}"
+   208	
+   209	
+   210	def evaluar(p, tweets_csv, ventanas, dry):
+   211	    """Evalúa una posición y devuelve (accion, texto). accion en
+   212	    {'vender', 'mantener', 'sin_datos', 'ultimas_horas'}."""
+   213	    bin_ = parse_bin(p.get("title"))
+   214	    if bin_ is None:
+   215	        return "mantener", "sin bin parseable"
+   216	    lo, hi = bin_
+   217	    event_slug = p.get("eventSlug", "")
+   218	    proy = proyectar(event_slug, tweets_csv, ventanas)
+   219	    if proy is None:
+   220	        return "mantener", "sin datos de ventana"
+   221	    proj = proy["proyeccion"]
+   222	    horas = proy["horas_rest"]
+   223	    if horas <= MIN_HORAS_RESTANTES:
+   224	        return "ultimas_horas", f"quedan {horas:.1f}h (dejar resolver)"
+   225	
+   226	    fuera_arriba = proj > hi + MARGEN_TWEETS
+   227	    fuera_abajo = proj < lo - MARGEN_TWEETS
+   228	    if not (fuera_arriba or fuera_abajo):
+   229	        return "mantener", (f"proyección {proj:.1f} dentro de [{lo},{hi}]")
+   230	
+   231	    # hay que cerrar
+   232	    side = p.get("outcome", "Yes")
+   233	    if side == "No":
+   234	        # para NO, gana si NO cae en el bin: fuera es BUENO, dentro es MALO
+   235	        return "mantener", "posición NO (no se gestiona)"
+   236	    cur = float(p.get("curPrice", 0) or 0)
+   237	    avg = float(p.get("avgPrice", 0) or 0)
+   238	    pnl_pct = (cur / avg - 1) * 100 if avg > 0 else 0
+   239	    shares = float(p.get("size", 0) or 0)
+   240	    token_id = p.get("asset", "")
+   241	    razon = (f"se pasa por arriba ({proj:.0f}>{hi})" if fuera_arriba
+   242	             else f"no llega al mínimo ({proj:.0f}<{lo})")
+   243	    if not token_id or shares <= 0:
+   244	        return "mantener", f"sin token/tamaño (token={bool(token_id)})"
+   245	    ok, detalle = vender(token_id, shares, cur, dry)
+   246	    init_val = float(p.get("initialValue", 0) or 0)
+   247	    cur_val = float(p.get("currentValue", 0) or 0)
+   248	    pnl = cur_val - init_val
+   249	    ic_bal = "🟢" if pnl >= 0 else "🔴"
+   250	    txt = (f"{'🧪 SECO' if dry else '🔻 CIERRE ANTICIPADO'} {p.get('title')}\n"
+   251	           f"   bin [{lo}-{hi}] · proyección {proj:.0f} → {razon}\n"
+   252	           f"   {shares:.1f} shares · entrada {avg:.4f} · ahora {cur:.4f} "
+   253	           f"({pnl_pct:+.0f}%)\n"
+   254	           f"   💰 Balance de la operación: {ic_bal} ${pnl:+.2f} "
+   255	           f"(invertido ${init_val:.2f} → ahora ${cur_val:.2f})\n"
+   256	           f"   → {detalle}")
+   257	    if ok and not dry:
+   258	        _guardar_cierre({
+   259	            "fecha": datetime.now(ET).strftime("%Y-%m-%d"),
+   260	            "titulo": (p.get("title") or "?").replace("Elon Musk # tweets ", "").replace("?", ""),
+   261	            "bin": f"{lo}-{hi}",
+   262	            "lado": p.get("outcome", "Yes"),
+   263	            "invertido": round(init_val, 2),
+   264	            "valor": round(cur_val, 2),
+   265	            "pnl": round(pnl, 2),
+   266	        })
+   267	    if ok:
+   268	        tg_send(txt)
+   269	    return ("vender" if ok else "fallo"), txt
+   270	
+   271	
+   272	def _guardar_cierre(registro):
+   273	    """Añade un cierre anticipado al registro mensual."""
+   274	    try:
+   275	        path = "/opt/polymarket/cierres_anticipados.json"
+   276	        try:
+   277	            d = json.load(open(path, encoding="utf-8"))
+   278	        except Exception:
+   279	            d = {"cierres": []}
+   280	        d.setdefault("cierres", []).append(registro)
+   281	        json.dump(d, open(path, "w", encoding="utf-8"),
+   282	                  ensure_ascii=False, indent=1)
+   283	    except Exception as e:
+   284	        print(f"  [aviso] no se pudo registrar el cierre: {e}")
+   285	
+   286	
+   287	def main():
+   288	    dry = "--dry" in sys.argv
+   289	    loop = "--loop" in sys.argv
+   290	    intervalo = LOOP_MIN
+   291	    if loop:
+   292	        for i, a in enumerate(sys.argv):
+   293	            if a == "--loop" and i + 1 < len(sys.argv):
+   294	                try:
+   295	                    intervalo = int(sys.argv[i + 1])
+   296	                except Exception:
+   297	                    pass
+   298	    tweets_csv = cargar_tweets()
+   299	    ventanas = cargar_ventanas()
+   300	
+   301	    while True:
+   302	        print(f"[{datetime.now(ET).strftime('%H:%M %Z')}] gestor pasada"
+   303	              f"{' (SECO)' if dry else ''}")
+   304	        try:
+   305	            for p in posiciones_elon():
+   306	                accion, texto = evaluar(p, tweets_csv, ventanas, dry)
+   307	                print(f"  · {p.get('title')[:60]} -> {accion}: {texto[:100]}")
+   308	        except Exception as e:
+   309	            print(f"  ERROR: {e}")
+   310	        if not loop:
+   311	            break
+   312	        print(f"  próxima pasada en {intervalo} min")
+   313	        time.sleep(intervalo * 60)
+   314	
+   315	
+   316	if __name__ == "__main__":
+   317	    try:
+   318	        sys.stdout.reconfigure(line_buffering=True)
+   319	    except Exception:
+   320	        pass
+   321	    main()
+
+-- C) funciones clave del gestor (evaluar / vender / proyectar)
+   --- def evaluar (linea 210) ---
+   def evaluar(p, tweets_csv, ventanas, dry):
+       """Evalúa una posición y devuelve (accion, texto). accion en
+       {'vender', 'mantener', 'sin_datos', 'ultimas_horas'}."""
+       bin_ = parse_bin(p.get("title"))
+       if bin_ is None:
+           return "mantener", "sin bin parseable"
+       lo, hi = bin_
+       event_slug = p.get("eventSlug", "")
+       proy = proyectar(event_slug, tweets_csv, ventanas)
+       if proy is None:
+           return "mantener", "sin datos de ventana"
+       proj = proy["proyeccion"]
+       horas = proy["horas_rest"]
+       if horas <= MIN_HORAS_RESTANTES:
+           return "ultimas_horas", f"quedan {horas:.1f}h (dejar resolver)"
+   
+       fuera_arriba = proj > hi + MARGEN_TWEETS
+       fuera_abajo = proj < lo - MARGEN_TWEETS
+       if not (fuera_arriba or fuera_abajo):
+           return "mantener", (f"proyección {proj:.1f} dentro de [{lo},{hi}]")
+   
+       # hay que cerrar
+       side = p.get("outcome", "Yes")
+       if side == "No":
+           # para NO, gana si NO cae en el bin: fuera es BUENO, dentro es MALO
+           return "mantener", "posición NO (no se gestiona)"
+       cur = float(p.get("curPrice", 0) or 0)
+       avg = float(p.get("avgPrice", 0) or 0)
+       pnl_pct = (cur / avg - 1) * 100 if avg > 0 else 0
+       shares = float(p.get("size", 0) or 0)
+       token_id = p.get("asset", "")
+       razon = (f"se pasa por arriba ({proj:.0f}>{hi})" if fuera_arriba
+                else f"no llega al mínimo ({proj:.0f}<{lo})")
+       if not token_id or shares <= 0:
+           return "mantener", f"sin token/tamaño (token={bool(token_id)})"
+       ok, detalle = vender(token_id, shares, cur, dry)
+       init_val = float(p.get("initialValue", 0) or 0)
+       cur_val = float(p.get("currentValue", 0) or 0)
+       pnl = cur_val - init_val
+       ic_bal = "🟢" if pnl >= 0 else "🔴"
+       txt = (f"{'🧪 SECO' if dry else '🔻 CIERRE ANTICIPADO'} {p.get('title')}\n"
+   --- def vender (linea 185) ---
+   def vender(token_id, shares, cur_price, dry):
+       """Vende shares a mercado. Devuelve (ok, detalle)."""
+       if dry:
+           return True, f"(seco) vendería {shares} shares @ ~{cur_price}"
+       client = get_client()
+       from py_clob_client_v2.clob_types import MarketOrderArgsV2
+       try:
+           resp = client.create_and_post_market_order(
+               MarketOrderArgsV2(token_id=token_id, amount=shares, side="SELL",
+                                 order_type="FOK"))
+           oid = resp.get("orderID") or resp.get("order_id") or str(resp)[:80]
+           return True, f"vendidas {shares} shares (order {oid})"
+       except Exception as e:
+           # fallback: orden límite al precio actual
+           try:
+               from py_clob_client_v2.clob_types import OrderArgs
+               resp = client.create_and_post_order(
+                   OrderArgs(token_id=token_id, price=round(cur_price, 4),
+                             size=shares, side="SELL"))
+               oid = resp.get("orderID") or resp.get("order_id") or str(resp)[:80]
+               return True, f"orden límite SELL {shares} @ {cur_price} (order {oid})"
+           except Exception as e2:
+               return False, f"no se pudo vender: {e} / {e2}"
+   
+   
+   def evaluar(p, tweets_csv, ventanas, dry):
+       """Evalúa una posición y devuelve (accion, texto). accion en
+       {'vender', 'mantener', 'sin_datos', 'ultimas_horas'}."""
+       bin_ = parse_bin(p.get("title"))
+       if bin_ is None:
+           return "mantener", "sin bin parseable"
+       lo, hi = bin_
+       event_slug = p.get("eventSlug", "")
+       proy = proyectar(event_slug, tweets_csv, ventanas)
+       if proy is None:
+           return "mantener", "sin datos de ventana"
+       proj = proy["proyeccion"]
+       horas = proy["horas_rest"]
+       if horas <= MIN_HORAS_RESTANTES:
+           return "ultimas_horas", f"quedan {horas:.1f}h (dejar resolver)"
+   
+   --- def proyectar (linea 120) ---
+   def proyectar(event_slug, tweets_csv, ventanas):
+       """Devuelve dict con proyección o None si no hay datos suficientes.
+   
+       Usa días COMPLETOS (hasta ayer) para el ritmo, para no sobrestimar
+       el día de hoy (que aún no ha terminado)."""
+       if event_slug not in ventanas:
+           return None
+       inicio_iso, fin_iso = ventanas[event_slug]
+       try:
+           ini_dt = datetime.fromisoformat(inicio_iso.replace("Z", "+00:00"))
+           fin_dt = datetime.fromisoformat(fin_iso.replace("Z", "+00:00"))
+       except Exception:
+           return None
+       if ini_dt.tzinfo is None:
+           ini_dt = ini_dt.replace(tzinfo=timezone.utc)
+       if fin_dt.tzinfo is None:
+           fin_dt = fin_dt.replace(tzinfo=timezone.utc)
+       ahora = datetime.now(timezone.utc)
+       dias_totales = max((fin_dt - ini_dt).total_seconds() / 86400, 0.05)
+       # días completos transcurridos (hasta ayer)
+       hoy = datetime.now(ET).date()
+       ini_date = ini_dt.astimezone(ET).date()
+       dias_completos = (hoy - ini_date).days
+       if dias_completos < 1:
+           return None
+       # tweets en días completos (excluye hoy)
+       tweets_comp = 0
+       for fecha, tw in tweets_csv.items():
+           try:
+               d = datetime.strptime(fecha, "%Y-%m-%d").date()
+           except Exception:
+               continue
+           if ini_date <= d < hoy:
+               tweets_comp += tw
+       ritmo = tweets_comp / dias_completos
+       proyeccion = ritmo * dias_totales
+       horas_rest = (fin_dt - ahora).total_seconds() / 3600
+       return {
+           "tweets_comp": tweets_comp,
+           "dias_completos": dias_completos,
+           "dias_totales": dias_totales,
+=== FIN DIAG FLOTA 9 ===
