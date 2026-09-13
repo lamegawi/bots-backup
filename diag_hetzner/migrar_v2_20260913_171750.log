@@ -1,0 +1,61 @@
+=== MIGRAR A V2 · 20260913_171750 UTC ===
+✅ backup: bot_semanal.py.bak_v2_20260913_171750
+✅ imports v2 en try_ejecutar_orden
+✅ size en shares (v2)
+
+== Verificar ==
+✅ compila OK
+
+== Probar pasada única ==
+[2026-09-13 17:17:59]    [aviso] no se pudieron derivar API creds: 'ClobClient' object has no attribute 'create_or_derive_api_creds'
+[2026-09-13 17:17:59]    (stake $3.30 → 92.96 shares @ $0.035)
+[2026-09-13 17:17:59]    enviando orden BUY 92.96 shares @ $0.0355
+[2026-09-13 17:18:00]    ERROR ejecutando: API Credentials are needed to interact with this endpoint!
+[2026-09-13 17:18:00] Traceback (most recent call last):
+  File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 205, in try_ejecutar_orden
+    resp = client.create_and_post_order(order)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 848, in create_and_post_order
+    return self._retry_on_version_update(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 1242, in _retry_on_version_update
+    result = func()
+             ^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 849, in <lambda>
+    lambda: self.post_order(
+            ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 881, in post_order
+    self.assert_level_2_auth()
+  File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 219, in assert_level_2_auth
+    raise PolyException(L2_AUTH_UNAVAILABLE)
+py_clob_client_v2.exceptions.PolyException: API Credentials are needed to interact with this endpoint!
+
+[2026-09-13 17:18:00] ════════════════════════════════════════════
+[2026-09-13 17:18:00] Pasada completada
+
+== Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-13 17:18:00 UTC; 5s ago
+   Main PID: 44327 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 9.4M (peak: 10.0M)
+        CPU: 916ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+== Verificar log post-fix ==
+Sep 13 17:03:14 bot-poly python3[40823]:     raise PolyApiException(resp)
+Sep 13 17:03:14 bot-poly python3[40823]: py_clob_client.exceptions.PolyApiException: PolyApiException[status_code=400, error_message={'error': 'invalid order version, please use the latest clob-client'}]
+Sep 13 17:03:14 bot-poly python3[40823]: [2026-09-13 17:03:14] ════════════════════════════════════════════
+Sep 13 17:03:14 bot-poly python3[40823]: [2026-09-13 17:03:14] Pasada completada
+Sep 13 17:03:14 bot-poly python3[40823]: [2026-09-13 17:03:14] Próxima pasada en 15 min
+Sep 13 17:18:00 bot-poly systemd[1]: Stopping poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)...
+Sep 13 17:18:00 bot-poly systemd[1]: poly-elon-semanal.service: Deactivated successfully.
+Sep 13 17:18:00 bot-poly systemd[1]: Stopped poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 13 17:18:00 bot-poly systemd[1]: poly-elon-semanal.service: Consumed 17.540s CPU time, 49.8M memory peak, 0B memory swap peak.
+Sep 13 17:18:00 bot-poly systemd[1]: Started poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h).
+Sep 13 17:18:00 bot-poly python3[44327]: [2026-09-13 17:18:00] BOT SEMANAL ELON arrancado (loop=True, intervalo=15 min)
+Sep 13 17:18:00 bot-poly python3[44327]: [2026-09-13 17:18:00] ════════════════════════════════════════════
+Sep 13 17:18:00 bot-poly python3[44327]: [2026-09-13 17:18:00] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 13 17:18:00 bot-poly python3[44327]: [2026-09-13 17:18:00] ════════════════════════════════════════════
+Sep 13 17:18:00 bot-poly python3[44327]: [2026-09-13 17:18:00] AVG7=22.43  AVG30=27.43  R=0.818  ajuste=0.927
