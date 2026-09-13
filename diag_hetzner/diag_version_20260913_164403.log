@@ -1,0 +1,41 @@
+=== DIAG VERSION EN ORDEN · 20260913_164403 UTC ===
+
+== 1. Ver qué campo version envía el SDK ==
+/usr/local/lib/python3.12/dist-packages/py_clob_client/rfq/rfq_helpers.py:5:query parameter parsing and unit conversion.
+/usr/local/lib/python3.12/dist-packages/py_clob_client/signing/eip712.py:14:    return make_domain(name=CLOB_DOMAIN_NAME, version=CLOB_VERSION, chainId=chain_id)
+
+== 2. Ver el body de la orden en post_order ==
+66-
+67-
+68:def post(endpoint, headers=None, data=None):
+69-    return request(endpoint, POST, headers, data)
+70-
+71-
+72-def get(endpoint, headers=None, data=None):
+73-    return request(endpoint, GET, headers, data)
+74-
+75-
+76-def delete(endpoint, headers=None, data=None):
+77-    return request(endpoint, DELETE, headers, data)
+78-
+79-
+80-def put(endpoint, headers=None, data=None):
+81-    return request(endpoint, PUT, headers, data)
+82-
+83-
+
+== 3. Ver cómo se construye la orden ==
+143:            signatureType=self.sig_type,
+182:            signatureType=self.sig_type,
+
+== 4. ¿Hay otra versión de py-clob-client? ==
+WARNING: pip index is currently an experimental command. It may be removed/changed in a future release without prior warning.
+py-clob-client (0.34.6)
+Available versions: 0.34.6, 0.34.5, 0.34.4, 0.34.3, 0.34.1, 0.34.0, 0.33.0, 0.32.0, 0.31.0, 0.30.0, 0.28.0, 0.27.0, 0.26.0, 0.25.0, 0.24.0, 0.23.0, 0.22.0, 0.21.0, 0.20.0, 0.19.0, 0.18.0, 0.17.5, 0.17.4, 0.17.3, 0.17.2, 0.17.1, 0.17.0, 0.16.0, 0.15.1, 0.15.0, 0.14.0, 0.13.3, 0.13.2, 0.13.1, 0.13.0, 0.12.0, 0.11.0, 0.10.0, 0.9.0, 0.8.0, 0.7.0, 0.6.0, 0.5.0, 0.4.0, 0.3.0, 0.2.4, 0.2.3, 0.2.2, 0.2.1, 0.2.0, 0.1.13, 0.1.12, 0.1.11, 0.1.10, 0.1.9, 0.1.8, 0.1.7, 0.1.6, 0.1.5, 0.1.4, 0.1.3, 0.1.2, 0.1.1, 0.1.0, 0.0.28, 0.0.27, 0.0.26, 0.0.24, 0.0.23, 0.0.22, 0.0.21, 0.0.20, 0.0.19, 0.0.18, 0.0.17, 0.0.16, 0.0.15, 0.0.14, 0.0.13, 0.0.12, 0.0.11, 0.0.10, 0.0.9, 0.0.8, 0.0.7, 0.0.6, 0.0.5, 0.0.4, 0.0.3
+
+== 5. ¿Versión del clob-tick-size ==
+['Any', 'ApiCreds', 'AssetType', 'BalanceAllowanceParams', 'BookParams', 'ContractConfig', 'CreateOrderOptions', 'DropNotificationParams', 'Literal', 'MarketOrderArgs', 'OpenOrderParams', 'Optional', 'OrderArgs', 'OrderBookSummary', 'OrderScoringParams', 'OrderSummary', 'OrderType', 'OrdersScoringParams', 'PartialCreateOrderOptions', 'PostOrdersArgs', 'ReadonlyApiKeyResponse', 'RequestArgs', 'RoundConfig', 'SignedOrder', 'TickSize', 'TradeParams', 'ZERO_ADDRESS', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'asdict', 'dataclass', 'dumps']
+
+== 6. Verificar la última release en GitHub ==
+Latest release: v0.34.6 2026-02-19T13:26:27Z
+
