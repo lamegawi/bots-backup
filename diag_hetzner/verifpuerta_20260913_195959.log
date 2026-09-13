@@ -1,0 +1,18 @@
+=== VERIF PUERTA Y VERDAD Sun Sep 13 07:59:59 PM UTC 2026 ===
+-- huellas de los dos ficheros parcheados
+   9128137bc6d7d51ab25114395eeaa2f1  /opt/polymarket/bot-polymarket-elon/operar_real.py
+   5a38bf3d3bb227344c36a003cc46667f  /opt/polymarket/gestionar_posiciones.py
+-- copias de seguridad del parche
+   -rw-r--r-- 1 root root 42173 Aug 30 17:15 /opt/polymarket/bot-polymarket-elon/operar_real.py.bak_puerta_20260913_195424
+   -rw-r--r-- 1 root root 11538 Aug 18 21:00 /opt/polymarket/gestionar_posiciones.py.bak_puerta_20260913_195424
+-- servicio poly-elon
+   activo: active · reinicios: 0
+-- la puerta en el diario (ultimas 6 menciones)
+-- ultimas 6 lineas del diario
+   Sep 13 07:08:53 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+   Sep 13 19:54:24 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+   Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+   Sep 13 19:54:24 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+   Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Consumed 9min 1.812s CPU time, 55.8M memory peak, 0B memory swap peak.
+   Sep 13 19:54:24 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+=== FIN VERIF PUERTA ===
