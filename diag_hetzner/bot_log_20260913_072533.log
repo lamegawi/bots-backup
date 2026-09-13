@@ -1,0 +1,591 @@
+=== BOT DE COMBOS · volcado de diagnóstico - Sun Sep 13 07:25:33 AM UTC 2026 ===
+
+--- servicio ---
+● poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)
+     Loaded: loaded (/etc/systemd/system/poly-combos-bot.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-13 07:08:53 UTC; 16min ago
+   Main PID: 777 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 62.7M (peak: 63.2M)
+        CPU: 2.059s
+     CGroup: /system.slice/poly-combos-bot.service
+
+--- reinicios (historial real, no sólo el arranque actual) ---
+Result=success
+NRestarts=0
+ExecMainStartTimestamp=Sun 2026-09-13 07:08:53 UTC
+ExecMainPID=777
+ActiveEnterTimestamp=Sun 2026-09-13 07:08:53 UTC
+   arranques/paradas que vio systemd (últimas 12 h):
+Sep 13 07:08:53 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+   arranques del bot según SU propio log (cada uno = un proceso nuevo):
+[20:37:20] v12.3 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 6/día · prob ≥60%
+[20:49:49] v12.4 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 6/día · prob ≥60%
+[16:21:17] v12.4 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[17:59:00] v12.4 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[17:36:46] v12.7 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[17:47:25] v12.8 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[18:05:16] v12.8.1 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[20:11:20] v12.8.1 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[21:19:52] v12.8.1 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[22:04:09] v12.8.4 cargado · modo=SEMI · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[06:05:50] v12.8.4 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[06:06:02] v12.8.4 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[06:16:35] v12.9.0 cargado · modo=SEMI · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[07:08:55] v12.9.0 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+   reinicios por systemd (si el bot se cayera solo, se vería aquí):
+48
+
+--- versión instalada ---
+POLY COMBOS BOT v12.9.0 — COMBOS REALES (parlays multi-leg) via RFQ
+1b30eafa1fe1fca1dcb29a4f6d79c880  /opt/polymarket/poly_combos_bot.py
+
+--- estado (resumen) ---
+   0 abiertas · 61 archivadas · PnL archivadas $-0.66
+   archivadas: ✅34 ❌23 🔒manuales 0
+   última auditoría: 2026-09-13T07:09:27 · origen=auto reabiertas=0 corregidas=0 confirmadas=61 nuevas=0 · PnL -0.66→-0.66
+   💰 reclamos avisados: 11 · $142.93
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+      saldo 0 on-chain: ya cobrada/vendida                   $   0.00 · 2026-09-11T18:05
+      Dota 2: Team Liquid vs Vici Gaming (BO3) - 1win Esse   $  19.05 · 2026-09-12T19:35
+      Counter-Strike: Imperial vs Procyon Gaming (BO3) - B   $  19.32 · 2026-09-12T19:35
+      LoL: Baam Esports vs 3BL Esports (BO3) - Arabian Lea   $  14.04 · 2026-09-12T19:35
+      LoL: Dark Passage vs Team Phoenix (BO3) - TCL Play-I   $  30.57 · 2026-09-12T19:35
+      LoL: Hanwha Life Esports vs T1 - Game  + Will Real M   $  13.87 · 2026-09-12T22:17
+      Will Real Madrid CF win on 2026-09-12? + Wake Forest   $  17.19 · 2026-09-12T22:17
+      Counter-Strike: Heroic vs 1WIN (BO3) - + LoL: Cloud9   $  14.32 · 2026-09-13T02:17
+   config: max_ops_día=10 · prob_min_auto=0.65 · intervalo=10 min · modo=AUTO · próxima pasada=1789284416.1262996
+   📡 copy en papel: 3 traders · 10 señales (10 resueltas, 0 anuladas) · dedup 289 fills · 1 informes · gasto $0 (COPY_DINERO=False)
+      · 0x2c335066             #6 · 300 compras/48h · 36 mercados · 57% deporte
+      · pleaseplease123        #9 · 300 compras/48h · 14 mercados · 100% deporte
+      · ripley86alien          #10 · 74 compras/48h · 3 mercados · 100% deporte
+      Counter-Strike: Legacy vs MIBR (BO3) - FISSU 2026-09-12 · él 0.341 → nosotros 0.3525 (1.15 pts) · resuelta False · 0 escaladas · $16719.38
+      Will BV Borussia 09 Dortmund win on 2026-09- 2026-09-12 · él 0.77 → nosotros 0.775 (0.5 pts) · resuelta True · 1 escaladas · $40700.72
+      Counter-Strike: BetBoom Team vs G2 (BO3) - F 2026-09-12 · él 0.64 → nosotros 0.635 (-0.5 pts) · resuelta True · 1 escaladas · $79816.92
+      Noche UFC: Jean Silva vs. Jose Miguel Delgad 2026-09-13 · él 0.56 → nosotros 0.61 (5.0 pts) · resuelta True · 7 escaladas · $1910.77
+      Chicago White Sox vs. St. Louis Cardinals    2026-09-13 · él 0.18 → nosotros 0.185 (0.5 pts) · resuelta True · 0 escaladas · $291.53
+      Cincinnati Reds vs. Milwaukee Brewers        2026-09-13 · él 0.35 → nosotros 0.365 (1.5 pts) · resuelta False · 0 escaladas · $1098.58
+      Houston Astros vs. Tampa Bay Rays            2026-09-13 · él 0.24 → nosotros 0.195 (-4.5 pts) · resuelta False · 2 escaladas · $3840.3
+      Seattle Mariners vs. Athletics: O/U 9.5      2026-09-13 · él 0.49 → nosotros 0.505 (1.5 pts) · resuelta False · 0 escaladas · $35801.78
+      acierto 60.0% · PnL teórico al precio nuestro $+12.88 (ROI +25.8%)
+   💉 inyectadas de agosto: 4 · $82.97 por cobrar
+
+--- últimas 500 líneas de /var/log/poly-combos-bot.log ---
+[02:00:21]   [copy] tope diario de señales (5) alcanzado
+[02:06:02] [AUTO] pasada (combos RFQ v11)
+[02:06:03]   pagina 1: +50 mercados, 0 legs de deportes
+[02:06:03]   pagina 2: +50 mercados, 0 legs de deportes
+[02:06:03]   pagina 3: +50 mercados, 12 legs de deportes
+[02:06:04]   pagina 4: +50 mercados, 46 legs de deportes
+[02:06:04]   pagina 5: +50 mercados, 84 legs de deportes
+[02:06:04] [COMBO] 2 legs · cuota est. 1.49 · stake $9.03 (AUTO)
+[02:06:04]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$325k)
+[02:06:04]   · Will Paris Saint-Germain FC win on 2026-09-13? (p=0.79 vol=$77k)
+[02:06:05]   RFQ create -> 200 {"rfq_id":"rfq-fb3d368c2c12e4f94bf31efe","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789265170469,"request":{"rfq_id":"rfq-fb3d368c2c12e4f94bf31efe",
+[02:06:05]   quote: cuota=1.47 blended=0.679 shares=13.08 total=$9.03
+[02:06:05]   ⚖️ ventaja insuficiente: RFQ 1.47 vs mercado ~1.49 = EV -1.3% < 5% exigidos — NO se acepta ($0)
+[02:06:05]   ❌ combo: ventaja_-1.3_insuficiente
+[02:12:28]   [copy] señal TARDÍA Will Sporting Kansas City vs. Los Angeles FC end in a draw?: él 0.836 → ahora 0.915 (+7.9 pts) · no cuenta
+[02:15:35] loop err: The read operation timed out
+[02:16:04] [AUTO] pasada (combos RFQ v11)
+[02:16:05]   pagina 1: +50 mercados, 0 legs de deportes
+[02:16:05]   pagina 2: +50 mercados, 0 legs de deportes
+[02:16:06]   pagina 3: +50 mercados, 13 legs de deportes
+[02:16:06]   pagina 4: +50 mercados, 48 legs de deportes
+[02:16:06]   pagina 5: +50 mercados, 91 legs de deportes
+[02:16:06] [COMBO] 2 legs · cuota est. 1.49 · stake $9.03 (AUTO)
+[02:16:06]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$326k)
+[02:16:06]   · Will Paris Saint-Germain FC win on 2026-09-13? (p=0.79 vol=$77k)
+[02:16:07]   RFQ create -> 200 {"rfq_id":"rfq-27a31bafee31e4c3bcae7ca3","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789265772724,"request":{"rfq_id":"rfq-27a31bafee31e4c3bcae7ca3",
+[02:16:07]   quote: cuota=1.47 blended=0.682 shares=13.04 total=$9.03
+[02:16:07]   ⚖️ ventaja insuficiente: RFQ 1.47 vs mercado ~1.49 = EV -1.3% < 5% exigidos — NO se acepta ($0)
+[02:16:07]   ❌ combo: ventaja_-1.3_insuficiente
+[02:17:18]   v12.8.3: 487 fills reales de la wallet (evidencia de cadena)
+[02:17:18]   verdad: 30 cobros REDEEM>0 por token + 82 por título (82 registros)
+[02:17:24]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=58 manuales=0 nuevas=3 sin_datos=0 · PnL archivadas -1.83→-0.66
+[02:17:25]   💰 reclamar: 2 ganada(s) sin cobrar (~$28.89) → aviso
+[02:18:30]   [copy] tope diario de señales (5) alcanzado
+[02:21:32]   [copy] señal TARDÍA Will Real Salt Lake win on 2026-09-12?: él 0.590 → ahora 0.765 (+17.5 pts) · no cuenta
+[02:23:00] loop err: The read operation timed out
+[02:26:08] [AUTO] pasada (combos RFQ v11)
+[02:26:08]   pagina 1: +50 mercados, 0 legs de deportes
+[02:26:09]   pagina 2: +50 mercados, 0 legs de deportes
+[02:26:09]   pagina 3: +50 mercados, 12 legs de deportes
+[02:26:09]   pagina 4: +50 mercados, 44 legs de deportes
+[02:26:10]   pagina 5: +50 mercados, 82 legs de deportes
+[02:26:10] [COMBO] 2 legs · cuota est. 1.49 · stake $9.03 (AUTO)
+[02:26:10]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$327k)
+[02:26:10]   · Will Paris Saint-Germain FC win on 2026-09-13? (p=0.79 vol=$77k)
+[02:26:11]   RFQ create -> 200 {"rfq_id":"rfq-a5ec249d4d1826071afd8e53","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789266376122,"request":{"rfq_id":"rfq-a5ec249d4d1826071afd8e53",
+[02:26:11]   quote: cuota=1.46 blended=0.686 shares=12.96 total=$9.03
+[02:26:11]   ⚖️ ventaja insuficiente: RFQ 1.46 vs mercado ~1.49 = EV -2.0% < 5% exigidos — NO se acepta ($0)
+[02:26:11]   ❌ combo: ventaja_-2.0_insuficiente
+[02:33:39]   [copy] tope diario de señales (5) alcanzado
+[02:36:09] [AUTO] pasada (combos RFQ v11)
+[02:36:09]   pagina 1: +50 mercados, 0 legs de deportes
+[02:36:10]   pagina 2: +50 mercados, 0 legs de deportes
+[02:36:10]   pagina 3: +50 mercados, 13 legs de deportes
+[02:36:10]   pagina 4: +50 mercados, 46 legs de deportes
+[02:36:11]   pagina 5: +50 mercados, 86 legs de deportes
+[02:36:11] [COMBO] 2 legs · cuota est. 1.49 · stake $9.03 (AUTO)
+[02:36:11]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$327k)
+[02:36:11]   · Will Paris Saint-Germain FC win on 2026-09-13? (p=0.79 vol=$77k)
+[02:36:42]   RFQ create -> 200 {"rfq_id":"rfq-e5dfbcde6b1595c966906f12","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789267007152,"request":{"rfq_id":"rfq-e5dfbcde6b1595c966906f12",
+[02:36:42]   quote: cuota=1.47 blended=0.679 shares=13.09 total=$9.03
+[02:36:42]   ⚖️ ventaja insuficiente: RFQ 1.47 vs mercado ~1.49 = EV -1.3% < 5% exigidos — NO se acepta ($0)
+[02:36:42]   ❌ combo: ventaja_-1.3_insuficiente
+[02:36:43]   [copy] ronda: 0 señal(es) nueva(s) · 0 compra(s) repetida(s) fusionada(s) · 1 resuelta(s) · dedup 258 fills
+[02:39:38] loop err: The read operation timed out
+[02:46:11] [AUTO] pasada (combos RFQ v11)
+[02:46:11]   pagina 1: +50 mercados, 0 legs de deportes
+[02:46:12]   pagina 2: +50 mercados, 1 legs de deportes
+[02:46:12]   pagina 3: +50 mercados, 12 legs de deportes
+[02:46:12]   pagina 4: +50 mercados, 49 legs de deportes
+[02:46:13]   pagina 5: +50 mercados, 88 legs de deportes
+[02:46:13] [COMBO] 2 legs · cuota est. 1.49 · stake $9.03 (AUTO)
+[02:46:13]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$328k)
+[02:46:13]   · Will Paris Saint-Germain FC win on 2026-09-13? (p=0.79 vol=$83k)
+[02:46:14]   RFQ create -> 200 {"rfq_id":"rfq-5674257e2d17bce3e33cdb97","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789267578986,"request":{"rfq_id":"rfq-5674257e2d17bce3e33cdb97",
+[02:46:14]   quote: cuota=1.47 blended=0.682 shares=13.04 total=$9.03
+[02:46:14]   ⚖️ ventaja insuficiente: RFQ 1.47 vs mercado ~1.49 = EV -1.3% < 5% exigidos — NO se acepta ($0)
+[02:46:14]   ❌ combo: ventaja_-1.3_insuficiente
+[02:46:50] loop err: The read operation timed out
+[02:51:50]   [copy] tope diario de señales (5) alcanzado
+[02:56:12] [AUTO] pasada (combos RFQ v11)
+[02:56:12]   pagina 1: +50 mercados, 0 legs de deportes
+[02:56:13]   pagina 2: +50 mercados, 1 legs de deportes
+[02:56:13]   pagina 3: +50 mercados, 12 legs de deportes
+[02:56:13]   pagina 4: +50 mercados, 45 legs de deportes
+[02:56:14]   pagina 5: +50 mercados, 85 legs de deportes
+[02:56:14] [COMBO] 2 legs · cuota est. 1.49 · stake $9.03 (AUTO)
+[02:56:14]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$330k)
+[02:56:14]   · Will Paris Saint-Germain FC win on 2026-09-13? (p=0.79 vol=$83k)
+[02:56:15]   RFQ create -> 200 {"rfq_id":"rfq-1f49b3929e97a03b9994bfe6","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789268180047,"request":{"rfq_id":"rfq-1f49b3929e97a03b9994bfe6",
+[02:56:15]   quote: cuota=1.47 blended=0.679 shares=13.08 total=$9.03
+[02:56:15]   ⚖️ ventaja insuficiente: RFQ 1.47 vs mercado ~1.49 = EV -1.3% < 5% exigidos — NO se acepta ($0)
+[02:56:15]   ❌ combo: ventaja_-1.3_insuficiente
+[03:00:57]   [copy] tope diario de señales (5) alcanzado
+[03:06:13] [AUTO] pasada (combos RFQ v11)
+[03:06:13]   pagina 1: +50 mercados, 0 legs de deportes
+[03:06:14]   pagina 2: +50 mercados, 1 legs de deportes
+[03:06:14]   pagina 3: +50 mercados, 12 legs de deportes
+[03:06:14]   pagina 4: +50 mercados, 45 legs de deportes
+[03:06:15]   pagina 5: +50 mercados, 81 legs de deportes
+[03:06:15] [COMBO] 2 legs · cuota est. 1.49 · stake $9.03 (AUTO)
+[03:06:15]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$330k)
+[03:06:15]   · Will Paris Saint-Germain FC win on 2026-09-13? (p=0.79 vol=$83k)
+[03:06:16]   RFQ create -> 200 {"rfq_id":"rfq-f55811e148ce38239b18b1a5","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789268781102,"request":{"rfq_id":"rfq-f55811e148ce38239b18b1a5",
+[03:06:16]   quote: cuota=1.46 blended=0.683 shares=13.01 total=$9.03
+[03:06:16]   ⚖️ ventaja insuficiente: RFQ 1.46 vs mercado ~1.49 = EV -2.0% < 5% exigidos — NO se acepta ($0)
+[03:06:16]   ❌ combo: ventaja_-2.0_insuficiente
+[03:07:02]   [copy] tope diario de señales (5) alcanzado
+[03:10:03]   [copy] tope diario de señales (5) alcanzado
+[03:16:15] [AUTO] pasada (combos RFQ v11)
+[03:16:15]   pagina 1: +50 mercados, 0 legs de deportes
+[03:16:16]   pagina 2: +50 mercados, 0 legs de deportes
+[03:16:16]   pagina 3: +50 mercados, 10 legs de deportes
+[03:16:16]   pagina 4: +50 mercados, 45 legs de deportes
+[03:16:17]   pagina 5: +50 mercados, 79 legs de deportes
+[03:16:17] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[03:16:17]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$331k)
+[03:16:17]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$84k)
+[03:16:18]   RFQ create -> 200 {"rfq_id":"rfq-8513138ee362a9434888eb78","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789269383159,"request":{"rfq_id":"rfq-8513138ee362a9434888eb78",
+[03:16:18]   quote: cuota=1.38 blended=0.725 shares=12.63 total=$9.28
+[03:16:18]   ⚖️ ventaja insuficiente: RFQ 1.38 vs mercado ~1.4 = EV -1.4% < 5% exigidos — NO se acepta ($0)
+[03:16:18]   ❌ combo: ventaja_-1.4_insuficiente
+[03:19:09]   [copy] tope diario de señales (5) alcanzado
+[03:19:09]   [copy] ronda: 0 señal(es) nueva(s) · 0 compra(s) repetida(s) fusionada(s) · 1 resuelta(s) · dedup 263 fills
+[03:22:10]   [copy] tope diario de señales (5) alcanzado
+[03:25:11]   [copy] tope diario de señales (5) alcanzado
+[03:26:16] [AUTO] pasada (combos RFQ v11)
+[03:26:16]   pagina 1: +50 mercados, 0 legs de deportes
+[03:26:17]   pagina 2: +50 mercados, 0 legs de deportes
+[03:26:17]   pagina 3: +50 mercados, 11 legs de deportes
+[03:26:17]   pagina 4: +50 mercados, 48 legs de deportes
+[03:26:18]   pagina 5: +50 mercados, 85 legs de deportes
+[03:26:18] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[03:26:18]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$331k)
+[03:26:18]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$84k)
+[03:26:19]   RFQ create -> 200 {"rfq_id":"rfq-325b5c7051e71b46b7390db7","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789269984020,"request":{"rfq_id":"rfq-325b5c7051e71b46b7390db7",
+[03:26:19]   quote: cuota=1.38 blended=0.724 shares=12.65 total=$9.29
+[03:26:19]   ⚖️ ventaja insuficiente: RFQ 1.38 vs mercado ~1.4 = EV -1.4% < 5% exigidos — NO se acepta ($0)
+[03:26:19]   ❌ combo: ventaja_-1.4_insuficiente
+[03:28:14]   [copy] señal TARDÍA Cal Poly vs. San Jose State: él 0.700 → ahora 0.765 (+6.5 pts) · no cuenta
+[03:36:17] [AUTO] pasada (combos RFQ v11)
+[03:36:17]   pagina 1: +50 mercados, 0 legs de deportes
+[03:36:17]   pagina 2: +50 mercados, 0 legs de deportes
+[03:36:18]   pagina 3: +50 mercados, 12 legs de deportes
+[03:36:18]   pagina 4: +50 mercados, 50 legs de deportes
+[03:36:19]   pagina 5: +50 mercados, 84 legs de deportes
+[03:36:19] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[03:36:19]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$331k)
+[03:36:19]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$84k)
+[03:36:20]   RFQ create -> 200 {"rfq_id":"rfq-d5e47d12b31e63c0e89f2c26","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789270584962,"request":{"rfq_id":"rfq-d5e47d12b31e63c0e89f2c26",
+[03:36:20]   quote: cuota=1.38 blended=0.724 shares=12.65 total=$9.29
+[03:36:20]   ⚖️ ventaja insuficiente: RFQ 1.38 vs mercado ~1.4 = EV -1.4% < 5% exigidos — NO se acepta ($0)
+[03:36:20]   ❌ combo: ventaja_-1.4_insuficiente
+[03:37:21]   [copy] ronda: 0 señal(es) nueva(s) · 0 compra(s) repetida(s) fusionada(s) · 1 resuelta(s) · dedup 266 fills
+[03:46:18] [AUTO] pasada (combos RFQ v11)
+[03:46:18]   pagina 1: +50 mercados, 0 legs de deportes
+[03:46:18]   pagina 2: +50 mercados, 0 legs de deportes
+[03:46:19]   pagina 3: +50 mercados, 13 legs de deportes
+[03:46:19]   pagina 4: +50 mercados, 49 legs de deportes
+[03:46:19]   pagina 5: +50 mercados, 84 legs de deportes
+[03:46:19] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[03:46:19]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$335k)
+[03:46:19]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$87k)
+[03:46:20]   RFQ create -> 200 {"rfq_id":"rfq-30a8dc351131ba0b65f7f50d","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789271185754,"request":{"rfq_id":"rfq-30a8dc351131ba0b65f7f50d",
+[03:46:20]   quote: cuota=1.37 blended=0.729 shares=12.58 total=$9.29
+[03:46:20]   ⚖️ ventaja insuficiente: RFQ 1.37 vs mercado ~1.4 = EV -2.1% < 5% exigidos — NO se acepta ($0)
+[03:46:20]   ❌ combo: ventaja_-2.1_insuficiente
+[03:56:19] [AUTO] pasada (combos RFQ v11)
+[03:56:20]   pagina 1: +50 mercados, 0 legs de deportes
+[03:56:20]   pagina 2: +50 mercados, 0 legs de deportes
+[03:56:20]   pagina 3: +50 mercados, 14 legs de deportes
+[03:56:21]   pagina 4: +50 mercados, 51 legs de deportes
+[03:56:21]   pagina 5: +50 mercados, 85 legs de deportes
+[03:56:21] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[03:56:21]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$338k)
+[03:56:21]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$87k)
+[03:56:22]   RFQ create -> 200 {"rfq_id":"rfq-0c70c600e7ca0a7ad5d65afd","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789271787500,"request":{"rfq_id":"rfq-0c70c600e7ca0a7ad5d65afd",
+[03:56:22]   quote: cuota=1.38 blended=0.722 shares=12.69 total=$9.29
+[03:56:22]   ⚖️ ventaja insuficiente: RFQ 1.38 vs mercado ~1.4 = EV -1.4% < 5% exigidos — NO se acepta ($0)
+[03:56:22]   ❌ combo: ventaja_-1.4_insuficiente
+[03:58:33]   [copy] tope diario de señales (5) alcanzado
+[04:06:20] [AUTO] pasada (combos RFQ v11)
+[04:06:21]   pagina 1: +50 mercados, 0 legs de deportes
+[04:06:21]   pagina 2: +50 mercados, 0 legs de deportes
+[04:06:21]   pagina 3: +50 mercados, 14 legs de deportes
+[04:06:22]   pagina 4: +50 mercados, 54 legs de deportes
+[04:06:22]   pagina 5: +50 mercados, 93 legs de deportes
+[04:06:22] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[04:06:22]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$338k)
+[04:06:22]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$87k)
+[04:06:23]   RFQ create -> 200 {"rfq_id":"rfq-d48046c92fd8554b9058c6b6","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789272388463,"request":{"rfq_id":"rfq-d48046c92fd8554b9058c6b6",
+[04:06:23]   quote: cuota=1.39 blended=0.722 shares=12.70 total=$9.29
+[04:06:23]   ⚖️ ventaja insuficiente: RFQ 1.39 vs mercado ~1.4 = EV -0.7% < 5% exigidos — NO se acepta ($0)
+[04:06:23]   ❌ combo: ventaja_-0.7_insuficiente
+[04:16:21] [AUTO] pasada (combos RFQ v11)
+[04:16:21]   pagina 1: +50 mercados, 0 legs de deportes
+[04:16:22]   pagina 2: +50 mercados, 0 legs de deportes
+[04:16:22]   pagina 3: +50 mercados, 15 legs de deportes
+[04:16:23]   pagina 4: +50 mercados, 55 legs de deportes
+[04:16:23]   pagina 5: +50 mercados, 92 legs de deportes
+[04:16:23] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[04:16:23]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$343k)
+[04:16:23]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$88k)
+[04:16:24]   RFQ create -> 200 {"rfq_id":"rfq-e891721b210665619bb94515","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789272989217,"request":{"rfq_id":"rfq-e891721b210665619bb94515",
+[04:16:24]   quote: cuota=1.38 blended=0.726 shares=12.63 total=$9.29
+[04:16:24]   ⚖️ ventaja insuficiente: RFQ 1.38 vs mercado ~1.4 = EV -1.4% < 5% exigidos — NO se acepta ($0)
+[04:16:24]   ❌ combo: ventaja_-1.4_insuficiente
+[04:19:46]   [copy] tope diario de señales (5) alcanzado
+[04:19:50] loop err: The read operation timed out
+[04:22:47]   [copy] tope diario de señales (5) alcanzado
+[04:25:48]   [copy] tope diario de señales (5) alcanzado
+[04:26:23] [AUTO] pasada (combos RFQ v11)
+[04:26:24]   pagina 1: +50 mercados, 0 legs de deportes
+[04:26:24]   pagina 2: +50 mercados, 0 legs de deportes
+[04:26:24]   pagina 3: +50 mercados, 15 legs de deportes
+[04:26:25]   pagina 4: +50 mercados, 54 legs de deportes
+[04:26:25]   pagina 5: +50 mercados, 90 legs de deportes
+[04:26:25] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[04:26:25]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$352k)
+[04:26:25]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$88k)
+[04:26:26]   RFQ create -> 200 {"rfq_id":"rfq-9398e2ea698004159b19393b","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789273591185,"request":{"rfq_id":"rfq-9398e2ea698004159b19393b",
+[04:26:26]   quote: cuota=1.39 blended=0.720 shares=12.72 total=$9.29
+[04:26:26]   ⚖️ ventaja insuficiente: RFQ 1.39 vs mercado ~1.4 = EV -0.7% < 5% exigidos — NO se acepta ($0)
+[04:26:26]   ❌ combo: ventaja_-0.7_insuficiente
+[04:27:25] loop err: The read operation timed out
+[04:28:52]   [copy] tope diario de señales (5) alcanzado
+[04:31:53]   [copy] tope diario de señales (5) alcanzado
+[04:36:24] [AUTO] pasada (combos RFQ v11)
+[04:36:25]   pagina 1: +50 mercados, 0 legs de deportes
+[04:36:25]   pagina 2: +50 mercados, 0 legs de deportes
+[04:36:25]   pagina 3: +50 mercados, 14 legs de deportes
+[04:36:26]   pagina 4: +50 mercados, 53 legs de deportes
+[04:36:26]   pagina 5: +50 mercados, 89 legs de deportes
+[04:36:26] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[04:36:26]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$352k)
+[04:36:26]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$88k)
+[04:36:48]   RFQ create -> 200 {"rfq_id":"rfq-15f463fc126105830ff12bd1","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789274213130,"request":{"rfq_id":"rfq-15f463fc126105830ff12bd1",
+[04:36:48]   quote: cuota=1.39 blended=0.718 shares=12.75 total=$9.29
+[04:36:48]   ⚖️ ventaja insuficiente: RFQ 1.39 vs mercado ~1.4 = EV -0.7% < 5% exigidos — NO se acepta ($0)
+[04:36:48]   ❌ combo: ventaja_-0.7_insuficiente
+[04:44:01]   [copy] tope diario de señales (5) alcanzado
+[04:46:26] [AUTO] pasada (combos RFQ v11)
+[04:46:27]   pagina 1: +50 mercados, 0 legs de deportes
+[04:46:27]   pagina 2: +50 mercados, 0 legs de deportes
+[04:46:27]   pagina 3: +50 mercados, 14 legs de deportes
+[04:46:28]   pagina 4: +50 mercados, 54 legs de deportes
+[04:46:28]   pagina 5: +50 mercados, 84 legs de deportes
+[04:46:28] [COMBO] 2 legs · cuota est. 1.5 · stake $9.0 (AUTO)
+[04:46:28]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$360k)
+[04:46:28]   · Spread: Hawai'i (-7.5) (p=0.78 vol=$140k)
+[04:46:29]   RFQ create -> 200 {"rfq_id":"rfq-07f9c1b996ce92fd378bde3b","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789274794285,"request":{"rfq_id":"rfq-07f9c1b996ce92fd378bde3b",
+[04:46:29]   quote: cuota=1.35 blended=0.740 shares=12.00 total=$9.00
+[04:46:29]   ⚖️ ventaja insuficiente: RFQ 1.35 vs mercado ~1.5 = EV -10.0% < 5% exigidos — NO se acepta ($0)
+[04:46:29]   ❌ combo: ventaja_-10.0_insuficiente
+[04:50:06]   [copy] tope diario de señales (5) alcanzado
+[04:52:33] loop err: The read operation timed out
+[04:56:28] [AUTO] pasada (combos RFQ v11)
+[04:56:29]   pagina 1: +50 mercados, 0 legs de deportes
+[04:56:30]   pagina 2: +50 mercados, 0 legs de deportes
+[04:56:30]   pagina 3: +50 mercados, 14 legs de deportes
+[04:56:30]   pagina 4: +50 mercados, 54 legs de deportes
+[04:56:31]   pagina 5: +50 mercados, 90 legs de deportes
+[04:56:31] [COMBO] 2 legs · cuota est. 1.35 · stake $9.44 (AUTO)
+[04:56:31]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$383k)
+[04:56:31]   · Spread: Hawai'i (-7.5) (p=0.86 vol=$140k)
+[04:56:32]   RFQ create -> 200 {"rfq_id":"rfq-63332cf465571823316c4708","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789275397133,"request":{"rfq_id":"rfq-63332cf465571823316c4708",
+[04:56:32]   quote: cuota=1.34 blended=0.744 shares=12.53 total=$9.44
+[04:56:32]   ⚖️ ventaja insuficiente: RFQ 1.34 vs mercado ~1.35 = EV -0.7% < 5% exigidos — NO se acepta ($0)
+[04:56:32]   ❌ combo: ventaja_-0.7_insuficiente
+[05:06:30] [AUTO] pasada (combos RFQ v11)
+[05:06:30]   pagina 1: +50 mercados, 0 legs de deportes
+[05:06:31]   pagina 2: +50 mercados, 0 legs de deportes
+[05:06:31]   pagina 3: +50 mercados, 12 legs de deportes
+[05:06:31]   pagina 4: +50 mercados, 52 legs de deportes
+[05:06:32]   pagina 5: +50 mercados, 90 legs de deportes
+[05:06:32] [COMBO] 2 legs · cuota est. 1.51 · stake $8.97 (AUTO)
+[05:06:32]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$383k)
+[05:06:32]   · Spread: Hawai'i (-7.5) (p=0.78 vol=$140k)
+[05:06:33]   RFQ create -> 200 {"rfq_id":"rfq-3dd7d9998fa624422202dd6b","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789275997972,"request":{"rfq_id":"rfq-3dd7d9998fa624422202dd6b",
+[05:06:33]   quote: cuota=1.35 blended=0.739 shares=11.98 total=$8.97
+[05:06:33]   ⚖️ ventaja insuficiente: RFQ 1.35 vs mercado ~1.51 = EV -10.6% < 5% exigidos — NO se acepta ($0)
+[05:06:33]   ❌ combo: ventaja_-10.6_insuficiente
+[05:14:20]   [copy] tope diario de señales (5) alcanzado
+[05:16:30] [AUTO] pasada (combos RFQ v11)
+[05:16:31]   pagina 1: +50 mercados, 0 legs de deportes
+[05:16:31]   pagina 2: +50 mercados, 0 legs de deportes
+[05:16:32]   pagina 3: +50 mercados, 12 legs de deportes
+[05:16:32]   pagina 4: +50 mercados, 51 legs de deportes
+[05:16:32]   pagina 5: +50 mercados, 89 legs de deportes
+[05:16:32] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[05:16:32]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$400k)
+[05:16:32]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$90k)
+[05:16:33]   RFQ create -> 200 {"rfq_id":"rfq-1be2338774584ab427d1c5c1","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789276598588,"request":{"rfq_id":"rfq-1be2338774584ab427d1c5c1",
+[05:16:33]   quote: cuota=1.39 blended=0.721 shares=12.71 total=$9.29
+[05:16:33]   ⚖️ ventaja insuficiente: RFQ 1.39 vs mercado ~1.4 = EV -0.7% < 5% exigidos — NO se acepta ($0)
+[05:16:33]   ❌ combo: ventaja_-0.7_insuficiente
+[05:17:24]   [copy] tope diario de señales (5) alcanzado
+[05:20:25]   [copy] tope diario de señales (5) alcanzado
+[05:23:26]   [copy] tope diario de señales (5) alcanzado
+[05:26:26]   [copy] tope diario de señales (5) alcanzado
+[05:26:32] [AUTO] pasada (combos RFQ v11)
+[05:26:33]   pagina 1: +50 mercados, 0 legs de deportes
+[05:26:34]   pagina 2: +50 mercados, 1 legs de deportes
+[05:26:34]   pagina 3: +50 mercados, 13 legs de deportes
+[05:26:34]   pagina 4: +50 mercados, 53 legs de deportes
+[05:26:35]   pagina 5: +50 mercados, 94 legs de deportes
+[05:26:35] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[05:26:35]   · Will FC Barcelona win on 2026-09-13? (p=0.85 vol=$422k)
+[05:26:35]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$91k)
+[05:26:36]   RFQ create -> 200 {"rfq_id":"rfq-cd897963105bb1d97cec7a99","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789277201030,"request":{"rfq_id":"rfq-cd897963105bb1d97cec7a99",
+[05:26:36]   quote: cuota=1.39 blended=0.721 shares=12.71 total=$9.29
+[05:26:36]   ⚖️ ventaja insuficiente: RFQ 1.39 vs mercado ~1.4 = EV -0.7% < 5% exigidos — NO se acepta ($0)
+[05:26:36]   ❌ combo: ventaja_-0.7_insuficiente
+[05:29:22] loop err: The read operation timed out
+[05:29:31]   [copy] tope diario de señales (5) alcanzado
+[05:32:32]   [copy] tope diario de señales (5) alcanzado
+[05:35:33]   [copy] tope diario de señales (5) alcanzado
+[05:36:33] [AUTO] pasada (combos RFQ v11)
+[05:36:34]   pagina 1: +50 mercados, 0 legs de deportes
+[05:36:34]   pagina 2: +50 mercados, 1 legs de deportes
+[05:36:35]   pagina 3: +50 mercados, 13 legs de deportes
+[05:36:35]   pagina 4: +50 mercados, 54 legs de deportes
+[05:36:35]   pagina 5: +50 mercados, 95 legs de deportes
+[05:36:35] [COMBO] 2 legs · cuota est. 1.42 · stake $9.23 (AUTO)
+[05:36:35]   · Will FC Barcelona win on 2026-09-13? (p=0.84 vol=$422k)
+[05:36:35]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$91k)
+[05:36:36]   RFQ create -> 200 {"rfq_id":"rfq-7ec43834d460cd307213840e","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789277801527,"request":{"rfq_id":"rfq-7ec43834d460cd307213840e",
+[05:36:36]   quote: cuota=1.4 blended=0.714 shares=12.74 total=$9.23
+[05:36:36]   ⚖️ ventaja insuficiente: RFQ 1.4 vs mercado ~1.42 = EV -1.4% < 5% exigidos — NO se acepta ($0)
+[05:36:36]   ❌ combo: ventaja_-1.4_insuficiente
+[05:41:38]   [copy] tope diario de señales (5) alcanzado
+[05:46:35] [AUTO] pasada (combos RFQ v11)
+[05:46:35]   pagina 1: +50 mercados, 0 legs de deportes
+[05:46:35]   pagina 2: +50 mercados, 1 legs de deportes
+[05:46:36]   pagina 3: +50 mercados, 13 legs de deportes
+[05:46:36]   pagina 4: +50 mercados, 54 legs de deportes
+[05:46:36]   pagina 5: +50 mercados, 96 legs de deportes
+[05:46:36] [COMBO] 2 legs · cuota est. 1.42 · stake $9.23 (AUTO)
+[05:46:36]   · Will FC Barcelona win on 2026-09-13? (p=0.84 vol=$460k)
+[05:46:36]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$93k)
+[05:46:37]   RFQ create -> 200 {"rfq_id":"rfq-c1b04182a12aeb9ae60a2504","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789278402780,"request":{"rfq_id":"rfq-c1b04182a12aeb9ae60a2504",
+[05:46:37]   quote: cuota=1.39 blended=0.720 shares=12.64 total=$9.23
+[05:46:37]   ⚖️ ventaja insuficiente: RFQ 1.39 vs mercado ~1.42 = EV -2.1% < 5% exigidos — NO se acepta ($0)
+[05:47:08]   ❌ combo: ventaja_-2.1_insuficiente
+[05:56:35] [AUTO] pasada (combos RFQ v11)
+[05:56:39]   pagina 1: +50 mercados, 0 legs de deportes
+[05:56:39]   pagina 2: +50 mercados, 1 legs de deportes
+[05:56:40]   pagina 3: +50 mercados, 13 legs de deportes
+[05:56:40]   pagina 4: +50 mercados, 55 legs de deportes
+[05:56:40]   pagina 5: +50 mercados, 97 legs de deportes
+[05:56:40] [COMBO] 2 legs · cuota est. 1.42 · stake $9.23 (AUTO)
+[05:56:40]   · Will FC Barcelona win on 2026-09-13? (p=0.84 vol=$465k)
+[05:56:40]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$93k)
+[05:56:41]   RFQ create -> 200 {"rfq_id":"rfq-2b2af1b9feaeb99011311082","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789279006489,"request":{"rfq_id":"rfq-2b2af1b9feaeb99011311082",
+[05:56:41]   quote: cuota=1.39 blended=0.720 shares=12.65 total=$9.23
+[05:56:41]   ⚖️ ventaja insuficiente: RFQ 1.39 vs mercado ~1.42 = EV -2.1% < 5% exigidos — NO se acepta ($0)
+[05:56:41]   ❌ combo: ventaja_-2.1_insuficiente
+[06:02:49]   [copy] tope diario de señales (5) alcanzado
+[06:05:49]   [copy] tope diario de señales (5) alcanzado
+[06:06:40] [AUTO] pasada (combos RFQ v11)
+[06:06:40]   pagina 1: +50 mercados, 0 legs de deportes
+[06:06:40]   pagina 2: +50 mercados, 1 legs de deportes
+[06:06:41]   pagina 3: +50 mercados, 13 legs de deportes
+[06:06:41]   pagina 4: +50 mercados, 54 legs de deportes
+[06:06:41]   pagina 5: +50 mercados, 95 legs de deportes
+[06:06:41] [COMBO] 2 legs · cuota est. 1.42 · stake $9.23 (AUTO)
+[06:06:41]   · Will FC Barcelona win on 2026-09-13? (p=0.84 vol=$465k)
+[06:06:41]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$93k)
+[06:06:42]   RFQ create -> 200 {"rfq_id":"rfq-a6d034e134dd968df7d8171b","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789279607743,"request":{"rfq_id":"rfq-a6d034e134dd968df7d8171b",
+[06:06:42]   quote: cuota=1.39 blended=0.721 shares=12.62 total=$9.23
+[06:06:42]   ⚖️ ventaja insuficiente: RFQ 1.39 vs mercado ~1.42 = EV -2.1% < 5% exigidos — NO se acepta ($0)
+[06:06:42]   ❌ combo: ventaja_-2.1_insuficiente
+[06:11:54]   [copy] tope diario de señales (5) alcanzado
+[06:16:40] [AUTO] pasada (combos RFQ v11)
+[06:16:41]   pagina 1: +50 mercados, 0 legs de deportes
+[06:16:41]   pagina 2: +50 mercados, 1 legs de deportes
+[06:16:41]   pagina 3: +50 mercados, 12 legs de deportes
+[06:16:42]   pagina 4: +50 mercados, 56 legs de deportes
+[06:16:42]   pagina 5: +50 mercados, 98 legs de deportes
+[06:16:42] [COMBO] 2 legs · cuota est. 1.42 · stake $9.23 (AUTO)
+[06:16:42]   · Will FC Barcelona win on 2026-09-13? (p=0.84 vol=$472k)
+[06:16:42]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$93k)
+[06:17:13]   RFQ create -> 200 {"rfq_id":"rfq-3df10bfbc679c8fe4143847e","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789280238355,"request":{"rfq_id":"rfq-3df10bfbc679c8fe4143847e",
+[06:17:13]   quote: cuota=1.4 blended=0.716 shares=12.72 total=$9.23
+[06:17:13]   ⚖️ ventaja insuficiente: RFQ 1.4 vs mercado ~1.42 = EV -1.4% < 5% exigidos — NO se acepta ($0)
+[06:17:13]   ❌ combo: ventaja_-1.4_insuficiente
+[06:17:18]   verdad: 32 cobros REDEEM>0 por token + 84 por título (84 registros)
+[06:17:25]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=61 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas -0.66→-0.66
+[06:19:43] loop err: The read operation timed out
+[06:20:56]   [copy] #1 00gringo00           descartado · concentrado en 2 mercado(s)
+[06:20:57]   [copy] sin actividad de 0x224a89db…: HTTP Error 429: Too Many Requests
+[06:20:57]   [copy] #2 wr0ngw4yb3tt0r       descartado · inactivo (0 compras en 48 h)
+[06:20:57]   [copy] sin actividad de 0xf0318c32…: HTTP Error 429: Too Many Requests
+[06:20:57]   [copy] #3 BreakTheBank         descartado · inactivo (0 compras en 48 h)
+[06:20:58]   [copy] #4 sainttroplay         descartado · inactivo (0 compras en 48 h)
+[06:20:59]   [copy] sin actividad de 0x0f6f76ce…: HTTP Error 429: Too Many Requests
+[06:20:59]   [copy] #5 totoro3miyazaki      descartado · inactivo (0 compras en 48 h)
+[06:20:59]   [copy] #6 0x2c335066           ELEGIDO · activo (300 compras, 36 mercados, 57% deporte)
+[06:21:00]   [copy] sin actividad de 0x3a8aa345…: HTTP Error 429: Too Many Requests
+[06:21:00]   [copy] #7 TheReturnOfDarthMaul descartado · inactivo (0 compras en 48 h)
+[06:21:00]   [copy] sin actividad de 0x821dab05…: HTTP Error 429: Too Many Requests
+[06:21:00]   [copy] #8 Flaznorp             descartado · inactivo (0 compras en 48 h)
+[06:21:01]   [copy] #9 pleaseplease123      ELEGIDO · activo (300 compras, 14 mercados, 100% deporte)
+[06:21:01]   [copy] #10 ripley86alien        ELEGIDO · activo (74 compras, 3 mercados, 100% deporte)
+[06:21:02]   [copy] sin actividad de 0x5a218c7a…: HTTP Error 429: Too Many Requests
+[06:21:02]   [copy] #11 balthazar            descartado · inactivo (0 compras en 48 h)
+[06:21:02]   [copy] #12 mmklop               descartado · sólo 0% deporte
+[06:21:02]   [copy] vigilando 3 traders: 0x2c335066, pleaseplease123, ripley86alien
+[06:21:19] loop err: The read operation timed out
+[06:26:45] [AUTO] pasada (combos RFQ v11)
+[06:26:46]   pagina 1: +50 mercados, 0 legs de deportes
+[06:26:46]   pagina 2: +50 mercados, 1 legs de deportes
+[06:26:46]   pagina 3: +50 mercados, 13 legs de deportes
+[06:26:47]   pagina 4: +50 mercados, 56 legs de deportes
+[06:26:47]   pagina 5: +50 mercados, 98 legs de deportes
+[06:26:47] [COMBO] 2 legs · cuota est. 1.42 · stake $9.23 (AUTO)
+[06:26:47]   · Will FC Barcelona win on 2026-09-13? (p=0.84 vol=$482k)
+[06:26:47]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$119k)
+[06:26:48]   RFQ create -> 200 {"rfq_id":"rfq-0e79d5c024c8d37638f6f489","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789280813315,"request":{"rfq_id":"rfq-0e79d5c024c8d37638f6f489",
+[06:26:48]   quote: cuota=1.4 blended=0.716 shares=12.72 total=$9.23
+[06:26:48]   ⚖️ ventaja insuficiente: RFQ 1.4 vs mercado ~1.42 = EV -1.4% < 5% exigidos — NO se acepta ($0)
+[06:26:48]   ❌ combo: ventaja_-1.4_insuficiente
+[06:28:44] loop err: The read operation timed out
+[06:30:04]   [copy] tope diario de señales (5) alcanzado
+[06:33:04]   [copy] tope diario de señales (5) alcanzado
+[06:36:05]   [copy] tope diario de señales (5) alcanzado
+[06:36:50] [AUTO] pasada (combos RFQ v11)
+[06:36:50]   pagina 1: +50 mercados, 0 legs de deportes
+[06:36:51]   pagina 2: +50 mercados, 1 legs de deportes
+[06:36:51]   pagina 3: +50 mercados, 13 legs de deportes
+[06:36:52]   pagina 4: +50 mercados, 56 legs de deportes
+[06:36:52]   pagina 5: +50 mercados, 99 legs de deportes
+[06:36:52] [COMBO] 2 legs · cuota est. 1.42 · stake $9.23 (AUTO)
+[06:36:52]   · Will FC Barcelona win on 2026-09-13? (p=0.84 vol=$482k)
+[06:36:52]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$119k)
+[06:36:53]   RFQ create -> 200 {"rfq_id":"rfq-9e13ed26aa59dee14fa40fc3","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789281418328,"request":{"rfq_id":"rfq-9e13ed26aa59dee14fa40fc3",
+[06:36:53]   quote: cuota=1.4 blended=0.716 shares=12.72 total=$9.23
+[06:36:53]   ⚖️ ventaja insuficiente: RFQ 1.4 vs mercado ~1.42 = EV -1.4% < 5% exigidos — NO se acepta ($0)
+[06:36:53]   ❌ combo: ventaja_-1.4_insuficiente
+[06:46:51] [AUTO] pasada (combos RFQ v11)
+[06:46:52]   pagina 1: +50 mercados, 0 legs de deportes
+[06:46:52]   pagina 2: +50 mercados, 1 legs de deportes
+[06:46:53]   pagina 3: +50 mercados, 13 legs de deportes
+[06:46:53]   pagina 4: +50 mercados, 56 legs de deportes
+[06:46:53]   pagina 5: +50 mercados, 99 legs de deportes
+[06:46:53] [COMBO] 2 legs · cuota est. 1.42 · stake $9.23 (AUTO)
+[06:46:53]   · Will FC Barcelona win on 2026-09-13? (p=0.84 vol=$489k)
+[06:46:53]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$119k)
+[06:47:24]   RFQ create -> 200 {"rfq_id":"rfq-128d75f959505880565cd0f6","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789282049677,"request":{"rfq_id":"rfq-128d75f959505880565cd0f6",
+[06:47:24]   quote: cuota=1.4 blended=0.713 shares=12.76 total=$9.23
+[06:47:24]   ⚖️ ventaja insuficiente: RFQ 1.4 vs mercado ~1.42 = EV -1.4% < 5% exigidos — NO se acepta ($0)
+[06:47:24]   ❌ combo: ventaja_-1.4_insuficiente
+[06:56:53] [AUTO] pasada (combos RFQ v11)
+[06:56:53]   pagina 1: +50 mercados, 0 legs de deportes
+[06:56:53]   pagina 2: +50 mercados, 2 legs de deportes
+[06:56:54]   pagina 3: +50 mercados, 13 legs de deportes
+[06:56:54]   pagina 4: +50 mercados, 56 legs de deportes
+[06:56:55]   pagina 5: +50 mercados, 99 legs de deportes
+[06:56:55] [COMBO] 2 legs · cuota est. 1.4 · stake $9.29 (AUTO)
+[06:56:55]   · LoL: Gen.G vs Hanwha Life Esports - Game 2 Winner (p=0.84 vol=$1178k)
+[06:56:55]   · Will FC Barcelona win on 2026-09-13? (p=0.84 vol=$500k)
+[06:56:56]   RFQ create -> 200 {"rfq_id":"rfq-0a99644678f8fe22af210e7f","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789282620972,"request":{"rfq_id":"rfq-0a99644678f8fe22af210e7f",
+[06:56:56]   quote: cuota=1.24 blended=0.807 shares=11.40 total=$9.29
+[06:56:56]   ⚖️ ventaja insuficiente: RFQ 1.24 vs mercado ~1.4 = EV -11.4% < 5% exigidos — NO se acepta ($0)
+[06:57:26]   ❌ combo: ventaja_-11.4_insuficiente
+[07:06:55] [AUTO] pasada (combos RFQ v11)
+[07:06:55]   pagina 1: +50 mercados, 0 legs de deportes
+[07:06:55]   pagina 2: +50 mercados, 1 legs de deportes
+[07:06:56]   pagina 3: +50 mercados, 12 legs de deportes
+[07:06:56]   pagina 4: +50 mercados, 56 legs de deportes
+[07:06:57]   pagina 5: +50 mercados, 98 legs de deportes
+[07:06:57] [COMBO] 2 legs · cuota est. 1.42 · stake $9.23 (AUTO)
+[07:06:57]   · Will FC Barcelona win on 2026-09-13? (p=0.84 vol=$500k)
+[07:06:57]   · LoL: Bilibili Gaming vs Anyone's Legend (BO5) - LPL Play (p=0.83 vol=$120k)
+                                                                                                                                                                                                                                                                                                                                                                                                                                           [07:08:54] intervalo AUTO restaurado: 10 min
+[07:08:54]   modo restaurado del estado: AUTO
+[07:08:54] stake=AUTO · max ops/día=10 · prob AUTO ≥65% · PIN ops fijo (4 cifras)
+[07:08:54]   horario restaurado: próxima pasada en 8 min
+[07:08:54]   auto-curación: primera auditoría en 25s (después cada 4h)
+[07:08:55]   verdad: 32 cobros REDEEM>0 por token + 84 por título (84 registros)
+[07:08:55] v12.9.0 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[07:08:55] Proxy: http://100.83.57.99:8888
+[07:09:05] Test proxy: FALLO
+[07:09:05] v12.9.0 iniciado
+[07:09:27]   [auditoria:auto] APLICADA reabiertas=0 corregidas=0 confirmadas=61 manuales=0 nuevas=0 sin_datos=0 · PnL archivadas -0.66→-0.66
+[07:16:56] [AUTO] pasada (combos RFQ v11)
+[07:16:56]   pagina 1: +50 mercados, 0 legs de deportes
+[07:16:56]   pagina 2: +50 mercados, 1 legs de deportes
+[07:16:57]   pagina 3: +50 mercados, 11 legs de deportes
+[07:16:57]   pagina 4: +50 mercados, 55 legs de deportes
+[07:16:57]   pagina 5: +50 mercados, 96 legs de deportes
+[07:16:57] [COMBO] 2 legs · cuota est. 1.27 · stake $9.72 (AUTO)
+[07:16:57]   · Will FC Barcelona win on 2026-09-13? (p=0.84 vol=$510k)
+[07:16:57]   · Spread: Hawai'i (-7.5) (p=0.94 vol=$142k)
+[07:16:59]   RFQ: identidad lista (signer 0x8a22F798... maker 0xb0E11970...)
+[07:16:59]   RFQ create -> 200 {"rfq_id":"rfq-cd84327a42566573f1289973","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789283824828,"request":{"rfq_id":"rfq-cd84327a42566573f1289973",
+[07:16:59]   quote: cuota=1.29 blended=0.774 shares=12.42 total=$9.72
+[07:16:59]   ⚖️ ventaja insuficiente: RFQ 1.29 vs mercado ~1.27 = EV +1.6% < 5% exigidos — NO se acepta ($0)
+[07:16:59]   ❌ combo: ventaja_+1.6_insuficiente
+[07:20:49] loop err: The read operation timed out
+
+--- errores recientes (tracebacks / telegram / RPC) ---
+8927:[05:47:08]   ❌ combo: ventaja_-2.1_insuficiente
+8940:[05:56:41]   ❌ combo: ventaja_-2.1_insuficiente
+8955:[06:06:42]   ❌ combo: ventaja_-2.1_insuficiente
+8969:[06:17:13]   ❌ combo: ventaja_-1.4_insuficiente
+8974:[06:20:57]   [copy] sin actividad de 0x224a89db…: HTTP Error 429: Too Many Requests
+8976:[06:20:57]   [copy] sin actividad de 0xf0318c32…: HTTP Error 429: Too Many Requests
+8979:[06:20:59]   [copy] sin actividad de 0x0f6f76ce…: HTTP Error 429: Too Many Requests
+8982:[06:21:00]   [copy] sin actividad de 0x3a8aa345…: HTTP Error 429: Too Many Requests
+8984:[06:21:00]   [copy] sin actividad de 0x821dab05…: HTTP Error 429: Too Many Requests
+8988:[06:21:02]   [copy] sin actividad de 0x5a218c7a…: HTTP Error 429: Too Many Requests
+9005:[06:26:48]   ❌ combo: ventaja_-1.4_insuficiente
+9022:[06:36:53]   ❌ combo: ventaja_-1.4_insuficiente
+9035:[06:47:24]   ❌ combo: ventaja_-1.4_insuficiente
+9048:[06:57:26]   ❌ combo: ventaja_-11.4_insuficiente
+9082:[07:16:59]   ❌ combo: ventaja_+1.6_insuficiente
