@@ -1,0 +1,37 @@
+=== DIAG BASICO 20260913_085929 ===
+
+== Banner SSH ==
+SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19
+
+== Servicios activos ==
+poly-elon: active
+poly-elon-semanal: active
+poly-semanal: inactive
+poly-mensual: active
+poly-zelenskyy: active
+poly-trump: active
+poly-combos-bot: active
+poly-telegram: active
+poly-gestor: active
+
+== Procesos Python ==
+root         779       1  0 07:08 ?        00:00:02 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+root         780       1  0 07:08 ?        00:00:08 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+root         782       1  0 07:08 ?        00:00:04 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+root         787       1  0 07:08 ?        00:00:01 /usr/bin/python3 /opt/polymarket/poly_telegram_bot.py
+root         788       1  0 07:08 ?        00:00:03 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+root         790       1  0 07:08 ?        00:00:05 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root        4544       1  0 07:58 ?        00:00:03 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+== Salida IP ==
+46.225.146.21
+== Tailscale ==
+100.77.186.117  bot-poly  lamegawi@  linux    -                                                          
+100.82.235.16   bot-vm3   lamegawi@  linux    offline, last seen 26d ago                                 
+100.83.57.99    ferpc     lamegawi@  windows  active; direct 85.85.41.76:7363, tx 24771640 rx 274770008  
+
+== /etc/polymarket.env (solo lineas con proxy) ==
+HTTP_PROXY=http://100.83.57.99:8888
+HTTPS_PROXY=http://100.83.57.99:8888
+ALL_PROXY=http://100.83.57.99:8888
+NO_PROXY=localhost,127.0.0.1,api.telegram.org,ntfy.sh
