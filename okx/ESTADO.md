@@ -1,4 +1,4 @@
-# Estado OKX - 2026-09-13 04:00 UTC
+# Estado OKX - 2026-09-14 04:00 UTC
 
 ## Servicios
 - okx-demo-bot: active
@@ -21,9 +21,9 @@
 - signal: /root/.okx_signal_pausado
 
 ## Cuenta demo (posiciones y P&L)
-- equity demo: $470122.57
-- IOST-USD_UM_XPERP-310801 SHORT 257.0 ct | P&L +0.39
+- equity demo: $470934.76
+- IOST-USD_UM_XPERP-310801 SHORT 52.0 ct | P&L +2.01
 - ORBS-USD_UM_XPERP-310822 LONG 40.0 ct | P&L -24.01
 
 ## Cuenta real (solo saldo, sin detalle)
-- equity real: $401.65 | posiciones: 0
+- equity real: $401.51 | posiciones: 0
