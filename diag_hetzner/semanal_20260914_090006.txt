@@ -1,0 +1,66 @@
+Seguimiento semanal - 20260914_090006
+
+======================================================================
+SEGUIMIENTO SEMANAL · 2026-09-14T09:00:01.374091
+======================================================================
+
+[1] Saldo real (on-chain + posiciones)
+  wallet: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+  cash on-chain:  $0.00
+  posiciones:     $23.64  (44 mercados)
+  TOTAL REAL:     $23.64
+  PnL desde $500: $-476.36 (-95.3%)
+
+[2] Analisis por bot
+
+--- Elon 48h (poly-elon) ---
+  servicio: active
+  saldo: $228.45
+  ops totales: 7
+  activa: NO
+  cerradas: 7, G: 1, P: 6
+  win rate: 14.3%
+  PnL cerrado: $-22.16
+  filtros descartados (semana): p_lado<10%=0, cuota>25=0
+  TOTAL descartes: 0
+
+--- Zelenskyy sem (poly-zelenskyy) ---
+  servicio: active
+  saldo: $218.45
+  ops totales: 4
+  activa: SÍ
+  cerradas: 4, G: 1, P: 3
+  win rate: 25.0%
+  PnL cerrado: $-7.84
+  filtros descartados (semana): p_lado<10%=0, cuota>25=0
+  TOTAL descartes: 0
+
+--- Trump mens (poly-trump) ---
+  servicio: active
+  saldo: $228.45
+  ops totales: 0
+  activa: NO
+  sin ops cerradas
+  filtros descartados (semana): p_lado<10%=0, cuota>25=700
+  TOTAL descartes: 700
+
+======================================================================
+RESUMEN SEMANAL
+======================================================================
+Bot                   WinRate        PnL    Filtros      Saldo
+------------------------------------------------------------
+Elon 48h                14.3% $  -22.16          0 $  228.45
+Zelenskyy sem           25.0% $   -7.84          0 $  218.45
+Trump mens               0.0% $   +0.00        700 $  228.45
+
+PROYECCION (asumiendo mismas condiciones):
+  Elon 48h: $-94.97/mes ($-3.17/dia)
+  Zelenskyy sem: $-33.60/mes ($-1.12/dia)
+  Trump mens: $+0.00/mes ($+0.00/dia)
+
+RECOMENDACIONES:
+  ✓ Trump: 700 filtros salvaron la semana
+  ⚠️  Elon: win rate 14.3% — considera reducir stake
+  🚨 BANKROLL BAJO: $23.64 < $250 — PARA los bots
+
+======================================================================
