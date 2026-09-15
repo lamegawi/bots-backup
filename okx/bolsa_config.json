@@ -46,6 +46,11 @@
       "nombre": "Ethereum USD",
       "yahoo": "ETH-USD",
       "tipo": "cripto"
+    },
+    {
+      "simbolo": "NAK",
+      "nombre": "Northern Dynasty Minerals, Ltd.",
+      "yahoo": "NAK"
     }
   ]
 }

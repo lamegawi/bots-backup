@@ -754,6 +754,25 @@
   "atr": 2.5251873395532742e-05,
   "stop_dist_pct": 4.588,
   "apalancamiento": 4,
+  "estado": "cerrada",
+  "ts_cierre": "2026-09-15 05:22",
+  "pnl_usd": 9.89,
+  "r_resultado": 0.99,
+  "motivo": "TP"
+ },
+ {
+  "id": 1789443030225,
+  "ts_apertura": "2026-09-15 05:30",
+  "bot": "demo",
+  "moneda": "IOST",
+  "direccion": "SHORT",
+  "entrada": 0.0007505,
+  "contratos": 546,
+  "riesgo_usd": 10.01,
+  "score": 6.377349455875021,
+  "atr": 1.222030131058975e-05,
+  "stop_dist_pct": 2.442,
+  "apalancamiento": 8,
   "estado": "abierta"
  }
 ]
