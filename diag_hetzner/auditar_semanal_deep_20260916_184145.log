@@ -1,0 +1,166 @@
+=== AUDITORIA PROFUNDA SEMANAL · 20260916_184145 UTC ===
+
+== 1. Historial COMPLETO del semanal (sin truncar) ==
+saldo reportado: $11267.75
+paso: 1
+activa: None
+abierta: None
+total entradas: 28
+
+=== TODAS las entradas ===
+  # 1 | 2026-09-13T18:29:23 | elon-musk-of-tweets-september-8-september-15-2026  |          YES | stk=$3.30 | res=G | ben=$+63.37 | sald=$249.86 | p=0 | c=20.2020202020202
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  # 2 | 2026-09-13T19:00:30 | elon-musk-of-tweets-september-8-september-15-2026  |          YES | stk=$3.30 | res=G | ben=$+50.36 | sald=$300.22 | p=0 | c=16.260162601626018
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  # 3 | 2026-09-13T19:47:07 | elon-musk-of-tweets-september-8-september-15-2026  |          YES | stk=$3.30 | res=G | ben=$+50.80 | sald=$351.02 | p=0 | c=16.39344262295082
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  # 4 | 2026-09-13T20:31:24 | elon-musk-of-tweets-september-15-september-22-2026 |          YES | stk=$3.30 | res=G | ben=$+23.10 | sald=$374.12 | p=0 | c=8.0
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  # 5 | 2026-09-13T21:11:34 | elon-musk-of-tweets-september-15-september-22-2026 |          YES | stk=$3.30 | res=G | ben=$+23.10 | sald=$397.22 | p=0 | c=8.0
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  # 6 | 2026-09-13T21:27:07 | elon-musk-of-tweets-september-15-september-22-2026 |          YES | stk=$3.30 | res=G | ben=$+23.10 | sald=$420.32 | p=0 | c=8.0
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  # 7 | 2026-09-14T04:11:24 | elon-musk-of-tweets-september-15-september-22-2026 |          YES | stk=$3.30 | res=G | ben=$+15.56 | sald=$435.88 | p=0 | c=5.714285714285714
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  # 8 | 2026-09-15T12:35:59 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+504.39 | sald=$940.27 | p=0 | c=153.84615384615384
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  # 9 | 2026-09-15T13:06:44 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+310.99 | sald=$1251.26 | p=0 | c=95.23809523809523
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #10 | 2026-09-15T13:37:28 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+296.70 | sald=$1547.96 | p=0 | c=90.90909090909092
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #11 | 2026-09-15T14:08:12 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+271.70 | sald=$1819.66 | p=0 | c=83.33333333333333
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #12 | 2026-09-15T14:38:57 | elon-musk-of-tweets-september-8-september-15-2026  |          NO  | stk=$3.30 | res=G | ben=$+88.37 | sald=$1908.03 | p=0 | c=27.777777777777754
+        real: resuelto por Polymarket: ganó 180-199
+        order: ?
+  #13 | 2026-09-15T18:31:26 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+175.08 | sald=$2083.11 | p=0 | c=54.054054054054056
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #14 | 2026-09-15T19:02:11 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+271.70 | sald=$2354.81 | p=0 | c=83.33333333333333
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #15 | 2026-09-15T19:32:56 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+224.29 | sald=$2579.10 | p=0 | c=68.9655172413793
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #16 | 2026-09-15T20:03:43 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+730.03 | sald=$3309.13 | p=0 | c=222.22222222222223
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #17 | 2026-09-15T20:34:29 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+939.56 | sald=$4248.69 | p=0 | c=285.7142857142857
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #18 | 2026-09-15T21:05:15 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+730.03 | sald=$4978.72 | p=0 | c=222.22222222222223
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #19 | 2026-09-15T22:06:43 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+730.03 | sald=$5708.75 | p=0 | c=222.22222222222223
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #20 | 2026-09-15T22:37:27 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+730.03 | sald=$6438.78 | p=0 | c=222.22222222222223
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #21 | 2026-09-15T23:38:58 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+730.03 | sald=$7168.81 | p=0 | c=222.22222222222223
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #22 | 2026-09-16T00:09:47 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+730.03 | sald=$7898.84 | p=0 | c=222.22222222222223
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #23 | 2026-09-16T00:40:31 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+730.03 | sald=$8628.87 | p=0 | c=222.22222222222223
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #24 | 2026-09-16T01:11:16 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+596.70 | sald=$9225.57 | p=0 | c=181.81818181818184
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #25 | 2026-09-16T01:42:05 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+596.70 | sald=$9822.27 | p=0 | c=181.81818181818184
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #26 | 2026-09-16T02:12:49 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+504.39 | sald=$10326.66 | p=0 | c=153.84615384615384
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #27 | 2026-09-16T02:43:36 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+504.39 | sald=$10831.05 | p=0 | c=153.84615384615384
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+  #28 | 2026-09-16T03:14:20 | elon-musk-of-tweets-september-11-september-18-2026 |          YES | stk=$3.30 | res=G | ben=$+436.70 | sald=$11267.75 | p=0 | c=133.33333333333334
+        real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+        order: ?
+
+== 2. Verificar consistencia matemática ==
+Saldo inicial: $228.45
+Saldo reportado: $11267.75
+Saldo recalculado (sumando beneficios): $11309.71
+Diferencia: $41.96
+
+Total beneficio reportado: $11081.26
+Total stake: $92.40
+
+Operaciones por mercado:
+   20 × elon-musk-of-tweets-september-11-september-18-2026
+    4 × elon-musk-of-tweets-september-8-september-15-2026
+    4 × elon-musk-of-tweets-september-15-september-22-2026
+
+== 3. ¿Cuántas órdenes REALES hay en la wallet? ==
+  ERROR: HTTP Error 403: Forbidden
+
+== 4. Código del semanal: ¿cómo calcula el saldo? ==
+27:        return {"saldo": 228.45, "paso": 1, "activa": None, "historial": []}
+28-    try:
+29-        with open(REAL_JSON) as f:
+30-            return json.load(f)
+--
+32:        return {"saldo": 228.45, "paso": 1, "activa": None, "historial": []}
+33-
+34-
+35-def guardar_estado(d):
+--
+74:        log(f"saldo=${estado['saldo']}  paso={estado['paso']}  activa={'sí' if estado.get('activa') else 'no'}")
+75-
+76-        if estado.get('activa'):
+77-            log(f"Ya hay posición activa en {estado['activa'].get('slug','?')[:50]}")
+
+== 5. ¿Hay código que suma mal? ==
+
+== 6. ¿Cómo se actualiza el JSON? ==
+11-
+12-NEW_DIR = "/opt/polymarket/bot-polymarket-elon-semanal"
+13:REAL_JSON = os.path.join(NEW_DIR, "real_semanal.json")
+14-CONFIG_PATH = os.path.join(NEW_DIR, "config_real.json")
+15-
+16-# Solo NEW_DIR en sys.path
+17-sys.path = [NEW_DIR] + [p for p in sys.path if p not in ("", NEW_DIR, "/opt/polymarket/bot-polymarket-elon")]
+18-
+19-
+20-def log(msg):
+21-    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+--
+33-
+34-
+35:def guardar_estado(d):
+36-    with open(REAL_JSON, 'w') as f:
+37-        json.dump(d, f, indent=2)
+38-
+39-
+40-def evaluar_senal(metricas, bin_lo, bin_hi, precio_yes, cuota_yes, cuota_no):
+41-    import senal
+42-    if not metricas:
+43-        return None, None, 0, "sin métricas"
+--
+250-            'fecha': datetime.now().isoformat(),
+251-        }
+252:        guardar_estado(estado)
+253-        log(f"   estado guardado")
+254-    except Exception as e:
+255-        log(f"   ERROR ejecutando: {e}")
+256-        import traceback
+257-        log(traceback.format_exc())
+258-
+259-
+260-def main():
