@@ -1,0 +1,53 @@
+=== CIRUGÍA v12.9.2 copy ampliación — 2026-09-16 19:13:18 UTC — bot-poly ===
+### md5 ANTES:
+92786076f4bf05bb7b79e339f887a6a4  /opt/polymarket/poly_combos_bot.py
+### YA es v12.9.2: no se reparchea (idempotente). Sólo verifico.
+
+### EVIDENCIAS — banner y líneas 🧠 en el log del bot:
+[06:18:11]   [copy] vigilando 3 traders: pleaseplease123, BreakTheBank, 0x2c335066
+[06:21:02]   [copy] vigilando 3 traders: 0x2c335066, pleaseplease123, ripley86alien
+[06:22:43]   [copy] vigilando 4 traders: wr0ngw4yb3tt0r, BreakTheBank, pleaseplease123, theowalcott
+[06:25:34]   [copy] vigilando 5 traders: 00gringo00, wr0ngw4yb3tt0r, pleaseplease123, Kch-Temp, theowalcott
+[06:27:03]   [copy] vigilando 2 traders: wr0ngw4yb3tt0r, pleaseplease123
+[18:53:01] v12.9.2 cargado · modo=OFF · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[18:54:32]   [copy] 🧠 memoria: backfill de 25 señal(es) ya resuelta(s)
+[18:54:32]   [copy] 🧠 VETERANO 0x2c335066           papel: 15 señ · 60.0% acierto · ROI 24.5% · $18.408
+[18:54:33]   [copy] 🧠 1 veterano(s) con plaza fija (1 elegible(s) en la memoria)
+[18:54:34]   [copy] 🧠 #2 wr0ngw4yb3tt0r       VETADO por memoria: 8 señ · ROI -45.0% < 5%
+[18:54:42]   [copy] vigilando 2 traders (1 🧠 veteranos): 0x2c335066, pleaseplease123
+
+### últimas 20 líneas del log del bot:
+[19:11:07]   pagina 4: +50 mercados, 40 legs de deportes
+[19:11:07]   pagina 5: +50 mercados, 71 legs de deportes
+[19:12:32]   pagina 1: +50 mercados, 1 legs de deportes
+[19:12:32]   pagina 2: +50 mercados, 2 legs de deportes
+[19:12:33]   pagina 3: +50 mercados, 10 legs de deportes
+[19:12:33]   pagina 4: +50 mercados, 40 legs de deportes
+[19:12:34]   pagina 5: +50 mercados, 71 legs de deportes
+[19:12:37]   [copy] 📡 señal #1789585957 de 0x2c335066: Everton FC vs. Wolverhampton Wanderers FC: O/U 0.5 · él 0.100 / nosotros 0.065 (-3.5 pts) · retraso 0m34s · papel $5
+[19:12:37]   [copy] 📡 señal #1789585957 de 0x2c335066: Chicago White Sox vs. Cleveland Guardians · él 0.060 / nosotros 0.105 (+4.5 pts) · retraso 2m00s · papel $5
+[19:12:38]   [copy] ronda: 2 señal(es) nueva(s) · 0 compra(s) repetida(s) fusionada(s) · 0 resuelta(s) · dedup 713 fills
+[19:12:57] [MANUAL 💥] botón ▶️: Szczecin: Diego Dedura-Palomero vs Kil + Manchester United FC vs. Brig · stake $6.17
+[19:12:57] [COMBO] 4 legs · cuota est. 5.12 · stake $6.17 (AUTO)
+[19:12:57]   · Szczecin: Diego Dedura-Palomero vs Kilian Feldbausch (p=0.66 vol=$385k)
+[19:12:57]   · Manchester United FC vs. Brighton & Hove Albion FC: O/U  (p=0.62 vol=$350k)
+[19:12:57]   · Valencia: Guiomar Maristany vs Marina Bassols Ribera (p=0.58 vol=$232k)
+[19:12:57]   · San Francisco Giants vs. St. Louis Cardinals (p=0.81 vol=$172k)
+[19:12:58]   RFQ: identidad lista (signer 0x8a22F798... maker 0xb0E11970...)
+[19:12:59]   RFQ create -> 200 {"rfq_id":"rfq-bb08385bad72b0457710edf6","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789585984067,"request":{"rfq_id":"rfq-bb08385bad72b0457710edf6",
+[19:12:59]   quote: cuota=3.03 blended=0.330 shares=18.08 total=$6.17
+[19:12:59]   NO acepto: cuota real 3.03 fuera de [3.5-18.0] 💥
+
+### ESTADO json — memoria 🧠 y traders vigilados:
+copy_ranking_v1 (bandera del backfill único): True
+copy_ranking — 3 wallets memorizadas:
+   · BreakTheBank · 2 señ · 100.0% · $11.832 · ROI 118.3%
+   · 0x2c335066 · 15 señ · 60.0% · $18.408 · ROI 24.5%
+   · wr0ngw4yb3tt0r · 8 señ · 25.0% · $-18.011 · ROI -45.0%
+vigilados ahora: [('0x2c335066', 'veterano'), ('pleaseplease123', 'novato')]
+copy_señales: 30 (tope histórico 900)
+
+### modo actual (por si ya pulsaste 🔴 OFF — sobrevive al reinicio):
+[07:58:10] v12.9.1 cargado · modo=AUTO · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+[18:53:01] v12.9.2 cargado · modo=OFF · stake=AUTO $5-$10 (según cuota/ventaja) · max 10/día · prob ≥65%
+=== FIN fix_copy_v1292_20260916_191318.log ===
