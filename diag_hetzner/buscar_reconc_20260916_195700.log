@@ -1,0 +1,327 @@
+=== BUSCAR QUIEN ESCRIBE 'reconc' EN JSONS · 20260916_195700 UTC ===
+
+== 1. Buscar 'reconc' en TODOS los .py ==
+/opt/polymarket/bot-polymarket-elon-mensual-v2/real_mensual.json
+/opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json
+/opt/polymarket/bot-polymarket-elon/real.json
+/opt/polymarket/check_integral.py
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/real_semanal.json
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/real_semanal.json
+/opt/polymarket/bot-polymarket-zelenskyy/real_zelen.json
+
+== 2. Buscar quien abre/escribe real_semanal.json (lsof) ==
+
+== 3. inotifywait / fuser ==
+
+== 4. Buscar scripts en /opt/polymarket/ raiz ==
+-rw-r--r-- 1 root root   2818 Aug 18 14:17 /opt/polymarket/check_abiertas2.py
+-rw-r--r-- 1 root root   2337 Aug 18 14:16 /opt/polymarket/check_abiertas.py
+-rw-r--r-- 1 root root   2598 Aug 18 14:03 /opt/polymarket/check_estado.py
+-rw-r--r-- 1 root root   2765 Aug 18 14:18 /opt/polymarket/check_final.py
+-rw-r--r-- 1 root root   1384 Aug 18 16:56 /opt/polymarket/check_ganadoras.py
+-rw-r--r-- 1 root root  24040 Aug 30 18:21 /opt/polymarket/check_integral.py
+-rw-r--r-- 1 root root   2118 Aug 18 14:05 /opt/polymarket/check_ordenes.py
+-rw-r--r-- 1 root root   2476 Aug 18 14:16 /opt/polymarket/check_posiciones.py
+-rw-r--r-- 1 root root   6071 Sep 13 20:30 /opt/polymarket/check_salud.py
+-rw-r--r-- 1 root root   1294 Aug 18 14:04 /opt/polymarket/check_ventanas2.py
+-rw-r--r-- 1 root root   1518 Aug 18 17:37 /opt/polymarket/check_ventanas_ahora.py
+-rw-r--r-- 1 root root   1235 Aug 18 14:04 /opt/polymarket/check_ventanas.py
+-rw-r--r-- 1 root root  12371 Sep 13 19:54 /opt/polymarket/gestionar_posiciones.py
+-rw-r--r-- 1 1000 1000   2022 Aug 19 18:12 /opt/polymarket/motores.py
+-rw-r--r-- 1 root root 187570 Sep 11 17:47 /opt/polymarket/poly_combos_bot.pre_v1281_20260911_180512.py
+-rwxr-xr-x 1 root root 170495 Sep 11 17:36 /opt/polymarket/poly_combos_bot.pre_v128_20260911_174722.py
+-rw-r--r-- 1 root root 194249 Sep 11 18:05 /opt/polymarket/poly_combos_bot.pre_v1282_20260911_201116.py
+-rw-r--r-- 1 root root 200001 Sep 11 20:11 /opt/polymarket/poly_combos_bot.pre_v1283_20260911_211948.py
+-rw-r--r-- 1 root root 230926 Sep 11 21:19 /opt/polymarket/poly_combos_bot.pre_v1284_20260911_220408.py
+-rw-r--r-- 1 root root 247793 Sep 11 22:04 /opt/polymarket/poly_combos_bot.pre_v1290_20260912_061634.py
+
+== 5. Buscar el código de check_integral.py ==
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""TEST INTEGRAL DIARIO de Polymarket (bot-poly).
+
+Modos (cada uno vigila y notifica a su propio bot de Telegram):
+  - por defecto (--elon):  bots de Elon (48h, semanal, mensual)
+  - --zelen:               bot de Zelenskyy
+
+Comprueba:
+  A. Servicios systemd del grupo activos.
+  B. Proxy del PC + IP de salida (85.85.41.76) + CLOB responde.
+  C. Telegram configurado en los bots del grupo (token no vacío).
+  D. Motor de trading v2 presente (MOTOR_ACTUAL).
+  E. mercado_activo.json del grupo fresco (< 30 min).
+  F. CSV de datos del grupo fresco (último día dentro de 2 días).
+  G. Lock compartido sin entradas caducadas.
+  H. POSICIONES FANTASMA: bot con 'activa' pero la cuenta ya no tiene esa
+     posición → bot atascado.
+  I. Posiciones del grupo abiertas sin dueño (huérfanas).
+  J. Las funciones del bot de Telegram del grupo no fallan.
+
+Uso:
+  python3 check_integral.py               # grupo Elon
+  python3 check_integral.py --zelen       # grupo Zelenskyy
+  python3 check_integral.py --test        # imprime también por pantalla
+  python3 check_integral.py --fix         # reconcilia los bots atascados
+  python3 check_integral.py --solo-fantasmas [--zelen]  # solo fantasmas
+"""
+import json
+import os
+import subprocess
+import sys
+import time
+import urllib.parse
+import urllib.request
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
+
+BASE = "/opt/polymarket"
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+TOKEN_ZELEN = os.environ.get("ZELEN_BOT_TOKEN", "").strip()
+CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+FUNDER = "0xb0E1197098E6d427c01720F1631cAD24CE740FA0"
+PROXY = "http://100.83.57.99:8888"
+IP_CASA = "85.85.41.76"
+MAD = ZoneInfo("Europe/Madrid")
+
+BOTS_ELON = [
+    ("48h",       f"{BASE}/bot-polymarket-elon/real.json",                  "bot-polymarket-elon"),
+    ("Semanal",   f"{BASE}/bot-polymarket-elon-semanal/real_semanal.json",  "bot-polymarket-elon-semanal"),
+    ("Mensual",   f"{BASE}/bot-polymarket-elon-mensual/real_mensual.json",  "bot-polymarket-elon-mensual"),
+]
+BOTS_ZELEN = [
+    ("Zelenskyy", f"{BASE}/bot-polymarket-zelenskyy/real_zelen.json",       "bot-polymarket-zelenskyy"),
+]
+SERVICIOS_ELON = ["poly-elon", "poly-semanal", "poly-mensual",
+                  "poly-telegram", "poly-gestor"]
+SERVICIOS_ZELEN = ["poly-zelenskyy", "poly-telegram-zelen"]
+BOTS_TRUMP = [
+    ("Trump", f"{BASE}/bot-polymarket-trump/real_trump.json", "bot-polymarket-trump"),
+]
+SERVICIOS_TRUMP = ["poly-trump"]
+MOTOR_ESPERADO = "motor_v2_ev_escalones_tope10"
+MESES = {"january", "february", "march", "april", "may", "june", "july",
+         "august", "september", "october", "november", "december"}
+MESES_ES = {"enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
+            "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+            "ago"}
+LOCK = f"{BASE}/apuestas_compartidas.json"
+
+
+# ------------------------------------------------------------------- estado
+def _cfg():
+    """Configuración según el modo (--zelen o no)."""
+    zelen = "--zelen" in sys.argv
+    trump = "--trump" in sys.argv
+    if zelen:
+        return {
+            "nombre": "ZELENSKYY",
+            "bots": BOTS_ZELEN,
+
+== 6. Buscar el código de check_estado.py ==
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Comprueba: (1) ventanas semanales vs seguidas, (2) estado real de cada orden en CLOB."""
+import json
+import os
+import sys
+
+BASE = "/opt/polymarket"
+
+print("=" * 60)
+print("1) VENTANAS en mercado_activo.json (todas)")
+print("=" * 60)
+p = f"{BASE}/bot-polymarket-elon/mercado_activo.json"
+d = json.load(open(p, encoding="utf-8"))
+mercados = d.get("mercados", [])
+print("TOTAL registrados:", len(mercados))
+sem = [m for m in mercados if m.get("tipo") == "semanal"]
+print("SEMANALES:", len(sem))
+for m in sem:
+    print("   -", m.get("titulo"), "| cerrado:", m.get("cerrado"),
+          "| fin:", (m.get("fin_iso") or "")[:16])
+print()
+print("TODOS por tipo:")
+for m in mercados:
+    print("   [%s] %s | cerrado=%s | fin=%s" % (
+        m.get("tipo"), m.get("titulo"), m.get("cerrado"),
+        (m.get("fin_iso") or "")[:16]))
+
+print()
+print("=" * 60)
+print("2) ESTADO REAL de cada orden (CLOB) + qué ventana sigue cada bot")
+print("=" * 60)
+
+sys.path.insert(0, f"{BASE}/bot-polymarket-elon")
+try:
+    import operar_real as op
+    client = op.get_client()
+except Exception as e:
+    print("no pude crear cliente CLOB:", e)
+    client = None
+
+BOTS = [
+    ("48h",        f"{BASE}/bot-polymarket-elon/real.json"),
+    ("48h-V2",     f"{BASE}/bot-polymarket-elon-v2/real.json"),
+    ("Semanal",    f"{BASE}/bot-polymarket-elon-semanal/real_semanal.json"),
+    ("Semanal-V2", f"{BASE}/bot-polymarket-elon-semanal-v2/real_semanal.json"),
+    ("Mensual",    f"{BASE}/bot-polymarket-elon-mensual/real_mensual.json"),
+    ("Mensual-V2", f"{BASE}/bot-polymarket-elon-mensual-v2/real_mensual.json"),
+]
+
+for nombre, path in BOTS:
+    try:
+        st = json.load(open(path, encoding="utf-8"))
+    except Exception as e:
+        print(f"\n[{nombre}] sin estado: {e}")
+        continue
+    act = st.get("activa")
+    if not act:
+        print(f"\n[{nombre}] sin apuesta activa (historial: {len(st.get('historial', []))})")
+        continue
+    print(f"\n[{nombre}] {act.get('bin_titulo')} {act.get('lado')} stake ${act.get('stake', 0):.2f}")
+    print(f"   slug: {act.get('slug')}")
+    print(f"   pendiente flag: {act.get('pendiente')}")
+    oid = act.get("order_id")
+    print(f"   order_id: {oid}")
+    if client and oid:
+        try:
+            det = client.get_order(oid)
+            print(f"   -> status CLOB: {det.get('status')}")
+            print(f"   -> size_matched: {det.get('size_matched')}")
+            print(f"   -> original_size: {det.get('original_size')}")
+        except Exception as e:
+            print(f"   -> error consultando orden: {e}")
+
+== 7. Buscar el código de motores.py ==
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Registro de motores (versiones de la estrategia) con sus estadísticas.
+
+Uso:
+  python3 motores.py                 -> tabla comparativa de motores
+  python3 motores.py --snapshot NOMBRE -> guarda el código actual en motores/NOMBRE/
+"""
+import json
+import os
+import shutil
+import sys
+
+BASE = "/opt/polymarket"
+REG = os.path.join(BASE, "motores", "motores.json")
+DIR = os.path.join(BASE, "motores")
+REPOS = ["bot-polymarket-elon", "bot-polymarket-elon-v2",
+         "bot-polymarket-elon-semanal", "bot-polymarket-elon-semanal-v2",
+         "bot-polymarket-elon-mensual", "bot-polymarket-elon-mensual-v2"]
+ARCHIVOS = ["senal.py", "senal_vivo.py", "operar_real.py", "operar_real_48h.py",
+            "operar_real_semanal.py", "operar_real_mensual.py", "bot.py",
+            "bot_semanal.py", "bot_mensual.py"]
+
+
+def tabla():
+    d = json.load(open(REG, encoding="utf-8"))
+    print(f"Revisar el: {d.get('revisar_el')} · Motor actual: {d['actual']}\n")
+    for m in d["motores"]:
+        st = m.get("stats") or {}
+        print(f"· {m['nombre']}  ({m['fecha_inicio']} → {m['fecha_fin'] or 'activo'})")
+        print(f"    {m['descripcion']}")
+        if st:
+            print(f"    cerradas={st.get('cerradas')} ganadas={st.get('ganadas')} "
+                  f"perdidas={st.get('perdidas')} pnl={st.get('pnl')}")
+            print(f"    {st.get('detalle', '')}")
+        print()
+
+
+def snapshot(nombre):
+    destino = os.path.join(DIR, nombre)
+    os.makedirs(destino, exist_ok=True)
+    for r in REPOS:
+        for a in ARCHIVOS:
+            src = os.path.join(BASE, r, a)
+            if os.path.exists(src):
+                dd = os.path.join(destino, r)
+                os.makedirs(dd, exist_ok=True)
+                shutil.copy2(src, os.path.join(dd, a))
+    print("snapshot guardado en", destino)
+
+
+if __name__ == "__main__":
+    if "--snapshot" in sys.argv and len(sys.argv) > 2:
+        snapshot(sys.argv[sys.argv.index("--snapshot") + 1])
+    else:
+        tabla()
+
+== 8. Buscar saldo_ntfy.py ==
+24-        import importlib.util
+25-        # buscar operar_real en el directorio actual
+26:        for nombre in ("operar_real", "operar_real_semanal", "operar_real_mensual"):
+27-            if importlib.util.find_spec(nombre):
+28-                mod = importlib.import_module(nombre)
+29-                if not hasattr(mod, "cargar_config"):
+30-                    continue
+31-                cfg = mod.cargar_config()
+32-                # --- 1) CLOB (fuente real en V2) ---
+33-                if (hasattr(mod, "get_client") and hasattr(mod, "verificar_saldo_usdc")
+34-                        and cfg.get("wallet_private_key")):
+35-                    try:
+36-                        client = mod.get_client()
+
+== 9. Buscar quién modificó el JSON recientemente ==
+/opt/polymarket/poly_overreaction_bot/main.py
+/opt/polymarket/poly_overreaction_bot/config.py
+/opt/polymarket/poly_combos_bot.py
+
+== 10. ¿Hay un watcher o cron que toque el JSON? ==
+e2scrub_all
+poly_monitoreo
+sysstat
+apport
+apt-compat
+dpkg
+logrotate
+man-db
+sysstat
+0 9 * * 1 /usr/bin/python3 -u /root/seguimiento_semanal.py >> /root/semanal.log 2>&1
+1 0 1 * * /usr/bin/python3 -u /root/reset_mensual.py >> /root/reset.log 2>&1
+# Bot Menciones — chequeo cada 6 horas
+0 */6 * * * /opt/polymarket/test_salud_mention.sh >> /var/log/salud_mention_cron.log 2>&1
+# Bot Menciones — backup diario a las 04:00 UTC
+0 4 * * * /opt/polymarket/backup_mention.sh >> /var/log/backup_mention_cron.log 2>&1
+*/5 * * * * /opt/polymarket/scraper_cron_elon.sh
+# Overreaction bot — salud cada 6h
+0 */6 * * * /opt/polymarket/test_salud_overreaction.sh >> /var/log/salud_overreaction_cron.log 2>&1
+# Overreaction bot — backup diario 04:30 UTC
+30 4 * * * /opt/polymarket/backup_overreaction.sh >> /var/log/backup_overreaction_cron.log 2>&1
+
+== 11. Buscar 'real_semanal' en TODOS los directorios ==
+/opt/polymarket/check_estado.py
+/opt/polymarket/motores.py
+/opt/polymarket/bot-polymarket-elon-mensual-v2/saldo_ntfy.py
+/opt/polymarket/bot-polymarket-elon-mensual/saldo_ntfy.py
+/opt/polymarket/backup_trump_20260831_201030/saldo_ntfy.py
+/opt/polymarket/backup_trump_20260831_201030/GUIA_SEMANAL.md
+/opt/polymarket/backup_trump_20260831_201030/bot_semanal.py
+/opt/polymarket/backup_trump_20260831_201030/chequear_cuenta.py
+/opt/polymarket/backup_trump_20260831_201030/probar_orden_semanal.py
+/opt/polymarket/poly_telegram_bot.py
+/opt/polymarket/bot-polymarket-elon-v2/saldo_ntfy.py
+/opt/polymarket/bot-polymarket-elon/saldo_ntfy.py
+/opt/polymarket/bot-polymarket-elon/saldo_ntfy
+/opt/polymarket/check_integral.py
+/opt/polymarket/bot-polymarket-elon-semanal/saldo_ntfy.py
+/opt/polymarket/bot-polymarket-elon-semanal/GUIA_SEMANAL.md
+/opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/chequear_cuenta.py
+/opt/polymarket/bot-polymarket-elon-semanal/.git/index
+/opt/polymarket/bot-polymarket-elon-semanal/probar_orden_semanal.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/saldo_ntfy.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/operar_real_semanal.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/bot_semanal.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/chequear_cuenta.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/.git/index
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/probar_orden_semanal.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/saldo_ntfy.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/operar_real_semanal.py
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2_20260912_070857/bot_semanal.py
+
