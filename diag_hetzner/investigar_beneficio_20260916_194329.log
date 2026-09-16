@@ -1,0 +1,129 @@
+=== INVESTIGAR ARCHIVO QUE ESCRIBE BENEFICIO · 20260916_194329 UTC ===
+
+== 1. Buscar todos los archivos que escriben en real_semanal.json ==
+/opt/polymarket/bot-polymarket-elon-semanal/saldo_ntfy.py
+/opt/polymarket/bot-polymarket-elon-semanal/GUIA_SEMANAL.md
+/opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/chequear_cuenta.py
+/opt/polymarket/bot-polymarket-elon-semanal/.git/index
+/opt/polymarket/bot-polymarket-elon-semanal/probar_orden_semanal.py
+
+== 2. Buscar todos los archivos donde aparece 'beneficio' ==
+/opt/polymarket/bot-polymarket-elon-semanal/papel_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json
+/opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/resultados_real_semanal.csv
+/opt/polymarket/bot-polymarket-elon-semanal/notificar.py
+/opt/polymarket/bot-polymarket-elon-semanal/notificar_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/excel_historial.py
+
+== 3. En cada archivo sospechoso, ver cómo se calcula ==
+--- /opt/polymarket/bot-polymarket-elon-semanal/GUIA_SEMANAL.md ---
+
+--- /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py ---
+164-                    "p_modelo", "paso", "stake", "real", "resultado",
+165:                    "beneficio", "saldo"])
+166-        for tr in historial:
+167-            w.writerow([tr.get("id", ""), tr["fecha"], tr.get("mercado", "—"),
+168-                        tr["bin"], tr["lado"], tr["precio"], tr["cuota"],
+169-                        tr["p_modelo"], tr["paso"], tr["stake"], tr["real"],
+170:                        tr["resultado"], tr["beneficio"], tr["saldo"]])
+171-
+172-
+173-# ------------------------------------------------------------------ mercado
+--
+191-
+192:def saldo_usdc_onchain(direccion, red="polygon"):
+193-    """Consulta el saldo de tokens de una dirección directamente en la
+194-    blockchain (sin API key, vía RPC público). Es la fuente de verdad.
+195-    Devuelve dict {simbolo: float} o None si no se pudo consultar.
+--
+381-        benef = round(act["stake"] * (act["cuota"] - 1) - fee, 2)
+382:        estado["saldo"] += benef
+383-        res = "G"
+384-        estado["paso"] = 1
+385-    else:
+386-        benef = -round(act["stake"] + fee, 2)
+387:        estado["saldo"] += benef
+388-        res = "P"
+389-        estado["paso"] = 1 if act["paso"] >= 7 else act["paso"] + 1
+390-    registro = {"id": uuid.uuid4().hex[:12], "fecha": act["fecha"],
+--
+396-                "ev": act.get("ev"),
+397:                "resultado": res, "beneficio": benef,
+
+--- /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py ---
+73-        estado = cargar_estado()
+74:        log(f"saldo=${estado['saldo']}  paso={estado['paso']}  activa={'sí' if estado.get('activa') else 'no'}")
+75-
+76-        if estado.get('activa'):
+77-            log(f"Ya hay posición activa en {estado['activa'].get('slug','?')[:50]}")
+
+
+== 4. ¿Cuál fue el último archivo en escribir en real_semanal.json? ==
+-rw------- 1 root root 15022 Sep 16 19:29 /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json
+
+== 5. ¿Qué procesos python están corriendo? ==
+root         782       1  0 Sep13 ?        00:02:41 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+root         783       1  0 Sep13 ?        00:16:25 /opt/polymarket/poly_mention_bot/venv/bin/python main.py
+root         786       1  0 Sep13 ?        00:00:59 /usr/bin/python3 /opt/polymarket/poly_telegram_zelen.py
+root         788       1  0 Sep13 ?        00:01:55 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+root         789       1  0 Sep13 ?        00:00:54 /usr/bin/python3 /opt/polymarket/poly_telegram_trump.py
+root         790       1  0 Sep13 ?        00:04:06 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root         853       1  0 Sep13 ?        00:00:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root       56815       1  0 Sep13 ?        00:04:04 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+root       58738       1  0 Sep13 ?        00:00:07 /usr/bin/python3 /opt/polymarket/gestionar_posiciones.py --loop 5
+root       59766       1  0 Sep13 ?        00:00:50 /usr/bin/python3 /opt/polymarket/poly_telegram_bot.py
+root       60471       1  0 Sep13 ?        00:00:54 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+root      338459       1  0 18:53 ?        00:00:05 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+root      342296       1  3 19:29 ?        00:00:29 /opt/polymarket/poly_overreaction_bot/venv/bin/python main.py
+
+== 6. ¿Quién abre/escribe real_semanal.json? ==
+
+== 7. Buscar en el historial el cálculo concreto ==
+saldo: 69.0474
+paso: 1
+historial count: 28
+primera entrada fecha: 2026-09-13T18:29:23.205419
+última entrada fecha: 2026-09-16T03:14:20.434919
+
+Campos en historial: {'bin', 'mercado', 'cuota', 'lado', 'fecha', 'p_modelo', 'stake', 'real', 'saldo', 'precio', 'id', 'beneficio', 'paso', 'resultado'}
+
+== 8. Buscar el script que hace 'reconc' ==
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json:8:      "id": "reconc",
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json:24:      "id": "reconc",
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json:40:      "id": "reconc",
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json:56:      "id": "reconc",
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json:72:      "id": "reconc",
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json:88:      "id": "reconc",
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json:104:      "id": "reconc",
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json:120:      "id": "reconc",
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json:136:      "id": "reconc",
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json:152:      "id": "reconc",
+
+== 9. Buscar scripts en otros directorios que toquen real_semanal.json ==
+/opt/polymarket/check_estado.py
+/opt/polymarket/motores.py
+/opt/polymarket/bot-polymarket-elon-mensual-v2/saldo_ntfy.py
+/opt/polymarket/check_integral.py.bakZB
+/opt/polymarket/bot-polymarket-elon-mensual/saldo_ntfy.py
+/opt/polymarket/backup_trump_20260831_201030/saldo_ntfy.py
+/opt/polymarket/backup_trump_20260831_201030/GUIA_SEMANAL.md
+/opt/polymarket/backup_trump_20260831_201030/bot_semanal.py
+/opt/polymarket/backup_trump_20260831_201030/chequear_cuenta.py
+/opt/polymarket/backup_trump_20260831_201030/probar_orden_semanal.py
+/opt/polymarket/poly_telegram_bot.py
+/opt/polymarket/bot-polymarket-elon-v2/saldo_ntfy.py
+/opt/polymarket/bot-polymarket-elon/saldo_ntfy.py
+/opt/polymarket/bot-polymarket-elon/__pycache__/saldo_ntfy.cpython-312.pyc
+/opt/polymarket/bot-polymarket-elon/saldo_ntfy
+/opt/polymarket/check_integral.py
+/opt/polymarket/bot-polymarket-elon-semanal/saldo_ntfy.py
+/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_flota_20260913_182848
+/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_sign_20260912_200631
+/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py.bak_v2_20260913_171750
+
+== 10. ¿Hay un gestor que escribe en real_semanal.json? ==
+/opt/polymarket/scripts_despliegue/monitorear_bots.sh
+
