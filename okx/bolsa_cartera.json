@@ -80,6 +80,15 @@
       "precio_compra": 2153.78,
       "cantidad": 1.138444,
       "tipo": "cripto"
+    },
+    {
+      "simbolo": "NAK",
+      "nombre": "Northern Dynasty Minerals, Ltd.",
+      "yahoo": "NAK",
+      "moneda": "USD",
+      "precio_compra": 1.33,
+      "cantidad": 5500.0,
+      "tipo": "accion"
     }
   ]
 }

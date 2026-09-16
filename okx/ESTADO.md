@@ -1,4 +1,4 @@
-# Estado OKX - 2026-09-15 04:00 UTC
+# Estado OKX - 2026-09-16 04:00 UTC
 
 ## Servicios
 - okx-demo-bot: active
@@ -21,9 +21,8 @@
 - signal: /root/.okx_signal_pausado
 
 ## Cuenta demo (posiciones y P&L)
-- equity demo: $473005.21
-- IOST-USD_UM_XPERP-310801 SHORT 546.0 ct | P&L -1.42
-- ORBS-USD_UM_XPERP-310822 LONG 40.0 ct | P&L -24.01
+- saldo demo ERROR: OKX HTTP 503: {"code":"50001","data":[],"msg":"Service temporarily unavailable. 
+- posiciones ERROR: OKX HTTP 503: {"code":"50001","data":[],"msg":"Service temporarily unavailable. 
 
 ## Cuenta real (solo saldo, sin detalle)
-- equity real: $401.47 | posiciones: 0
+- equity real: $400.31 | posiciones: 0
