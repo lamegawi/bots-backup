@@ -1,0 +1,190 @@
+=== FIX SALDO COMPLETO (3 PASOS) · 20260916_192900 UTC ===
+
+============================================
+PASO A: INVESTIGAR BUG EN CÁLCULO
+============================================
+
+== A.1. Ver el cálculo de beneficio en bot_semanal.py ==
+
+== A.2. Buscar referencias a 'reconc' ==
+
+== A.3. Ver cómo se calcula 'saldo' en el código ==
+72-        log(f"{len(semanales)} mercados semanales abiertos")
+73-        estado = cargar_estado()
+74:        log(f"saldo=${estado['saldo']}  paso={estado['paso']}  activa={'sí' if estado.get('activa') else 'no'}")
+75-
+76-        if estado.get('activa'):
+77-            log(f"Ya hay posición activa en {estado['activa'].get('slug','?')[:50]}")
+78-            return
+79-
+
+== A.4. ¿Hay archivo aparte que procesa reconciliaciones? ==
+/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/chequear_cuenta.py
+/opt/polymarket/bot-polymarket-elon-semanal/diagnostico.py
+/opt/polymarket/bot-polymarket-elon-semanal/excel_historial.py
+/opt/polymarket/bot-polymarket-elon-semanal/mercado_polymarket.py
+/opt/polymarket/bot-polymarket-elon-semanal/notificar.py
+/opt/polymarket/bot-polymarket-elon-semanal/notificar_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/papel_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/probar_orden_semanal.py
+/opt/polymarket/bot-polymarket-elon-semanal/recoger_tweets.py
+/opt/polymarket/bot-polymarket-elon-semanal/saldo_ntfy.py
+/opt/polymarket/bot-polymarket-elon-semanal/senal.py
+/opt/polymarket/bot-polymarket-elon-semanal/senal_vivo.py
+
+
+============================================
+PASO B: SINCRONIZAR SALDO REAL
+============================================
+
+Saldo real desde data-api: $69.0474
+
+== B.1. Backup antes de modificar ==
+  ✅ backup real.json
+  ✅ backup real_semanal.json
+  ✅ backup real_mensual.json
+
+== B.2. Sincronizar saldo real en los 3 JSONs ==
+  ✅ /opt/polymarket/bot-polymarket-elon/real.json: $228.45 -> $69.05
+  ✅ /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json: $11267.75 -> $69.05
+  ✅ /opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json: $495.30 -> $69.05
+
+
+============================================
+PASO C: REDIMIR POSICIONES REDEEMABLE
+============================================
+
+== C.1. Listar posiciones redeemable ==
+  Total posiciones: 44
+  Redeemable: 40
+  · Will Elon Musk post 120-139 tweets from September 4 to Septe
+    size=5060.8470 cur=$0.00 asset=281181078285592485094308842614
+  · Will Elon Musk post 140-159 tweets from September 4 to Septe
+    size=806.3275 cur=$0.00 asset=545044456389492729713080900841
+  · Will Elon Musk post 180-199 tweets from September 8 to Septe
+    size=91.6600 cur=$0.00 asset=694986485568188058349458951986
+  · Will Elon Musk post 180-199 tweets from May 19 to May 26, 20
+    size=33.6666 cur=$0.00 asset=124445140482560380446441769570
+  · Will Elon Musk post 180-199 tweets from May 12 to May 19, 20
+    size=33.3333 cur=$0.00 asset=113720862114632352333847178882
+  · Will Elon Musk post 40-64 tweets from July 30 to August 1, 2
+    size=33.3333 cur=$0.00 asset=478200322109446314644362749619
+  · Will Elon Musk post 180-199 tweets from July 28 to August 4,
+    size=33.3333 cur=$0.00 asset=986831899988746354227075544589
+  · Will Elon Musk post 200-219 tweets from July 31 to August 7,
+    size=31.2500 cur=$0.00 asset=180934348882535474443820500797
+  · Will Elon Musk post 220-239 tweets from June 16 to June 23, 
+    size=31.2500 cur=$0.00 asset=699426105595631747184172399271
+  · Will Elon Musk post 40-64 tweets from July 2 to July 4, 2026
+    size=31.1818 cur=$0.00 asset=103663139467888688394561887078
+  · Will Elon Musk post 280-299 tweets from July 24 to July 31, 
+    size=30.3030 cur=$0.00 asset=221675809374755337727712885649
+  · Will Zelenskyy post 100-119 posts from September 1 to Septem
+    size=30.0000 cur=$0.00 asset=740699060162513043691893079091
+  · Will Elon Musk post 220-239 tweets from June 12 to June 19, 
+    size=29.4117 cur=$0.00 asset=103196645623776706792175768849
+  · Will Elon Musk post 180-199 tweets from April 28 to May 5, 2
+    size=29.4117 cur=$0.00 asset=105140564998356995112116729787
+  · Will Elon Musk post 120-139 tweets from May 12 to May 19, 20
+    size=27.7777 cur=$0.00 asset=445013265687987153511648217175
+  · Will Elon Musk post 100-119 tweets from May 8 to May 15, 202
+    size=27.0517 cur=$0.00 asset=700911379258653163848358566915
+  · Will Elon Musk post 180-199 tweets from July 17 to July 24, 
+    size=26.3157 cur=$0.00 asset=102858196064810282944562678864
+  · Will Elon Musk post 200-219 tweets from July 28 to August 4,
+    size=26.3157 cur=$0.00 asset=334345536464338730666911908131
+  · Will Elon Musk post 65-89 tweets from June 18 to June 20, 20
+    size=26.3157 cur=$0.00 asset=623754890576749772967844094977
+  · Will Elon Musk post 40-64 tweets from July 27 to July 29, 20
+    size=25.4328 cur=$0.00 asset=932482666736733445527710746625
+  · Will Elon Musk post 40-64 tweets from June 15 to June 17, 20
+    size=25.0000 cur=$0.00 asset=773142910760241664916414751040
+  · Aarhus GF vs. KKS Lech Poznań: O/U 2.5
+    size=24.5121 cur=$0.00 asset=112971280196683367874809683245
+  · Will Elon Musk post 120-139 tweets from May 5 to May 12, 202
+    size=23.2018 cur=$0.00 asset=104444058434848869898317406393
+  · Will the highest temperature in London be 23°C on May 1?
+    size=22.7272 cur=$0.00 asset=936073879394749122191471810376
+  · Will Elon Musk post 100-119 tweets from May 15 to May 22, 20
+    size=20.8333 cur=$0.00 asset=749761808406960724809835828994
+  · Will Elon Musk post 200-219 tweets from June 12 to June 19, 
+    size=18.3333 cur=$0.00 asset=137801473977131522950575818861
+  · Will Elon Musk post <40 tweets from June 15 to June 17, 2026
+    size=18.3333 cur=$0.00 asset=228053184551284827930656374292
+  · Will Zelenskyy post 140-159 posts from August 28 to Septembe
+    size=17.0000 cur=$0.00 asset=362006382249736829941472041890
+  · US Open ATP: Francisco Cerundolo vs Alexander Blockx
+    size=16.3700 cur=$0.00 asset=746861977078130394392304523109
+  · Spread: Fenerbahçe SK (-2.5)
+    size=12.1951 cur=$0.00 asset=577384464558496547097252402201
+  · US Open ATP: Arthur Gea vs Botic van de Zandschulp
+    size=11.7600 cur=$0.00 asset=707483587390556003684628376434
+  · Will the highest temperature in London be 21°C on May 2?
+    size=11.6279 cur=$0.00 asset=698536334378259708693491675216
+  · US Open WTA: Iga Swiatek vs Qinwen Zheng
+    size=10.7500 cur=$0.00 asset=309782431174759537599326070740
+  · Will CA Mineiro win on 2026-07-21?
+    size=10.0000 cur=$0.00 asset=355802563151189021027878916686
+  · Will Elon Musk post 200-219 tweets from June 19 to June 26, 
+    size=8.9189 cur=$0.00 asset=952572430471305773305645787533
+  · Will Zelenskyy post 160-179 posts from August 28 to Septembe
+    size=8.8500 cur=$0.00 asset=294179269797346531098977165980
+  · Will Elon Musk post 840-879 tweets in August 2026?
+    size=8.2600 cur=$0.00 asset=123686987720198987294490358656
+  · Will Elon Musk post 90-114 tweets from July 30 to August 1, 
+    size=6.2500 cur=$0.00 asset=375351259523913453691287852829
+  · Will Zelenskyy post 40-59 posts from August 21 to August 28,
+    size=6.0000 cur=$0.00 asset=840317053962906920793115049361
+  · Will Elon Musk post 120-139 tweets from August 7 to August 1
+    size=5.0000 cur=$0.00 asset=900898063489374076965330400777
+
+  TOTAL REDIMIBLE: $0.00
+
+== C.2. Intentar redimir usando el SDK v2 ==
+  ⚠️ 1/40 Will Elon Musk post 120-139 tweets from September : 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 2/40 Will Elon Musk post 140-159 tweets from September : 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 3/40 Will Elon Musk post 180-199 tweets from September : 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 4/40 Will Elon Musk post 180-199 tweets from May 19 to : 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 5/40 Will Elon Musk post 180-199 tweets from May 12 to : 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 6/40 Will Elon Musk post 40-64 tweets from July 30 to A: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 7/40 Will Elon Musk post 180-199 tweets from July 28 to: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 8/40 Will Elon Musk post 200-219 tweets from July 31 to: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 9/40 Will Elon Musk post 220-239 tweets from June 16 to: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 10/40 Will Elon Musk post 40-64 tweets from July 2 to Ju: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 11/40 Will Elon Musk post 280-299 tweets from July 24 to: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 12/40 Will Zelenskyy post 100-119 posts from September 1: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 13/40 Will Elon Musk post 220-239 tweets from June 12 to: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 14/40 Will Elon Musk post 180-199 tweets from April 28 t: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 15/40 Will Elon Musk post 120-139 tweets from May 12 to : 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 16/40 Will Elon Musk post 100-119 tweets from May 8 to M: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 17/40 Will Elon Musk post 180-199 tweets from July 17 to: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 18/40 Will Elon Musk post 200-219 tweets from July 28 to: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 19/40 Will Elon Musk post 65-89 tweets from June 18 to J: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 20/40 Will Elon Musk post 40-64 tweets from July 27 to J: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 21/40 Will Elon Musk post 40-64 tweets from June 15 to J: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 22/40 Aarhus GF vs. KKS Lech Poznań: O/U 2.5: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 23/40 Will Elon Musk post 120-139 tweets from May 5 to M: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 24/40 Will the highest temperature in London be 23°C on : 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 25/40 Will Elon Musk post 100-119 tweets from May 15 to : 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 26/40 Will Elon Musk post 200-219 tweets from June 12 to: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 27/40 Will Elon Musk post <40 tweets from June 15 to Jun: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 28/40 Will Zelenskyy post 140-159 posts from August 28 t: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 29/40 US Open ATP: Francisco Cerundolo vs Alexander Bloc: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 30/40 Spread: Fenerbahçe SK (-2.5): 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 31/40 US Open ATP: Arthur Gea vs Botic van de Zandschulp: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 32/40 Will the highest temperature in London be 21°C on : 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 33/40 US Open WTA: Iga Swiatek vs Qinwen Zheng: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 34/40 Will CA Mineiro win on 2026-07-21?: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 35/40 Will Elon Musk post 200-219 tweets from June 19 to: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 36/40 Will Zelenskyy post 160-179 posts from August 28 t: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 37/40 Will Elon Musk post 840-879 tweets in August 2026?: 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 38/40 Will Elon Musk post 90-114 tweets from July 30 to : 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 39/40 Will Zelenskyy post 40-59 posts from August 21 to : 'ClobClient' object has no attribute 'redeem'
+  ⚠️ 40/40 Will Elon Musk post 120-139 tweets from August 7 t: 'ClobClient' object has no attribute 'redeem'
+
+  RESULTADO: 0 redimidas, 40 errores
+
+== C.3. Verificar saldo final tras redimir ==
+[{"user":"0xb0e1197098e6d427c01720f1631cad24ce740fa0","value":69.0474}]
