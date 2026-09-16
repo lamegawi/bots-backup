@@ -1,0 +1,236 @@
+=== DUMP COPY v2 — 2026-09-16 17:33:32 UTC ===
+### copy dict:
+{
+ "traders": [
+  {
+   "nombre": "wr0ngw4yb3tt0r",
+   "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5",
+   "puesto": 2,
+   "profit": 1437155.25,
+   "volumen": 34602623.9,
+   "compras48h": 300,
+   "ventas48h": 0,
+   "ratio_ventas": 0.0,
+   "mercados": 12,
+   "deporte_pct": 100,
+   "mediana_usd": 82.1,
+   "elegido_en": 1789540015
+  },
+  {
+   "nombre": "pleaseplease123",
+   "wallet": "0x5e9458202b5817a72cf81105ec8a30e6f3705ba1",
+   "puesto": 11,
+   "profit": 625628.21,
+   "volumen": 11575137.09,
+   "compras48h": 300,
+   "ventas48h": 0,
+   "ratio_ventas": 0.0,
+   "mercados": 11,
+   "deporte_pct": 100,
+   "mediana_usd": 25.98,
+   "elegido_en": 1789540022
+  }
+ ],
+ "vistos": {
+  "0xf0a13de8abf4a361324800|44495976938704477374": 1789407215,
+  "0x4e92ab2579f0e33ece5e30|52242231805077389536": 1789407399,
+  "0x715e47cb075ec93a7e818e|38592633213540749203": 1789407580,
+  "0x4a4abcf9bbcf7715bedbce|23071845508610169423": 1789407760,
+  "0xfaf6f3464779100db6b443|10570573839329631900": 1789407944,
+  "0xc44191103be453304b727b|44495976938704477374": 1789408125,
+  "0x8d961eb233b10b73f94bdc|44495976938704477374": 1789408305,
+  "0xd54ed41a36b5e9b280b482|52242231805077389536": 1789408489,
+  "0xe5b7d619b7e21bacfe40c0|52242231805077389536": 1789408670,
+  "0xbca6fb970b68e8235991b8|23071845508610169423": 1789408851,
+  "0x2937cf1c1646d8a7466888|10570573839329631900": 1789409031,
+  "0x7c01a25ead6fe7b4cb66b8|52242231805077389536": 1789409215,
+  "0xbaba1c000cbcd00f968196|52242231805077389536": 1789409396,
+  "0x15b24e5d6ecfdd4a7a1d7c|52242231805077389536": 1789409577,
+  "0x2fc4e086b9bc6d38acd046|84659084553548155437": 1789409761,
+  "0x26816625224f04cf7cfdc9|52242231805077389536": 1789409942,
+  "0x02bb918dab62da15ef6ab1|21898207756543868912": 1789410123,
+  "0x6bc88ea7f76afa07a3de69|21898207756543868912": 1789410307,
+  "0x476079962cbcf12fecb588|28914542661951282851": 1789410487,
+  "0x0776187f08756df326e0b9|21898207756543868912": 1789410668,
+  "0x7ccd8113ff849d0586c1a3|44495976938704477374": 1789410851,
+  "0x60ef8592306cb776f475a9|44495976938704477374": 1789411032,
+  "0x581a37cb0833bd2ed6b89a|44495976938704477374": 1789411212,
+  "0x607707701dc440ea2c4344|21898207756543868912": 1789411393,
+  "0xc22400e2225f1447e6ed4c|44495976938704477374": 1789411577,
+  "0xf5230cb35e40576bf51999|90316549612322190080": 1789411757,
+  "0x6aeb5fa5a646d830e044bd|90316549612322190080": 1789411938,
+  "0x06b301ce2ee288a8060820|90316549612322190080": 1789412121,
+  "0xe1b1a127ddc146ce4ca2ec|90316549612322190080": 1789412302,
+  "0xa3ece7274e9f11bb5c1861|90316549612322190080": 1789412482,
+  "0xb804202368965317118661|44495976938704477374": 1789412670,
+  "0x3fcdb500b7e06a1964493a|44495976938704477374": 1789412850,
+  "0xb84657149504fcde204be0|52242231805077389536": 1789413031,
+  "0x433f3935cfd5533ee0958f|31653956477830165372": 1789413212,
+  "0xc3b1c0d4d054a7831e7991|31653956477830165372": 1789413396,
+  "0x708b7964b19be0caf82ab0|44495976938704477374": 1789413576,
+  "0x6bdfda09374f652194e628|3686915304837147987
+### ultimo_auditoria_resumen:
+{
+ "reabiertas": 0,
+ "corregidas": 0,
+ "confirmadas": 76,
+ "manuales": 0,
+ "nuevas_cerradas": 1,
+ "origen": "auto",
+ "pnl_antes": -29.1,
+ "pnl_despues": -38.02
+}
+### trades_copiados:
+[
+ {
+  "tipo": "combo_rfq",
+  "copiado_en": "2026-09-15T21:50:14.045826+00:00",
+  "question": "Counter-Strike: Vitality vs magic (BO3 + Tiburon: Timo Legout vs Henry Searle",
+  "n_legs": 2,
+  "legs": [
+   {
+    "question": "Counter-Strike: Vitality vs magic (BO3) - StarLadder StarSeries Playoffs",
+    "slug": "cs2-vit-mgc-2026-09-17",
+    "yes_price": 0.895,
+    "position_id": "635266119454582809816638347116164910877139613614690380784947313239413227520",
+    "condition_id": "0x88600078d9e016a51c8335601ace49ad678c41f9ddeefd06223b07ec0be9c520",
+    "outcome": "Vitality"
+   },
+   {
+    "question": "Tiburon: Timo Legout vs Henry Searle",
+    "slug": "atp-legout-searle-2026-09-15",
+    "yes_price": 0.745,
+    "position_id": "874881652624293033993751124342673628482676958203228424029898677971129991168",
+    "condition_id": "0x7df3cd5119cf31f6dcfa1693dfc7177eef2a5c120429fa2830f56f11b1b6d3c8",
+    "outcome": "Timo Legout"
+   }
+  ],
+  "rfq_id": "rfq-b94ff516bdbd9196b54571a4",
+  "quote_id": "92d5535185f563c2e1c936422f40f9110884608b0a9ca684fcdefccfbc0f9aae",
+  "combo_condition_id": "0x036d5dc83e90c3c2e61e520ef53b821700000000000000000000000000000000",
+  "combo_yes_position_id": "1550172136799142833437706155987062307941760414477625381654871402651339194368",
+  "precio_ejecutado": 0.583285,
+  "cuota_ejecutada": 1.71,
+  "cuota_estimada": 1.5,
+  "size_shares": 15.11,
+  "stake_dolares": 9.0,
+  "order_id": "rfq-b94ff516bdbd9196b54571a4",
+  "tx_hash": "0x57fae0f7b0504ad2b8160230c43caf779790249bc3cef5c13d7fa7b206c80529",
+  "status": "filled",
+  "estado_rfq": "CONFIRMED",
+  "slug": "",
+  "market_id": "",
+  "condition_id": "0x036d5dc83e90c3c2e61e520ef53b821700000000000000000000000000000000",
+  "real_token": "1550172136799142833437706155987062307941760414477625381654871402651339194368",
+  "volumen": 56438.539811999995,
+  "tags": [
+   "combo-rfq"
+  ],
+  "franja": "base",
+  "extendida": false,
+  "super": false,
+  "fill_real": {
+   "ts": 1789509007,
+   "size": 15.114928,
+   "usdc": 9.0,
+   "tx": "0x57fae0f7b0504ad2b8160230c43caf779790249bc3cef5c13d7fa7b206c80529",
+   "side": "BUY"
+  },
+  "fin_previsto": "22/09 02:00"
+ },
+ {
+  "tipo": "combo_rfq",
+  "copiado_en": "2026-09-15T22:00:16.426798+00:00",
+  "question": "Counter-Strike: Nemiga vs BET-M 33 (BO + Will FC Barcelona win on 2026-09-16?",
+  "n_legs": 2,
+  "legs": [
+   {
+    "question": "Counter-Strike: Nemiga vs BET-M 33 (BO3) - CIS LAN Championship Playoffs",
+    "slug": "cs2-nemi1-33-2026-09-15",
+    "yes_price": 0.889,
+    "position_id": "480544831250928526625807632838372242647974024275344892457770879314223431680",
+    "condition_id": "0x825508ca56180b400a1ca9b85968caf20ffa8e7004953e697b3c6ecc2e258566",
+    "outcome": "Nemiga"
+   },
+   {
+    "question": "Will FC Barcelona win on 2026-09-16?",
+    "slug": "lal-bar-rrc-2026-09-16-bar",
+    "yes_price": 0.925,
+    "position_id": "1258474286581589365799989799356803025247776868254956029548507069126235127808",
+    "condition_id": "0xc31f58938890ea7754114905a40b6ba65a837371d4
+### descartadas:
+[{"trader": "pleaseplease123", "peso": 10, "titulo": "Washington Nationals vs. Los Angeles Dodgers: O/U 8.5", "side": "BUY", "price": 0.54, "size": 434.0, "asset": "95952339111587815223537791500571044605986864428829629834185439441029088171356", "timestamp": 1788559234, "cuota": 1.85, "stake_sugerido": 2.0, "copiado_en": "2026-09-05T19:00:01.832312", "status": "error", "chat_id": 250818720, "order_id": "tamaño 3.7 < 5 shares mínimo", "descartada": "registro vacío (basura): sin pregunta, stake ni legs", "descartada_en": "2026-09-11T21:19:52.378936+00:00"}, {"tipo": "combo", "copiado_en": "2026-09-08T03:22:45.402897", "question": "Barranquilla: Julieta Pareja vs Lucrezia Stefanini", "slug": "wta-pareja-stefani-2026-09-07", "market_id": "4320096", "condition_id": "0xf4ae1e2d985191bb2249a435c3b31a4e1d7089b987b27070763226cf4c04b280", "real_token": "102190795601065752692316941866482150736520688268644150542153831580824160844279", "precio_ejecutado": 0.505, "cuota_ejecutada": 1.98, "size_shares": 9.9, "stake_dolares": 5.0, "order_id": "0x5b93625ac427161712af23f24b33eb8baf2ecd3aeb4044612bf1fd1ec10242ba", "volumen": 1237058.8143799999, "tags": ["sports", "tennis", "games"], "status": "cerrado", "pnl_antes_auditoria": -5.0, "resultado_antes": "perdida", "pendiente_info": null, "fin_previsto": "14/09 02:00", "reauditada": "2026-09-11T17:37:13.058725+00:00", "descartada": "duplicado fantasma: hay más registros que fills reales de ese token en la cadena", "descartada_en": "2026-09-11T21:19:
+### copy_señales COMPLETAS (25):
+{"dia": "2026-09-12", "ts": 1789193922, "ts_fill": 1789191417, "retraso_s": 2505, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Chelsea FC vs. Hull City AFC: O/U 4.5", "slug": "epl-che-hul-2026-09-12-total-4pt5", "event_slug": "epl-che-hul-2026-09-12-more-markets", "condition_id": "0x8d94e85af1c1126a8a1daffc0c012ee8c8403163c6ef5e718489a6d29527e93a", "token": "51550238544691631352110051616611261154133483935506436721452882753448481822700", "outcome": "Under", "precio_trader": 0.71, "cuota_trader": 1.41, "usd_trader": 32.88, "size_trader": 45.65, "precio_nuestro": 0.725, "cuota_nuestro": 1.38, "deriva_pts": 1.5, "deporte": true, "en_rango_combo": true, "tx": "0x98bc027943f39f0f2e0970", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 1.897, "pnl_papel_trader": 2.042, "ejecutada": false, "escaladas": 0, "precio_nuestro_max": 0.725, "ts_ultimo_fill": 1789191417}
+{"dia": "2026-09-12", "ts": 1789200249, "ts_fill": 1789200102, "retraso_s": 147, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "LoL: Hanwha Life Esports vs T1 (BO5) - LCK Playoffs", "slug": "lol-hle1-t1-2026-09-12", "event_slug": "lol-hle1-t1-2026-09-12", "condition_id": "0x1d38c2172d410b833739d7cc834e62e07b0a82d631f0f2c89f10a9fbfa6f3960", "token": "48695112555672485727777248446585038036780756395855109591575492967792057631373", "outcome": "Hanwha Life Esports", "precio_trader": 0.7700000014, "cuota_trader": 1.3, "usd_trader": 2649.4, "size_trader": 3423.6072, "precio_nuestro": 0.7775, "cuota_nuestro": 1.29, "deriva_pts": 0.75, "deporte": true, "en_rango_combo": true, "tx": "0xffe5f2afd389e425a8a783", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 1.431, "pnl_papel_trader": 1.494, "ejecutada": false, "escaladas": 1, "precio_nuestro_max": 0.7775, "ts_ultimo_fill": 1789200085}
+{"dia": "2026-09-12", "ts": 1789201522, "ts_fill": 1789201492, "retraso_s": 30, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Counter-Strike: Legacy vs MIBR (BO3) - FISSURE PLAYGROUND Playoffs", "slug": "cs2-lgc-mibr-2026-09-12", "event_slug": "cs2-lgc-mibr-2026-09-12", "condition_id": "0x3bfb437b5761e5fb341b474ce3710f39701e4f05626508857d9605e97deec649", "token": "2131119120294333998344100867147595414140991886676339763571694593381251698246", "outcome": "MIBR", "precio_trader": 0.341, "cuota_trader": 2.93, "usd_trader": 16719.38, "size_trader": 49030.44, "precio_nuestro": 0.3525, "cuota_nuestro": 2.84, "deriva_pts": 1.15, "deporte": false, "en_rango_combo": false, "tx": "0xc6b72b6cc662cbc49d9ae3", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 0, "precio_nuestro_max": 0.3525, "ts_ultimo_fill": 1789201492}
+{"dia": "2026-09-12", "ts": 1789202615, "ts_fill": 1789202559, "retraso_s": 56, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Will BV Borussia 09 Dortmund win on 2026-09-12?", "slug": "bun-dor-scp-2026-09-12-dor", "event_slug": "bun-dor-scp-2026-09-12", "condition_id": "0x80097de7cbab373b5e790ee6c4c644c86550b460ce3fcd52d231b31d51025180", "token": "2569148029126068697760717806730971910262225107727726791080384862019625788975", "outcome": "Yes", "precio_trader": 0.77, "cuota_trader": 1.3, "usd_trader": 40700.72, "size_trader": 52257.13, "precio_nuestro": 0.775, "cuota_nuestro": 1.29, "deriva_pts": 0.5, "deporte": false, "en_rango_combo": true, "tx": "0x94be6a6bfa985cc2029bd7", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 1.452, "pnl_papel_trader": 1.494, "ejecutada": false, "escaladas": 1, "precio_nuestro_max": 0.775, "ts_ultimo_fill": 1789202554}
+{"dia": "2026-09-12", "ts": 1789202615, "ts_fill": 1789202542, "retraso_s": 73, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Counter-Strike: BetBoom Team vs G2 (BO3) - FISSURE PLAYGROUND Playoffs", "slug": "cs2-bb3-g2-2026-09-12", "event_slug": "cs2-bb3-g2-2026-09-12", "condition_id": "0x115a4cbd340377fccae7a46f133565a791058aa467e6b4de6c6a75fac35cff47", "token": "616570729029951893685169527540250884567159576183493134116442262526202566143", "outcome": "G2", "precio_trader": 0.64, "cuota_trader": 1.56, "usd_trader": 79816.92, "size_trader": 123830.0, "precio_nuestro": 0.635, "cuota_nuestro": 1.57, "deriva_pts": -0.5, "deporte": false, "en_rango_combo": true, "tx": "0x9b89dd1893a84f0947fd66", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 2.874, "pnl_papel_trader": 2.812, "ejecutada": false, "escaladas": 1, "precio_nuestro_max": 0.635, "ts_ultimo_fill": 1789206876}
+{"dia": "2026-09-13", "ts": 1789258636, "ts_fill": 1789258602, "retraso_s": 34, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Noche UFC: Jean Silva vs. Jose Miguel Delgado (Featherweight, Main Card)", "slug": "ufc-jea-jos55-2026-09-12", "event_slug": "ufc-jea-jos55-2026-09-12", "condition_id": "0x72041a4e8cdb8539f0c037d4fdf1c7588e0b1590a2b4761a9c3c10889a206922", "token": "14978473665990112355665274502576419507438167907063830325235575375771575951158", "outcome": "Jean Silva", "precio_trader": 0.56, "cuota_trader": 1.79, "usd_trader": 1910.77, "size_trader": 2665.0, "precio_nuestro": 0.61, "cuota_nuestro": 1.64, "deriva_pts": 5.0, "deporte": true, "en_rango_combo": true, "tx": "0x84e31f6ca2b3fb79e60bfd", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 3.197, "pnl_papel_trader": 3.929, "ejecutada": false, "escaladas": 7, "precio_nuestro_max": 0.9995, "ts_ultimo_fill": 1789259302}
+{"dia": "2026-09-13", "ts": 1789258636, "ts_fill": 1789258530, "retraso_s": 106, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Chicago White Sox vs. St. Louis Cardinals", "slug": "mlb-cws-stl-2026-09-12", "event_slug": "mlb-cws-stl-2026-09-12", "condition_id": "0x117a501c1d7c812f374fd0b6d72f68e66b399c75543a7ec6da5036f85a3a962b", "token": "44618449636292769433449339680304089604373746726215923039510990866957386262179", "outcome": "Chicago White Sox", "precio_trader": 0.18, "cuota_trader": 5.56, "usd_trader": 291.53, "size_trader": 1555.83, "precio_nuestro": 0.185, "cuota_nuestro": 5.41, "deriva_pts": 0.5, "deporte": true, "en_rango_combo": false, "tx": "0xc423d170ea52097066130c", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 22.027, "pnl_papel_trader": 22.778, "ejecutada": false, "escaladas": 0, "precio_nuestro_max": 0.185, "ts_ultimo_fill": 1789258530}
+{"dia": "2026-09-13", "ts": 1789258999, "ts_fill": 1789258878, "retraso_s": 121, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Cincinnati Reds vs. Milwaukee Brewers", "slug": "mlb-cin-mil-2026-09-12", "event_slug": "mlb-cin-mil-2026-09-12", "condition_id": "0xd9c13e36f49566d2aa21e8bfd3c51bcc3f2e28b9452a8a83f282684dfb57ac3e", "token": "108970816118354896794561700801076511134887213128871974444988158282344844497393", "outcome": "Cincinnati Reds", "precio_trader": 0.35, "cuota_trader": 2.86, "usd_trader": 1098.58, "size_trader": 3040.0, "precio_nuestro": 0.365, "cuota_nuestro": 2.74, "deriva_pts": 1.5, "deporte": true, "en_rango_combo": false, "tx": "0x66105977d96e619894682d", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 0, "precio_nuestro_max": 0.365, "ts_ultimo_fill": 1789258878}
+{"dia": "2026-09-13", "ts": 1789259179, "ts_fill": 1789259118, "retraso_s": 61, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Houston Astros vs. Tampa Bay Rays", "slug": "mlb-hou-tb-2026-09-12", "event_slug": "mlb-hou-tb-2026-09-12", "condition_id": "0xd9264d1126274daeaa7a811211e1f46278bf79bacf9a648ecc0524c0f2365017", "token": "26924943409099587884725835387292512623954637197660419126367977003516773219764", "outcome": "Houston Astros", "precio_trader": 0.24, "cuota_trader": 4.17, "usd_trader": 3840.3, "size_trader": 16006.34, "precio_nuestro": 0.195, "cuota_nuestro": 5.13, "deriva_pts": -4.5, "deporte": true, "en_rango_combo": false, "tx": "0x40870251cee5475e6de033", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 2, "precio_nuestro_max": 0.195, "ts_ultimo_fill": 1789259913}
+{"dia": "2026-09-13", "ts": 1789259723, "ts_fill": 1789259650, "retraso_s": 73, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Seattle Mariners vs. Athletics: O/U 9.5", "slug": "mlb-sea-oak-2026-09-12-total-9pt5", "event_slug": "mlb-sea-oak-2026-09-12", "condition_id": "0x100f318bf8b716b2ddaa9dfccf1be7fca9bbc5f4ad4d640f7a3890359174efab", "token": "110766493539189276736954106471795298823431870960315426133366042923971807537352", "outcome": "Under", "precio_trader": 0.49, "cuota_trader": 2.04, "usd_trader": 35801.78, "size_trader": 73064.8527, "precio_nuestro": 0.505, "cuota_nuestro": 1.98, "deriva_pts": 1.5, "deporte": true, "en_rango_combo": true, "tx": "0x8a9dba168f24f06a513301", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 0, "precio_nuestro_max": 0.505, "ts_ultimo_fill": 1789259650}
+{"dia": "2026-09-14", "ts": 1789344172, "ts_fill": 1789344169, "retraso_s": 3, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Spread: Cowboys (-3.5)", "slug": "nfl-dal-nyg-2026-09-14-spread-away-3pt5", "event_slug": "", "condition_id": "0x79f7e7980d342af09ad3affbf9edd35c80330ee6f3b5a3710d7eec66ce2bf451", "token": "7059644226521973969491168308838054537438540863721645500873394016531583633565", "outcome": "Giants", "precio_trader": 0.53, "cuota_trader": 1.89, "usd_trader": 129673.22, "size_trader": 244666.4849, "precio_nuestro": 0.535, "cuota_nuestro": 1.87, "deriva_pts": 0.5, "deporte": false, "en_rango_combo": true, "tx": "0x8fb5af3d20720a170e9501", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 4.346, "pnl_papel_trader": 4.434, "ejecutada": false, "escaladas": 648, "precio_nuestro_max": 0.535, "ts_ultimo_fill": 1789344721}
+{"dia": "2026-09-14", "ts": 1789345624, "ts_fill": 1789345602, "retraso_s": 22, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Cowboys vs. Giants: O/U 47.5", "slug": "nfl-dal-nyg-2026-09-14-total-47pt5", "event_slug": "", "condition_id": "0xb34ee9b23368fd2f90046d99ef0940390a3c407d1ba7a96cfcfd154e80b59618", "token": "12345061341535128528447830587162282633259282780962828877719068502110448823677", "outcome": "Under", "precio_trader": 0.49, "cuota_trader": 2.04, "usd_trader": 25124.75, "size_trader": 50000.0, "precio_nuestro": 0.485, "cuota_nuestro": 2.06, "deriva_pts": -0.5, "deporte": false, "en_rango_combo": true, "tx": "0xc35babcd2c9f1129a5c423", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 0, "precio_nuestro_max": 0.485, "ts_ultimo_fill": 1789345602}
+{"dia": "2026-09-14", "ts": 1789345624, "ts_fill": 1789345575, "retraso_s": 49, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Cowboys vs. Giants", "slug": "nfl-dal-nyg-2026-09-14", "event_slug": "nfl-dal-nyg-2026-09-14", "condition_id": "0x18afd71a2b235a4a3b910e9d97f7ae3aea5cc000e6449cabc04cb0fe9f4a6e6a", "token": "61211282474076936864921717721041574216547901577970646460859243302386714676354", "outcome": "Giants", "precio_trader": 0.39, "cuota_trader": 2.56, "usd_trader": 173299.2, "size_trader": 200107.12, "precio_nuestro": 0.385, "cuota_nuestro": 2.6, "deriva_pts": -0.5, "deporte": true, "en_rango_combo": false, "tx": "0x2bfa88325607b1f3376dfd", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 7.987, "pnl_papel_trader": 7.821, "ejecutada": false, "escaladas": 29, "precio_nuestro_max": 0.9995, "ts_ultimo_fill": 1789357302}
+{"dia": "2026-09-14", "ts": 1789346169, "ts_fill": 1789346154, "retraso_s": 15, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Cowboys vs. Giants", "slug": "nfl-dal-nyg-2026-09-14", "event_slug": "nfl-dal-nyg-2026-09-14", "condition_id": "0x18afd71a2b235a4a3b910e9d97f7ae3aea5cc000e6449cabc04cb0fe9f4a6e6a", "token": "96935894714471024050937734858010069812684897703967287777517273604480313892633", "outcome": "Cowboys", "precio_trader": 0.47, "cuota_trader": 2.13, "usd_trader": 99589.32, "size_trader": 314371.8794, "precio_nuestro": 0.485, "cuota_nuestro": 2.06, "deriva_pts": 1.5, "deporte": true, "en_rango_combo": true, "tx": "0x481306aa5e9c321d338169", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 19, "precio_nuestro_max": 0.585, "ts_ultimo_fill": 1789355733}
+{"dia": "2026-09-14", "ts": 1789349076, "ts_fill": 1789349047, "retraso_s": 29, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "San Diego FC vs. Philadelphia Union: O/U 2.5", "slug": "mls-sdg-phi-2026-09-13-total-2pt5", "event_slug": "mls-sdg-phi-2026-09-13-more-markets", "condition_id": "0x0cdaea90eb24c87e216b74947229512ea38315c223707d05d3bf8698d539aebb", "token": "7967032470746299570484561303257415552220679171211154575166566612392149201015", "outcome": "Over", "precio_trader": 0.6304997445, "cuota_trader": 1.59, "usd_trader": 866.96, "size_trader": 1350.09, "precio_nuestro": 0.61, "cuota_nuestro": 1.64, "deriva_pts": -2.05, "deporte": true, "en_rango_combo": true, "tx": "0x8623c8ca5e7af11133b3ce", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 3.197, "pnl_papel_trader": 2.93, "ejecutada": false, "escaladas": 0, "precio_nuestro_max": 0.61, "ts_ultimo_fill": 1789349047}
+{"dia": "2026-09-15", "ts": 1789430470, "ts_fill": 1789430434, "retraso_s": 36, "trader": "wr0ngw4yb3tt0r", "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5", "titulo": "1H Spread: Chiefs (-1.5)", "slug": "nfl-den-kc-2026-09-15-1h-spread-home-1pt5", "event_slug": "nfl-den-kc-2026-09-15", "condition_id": "0x53fd24c834a8f0e3a2d773900a4983b1e2cee3f4f00c7f50aa771eaeffc3a407", "token": "4172120364992065138025115125751179251559842731472342407188162345699684902576", "outcome": "Chiefs", "precio_trader": 0.45, "cuota_trader": 2.22, "usd_trader": 7.65, "size_trader": 17.0, "precio_nuestro": 0.445, "cuota_nuestro": 2.25, "deriva_pts": -0.5, "deporte": true, "en_rango_combo": true, "tx": "0x3c278550cecd068cb4ef84", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 6.236, "pnl_papel_trader": 6.111, "ejecutada": false, "escaladas": 0, "precio_nuestro_max": 0.445, "ts_ultimo_fill": 1789430434}
+{"dia": "2026-09-15", "ts": 1789430470, "ts_fill": 1789430338, "retraso_s": 132, "trader": "wr0ngw4yb3tt0r", "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5", "titulo": "New York Yankees vs. Minnesota Twins: O/U 7.5", "slug": "mlb-nyy-min-2026-09-14-total-7pt5", "event_slug": "mlb-nyy-min-2026-09-14", "condition_id": "0x5cc7cf0f5111c210812ea489f03614823637026f3608014adbd358ab27e16567", "token": "18166116176416049667545917709070379563967477010187501672447347680754119797672", "outcome": "Under", "precio_trader": 0.5, "cuota_trader": 2.0, "usd_trader": 512.5, "size_trader": 1000.0, "precio_nuestro": 0.535, "cuota_nuestro": 1.87, "deriva_pts": 3.5, "deporte": true, "en_rango_combo": true, "tx": "0xdb4cf77aafb639de798006", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 0, "precio_nuestro_max": 0.535, "ts_ultimo_fill": 1789430338}
+{"dia": "2026-09-15", "ts": 1789430500, "ts_fill": 1789430290, "retraso_s": 210, "trader": "wr0ngw4yb3tt0r", "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5", "titulo": "New York Yankees vs. Minnesota Twins", "slug": "mlb-nyy-min-2026-09-14", "event_slug": "mlb-nyy-min-2026-09-14", "condition_id": "0xf94af197057437aadc0a3ccee340e1579824121e63b2f5e94fe2c2e7502e760e", "token": "44495976938704477374351943995298818464461934403555742922555543201354821272059", "outcome": "Minnesota Twins", "precio_trader": 0.4500000067, "cuota_trader": 2.22, "usd_trader": 3669.56, "size_trader": 10749.4404, "precio_nuestro": 0.485, "cuota_nuestro": 2.06, "deriva_pts": 3.5, "deporte": true, "en_rango_combo": true, "tx": "0x61015f4133793b56416bfa", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 16, "precio_nuestro_max": 0.775, "ts_ultimo_fill": 1789436140}
+{"dia": "2026-09-15", "ts": 1789430501, "ts_fill": 1789430496, "retraso_s": 5, "trader": "BreakTheBank", "wallet": "0xf0318c32136c2db7fec88b84869aee6a1106c80c", "titulo": "Spread: Chiefs (-3.5)", "slug": "nfl-den-kc-2026-09-15-spread-home-3pt5", "event_slug": "nfl-den-kc-2026-09-15", "condition_id": "0xfef8ddce01bd424ebf9fb3cf56a4ed980e98dd53b50d9e59fb1848849bfe4f3f", "token": "104954660281475864332831168452820357214928001644991607079193544608311682516566", "outcome": "Chiefs", "precio_trader": 0.39, "cuota_trader": 2.56, "usd_trader": 818.71, "size_trader": 2099.26, "precio_nuestro": 0.395, "cuota_nuestro": 2.53, "deriva_pts": 0.5, "deporte": true, "en_rango_combo": false, "tx": "0xef8ca41ce7bf8697c6021b", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 7.658, "pnl_papel_trader": 7.821, "ejecutada": false, "escaladas": 6, "precio_nuestro_max": 0.395, "ts_ultimo_fill": 1789430785}
+{"dia": "2026-09-15", "ts": 1789430501, "ts_fill": 1789430442, "retraso_s": 59, "trader": "BreakTheBank", "wallet": "0xf0318c32136c2db7fec88b84869aee6a1106c80c", "titulo": "Spread: Chiefs (-0.5)", "slug": "nfl-den-kc-2026-09-15-spread-home-0pt5", "event_slug": "nfl-den-kc-2026-09-15", "condition_id": "0xe77ba2a352743973104031ec2efeeefe8aebb1bdb21d4e551eab1cf4d887ad24", "token": "44223417079553033612755502876056992516177816911405303454404446665370316848833", "outcome": "Chiefs", "precio_trader": 0.54, "cuota_trader": 1.85, "usd_trader": 41.86, "size_trader": 77.5183, "precio_nuestro": 0.545, "cuota_nuestro": 1.83, "deriva_pts": 0.5, "deporte": true, "en_rango_combo": true, "tx": "0x70664442d93c92f1324d9e", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 4.174, "pnl_papel_trader": 4.259, "ejecutada": false, "escaladas": 1, "precio_nuestro_max": 0.545, "ts_ultimo_fill": 1789430440}
+{"dia": "2026-09-16", "ts": 1789516913, "ts_fill": 1789516906, "retraso_s": 7, "trader": "wr0ngw4yb3tt0r", "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5", "titulo": "Athletics vs. Tampa Bay Rays", "slug": "mlb-oak-tb-2026-09-15", "event_slug": "mlb-oak-tb-2026-09-15", "condition_id": "0xd83ec7cb1e859a81e68bf8b348c08071342136a2f0ea718471d1b986646955c2", "token": "38285622098431356085336030732334068043847475987322686552975197469898386854951", "outcome": "Athletics", "precio_trader": 0.36, "cuota_trader": 2.78, "usd_trader": 329.94, "size_trader": 920.0, "precio_nuestro": 0.365, "cuota_nuestro": 2.74, "deriva_pts": 0.5, "deporte": true, "en_rango_combo": false, "tx": "0xffef03ccb6d91392ca03ab", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 1, "precio_nuestro_max": 0.365, "ts_ultimo_fill": 1789519923}
+{"dia": "2026-09-16", "ts": 1789516914, "ts_fill": 1789516873, "retraso_s": 41, "trader": "wr0ngw4yb3tt0r", "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5", "titulo": "Boston Red Sox vs. Texas Rangers: O/U 7.5", "slug": "mlb-bos-tex-2026-09-15-total-7pt5", "event_slug": "mlb-bos-tex-2026-09-15", "condition_id": "0x2377f02821703de2501845b8ab8a697f312eb710a0873fc7797a641a05f03664", "token": "47387139638753550169354420204311827426257610843461447410289733675405440517620", "outcome": "Over", "precio_trader": 0.5, "cuota_trader": 2.0, "usd_trader": 9781.0, "size_trader": 19562.0, "precio_nuestro": 0.495, "cuota_nuestro": 2.02, "deriva_pts": -0.5, "deporte": true, "en_rango_combo": true, "tx": "0x63eaf290d523a1cf73230c", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 0, "precio_nuestro_max": 0.495, "ts_ultimo_fill": 1789516873}
+{"dia": "2026-09-16", "ts": 1789516914, "ts_fill": 1789516845, "retraso_s": 69, "trader": "wr0ngw4yb3tt0r", "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5", "titulo": "Detroit Tigers vs. Toronto Blue Jays", "slug": "mlb-det-tor-2026-09-15", "event_slug": "mlb-det-tor-2026-09-15", "condition_id": "0x6a453e49c6b8c31a63577ed281cabb63a03aed950ce4b8bdf5fea63ea780a7fb", "token": "23711555269256616088708721825628865270883705784691951675539133720708323000572", "outcome": "Toronto Blue Jays", "precio_trader": 0.53, "cuota_trader": 1.89, "usd_trader": 5203.31, "size_trader": 10468.2836, "precio_nuestro": 0.535, "cuota_nuestro": 1.87, "deriva_pts": 0.5, "deporte": true, "en_rango_combo": true, "tx": "0x19e670f92d6121219f78e7", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 2, "precio_nuestro_max": 0.535, "ts_ultimo_fill": 1789518543}
+{"dia": "2026-09-16", "ts": 1789516914, "ts_fill": 1789516821, "retraso_s": 93, "trader": "wr0ngw4yb3tt0r", "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5", "titulo": "Atlanta Braves vs. Chicago Cubs: O/U 7.5", "slug": "mlb-atl-chc-2026-09-15-total-7pt5", "event_slug": "mlb-atl-chc-2026-09-15", "condition_id": "0x7ae51e18a9f14e4344fa2475f22d61fd2fe770e7cd0db32568e340961e39a764", "token": "33722032115692714491966895658936522258400123590066601362313367639951302624374", "outcome": "Over", "precio_trader": 0.48, "cuota_trader": 2.08, "usd_trader": 1716.74, "size_trader": 3577.0615, "precio_nuestro": 0.465, "cuota_nuestro": 2.15, "deriva_pts": -1.5, "deporte": true, "en_rango_combo": true, "tx": "0xbe4d4ab3f66766fafa8d6e", "resuelta": true, "senal_acerto": true, "anulada": false, "pnl_papel_nuestro": 5.753, "pnl_papel_trader": 5.417, "ejecutada": false, "escaladas": 1, "precio_nuestro_max": 0.465, "ts_ultimo_fill": 1789521972}
+{"dia": "2026-09-16", "ts": 1789516914, "ts_fill": 1789516821, "retraso_s": 93, "trader": "wr0ngw4yb3tt0r", "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5", "titulo": "Spread: Chicago Cubs (-1.5)", "slug": "mlb-atl-chc-2026-09-15-spread-home-1pt5", "event_slug": "mlb-atl-chc-2026-09-15", "condition_id": "0xef5ce62d62261b0bd5cf380e71d3e6a151993e40487ccf0e52fec99fb96d1ba0", "token": "906218455560768613256288428780100856641642907017241045896847395902152921000", "outcome": "Chicago Cubs", "precio_trader": 0.38, "cuota_trader": 2.63, "usd_trader": 750.0, "size_trader": 1973.68, "precio_nuestro": 0.36, "cuota_nuestro": 2.78, "deriva_pts": -2.0, "deporte": true, "en_rango_combo": false, "tx": "0x302ef9d61a46c0cd2a4554", "resuelta": true, "senal_acerto": false, "anulada": false, "pnl_papel_nuestro": -5.0, "pnl_papel_trader": -5.0, "ejecutada": false, "escaladas": 0, "precio_nuestro_max": 0.36, "ts_ultimo_fill": 1789516821}
+### informes 📡 en el log:
+[06:18:42]   [copy] 📡 señal #1789193922 de 0x2c335066: Chelsea FC vs. Hull City AFC: O/U 4.5 · él 0.710 / nosotros 0.725 (+1.5 pts) · retraso 41m45s · papel $5
+[08:04:09]   [copy] 📡 señal #1789200249 de 0x2c335066: LoL: Hanwha Life Esports vs T1 (BO5) - LCK Playoffs · él 0.770 / nosotros 0.777 (+0.8 pts) · retraso 2m27s · papel $5
+[08:25:22]   [copy] 📡 señal #1789201522 de 0x2c335066: Counter-Strike: Legacy vs MIBR (BO3) - FISSURE PLAYGROUND Pl · él 0.341 / nosotros 0.352 (+1.1 pts) · retraso 0m30s · papel $5
+[08:43:35]   [copy] 📡 señal #1789202615 de 0x2c335066: Will BV Borussia 09 Dortmund win on 2026-09-12? · él 0.770 / nosotros 0.775 (+0.5 pts) · retraso 0m56s · papel $5
+[08:43:35]   [copy] 📡 señal #1789202615 de 0x2c335066: Counter-Strike: BetBoom Team vs G2 (BO3) - FISSURE PLAYGROUN · él 0.640 / nosotros 0.635 (-0.5 pts) · retraso 1m13s · papel $5
+[00:17:16]   [copy] 📡 señal #1789258636 de 0x2c335066: Noche UFC: Jean Silva vs. Jose Miguel Delgado (Featherweight · él 0.560 / nosotros 0.610 (+5.0 pts) · retraso 0m34s · papel $5
+[00:17:16]   [copy] 📡 señal #1789258636 de 0x2c335066: Chicago White Sox vs. St. Louis Cardinals · él 0.180 / nosotros 0.185 (+0.5 pts) · retraso 1m46s · papel $5
+[00:23:19]   [copy] 📡 señal #1789258999 de 0x2c335066: Cincinnati Reds vs. Milwaukee Brewers · él 0.350 / nosotros 0.365 (+1.5 pts) · retraso 2m01s · papel $5
+[00:26:19]   [copy] 📡 señal #1789259179 de 0x2c335066: Houston Astros vs. Tampa Bay Rays · él 0.240 / nosotros 0.195 (-4.5 pts) · retraso 1m01s · papel $5
+[00:35:23]   [copy] 📡 señal #1789259723 de 0x2c335066: Seattle Mariners vs. Athletics: O/U 9.5 · él 0.490 / nosotros 0.505 (+1.5 pts) · retraso 1m13s · papel $5
+[00:02:52]   [copy] 📡 señal #1789344172 de 0x2c335066: Spread: Cowboys (-3.5) · él 0.530 / nosotros 0.535 (+0.5 pts) · retraso 0m03s · papel $5
+[00:27:04]   [copy] 📡 señal #1789345624 de 0x2c335066: Cowboys vs. Giants: O/U 47.5 · él 0.490 / nosotros 0.485 (-0.5 pts) · retraso 0m22s · papel $5
+[00:27:04]   [copy] 📡 señal #1789345624 de 0x2c335066: Cowboys vs. Giants · él 0.390 / nosotros 0.385 (-0.5 pts) · retraso 0m49s · papel $5
+[00:36:09]   [copy] 📡 señal #1789346169 de 0x2c335066: Cowboys vs. Giants · él 0.470 / nosotros 0.485 (+1.5 pts) · retraso 0m15s · papel $5
+[01:24:36]   [copy] 📡 señal #1789349076 de 0x2c335066: San Diego FC vs. Philadelphia Union: O/U 2.5 · él 0.630 / nosotros 0.610 (-2.0 pts) · retraso 0m29s · papel $5
+[00:01:10]   [copy] 📡 señal #1789430470 de wr0ngw4yb3tt0r: 1H Spread: Chiefs (-1.5) · él 0.450 / nosotros 0.445 (-0.5 pts) · retraso 0m36s · papel $5
+[00:01:10]   [copy] 📡 señal #1789430470 de wr0ngw4yb3tt0r: New York Yankees vs. Minnesota Twins: O/U 7.5 · él 0.500 / nosotros 0.535 (+3.5 pts) · retraso 2m12s · papel $5
+[00:01:40]   [copy] 📡 señal #1789430500 de wr0ngw4yb3tt0r: New York Yankees vs. Minnesota Twins · él 0.450 / nosotros 0.485 (+3.5 pts) · retraso 3m30s · papel $5
+[00:01:41]   [copy] 📡 señal #1789430501 de BreakTheBank: Spread: Chiefs (-3.5) · él 0.390 / nosotros 0.395 (+0.5 pts) · retraso 0m05s · papel $5
+[00:01:41]   [copy] 📡 señal #1789430501 de BreakTheBank: Spread: Chiefs (-0.5) · él 0.540 / nosotros 0.545 (+0.5 pts) · retraso 0m59s · papel $5
+[00:01:53]   [copy] 📡 señal #1789516913 de wr0ngw4yb3tt0r: Athletics vs. Tampa Bay Rays · él 0.360 / nosotros 0.365 (+0.5 pts) · retraso 0m07s · papel $5
+[00:01:54]   [copy] 📡 señal #1789516914 de wr0ngw4yb3tt0r: Boston Red Sox vs. Texas Rangers: O/U 7.5 · él 0.500 / nosotros 0.495 (-0.5 pts) · retraso 0m41s · papel $5
+[00:01:54]   [copy] 📡 señal #1789516914 de wr0ngw4yb3tt0r: Detroit Tigers vs. Toronto Blue Jays · él 0.530 / nosotros 0.535 (+0.5 pts) · retraso 1m09s · papel $5
+[00:01:54]   [copy] 📡 señal #1789516914 de wr0ngw4yb3tt0r: Atlanta Braves vs. Chicago Cubs: O/U 7.5 · él 0.480 / nosotros 0.465 (-1.5 pts) · retraso 1m33s · papel $5
+[00:01:54]   [copy] 📡 señal #1789516914 de wr0ngw4yb3tt0r: Spread: Chicago Cubs (-1.5) · él 0.380 / nosotros 0.360 (-2.0 pts) · retraso 1m33s · papel $5
+### menciones acierto/ROI en el log:
+[20:11:48] [REAL] ejecutando trade: Detroit Tigers vs. Cleveland Guardians: O/U 6.5
+[04:49:24]   · Counter-Strike: Heroic vs BESTIA (BO3) - Thunderpick Wor (p=0.80 vol=$103k)
+[05:19:27]   · Counter-Strike: Heroic vs BESTIA (BO3) - Thunderpick Wor (p=0.81 vol=$139k)
+[05:49:31]   · Counter-Strike: Heroic vs BESTIA (BO3) - Thunderpick Wor (p=0.82 vol=$143k)
+[06:19:34]   · Counter-Strike: Heroic vs BESTIA (BO3) - Thunderpick Wor (p=0.82 vol=$143k)
+[06:34:00]   · Counter-Strike: Heroic vs BESTIA (BO3) - Thunderpick Wor (p=0.79 vol=$150k)
+[06:58:38]   · Counter-Strike: Heroic vs BESTIA (BO3) - Thunderpick Wor (p=0.78 vol=$169k)
+[07:03:50]   · Counter-Strike: Heroic vs BESTIA (BO3) - Thunderpick Wor (p=0.79 vol=$169k)
+[11:15:57]   · Counter-Strike: Heroic vs K27 (BO3) - Thunderpick World  (p=0.80 vol=$82k)
+[11:26:00]   · Counter-Strike: Heroic vs K27 (BO3) - Thunderpick World  (p=0.94 vol=$92k)
+[18:04:30]   · Counter-Strike: Heroic vs 1WIN (BO3) - Thunderpick World (p=0.77 vol=$239k)
+[18:14:31]   · Counter-Strike: Heroic vs 1WIN (BO3) - Thunderpick World (p=0.78 vol=$243k)
+[18:24:35]   · Counter-Strike: Heroic vs 1WIN (BO3) - Thunderpick World (p=0.79 vol=$243k)
+[19:24:42]   · Colorado Rockies vs. Detroit Tigers (p=0.80 vol=$235k)
+[19:34:42]   · Colorado Rockies vs. Detroit Tigers (p=0.81 vol=$286k)
+[19:44:43]   · Colorado Rockies vs. Detroit Tigers (p=0.76 vol=$305k)
+[19:54:44]   · Colorado Rockies vs. Detroit Tigers (p=0.85 vol=$305k)
+[20:04:49]   · Counter-Strike: Heroic vs 1WIN (BO3) - Thunderpick World (p=0.83 vol=$336k)
+[16:58:42]   · Colorado Rockies vs. Detroit Tigers: O/U 8.5 (p=0.93 vol=$105k)
+[00:01:54]   [copy] 📡 señal #1789516914 de wr0ngw4yb3tt0r: Detroit Tigers vs. Toronto Blue Jays · él 0.530 / nosotros 0.535 (+0.5 pts) · retraso 1m09s · papel $5
+=== FIN copy2_20260916_173332.log ===
