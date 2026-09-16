@@ -1,0 +1,32 @@
+=== INVESTIGAR GESTIONAR_POSICIONES · 20260916_195052 UTC ===
+
+== 1. Listar archivos del gestor ==
+-rw-r--r-- 1 root root 12371 Sep 13 19:54 /opt/polymarket/gestionar_posiciones.py
+
+== 2. ¿Cómo se llama a real_semanal.json? ==
+
+== 3. Ver el cálculo de beneficio ==
+
+== 4. Ver todo lo relacionado con 'reconc' ==
+
+== 5. Ver el servicio systemd del gestor ==
+[Unit]
+Description=Gestor de cierre anticipado de posiciones Polymarket
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 /opt/polymarket/gestionar_posiciones.py --loop 5
+Restart=always
+RestartSec=30
+StandardOutput=append:/var/log/poly-gestor.log
+
+== 6. ¿Cada cuánto corre? ==
+    PID     ELAPSED CMD
+  58738  2-23:34:08 /usr/bin/python3 /opt/polymarket/gestionar_posiciones.py --loop 5
+
