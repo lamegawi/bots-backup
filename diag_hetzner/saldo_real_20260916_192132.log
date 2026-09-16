@@ -1,0 +1,189 @@
+=== SALDO REAL (vía proxy) · 20260916_192132 UTC ===
+
+== 1. Verificar IP de salida (con proxy) ==
+85.85.41.76
+
+== 2. Saldo real desde data-api.polymarket.com ==
+[{"user":"0xb0e1197098e6d427c01720f1631cad24ce740fa0","value":63.3787}]
+
+== 3. value con header User-Agent ==
+[{"user":"0xb0e1197098e6d427c01720f1631cad24ce740fa0","value":63.3787}]
+
+== 4. posiciones en wallet ==
+[
+    {
+        "proxyWallet": "0xb0e1197098e6d427c01720f1631cad24ce740fa0",
+        "asset": "28118107828559248509430884261493332837907030216176223552954490669355867199308",
+        "conditionId": "0x820b3a333ffd38b980fdb4e30615e6706b38d8899b27e1cafbafe9d7a6663027",
+        "size": 5060.847,
+        "avgPrice": 0.0011,
+        "initialValue": 5.8562,
+        "grossInitialValue": 6.148929,
+        "entryFeesUsdc": 0.292675,
+        "currentValue": 0,
+        "cashPnl": -5.8562,
+        "percentPnl": -99.999,
+        "totalBought": 35434.647,
+        "realizedPnl": -35.5091,
+        "percentRealizedPnl": -100,
+        "curPrice": 0,
+        "redeemable": true,
+        "mergeable": false,
+        "title": "Will Elon Musk post 120-139 tweets from September 4 to September 11, 2026?",
+        "slug": "elon-musk-of-tweets-september-4-september-11-2026-120-139",
+        "icon": "https://polymarket-upload.s3.us-east-2.amazonaws.com/elon-musk-of-tweets-nov-22-29-apMPG21-pzx_.jpg",
+        "eventId": "945718",
+        "eventSlug": "elon-musk-of-tweets-september-4-september-11-2026",
+        "outcome": "Yes",
+        "outcomeIndex": 0,
+        "oppositeOutcome": "No",
+        "oppositeAsset": "57072453057886133302443465941593205738125643054312350882407106940005991689764",
+        "endDate": "2026-09-11",
+        "negativeRisk": true
+    },
+    {
+        "proxyWallet": "0xb0e1197098e6d427c01720f1631cad24ce740fa0",
+        "asset": "54504445638949272971308090084197628218302500516768318685497689730751318257465",
+        "conditionId": "0x80a25985a630f2c67513387ac268371adeaf5b486667ac3e124da1a22b67ac65",
+        "size": 806.3275,
+        "avgPrice": 0.0062,
+        "initialValue": 4.9999,
+        "grossInitialValue": 5.248385,
+        "entryFeesUsdc": 0.24844,
+        "currentValue": 0,
+        "cashPnl": -4.9999,
+        "percentPnl": -99.999,
+        "totalBought": 2454.4275,
+        "realizedPnl": -11.0024,
+        "percentRealizedPnl": -100,
+        "curPrice": 0,
+        "redeemable": true,
+        "mergeable": false,
+        "title": "Will Elon Musk post 140-159 tweets from September 4 to September 11, 2026?",
+
+== 5. trades (historial on-chain del CLOB) ==
+[
+    {
+        "proxyWallet": "0xb0e1197098e6d427c01720f1631cad24ce740fa0",
+        "side": "BUY",
+        "asset": "1629816711571636757708533749497258498458924379604022089887730234156430393344",
+        "conditionId": "0x039a718db5e66223084594e1621ba934fd0000000000000000000000000000",
+        "size": 34.979238,
+        "price": 0.1701869549,
+        "timestamp": 1789586206,
+        "title": "Detroit Tigers vs. Toronto Blue Jays: O/U 8.5 AND Szczecin: Diego Dedura-Palomero vs Kilian Feldbausch AND Valencia: Guiomar Maristany vs Marina Bassols Ribera AND Will FC Barcelona win on 2026-09-16?",
+        "slug": "",
+        "icon": "",
+        "eventSlug": "",
+        "outcome": "",
+        "outcomeIndex": 0,
+        "name": "Lamegawi",
+        "pseudonym": "Delicious-Fawn",
+        "bio": "",
+        "profileImage": "",
+        "profileImageOptimized": "",
+        "transactionHash": "0xe17405f81dbcf3ce3d6dbccc0f5407d10e0685b94458f523f37ff028e2a9f7c9"
+    },
+    {
+        "proxyWallet": "0xb0e1197098e6d427c01720f1631cad24ce740fa0",
+        "side": "BUY",
+        "asset": "1656651720486420563665703600222610487447598310692448142233800788375018405888",
+        "conditionId": "0x03a9a1b383022217cb518dc737499c36ef0000000000000000000000000000",
+        "size": 17.630317,
+        "price": 0.5144439547,
+        "timestamp": 1789581891,
+
+== 6. Resumen de posiciones activas (de Elon) ==
+value (saldo en USDC): [{'user': '0xb0e1197098e6d427c01720f1631cad24ce740fa0', 'value': 63.3787}]
+
+Total posiciones: 44
+Posiciones de Elon: 28
+  · Will Elon Musk post 120-139 tweets from September 4 to Septe
+    slug=elon-musk-of-tweets-september-4-september-11-2026-
+    size=5060.85 init=$5.86 cur=$0.00 pnl=$-5.86 end=2026-09-11
+  · Will Elon Musk post 140-159 tweets from September 4 to Septe
+    slug=elon-musk-of-tweets-september-4-september-11-2026-
+    size=806.33 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-09-11
+  · Will Elon Musk post 180-199 tweets from September 8 to Septe
+    slug=elon-musk-of-tweets-september-8-september-15-2026-
+    size=91.66 init=$3.20 cur=$0.00 pnl=$-3.20 end=2026-09-15
+  · Will Elon Musk post 180-199 tweets from May 19 to May 26, 20
+    slug=arch-elon-musk-of-tweets-may-19-may-26-180-199
+    size=33.67 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-05-26
+  · Will Elon Musk post 180-199 tweets from May 12 to May 19, 20
+    slug=elon-musk-of-tweets-may-12-may-19-180-199
+    size=33.33 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-05-19
+  · Will Elon Musk post 40-64 tweets from July 30 to August 1, 2
+    slug=elon-musk-of-tweets-july-30-august-1-40-64
+    size=33.33 init=$10.00 cur=$0.00 pnl=$-10.00 end=2026-08-01
+  · Will Elon Musk post 180-199 tweets from July 28 to August 4,
+    slug=elon-musk-of-tweets-july-28-august-4-180-199
+    size=33.33 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-08-04
+  · Will Elon Musk post 200-219 tweets from July 31 to August 7,
+    slug=elon-musk-of-tweets-july-31-august-7-200-219
+    size=31.25 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-08-07
+  · Will Elon Musk post 220-239 tweets from June 16 to June 23, 
+    slug=elon-musk-of-tweets-june-16-june-23-220-239
+    size=31.25 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-06-23
+  · Will Elon Musk post 40-64 tweets from July 2 to July 4, 2026
+    slug=elon-musk-of-tweets-july-2-july-4-40-64
+    size=31.18 init=$6.86 cur=$0.00 pnl=$-6.86 end=2026-07-04
+  · Will Elon Musk post 280-299 tweets from July 24 to July 31, 
+    slug=elon-musk-of-tweets-july-24-july-31-280-299
+    size=30.30 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-07-31
+  · Will Elon Musk post 220-239 tweets from June 12 to June 19, 
+    slug=elon-musk-of-tweets-june-12-june-19-220-239
+    size=29.41 init=$2.00 cur=$0.00 pnl=$-2.00 end=2026-06-19
+  · Will Elon Musk post 180-199 tweets from April 28 to May 5, 2
+    slug=elon-musk-of-tweets-april-28-may-5-180-199
+    size=29.41 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-05-05
+  · Will Elon Musk post 120-139 tweets from May 12 to May 19, 20
+    slug=elon-musk-of-tweets-may-12-may-19-120-139
+    size=27.78 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-05-19
+  · Will Elon Musk post 100-119 tweets from May 8 to May 15, 202
+    slug=elon-musk-of-tweets-may-8-may-15-100-119
+    size=27.05 init=$10.00 cur=$0.00 pnl=$-10.00 end=2026-05-15
+  · Will Elon Musk post 180-199 tweets from July 17 to July 24, 
+    slug=elon-musk-of-tweets-july-17-july-24-180-199
+    size=26.32 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-07-24
+  · Will Elon Musk post 200-219 tweets from July 28 to August 4,
+    slug=elon-musk-of-tweets-july-28-august-4-200-219
+    size=26.32 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-08-04
+  · Will Elon Musk post 65-89 tweets from June 18 to June 20, 20
+    slug=elon-musk-of-tweets-june-18-june-20-65-89
+    size=26.32 init=$10.00 cur=$0.00 pnl=$-10.00 end=2026-06-20
+  · Will Elon Musk post 40-64 tweets from July 27 to July 29, 20
+    slug=elon-musk-of-tweets-july-27-july-29-40-64
+    size=25.43 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-07-29
+  · Will Elon Musk post 40-64 tweets from June 15 to June 17, 20
+    slug=elon-musk-of-tweets-june-15-june-17-40-64
+    size=25.00 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-06-17
+  · Will Elon Musk post 120-139 tweets from May 5 to May 12, 202
+    slug=elon-musk-of-tweets-may-5-may-12-120-139
+    size=23.20 init=$10.00 cur=$0.00 pnl=$-10.00 end=2026-05-12
+  · Will Elon Musk post 100-119 tweets from May 15 to May 22, 20
+    slug=elon-musk-of-tweets-may-15-may-22-100-119
+    size=20.83 init=$5.00 cur=$0.00 pnl=$-5.00 end=2026-05-22
+  · Will Elon Musk post 200-219 tweets from June 12 to June 19, 
+    slug=elon-musk-of-tweets-june-12-june-19-200-219
+    size=18.33 init=$3.30 cur=$0.00 pnl=$-3.30 end=2026-06-19
+  · Will Elon Musk post <40 tweets from June 15 to June 17, 2026
+    slug=elon-musk-of-tweets-june-15-june-17-0-39
+    size=18.33 init=$3.30 cur=$0.00 pnl=$-3.30 end=2026-06-17
+  · Will Elon Musk post 200-219 tweets from June 19 to June 26, 
+    slug=elon-musk-of-tweets-june-19-june-26-200-219
+    size=8.92 init=$3.30 cur=$0.00 pnl=$-3.30 end=2026-06-26
+  · Will Elon Musk post 840-879 tweets in August 2026?
+    slug=elon-musk-of-tweets-august-2026-840-879
+    size=8.26 init=$2.60 cur=$0.00 pnl=$-2.60 end=2026-09-01
+  · Will Elon Musk post 90-114 tweets from July 30 to August 1, 
+    slug=elon-musk-of-tweets-july-30-august-1-90-114
+    size=6.25 init=$1.00 cur=$0.00 pnl=$-1.00 end=2026-08-01
+  · Will Elon Musk post 120-139 tweets from August 7 to August 1
+    slug=elon-musk-of-tweets-august-7-august-14-120-139
+    size=5.00 init=$0.05 cur=$0.00 pnl=$-0.05 end=2026-08-14
+
+== 7. Saldo en USDC.e directo desde Polygon RPC ==
+  https://polygon-bor-rpc.publicnode.com: $0.00 USDC.e
+  https://polygon.drpc.org: $0.00 USDC.e
+  https://1rpc.io/matic: $0.00 USDC.e
