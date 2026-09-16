@@ -1,0 +1,318 @@
+=== HUELLAS PUERTAS + QUIÉN HIZO QUÉ — 2026-09-16 16:41:13 UTC ===
+host: bot-poly  kernel: 6.8.0-139-generic
+
+=== [0] ExecStart reales de las unidades ===
+# /etc/systemd/system/poly-elon-semanal.service
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon-semanal
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+# /etc/systemd/system/poly-elon.service
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon
+ExecStart=/usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+# /etc/systemd/system/poly-gestor.service
+WorkingDirectory=/opt/polymarket
+ExecStart=/usr/bin/python3 /opt/polymarket/gestionar_posiciones.py --loop 5
+# /etc/systemd/system/poly-fantasmas.service
+ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --solo-fantasmas --fix
+
+=== [1] SEMANAL journal desde 13-sep 20:40 (puertas/órdenes/activa/0xddcaf4ef) ===
+Sep 16 14:16:52 bot-poly python3[60471]: [2026-09-16 14:16:52] saldo=$11267.75  paso=1  activa=no
+Sep 16 14:16:52 bot-poly python3[60471]: [2026-09-16 14:16:52]   bin 140-159 | YES @ 0.004 | EV=+69.182
+Sep 16 14:16:52 bot-poly python3[60471]: [2026-09-16 14:16:52]   bin 160-179 | YES @ 0.060 | EV=+8.251
+Sep 16 14:16:52 bot-poly python3[60471]: [2026-09-16 14:16:52]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 14:16:52 bot-poly python3[60471]: [2026-09-16 14:16:52]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 14:16:52 bot-poly python3[60471]: [2026-09-16 14:16:52]    bin 140-159 YES EV=+69.182
+Sep 16 14:16:53 bot-poly python3[60471]: [2026-09-16 14:16:53]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 14:32:15 bot-poly python3[60471]: [2026-09-16 14:32:15] saldo=$11267.75  paso=1  activa=no
+Sep 16 14:32:15 bot-poly python3[60471]: [2026-09-16 14:32:15]   bin 140-159 | YES @ 0.004 | EV=+69.182
+Sep 16 14:32:15 bot-poly python3[60471]: [2026-09-16 14:32:15]   bin 160-179 | YES @ 0.058 | EV=+8.653
+Sep 16 14:32:15 bot-poly python3[60471]: [2026-09-16 14:32:15]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 14:32:15 bot-poly python3[60471]: [2026-09-16 14:32:15]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 14:32:15 bot-poly python3[60471]: [2026-09-16 14:32:15]    bin 140-159 YES EV=+69.182
+Sep 16 14:32:15 bot-poly python3[60471]: [2026-09-16 14:32:15]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 14:47:37 bot-poly python3[60471]: [2026-09-16 14:47:37] saldo=$11267.75  paso=1  activa=no
+Sep 16 14:47:37 bot-poly python3[60471]: [2026-09-16 14:47:37]   bin 140-159 | YES @ 0.004 | EV=+69.182
+Sep 16 14:47:37 bot-poly python3[60471]: [2026-09-16 14:47:37]   bin 160-179 | YES @ 0.058 | EV=+8.653
+Sep 16 14:47:37 bot-poly python3[60471]: [2026-09-16 14:47:37]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 14:47:37 bot-poly python3[60471]: [2026-09-16 14:47:37]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 14:47:37 bot-poly python3[60471]: [2026-09-16 14:47:37]    bin 140-159 YES EV=+69.182
+Sep 16 14:47:37 bot-poly python3[60471]: [2026-09-16 14:47:37]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 15:02:59 bot-poly python3[60471]: [2026-09-16 15:02:59] saldo=$11267.75  paso=1  activa=no
+Sep 16 15:02:59 bot-poly python3[60471]: [2026-09-16 15:02:59]   bin 140-159 | YES @ 0.004 | EV=+69.182
+Sep 16 15:02:59 bot-poly python3[60471]: [2026-09-16 15:02:59]   bin 160-179 | YES @ 0.061 | EV=+8.099
+Sep 16 15:02:59 bot-poly python3[60471]: [2026-09-16 15:02:59]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 15:02:59 bot-poly python3[60471]: [2026-09-16 15:02:59]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 15:02:59 bot-poly python3[60471]: [2026-09-16 15:02:59]    bin 140-159 YES EV=+69.182
+Sep 16 15:02:59 bot-poly python3[60471]: [2026-09-16 15:02:59]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 15:18:21 bot-poly python3[60471]: [2026-09-16 15:18:21] saldo=$11267.75  paso=1  activa=no
+Sep 16 15:18:21 bot-poly python3[60471]: [2026-09-16 15:18:21]   bin 140-159 | YES @ 0.004 | EV=+69.182
+Sep 16 15:18:21 bot-poly python3[60471]: [2026-09-16 15:18:21]   bin 160-179 | YES @ 0.061 | EV=+8.025
+Sep 16 15:18:21 bot-poly python3[60471]: [2026-09-16 15:18:21]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 15:18:21 bot-poly python3[60471]: [2026-09-16 15:18:21]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 15:18:21 bot-poly python3[60471]: [2026-09-16 15:18:21]    bin 140-159 YES EV=+69.182
+Sep 16 15:18:21 bot-poly python3[60471]: [2026-09-16 15:18:21]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 15:33:55 bot-poly python3[60471]: [2026-09-16 15:33:55] saldo=$11267.75  paso=1  activa=no
+Sep 16 15:33:55 bot-poly python3[60471]: [2026-09-16 15:33:55]   bin 140-159 | YES @ 0.004 | EV=+69.182
+Sep 16 15:33:55 bot-poly python3[60471]: [2026-09-16 15:33:55]   bin 160-179 | YES @ 0.032 | EV=+16.621
+Sep 16 15:33:55 bot-poly python3[60471]: [2026-09-16 15:33:55]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 15:33:55 bot-poly python3[60471]: [2026-09-16 15:33:55]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 15:33:55 bot-poly python3[60471]: [2026-09-16 15:33:55]   bin 140-159 | YES @ 0.065 | EV=+2.779
+Sep 16 15:33:55 bot-poly python3[60471]: [2026-09-16 15:33:55]   bin 160-179 | YES @ 0.135 | EV=+3.111
+Sep 16 15:33:55 bot-poly python3[60471]: [2026-09-16 15:33:55]    bin 140-159 YES EV=+69.182
+Sep 16 15:33:55 bot-poly python3[60471]: [2026-09-16 15:33:55]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 15:49:28 bot-poly python3[60471]: [2026-09-16 15:49:28] saldo=$11267.75  paso=1  activa=no
+Sep 16 15:49:28 bot-poly python3[60471]: [2026-09-16 15:49:28]   bin 140-159 | YES @ 0.004 | EV=+69.182
+Sep 16 15:49:28 bot-poly python3[60471]: [2026-09-16 15:49:28]   bin 160-179 | YES @ 0.042 | EV=+12.375
+Sep 16 15:49:28 bot-poly python3[60471]: [2026-09-16 15:49:28]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 15:49:28 bot-poly python3[60471]: [2026-09-16 15:49:28]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 15:49:28 bot-poly python3[60471]: [2026-09-16 15:49:28]   bin 140-159 | YES @ 0.065 | EV=+2.779
+Sep 16 15:49:28 bot-poly python3[60471]: [2026-09-16 15:49:28]   bin 160-179 | YES @ 0.135 | EV=+3.111
+Sep 16 15:49:28 bot-poly python3[60471]: [2026-09-16 15:49:28]    bin 140-159 YES EV=+69.182
+Sep 16 15:49:28 bot-poly python3[60471]: [2026-09-16 15:49:28]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 16:05:03 bot-poly python3[60471]: [2026-09-16 16:05:03] saldo=$11267.75  paso=1  activa=no
+Sep 16 16:05:03 bot-poly python3[60471]: [2026-09-16 16:05:03]   bin 140-159 | YES @ 0.004 | EV=+60.409
+Sep 16 16:05:03 bot-poly python3[60471]: [2026-09-16 16:05:03]   bin 160-179 | YES @ 0.043 | EV=+11.760
+Sep 16 16:05:03 bot-poly python3[60471]: [2026-09-16 16:05:03]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 16:05:03 bot-poly python3[60471]: [2026-09-16 16:05:03]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 16:05:03 bot-poly python3[60471]: [2026-09-16 16:05:03]   bin 140-159 | YES @ 0.065 | EV=+2.779
+Sep 16 16:05:03 bot-poly python3[60471]: [2026-09-16 16:05:03]   bin 160-179 | YES @ 0.135 | EV=+3.111
+Sep 16 16:05:03 bot-poly python3[60471]: [2026-09-16 16:05:03]    bin 140-159 YES EV=+60.409
+Sep 16 16:05:03 bot-poly python3[60471]: [2026-09-16 16:05:03]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36] saldo=$11267.75  paso=1  activa=no
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 140-159 | YES @ 0.004 | EV=+69.182
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 160-179 | YES @ 0.044 | EV=+11.615
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 140-159 | YES @ 0.065 | EV=+2.779
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 160-179 | YES @ 0.135 | EV=+3.111
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]    bin 140-159 YES EV=+69.182
+Sep 16 16:20:37 bot-poly python3[60471]: [2026-09-16 16:20:37]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10] saldo=$11267.75  paso=1  activa=no
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 140-159 | YES @ 0.004 | EV=+60.409
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 160-179 | YES @ 0.045 | EV=+11.334
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 140-159 | YES @ 0.065 | EV=+2.779
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 160-179 | YES @ 0.135 | EV=+3.111
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]    bin 140-159 YES EV=+60.409
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+--- journal semanal: últimas 40 líneas ---
+Sep 16 16:05:03 bot-poly python3[60471]: [2026-09-16 16:05:03] Pasada completada
+Sep 16 16:05:03 bot-poly python3[60471]: [2026-09-16 16:05:03] Próxima pasada en 15 min
+Sep 16 16:20:03 bot-poly python3[60471]: [2026-09-16 16:20:03] ════════════════════════════════════════════
+Sep 16 16:20:03 bot-poly python3[60471]: [2026-09-16 16:20:03] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 16 16:20:03 bot-poly python3[60471]: [2026-09-16 16:20:03] ════════════════════════════════════════════
+Sep 16 16:20:03 bot-poly python3[60471]: [2026-09-16 16:20:03] AVG7=25.00  AVG30=27.77  R=0.900  ajuste=0.960
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36] 3 mercados semanales abiertos
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36] saldo=$11267.75  paso=1  activa=no
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 140-159 | YES @ 0.004 | EV=+69.182
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 160-179 | YES @ 0.044 | EV=+11.615
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 140-159 | YES @ 0.065 | EV=+2.779
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]   bin 160-179 | YES @ 0.135 | EV=+3.111
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]
+Sep 16 16:20:36 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 11 - September 18, 20
+Sep 16 16:20:36 bot-poly python3[60471]: [2026-09-16 16:20:36]    bin 140-159 YES EV=+69.182
+Sep 16 16:20:37 bot-poly python3[60471]: [2026-09-16 16:20:37]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 16:20:37 bot-poly python3[60471]: [2026-09-16 16:20:37] ════════════════════════════════════════════
+Sep 16 16:20:37 bot-poly python3[60471]: [2026-09-16 16:20:37] Pasada completada
+Sep 16 16:20:37 bot-poly python3[60471]: [2026-09-16 16:20:37] Próxima pasada en 15 min
+Sep 16 16:35:37 bot-poly python3[60471]: [2026-09-16 16:35:37] ════════════════════════════════════════════
+Sep 16 16:35:37 bot-poly python3[60471]: [2026-09-16 16:35:37] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 16 16:35:37 bot-poly python3[60471]: [2026-09-16 16:35:37] ════════════════════════════════════════════
+Sep 16 16:35:37 bot-poly python3[60471]: [2026-09-16 16:35:37] AVG7=25.00  AVG30=27.77  R=0.900  ajuste=0.960
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10] 3 mercados semanales abiertos
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10] saldo=$11267.75  paso=1  activa=no
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 140-159 | YES @ 0.004 | EV=+60.409
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 160-179 | YES @ 0.045 | EV=+11.334
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 140-159 | YES @ 0.075 | EV=+2.275
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 140-159 | YES @ 0.065 | EV=+2.779
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]   bin 160-179 | YES @ 0.135 | EV=+3.111
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]
+Sep 16 16:36:10 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 11 - September 18, 20
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]    bin 140-159 YES EV=+60.409
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10] ════════════════════════════════════════════
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10] Pasada completada
+Sep 16 16:36:10 bot-poly python3[60471]: [2026-09-16 16:36:10] Próxima pasada en 15 min
+
+=== [1b] CUADERNO del semanal (/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json) ===
+  saldo: 11267.75 · paso: 1
+  activa: None
+  historial: 28 entradas; últimas 3:
+    {"id": "reconc", "fecha": "2026-09-16T02:12:49.292242", "mercado": "elon-musk-of-tweets-september-11-september-18-2026", "bin": "", "lado": "YES", "precio": 0.0065, "cuota": 153.84615384615384, "p_modelo": 0, "paso": 1, "stake": 3.3, "real"
+    {"id": "reconc", "fecha": "2026-09-16T02:43:36.217549", "mercado": "elon-musk-of-tweets-september-11-september-18-2026", "bin": "", "lado": "YES", "precio": 0.0065, "cuota": 153.84615384615384, "p_modelo": 0, "paso": 1, "stake": 3.3, "real"
+    {"id": "reconc", "fecha": "2026-09-16T03:14:20.434919", "mercado": "elon-musk-of-tweets-september-11-september-18-2026", "bin": "", "lado": "YES", "precio": 0.0075, "cuota": 133.33333333333334, "p_modelo": 0, "paso": 1, "stake": 3.3, "real"
+
+=== [2] FANTASMAS desde 13-sep 20:40 (¿quién limpió el cuaderno?) ===
+Sep 16 07:01:39 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 07:01:40 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 07:01:40 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 07:32:01 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 07:32:01 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 07:32:01 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 08:02:01 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 08:02:02 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 08:02:02 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 08:32:04 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 08:32:04 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 08:32:04 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 09:02:17 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 09:02:17 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 09:02:17 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 09:32:21 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 09:32:22 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 09:32:22 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 10:02:41 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 10:02:41 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 10:02:41 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 10:32:41 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 10:32:42 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 10:32:42 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 11:03:01 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 11:03:02 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 11:03:02 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 11:33:02 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 11:33:02 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 11:33:02 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 12:03:11 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 12:03:12 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 12:03:12 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 12:33:16 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 12:33:16 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 12:33:16 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 13:03:18 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 13:03:18 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 13:03:18 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 13:33:21 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 13:33:22 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 13:33:22 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 14:03:21 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 14:03:22 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 14:03:22 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 14:33:22 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 14:33:22 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 14:33:22 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 15:03:52 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 15:03:53 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 15:03:53 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 15:34:00 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 15:34:01 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 15:34:01 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 16:04:01 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 16:04:01 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 16:04:01 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+Sep 16 16:34:01 bot-poly systemd[1]: Starting poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación)...
+Sep 16 16:34:02 bot-poly systemd[1]: poly-fantasmas.service: Deactivated successfully.
+Sep 16 16:34:02 bot-poly systemd[1]: Finished poly-fantasmas.service - Comprobación de posiciones fantasma de Polymarket (auto-reparación).
+
+=== [3] 48H /var/log/poly-elon.log 15-16 sep: puertas y compras ===
+(sin huellas)
+--- tail 48h ---
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+2026-09-10       22
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+
+AVG7 = 25.00  V2 = 55  R = 1.100  ajuste = 1.050  λ48 = 52.5
+Días completos en CSV: 50
+[2026-09-16 12:36:36 EDT] Pasada completada en 126.2 s
+[2026-09-16 12:36:36 EDT] Próxima pasada en 5 min…
+
+=== [4] GESTOR /var/log/poly-gestor.log: ventas 04:01 de hoy ===
+24760:  · Will Elon Musk post 160-179 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24763:  · Will Elon Musk post 140-159 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24764:  · Will Elon Musk post 160-179 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24767:  · Will Elon Musk post 140-159 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24770:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> vender: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24772:  · Will Elon Musk post 160-179 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24775:  · Will Elon Musk post 140-159 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24776:  · Will Elon Musk post 160-179 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24779:  · Will Elon Musk post 140-159 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24780:  · Will Elon Musk post 160-179 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24783:  · Will Elon Musk post 140-159 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24784:  · Will Elon Musk post 160-179 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24787:  · Will Elon Musk post 140-159 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24788:  · Will Elon Musk post 160-179 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24794:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> vender: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24796:  · Will Elon Musk post 140-159 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24797:  · Will Elon Musk post 160-179 tweets from September 15 to Sept -> mantener: sin datos de ventana
+24803:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> fallo: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24807:  · Will Elon Musk post 140-159 tweets from September 15 to Sept -> vender: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 15 to September 22, 2026?
+24811:  · Will Elon Musk post 160-179 tweets from September 15 to Sept -> vender: 🔻 CIERRE ANTICIPADO Will Elon Musk post 160-179 tweets from September 15 to September 22, 2026?
+24818:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> fallo: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24825:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> fallo: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24832:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> fallo: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24838:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> vender: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24848:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> vender: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24854:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> vender: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24860:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> vender: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24868:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> vender: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24921:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> vender: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+24927:  · Will Elon Musk post 140-159 tweets from September 11 to Sept -> vender: 🔻 CIERRE ANTICIPADO Will Elon Musk post 140-159 tweets from September 11 to September 18, 2026?
+--- tail gestor ---
+  próxima pasada en 5 min
+[11:42 EDT] gestor pasada
+  próxima pasada en 5 min
+[11:47 EDT] gestor pasada
+  próxima pasada en 5 min
+[11:52 EDT] gestor pasada
+  próxima pasada en 5 min
+[11:57 EDT] gestor pasada
+  próxima pasada en 5 min
+[12:02 EDT] gestor pasada
+  próxima pasada en 5 min
+[12:07 EDT] gestor pasada
+  próxima pasada en 5 min
+[12:12 EDT] gestor pasada
+  próxima pasada en 5 min
+[12:17 EDT] gestor pasada
+  próxima pasada en 5 min
+[12:22 EDT] gestor pasada
+  próxima pasada en 5 min
+[12:27 EDT] gestor pasada
+  próxima pasada en 5 min
+[12:32 EDT] gestor pasada
+  próxima pasada en 5 min
+[12:37 EDT] gestor pasada
+  próxima pasada en 5 min
+
+=== [5] md5 ruta viva (esperados: bot_semanal c77c743f… ors b55a889a… gp 5a38bf3d…) ===
+c77c743f41082ee343c59d4f014c9c71  /opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py
+b55a889aae713e6612ef52a14045b16f  /opt/polymarket/bot-polymarket-elon-semanal/operar_real_semanal.py
+  (falta /opt/polymarket/bot-polymarket-elon-semanal/gestionar_posiciones.py)
+avisos_cooldown.json
+bot_semanal.log
+bot_semanal.py
+bot_semanal.py.bak_20260912_081838
+bot_semanal.py.bak_clave_v2_20260912_201237
+bot_semanal.py.bak_clavev2_20260912_201610
+bot_semanal.py.bak_creds_20260913_174939
+bot_semanal.py.bak_final_20260912_200845
+bot_semanal.py.bak_flota_20260913_182848
+bot_semanal.py.bak_imp_20260912_195657
+bot_semanal.py.bak_int_20260912_082419
+bot_semanal.py.bak_inyproxy_20260913_163126
+bot_semanal.py.bak_puerta2_20260913_203956
+bot_semanal.py.bak_sign_20260912_200631
+bot_semanal.py.bak_v2_20260913_171750
+chequear_cuenta.py
+config.json
+config_real.json
+config_real.json.bak_clavev2_20260912_201610
+config_real.json.example
+
+=== [6] Servicios ===
+poly-elon:               active
+poly-elon-semanal:       active
+poly-elon-mensual:       inactive
+poly-gestor:             active
+poly-fantasmas:          inactive
+poly-combos-bot:         active
+poly-backup-github:      failed
+
+=== FIN puerta2b_20260916_164113.log ===
