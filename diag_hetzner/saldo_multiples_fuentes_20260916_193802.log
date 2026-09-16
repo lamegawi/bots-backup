@@ -1,0 +1,35 @@
+=== SALDO DESDE MULTIPLES FUENTES · 20260916_193802 UTC ===
+
+== 1. data-api.polymarket.com/value ==
+[{"user":"0xb0e1197098e6d427c01720f1631cad24ce740fa0","value":69.1351}]
+
+== 2. data-api.polymarket.com/positions (suma currentValue) ==
+  total posiciones: 44
+  suma currentValue: $35.6329
+  suma initialValue: $221.5592
+  redeemable: 40
+  suma size de redeemable: 6750.4414
+
+== 3. USDC.e en Polygon RPC (vía proxy) ==
+  https://polygon-bor-rpc.publicnode.com: $0.0000 USDC.e
+  https://polygon.drpc.org: $0.0000 USDC.e
+  https://1rpc.io/matic: ERROR <urlopen error timed out>
+
+  -- CTF USDC balances --
+  CTF (mainnet) (0x4D97DCd9...): $0.0000
+  CTF Exchange: ERROR invalid literal for int() with base 16: '0x'
+
+== 4. Saldo MATIC (para gas) ==
+  MATIC balance: 0.000000
+
+== 5. trades (para ver ordenes reales) ==
+  Total trades: 100
+  BUY: 41, SELL: 59
+  Volumen total: $666.75
+  Por mercado:
+     43 × Will Elon Musk post 140-159 tweets from September 
+     21 × Will Elon Musk post 120-139 tweets from September 
+      4 × Will Elon Musk post 160-179 tweets from September 
+      1 × Detroit Tigers vs. Toronto Blue Jays: O/U 8.5 AND 
+      1 × Szczecin: Diego Dedura-Palomero vs Kilian Feldbaus
+
