@@ -1,0 +1,147 @@
+=== INVESTIGAR CHECK_INTEGRAL.PY (autor del reconc) · 20260916_200202 UTC ===
+
+== 1. ¿Quién ejecuta check_integral.py? ==
+/root/recolector_poly.sh:132:echo "===== 12. CODIGO check_integral.py ====="
+/root/recolector_poly.sh:133:cat -n $BASE/check_integral.py 2>/dev/null
+/root/leer_servicios_zelen.txt:24:ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --solo-fantasmas --zelen --fix
+/root/leer_servicios_zelen.txt:37:ExecStart=/usr/bin/python3 /opt/polymarket/check_integral.py --zelen --fix
+/root/gh_backup/backup-bots/vm4/systemd/empatebot-test-diario.service:8:ExecStart=/usr/bin/python3 /opt/empatebot/check_integral_empate.py
+/root/gh_backup/backup-bots/vm4/empatebot/check_integral_empate.py:19:  python3 check_integral_empate.py          # ejecuta y envía el informe por Telegram
+/root/gh_backup/backup-bots/vm4/empatebot/check_integral_empate.py:20:  python3 check_integral_empate.py --test   # igual pero imprime también por pantalla
+/root/gh_backup/backup-bots/bot-poly/polymarket/check_integral.py.bakZB:23:  python3 check_integral.py               # grupo Elon
+/root/gh_backup/backup-bots/bot-poly/polymarket/check_integral.py.bakZB:24:  python3 check_integral.py --zelen       # grupo Zelenskyy
+/root/gh_backup/backup-bots/bot-poly/polymarket/check_integral.py.bakZB:25:  python3 check_integral.py --test        # imprime también por pantalla
+
+== 2. ¿Es parte de systemd? ==
+  e2scrub_all.service                                   loaded    inactive dead    Online ext4 Metadata Check for All Filesystems
+  e2scrub_reap.service                                  loaded    inactive dead    Remove Stale Online ext4 Metadata Check Snapshots
+  systemd-battery-check.service                         loaded    inactive dead    Check battery level during early boot
+  systemd-fsck-root.service                             loaded    inactive dead    File System Check on Root Device
+  systemd-fsck@dev-disk-by\x2duuid-DA87\x2d170A.service loaded    active   exited  File System Check on /dev/disk/by-uuid/DA87-170A
+
+== 3. Líneas con 'reconc' en check_integral.py ==
+23-  python3 check_integral.py               # grupo Elon
+24-  python3 check_integral.py --zelen       # grupo Zelenskyy
+25-  python3 check_integral.py --test        # imprime también por pantalla
+26:  python3 check_integral.py --fix         # reconcilia los bots atascados
+27-  python3 check_integral.py --solo-fantasmas [--zelen]  # solo fantasmas
+28-"""
+29-import json
+30-import os
+31-import subprocess
+32-import sys
+33-import time
+34-import urllib.parse
+--
+539-    estado["saldo"] = round(float(estado.get("saldo", 500.0)) + benef, 2)
+540-    estado["paso"] = paso
+541-    reg = {
+542:        "id": "reconc", "fecha": act.get("fecha", ""), "mercado": slug,
+543-        "bin": bin_t, "lado": lado, "precio": act.get("precio", 0),
+544-        "cuota": cuota, "p_modelo": act.get("p_modelo", 0),
+545-        "paso": int(act.get("paso", 1)), "stake": round(stake, 2),
+546-        "real": detalle, "resultado": res, "beneficio": benef,
+547-        "saldo": round(estado["saldo"], 2),
+548-    }
+549-    estado.setdefault("historial", []).append(reg)
+550-    estado["activa"] = None
+--
+556-        lock = {}
+557-    lock.pop(f"{slug}|{bin_t}", None)
+558-    json.dump(lock, open(LOCK, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+559:    return f"{nombre}: reconciliado '{bin_t}' → {res} ({benef:+.2f}) · paso {paso} · {detalle}"
+560-
+561-
+562-# ------------------------------------------------------------------- main
+563-def solo_fantasmas(test, fix, cfg):
+564-    avisos_fantasma, atascados = check_fantasmas(cfg)
+565-    hora = datetime.now(MAD).strftime("%d/%m/%Y %H:%M")
+566-    if fix and atascados:
+567-        lineas = [arreglar_atascado(nombre, path, act)
+--
+615-            print("FIX aplicado:")
+616-            for l in lineas_fix:
+617-                print(" ", l)
+618:        todos.append("• 🔧 Se reconciliaron " + str(len(atascados)) +
+619-                     " bot(s) atascados")
+620-
+621-    ok = not todos
+622-    n_bots = len(cfg["bots"])
+623-    if ok:
+624-        texto = (f"✅ *TEST DIARIO {cfg['nombre']}: TODO OK*\n{hora}\n\n"
+625-                 f"• {n_bots} bot(s) + telegram activos\n"
+626-                 f"• IP de salida {IP_CASA} · CLOB OK\n"
+
+== 4. Líneas con 'beneficio' en check_integral.py ==
+543-        "bin": bin_t, "lado": lado, "precio": act.get("precio", 0),
+544-        "cuota": cuota, "p_modelo": act.get("p_modelo", 0),
+545-        "paso": int(act.get("paso", 1)), "stake": round(stake, 2),
+546:        "real": detalle, "resultado": res, "beneficio": benef,
+547-        "saldo": round(estado["saldo"], 2),
+548-    }
+549-    estado.setdefault("historial", []).append(reg)
+550-    estado["activa"] = None
+551-    json.dump(estado, open(path, "w", encoding="utf-8"),
+552-              ensure_ascii=False, indent=1)
+553-    try:
+554-        lock = json.load(open(LOCK, encoding="utf-8"))
+
+== 5. Líneas con 'saldo' (que escribe en JSON) ==
+463-                    _estb["activa"]["stake"] = act["stake"]
+464-                    _estb["activa"]["pendiente"] = False
+465:                    json.dump(_estb, open(path, "w", encoding="utf-8"),
+466-                              ensure_ascii=False, indent=1)
+467-            except Exception:
+468-                pass
+469-    stake = float(act.get("stake", 0) or 0)
+470-    cuota = float(act.get("cuota", 0) or 0)
+471-
+--
+496-                return f"{nombre}: no pude leer {path}"
+497-            estado["activa"] = None
+498:            json.dump(estado, open(path, "w", encoding="utf-8"),
+499-                      ensure_ascii=False, indent=1)
+500-            try:
+501-                lock = json.load(open(LOCK, encoding="utf-8"))
+502-            except Exception:
+503-                lock = {}
+504-            lock.pop(f"{slug}|{bin_t}", None)
+505:            json.dump(lock, open(LOCK, "w", encoding="utf-8"),
+506-                      ensure_ascii=False, indent=1)
+507-            return (f"{nombre}: orden '{bin_t}' {lado} nunca se llenó "
+508-                    f"(cancelada/expirada) → estado limpiado, sin pérdida")
+509-
+510-    res = None
+511-    detalle = ""
+--
+537-        paso_ant = int(act.get("paso", 1))
+538-        paso = 1 if paso_ant >= 7 else paso_ant + 1
+539:    estado["saldo"] = round(float(estado.get("saldo", 500.0)) + benef, 2)
+540-    estado["paso"] = paso
+541-    reg = {
+542-        "id": "reconc", "fecha": act.get("fecha", ""), "mercado": slug,
+543-        "bin": bin_t, "lado": lado, "precio": act.get("precio", 0),
+544-        "cuota": cuota, "p_modelo": act.get("p_modelo", 0),
+545-        "paso": int(act.get("paso", 1)), "stake": round(stake, 2),
+546-        "real": detalle, "resultado": res, "beneficio": benef,
+547:        "saldo": round(estado["saldo"], 2),
+548-    }
+549-    estado.setdefault("historial", []).append(reg)
+550-    estado["activa"] = None
+551:    json.dump(estado, open(path, "w", encoding="utf-8"),
+552-              ensure_ascii=False, indent=1)
+553-    try:
+554-        lock = json.load(open(LOCK, encoding="utf-8"))
+555-    except Exception:
+556-        lock = {}
+557-    lock.pop(f"{slug}|{bin_t}", None)
+558:    json.dump(lock, open(LOCK, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+559-    return f"{nombre}: reconciliado '{bin_t}' → {res} ({benef:+.2f}) · paso {paso} · {detalle}"
+
+== 6. ¿Cuándo fue la última vez que se ejecutó? ==
+
+== 7. Procesos que incluyen 'check_integral' ==
+
+== 8. ¿Quién llama a check_integral? ==
+/opt/polymarket/check_integral.py
+
