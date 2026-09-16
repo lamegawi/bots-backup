@@ -1,0 +1,393 @@
+=== AUDITORIA BOTS ELON · 20260916_174625 UTC ===
+
+== 1. ESTADO DE SERVICIOS ==
+--- poly-elon ---
+● poly-elon.service - Bot Polymarket Elon 48h (v1)
+     Loaded: loaded (/etc/systemd/system/poly-elon.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-13 19:54:24 UTC; 2 days ago
+   Main PID: 56815 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 46.2M (peak: 55.2M)
+        CPU: 43min 3.900s
+     CGroup: /system.slice/poly-elon.service
+
+--- poly-elon-semanal ---
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-13 20:39:57 UTC; 2 days ago
+   Main PID: 60471 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 45.4M (peak: 50.2M)
+        CPU: 18min 4.014s
+     CGroup: /system.slice/poly-elon-semanal.service
+
+--- poly-elon-mensual ---
+Unit poly-elon-mensual.service could not be found.
+
+
+== 2. ÚLTIMOS LOGS (10 líneas por servicio) ==
+--- poly-elon ---
+Sep 12 06:06:01 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+Sep 12 06:06:01 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+Sep 12 06:06:01 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 12 06:06:01 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+-- Boot f32c12163e2e4dfca752290cc1b50054 --
+Sep 13 07:08:53 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 13 19:54:24 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+Sep 13 19:54:24 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Consumed 9min 1.812s CPU time, 55.8M memory peak, 0B memory swap peak.
+Sep 13 19:54:24 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+
+--- poly-elon-semanal ---
+Sep 16 17:38:42 bot-poly python3[60471]: [2026-09-16 17:38:42]   bin 160-179 | YES @ 0.145 | EV=+2.828
+Sep 16 17:38:42 bot-poly python3[60471]: [2026-09-16 17:38:42]   bin 140-159 | YES @ 0.065 | EV=+2.779
+Sep 16 17:38:42 bot-poly python3[60471]: [2026-09-16 17:38:42]   bin 160-179 | YES @ 0.135 | EV=+3.111
+Sep 16 17:38:42 bot-poly python3[60471]: [2026-09-16 17:38:42]
+Sep 16 17:38:42 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 11 - September 18, 20
+Sep 16 17:38:42 bot-poly python3[60471]: [2026-09-16 17:38:42]    bin 140-159 YES EV=+60.409
+Sep 16 17:39:02 bot-poly python3[60471]: [2026-09-16 17:39:02]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 119 → no llega al mínimo (119<140)
+Sep 16 17:39:02 bot-poly python3[60471]: [2026-09-16 17:39:02] ════════════════════════════════════════════
+Sep 16 17:39:02 bot-poly python3[60471]: [2026-09-16 17:39:02] Pasada completada
+Sep 16 17:39:02 bot-poly python3[60471]: [2026-09-16 17:39:02] Próxima pasada en 15 min
+
+--- poly-elon-mensual ---
+-- No entries --
+
+
+== 3. HISTORIAL COMPLETO (JSONs) ==
+
+--- real.json (Elon 48h) ---
+{
+    "saldo": 228.45,
+    "paso": 6,
+    "activa": null,
+    "historial": [
+        {
+            "id": "9545c5c1841c",
+            "fecha": "2026-08-18",
+            "mercado": "elon-musk-of-tweets-august-17-august-19",
+            "bin": "<40",
+            "lado": "YES",
+            "precio": 0.23,
+            "cuota": 4.35,
+            "p_modelo": 0.9171,
+            "paso": 1,
+            "stake": 3.3,
+            "real": ">40 (gestor vendi\u00f3 18/08)",
+            "resultado": "P",
+            "beneficio": -3.3,
+            "saldo": 496.7
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-08-20",
+            "mercado": "elon-musk-of-tweets-august-20-august-22",
+            "bin": "90-114",
+            "lado": "YES",
+            "precio": 0.212,
+            "cuota": 4.72,
+            "p_modelo": 0.6359,
+            "paso": 2,
+            "stake": 7.43,
+            "real": "vendido por el gestor en positivo (+2.70 a nivel cuenta)",
+            "resultado": "G",
+            "beneficio": 27.64,
+            "saldo": 524.34
+        },
+        {
+            "id": "8c677c997237",
+            "fecha": "2026-08-22",
+            "mercado": "elon-musk-of-tweets-august-22-august-24-2026",
+            "bin": "90-114",
+            "lado": "YES",
+            "precio": 0.115,
+            "cuota": 8.7,
+            "p_modelo": 0.776,
+            "paso": 1,
+            "stake": 6.6,
+            "real": "40-64",
+            "motor": "motor_v2_ev_escalones_tope10",
+            "ev": 6.748,
+            "resultado": "P",
+            "beneficio": -6.6,
+            "saldo": 517.74
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-08-30",
+            "mercado": "elon-musk-of-tweets-august-29-august-31-2026",
+            "bin": "<40",
+            "lado": "YES",
+            "precio": 0.056,
+            "cuota": 17.86,
+            "p_modelo": 0.7143,
+            "paso": 2,
+            "stake": 9.9,
+            "real": "vendido por el gestor",
+            "resultado": "P",
+            "beneficio": -9.9,
+            "saldo": 507.84
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-08-30",
+            "mercado": "elon-musk-of-tweets-august-29-august-31-2026",
+            "bin": "40-64",
+            "lado": "NO",
+            "precio": 0.28,
+            "cuota": 3.57,
+            "p_modelo": 0.1429,
+            "paso": 3,
+            "stake": 10.0,
+            "real": "vendido/desaparecido (sin registro del gestor)",
+            "resultado": "P",
+            "beneficio": -10.0,
+            "saldo": 497.84
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-09-01",
+            "mercado": "elon-musk-of-tweets-august-31-september-2-2026",
+            "bin": "40-64",
+            "lado": "NO",
+            "precio": 0.325,
+            "cuota": 3.08,
+            "p_modelo": 0.0,
+            "paso": 4,
+            "stake": 10.0,
+            "real": "vendido/desaparecido (sin registro del gestor)",
+            "resultado": "P",
+
+--- real_semanal.json (Elon semanal) ---
+{
+    "saldo": 11267.75,
+    "paso": 1,
+    "activa": null,
+    "abierta": null,
+    "historial": [
+        {
+            "id": "reconc",
+            "fecha": "2026-09-13T18:29:23.205419",
+            "mercado": "elon-musk-of-tweets-september-8-september-15-2026",
+            "bin": "",
+            "lado": "YES",
+            "precio": 0.0495,
+            "cuota": 20.2020202020202,
+            "p_modelo": 0,
+            "paso": 1,
+            "stake": 3.3,
+            "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+            "resultado": "G",
+            "beneficio": 63.37,
+            "saldo": 249.86
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-09-13T19:00:30.420521",
+            "mercado": "elon-musk-of-tweets-september-8-september-15-2026",
+            "bin": "",
+            "lado": "YES",
+            "precio": 0.0615,
+            "cuota": 16.260162601626018,
+            "p_modelo": 0,
+            "paso": 1,
+            "stake": 3.3,
+            "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+            "resultado": "G",
+            "beneficio": 50.36,
+            "saldo": 300.22
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-09-13T19:47:07.567781",
+            "mercado": "elon-musk-of-tweets-september-8-september-15-2026",
+            "bin": "",
+            "lado": "YES",
+            "precio": 0.061,
+            "cuota": 16.39344262295082,
+            "p_modelo": 0,
+            "paso": 1,
+            "stake": 3.3,
+            "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+            "resultado": "G",
+            "beneficio": 50.8,
+            "saldo": 351.02
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-09-13T20:31:24.132888",
+            "mercado": "elon-musk-of-tweets-september-15-september-22-2026",
+            "bin": "",
+            "lado": "YES",
+            "precio": 0.125,
+            "cuota": 8.0,
+            "p_modelo": 0,
+            "paso": 1,
+            "stake": 3.3,
+            "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+            "resultado": "G",
+            "beneficio": 23.1,
+            "saldo": 374.12
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-09-13T21:11:34.320913",
+            "mercado": "elon-musk-of-tweets-september-15-september-22-2026",
+            "bin": "",
+            "lado": "YES",
+            "precio": 0.125,
+            "cuota": 8.0,
+            "p_modelo": 0,
+            "paso": 1,
+            "stake": 3.3,
+            "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+            "resultado": "G",
+            "beneficio": 23.1,
+            "saldo": 397.22
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-09-13T21:27:07.092883",
+            "mercado": "elon-musk-of-tweets-september-15-september-22-2026",
+            "bin": "",
+            "lado": "YES",
+            "precio": 0.125,
+            "cuota": 8.0,
+            "p_modelo": 0,
+            "paso": 1,
+            "stake": 3.3,
+            "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+            "resultado": "G",
+            "beneficio": 23.1,
+
+--- real_mensual.json (Elon mensual) ---
+{
+    "saldo": 495.3,
+    "paso": 3,
+    "activa": null,
+    "historial": [
+        {
+            "id": "reconc",
+            "fecha": "2026-08-18",
+            "mercado": "elon-musk-of-tweets-august-2026",
+            "bin": "660-679",
+            "lado": "YES",
+            "precio": 0.0455,
+            "cuota": 21.98,
+            "p_modelo": 0.4001,
+            "paso": 1,
+            "stake": 2.0,
+            "real": "vendido/desaparecido (sin registro del gestor)",
+            "resultado": "P",
+            "beneficio": -2.0,
+            "saldo": 498.0
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-08-30",
+            "mercado": "elon-musk-of-tweets-august-2026",
+            "bin": "840-879",
+            "lado": "YES",
+            "precio": 0.327,
+            "cuota": 3.06,
+            "p_modelo": 0.7755,
+            "paso": 2,
+            "stake": 2.7,
+            "real": "resuelto por Polymarket: gan\u00f3 880-919",
+            "resultado": "P",
+            "beneficio": -2.7,
+            "saldo": 495.3
+        }
+    ]
+}
+
+
+== 4. RESUMEN EJECUTIVO ==
+
+=== Elon 48h (/opt/polymarket/bot-polymarket-elon/real.json) ===
+  saldo: $228.45
+  paso: 6
+  activa: no
+  historial: 7 entradas
+  resultados: {'P': 6, 'G': 1}
+  beneficio total: $-22.16
+  stake total: $57.23
+  ROI: -38.7%
+  últimas 5:
+    2026-08-22 | elon-musk-of-tweets-august-22-august-24-2026 | bin 90-114 | P | -6.60
+    2026-08-30 | elon-musk-of-tweets-august-29-august-31-2026 | bin <40 | P | -9.90
+    2026-08-30 | elon-musk-of-tweets-august-29-august-31-2026 | bin 40-64 | P | -10.00
+    2026-09-01 | elon-musk-of-tweets-august-31-september-2-2026 | bin 40-64 | P | -10.00
+    2026-09-02 | elon-musk-of-tweets-august-31-september-2-2026 | bin 40-64 | P | -10.00
+
+=== Elon semanal (/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json) ===
+  saldo: $11267.75
+  paso: 1
+  activa: no
+  historial: 28 entradas
+  resultados: {'G': 28}
+  beneficio total: $+11081.26
+  stake total: $92.40
+  ROI: +11992.7%
+  últimas 5:
+    2026-09-16T01:11 | elon-musk-of-tweets-september-11-september-18-2026 | bin  | G | +596.70
+    2026-09-16T01:42 | elon-musk-of-tweets-september-11-september-18-2026 | bin  | G | +596.70
+    2026-09-16T02:12 | elon-musk-of-tweets-september-11-september-18-2026 | bin  | G | +504.39
+    2026-09-16T02:43 | elon-musk-of-tweets-september-11-september-18-2026 | bin  | G | +504.39
+    2026-09-16T03:14 | elon-musk-of-tweets-september-11-september-18-2026 | bin  | G | +436.70
+
+=== Elon mensual (/opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json) ===
+  saldo: $495.3
+  paso: 3
+  activa: no
+  historial: 2 entradas
+  resultados: {'P': 2}
+  beneficio total: $-4.70
+  stake total: $4.70
+  ROI: -100.0%
+  últimas 5:
+    2026-08-18 | elon-musk-of-tweets-august-2026 | bin 660-679 | P | -2.00
+    2026-08-30 | elon-musk-of-tweets-august-2026 | bin 840-879 | P | -2.70
+
+== 5. POSICIONES ACTIVAS EN WALLET ==
+  ERROR: HTTP Error 403: Forbidden
+
+== 6. MÉTRICAS DE LOS BOTS ==
+
+--- bot-polymarket-elon ---
+48:STAKE_INICIAL   = 3.30          # $, primera apuesta de cada ciclo
+49:FACTOR          = 1.50          # multiplicador tras cada fallo
+50:CUOTA_MINIMA    = 5.00          # cuota mínima aceptada (precio ≤ 0.20) — SUBIDA de 3.00 a 5.00 (10/09)
+51:PRECIO_MAX      = 0.20          # precio máximo del lado que compramos (≠ CUOTA_MINIMA) — NUEVO (10/09)
+91:def tabla_apuestas(stake_inicial=STAKE_INICIAL, factor=FACTOR, pasos=PASOS_MAX):
+99:        benef = round(stake * (CUOTA_MINIMA - 1) - perdida_prev, 2)
+163:    if precio_yes > PRECIO_MAX and precio_no > PRECIO_MAX:
+165:            f"Ningún lado cumple PRECIO_MAX={PRECIO_MAX} (precio > {PRECIO_MAX} en ambos lados)"
+166:    if precio_yes > 1 / CUOTA_MINIMA and (1 - precio_yes) > 1 / CUOTA_MINIMA:
+168:    if p >= P_MIN_YES and precio_yes <= 1 / CUOTA_MINIMA and precio_yes <= PRECIO_MAX:
+
+--- bot-polymarket-elon-semanal ---
+11:VENTANA = "semanal"
+12:STAKE_INICIAL = 3.30
+13:FACTOR = 1.40
+14:CUOTA_MINIMA = 3.00
+15:PRECIO_MAX = 0.30
+16:EDGE_MIN = 0.15
+17:P_FLOOR = 0.20
+80:def tabla_apuestas(stake_inicial=STAKE_INICIAL, factor=FACTOR, pasos=PASOS_MAX):
+86:    """Regla 'ventaja' (semanal): p_modelo ≥ precio + EDGE_MIN, con filtros."""
+92:    if p >= 1 - P_FLOOR and cuota_yes and cuota_yes >= CUOTA_MINIMA and precio_yes <= PRECIO_MAX:
+
+--- bot-polymarket-elon-mensual ---
+25:VENTANA        = "mensual"     # 48h | semanal | mensual
+26:STAKE_INICIAL  = 2.00          # $, primera apuesta de cada ciclo
+27:FACTOR         = 1.35          # multiplicador tras cada fallo
+28:CUOTA_MINIMA   = 3.00          # cuota mínima aceptada
+33:EDGE_MIN       = 0.10          # ventaja mínima p_modelo − precio (10 pp)
+34:P_FLOOR        = 0.15          # p mínimo para entrar en un bin (evita colas)
+70:def tabla_apuestas(stake_inicial=STAKE_INICIAL, factor=FACTOR, pasos=PASOS_MAX):
+78:        benef = round(stake * (CUOTA_MINIMA - 1) - perdida_prev, 2)
+115:    - REGLA "ventaja" (semanal/mensual): p_modelo ≥ precio + EDGE_MIN (o
+116:      p_modelo(NO) ≥ precio(NO) + EDGE_MIN) + cuota mín. + piso P_FLOOR."""
+
