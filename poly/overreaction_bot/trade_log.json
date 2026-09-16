@@ -106,15 +106,63 @@
       "status": "open",
       "timestamp": "2026-09-12 17:28:02 UTC",
       "dry_run": true
+    },
+    {
+      "trade_id": "or_1789483693",
+      "market_id": "0x41c31f6e76444beb88e818b04d2e362b6781f6649070dd41049c8915c4a0b5a9",
+      "question": "Exact Score: Wadi Degla SC 3 - 3 El Mokawloon El Arab SC?",
+      "side": "YES",
+      "entry_price": 0.413,
+      "size": 200.0,
+      "edge": 117.0,
+      "spike_change": -0.3,
+      "end_date": "2026-09-15T14:00:00Z",
+      "status": "lost",
+      "timestamp": "2026-09-15 14:48:13 UTC",
+      "dry_run": true,
+      "pnl": -200.0,
+      "payout": 0,
+      "resolved_at": "2026-09-15 18:21:11 UTC"
+    },
+    {
+      "trade_id": "or_1789498644",
+      "market_id": "0x3dbced1594e452fe19d0f6e80fc817f78cbbbab1578ae75e6698b0dde791364b",
+      "question": "Exact Score: Al Hilal SFC 1 - 3 Al Gharafa SC?",
+      "side": "YES",
+      "entry_price": 0.1415,
+      "size": 200.0,
+      "edge": 24.7273,
+      "spike_change": -0.3125,
+      "end_date": "2026-09-15T18:15:00Z",
+      "status": "lost",
+      "timestamp": "2026-09-15 18:57:24 UTC",
+      "dry_run": true,
+      "pnl": -200.0,
+      "payout": 0,
+      "resolved_at": "2026-09-15 22:22:43 UTC"
+    },
+    {
+      "trade_id": "or_1789512130",
+      "market_id": "0x538311bf3ade7332876837b46bcf8e19109d22b67eb9eb181432184524fd262d",
+      "question": "Will Al-Fateh be relegated from the 2026-27 Saudi Professional League?",
+      "side": "YES",
+      "entry_price": 0.31,
+      "size": 31.58,
+      "edge": 0.6316,
+      "spike_change": -0.2276,
+      "end_date": "2027-07-01T03:59:00Z",
+      "status": "open",
+      "timestamp": "2026-09-15 22:42:10 UTC",
+      "dry_run": true
     }
   ],
   "summary": {
-    "total": 7,
-    "open": 4,
+    "total": 10,
+    "open": 5,
     "wins": 2,
-    "losses": 1,
-    "win_rate": 0.6666666666666666,
-    "total_pnl": 41.48,
-    "total_invested": 175.0
+    "losses": 3,
+    "win_rate": 0.4,
+    "total_pnl": -358.52,
+    "total_invested": 606.58
   }
 }
