@@ -1,0 +1,169 @@
+=== DUMP COMBOS/COPY — 2026-09-16 17:25:20 UTC ===
+--- [0] unidad ---
+WorkingDirectory=/opt/polymarket
+ExecStart=/usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+activo: active · DIR=/opt/polymarket · EST=/opt/polymarket/combos_estado.json
+
+--- [1] inventario del directorio ---
+total 3612
+drwxr-xr-x 16 1000 1000   4096 Sep 16 17:16 .
+drwxr-xr-x  3 root root   4096 Aug 17 20:24 ..
+-rw-r--r--  1 root root   2535 Sep  8 20:49 actualizar_v106.sh
+-rw-r--r--  1 root root  13964 Sep 11 21:19 actualizar_v1283.sh
+-rw-r--r--  1 root root    323 Sep 16 17:16 apuestas_compartidas.json
+-rw-r--r--  1 root root    301 Aug 22 04:41 apuestas_compartidas.json.bak_20260822_044155
+drwxr-xr-x  4 root root   4096 Sep 12 07:09 _archivado
+drwxr-xr-x  8 root root   4096 Aug 19 17:47 _backup_motor_v1
+-rwxr-xr-x  1 root root   1532 Sep 11 21:29 backup_overreaction.sh
+drwxr-xr-x  4 root root   4096 Aug 31 01:00 backup_trump_20260831_201030
+-rw-r--r--  1 root root    151 Aug 18 20:00 balance_bot.json
+drwxr-xr-x  6 1000 1000   4096 Sep 16 17:06 bot-polymarket-elon
+drwxr-xr-x  5 1000 1000   4096 Sep 13 09:00 bot-polymarket-elon-mensual
+drwxr-xr-x  5 1000 1000   4096 Aug 30 08:30 bot-polymarket-elon-mensual-v2
+drwxr-xr-x  6 1000 1000   4096 Sep 16 17:06 bot-polymarket-elon-semanal
+drwxr-xr-x  5 1000 1000   4096 Aug 30 08:30 bot-polymarket-elon-v2
+drwxr-xr-x  4 root root   4096 Sep 14 01:00 bot-polymarket-trump
+drwxr-xr-x  5 root root   4096 Sep 16 09:00 bot-polymarket-zelenskyy
+-rw-r--r--  1 root root   2818 Aug 18 14:17 check_abiertas2.py
+-rw-r--r--  1 root root   2337 Aug 18 14:16 check_abiertas.py
+-rw-r--r--  1 root root   2598 Aug 18 14:03 check_estado.py
+-rw-r--r--  1 root root   2765 Aug 18 14:18 check_final.py
+-rw-r--r--  1 root root   1384 Aug 18 16:56 check_ganadoras.py
+-rw-r--r--  1 root root  24040 Aug 30 18:21 check_integral.py
+-rw-r--r--  1 root root  22118 Aug 30 06:49 check_integral.py.bakZB
+-rw-r--r--  1 root root   2118 Aug 18 14:05 check_ordenes.py
+-rw-r--r--  1 root root   2476 Aug 18 14:16 check_posiciones.py
+-rw-r--r--  1 root root   6071 Sep 13 20:30 check_salud.py
+-rw-r--r--  1 root root   6066 Aug 30 18:11 check_salud.py.bak_salud_20260913_203049
+-rw-r--r--  1 root root   1294 Aug 18 14:04 check_ventanas2.py
+-rw-r--r--  1 root root   1518 Aug 18 17:37 check_ventanas_ahora.py
+-rw-r--r--  1 root root   1235 Aug 18 14:04 check_ventanas.py
+-rw-r--r--  1 root root  27505 Sep 16 07:01 cierres_anticipados.json
+-rw-r--r--  1 root root 292728 Sep 16 17:24 combos_estado.bak.json
+-rw-r--r--  1 root root 292422 Sep 16 17:24 combos_estado.json
+-rw-r--r--  1 root root 112277 Sep 10 14:19 combos_estado.pre_v127_20260911_173643.json
+-rw-r--r--  1 root root 117345 Sep 11 17:55 combos_estado.pre_v1281_20260911_180512.json
+-rw-r--r--  1 root root 116764 Sep 11 17:47 combos_estado.pre_v128_20260911_174722.json
+-rw-r--r--  1 root root 117504 Sep 11 18:15 combos_estado.pre_v1282_20260911_201116.json
+
+--- [2] resumen del estado ---
+claves del estado:
+  modo: AUTO
+  trades_copiados: list len=2
+  historial: list len=77
+  stake: 5.0
+  combos_rfq: dict len=3
+  intervalo_min: 10
+  chat_id: 250818720
+  proximo_paso_ts: 1789580068.666971
+  stake_mode: AUTO
+  max_ops_dia: 10
+  prob_min_auto: 0.65
+  ultima_auditoria: 2026-09-16T15:59:58.645165+00:00
+  ultimo_auditoria_resumen: dict len=8
+  reclamos_avisados: dict len=11
+  _cura_info: dict len=6
+  descartadas: list len=3
+  copy: dict len=6
+  copy_señales: list len=25
+
+copy_señales: 25
+primeras 2 (crudas):
+   {"dia": "2026-09-12", "ts": 1789193922, "ts_fill": 1789191417, "retraso_s": 2505, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "Chelsea FC vs. Hull City AFC: O/U 4.5", "slug": "epl-che-hul-2026-09-12-total-4pt5", "event_slug": "epl-che-hul-2026-09-12-more-markets", "condition_id": "0x8d94e85af1c1126a8a1daffc0c012ee8c8403163c6ef5e718489a6d29527e93a", "token": "51550238544691631352110051616611261154133483935506436721452882753448481822700", "outcome": "Under", "precio_trader": 0.71, "cuota_trader": 1.41, "usd_trader": 32.88, "size_trader": 45.65, "precio_nuestro": 0.725, "cuota_nuestro": 1.38, "deriva_pts": 1.5, "deporte": true, "en_rango_combo": tru
+   {"dia": "2026-09-12", "ts": 1789200249, "ts_fill": 1789200102, "retraso_s": 147, "trader": "0x2c335066", "wallet": "0x2c335066fe58fe9237c3d3dc7b275c2a034a0563", "titulo": "LoL: Hanwha Life Esports vs T1 (BO5) - LCK Playoffs", "slug": "lol-hle1-t1-2026-09-12", "event_slug": "lol-hle1-t1-2026-09-12", "condition_id": "0x1d38c2172d410b833739d7cc834e62e07b0a82d631f0f2c89f10a9fbfa6f3960", "token": "48695112555672485727777248446585038036780756395855109591575492967792057631373", "outcome": "Hanwha Life Esports", "precio_trader": 0.7700000014, "cuota_trader": 1.3, "usd_trader": 2649.4, "size_trader": 3423.6072, "precio_nuestro": 0.7775, "cuota_nuestro": 1.29, "deriva_pts": 0.75, "deporte": true, "en_
+últimas 3 (crudas):
+   {"dia": "2026-09-16", "ts": 1789516914, "ts_fill": 1789516845, "retraso_s": 69, "trader": "wr0ngw4yb3tt0r", "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5", "titulo": "Detroit Tigers vs. Toronto Blue Jays", "slug": "mlb-det-tor-2026-09-15", "event_slug": "mlb-det-tor-2026-09-15", "condition_id": "0x6a453e49c6b8c31a63577ed281cabb63a03aed950ce4b8bdf5fea63ea780a7fb", "token": "23711555269256616088708721825628865270883705784691951675539133720708323000572", "outcome": "Toronto Blue Jays", "precio_trader": 0.53, "cuota_trader": 1.89, "usd_trader": 5203.31, "size_trader": 10468.2836, "precio_nuestro": 0.535, "cuota_nuestro": 1.87, "deriva_pts": 0.5, "deporte": true, "en_rango_combo": true, "
+   {"dia": "2026-09-16", "ts": 1789516914, "ts_fill": 1789516821, "retraso_s": 93, "trader": "wr0ngw4yb3tt0r", "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5", "titulo": "Atlanta Braves vs. Chicago Cubs: O/U 7.5", "slug": "mlb-atl-chc-2026-09-15-total-7pt5", "event_slug": "mlb-atl-chc-2026-09-15", "condition_id": "0x7ae51e18a9f14e4344fa2475f22d61fd2fe770e7cd0db32568e340961e39a764", "token": "33722032115692714491966895658936522258400123590066601362313367639951302624374", "outcome": "Over", "precio_trader": 0.48, "cuota_trader": 2.08, "usd_trader": 1716.74, "size_trader": 3577.0615, "precio_nuestro": 0.465, "cuota_nuestro": 2.15, "deriva_pts": -1.5, "deporte": true, "en_rango_combo": true,
+   {"dia": "2026-09-16", "ts": 1789516914, "ts_fill": 1789516821, "retraso_s": 93, "trader": "wr0ngw4yb3tt0r", "wallet": "0x224a89dbe0db0d6124b335edabd15b3f877da3d5", "titulo": "Spread: Chicago Cubs (-1.5)", "slug": "mlb-atl-chc-2026-09-15-spread-home-1pt5", "event_slug": "mlb-atl-chc-2026-09-15", "condition_id": "0xef5ce62d62261b0bd5cf380e71d3e6a151993e40487ccf0e52fec99fb96d1ba0", "token": "906218455560768613256288428780100856641642907017241045896847395902152921000", "outcome": "Chicago Cubs", "precio_trader": 0.38, "cuota_trader": 2.63, "usd_trader": 750.0, "size_trader": 1973.68, "precio_nuestro": 0.36, "cuota_nuestro": 2.78, "deriva_pts": -2.0, "deporte": true, "en_rango_combo": false, "tx"
+  por trader: {'0x2c335066': 15, 'wr0ngw4yb3tt0r': 8, 'BreakTheBank': 2}
+
+historial: 77 entradas; últimas 2:
+   {"tipo": "combo_rfq", "copiado_en": "2026-09-15T23:50:39.822960+00:00", "question": "Los Angeles Dodgers vs. Cincinnati Red + Philadelphia Phillies vs. Washington N", "n_legs": 2, "legs": [{"question": "Los Angeles Dodgers vs. Cincinnati Reds", "slug": "mlb-lad-cin-2026-09-15", "yes_price": 0.915, "position_id": "486097766372753200744856661117889811101611354975166197926912589409938309120", "condition_id": "0xcaa3bf3f03adbd574e74476d20656908131f203fa7ade91791fe1e672cabfb96", "outcome": "Los Angel
+   {"tipo": "combo_rfq", "copiado_en": "2026-09-16T13:13:54.980727+00:00", "question": "Will FC Barcelona win on 2026-09-16? + Valencia: Maria Garcia Cid vs Yasmine ", "n_legs": 2, "legs": [{"question": "Will FC Barcelona win on 2026-09-16?", "slug": "lal-bar-rrc-2026-09-16-bar", "yes_price": 0.915, "position_id": "1258474286581589365799989799356803025247776868254956029548507069126235127808", "condition_id": "0xc31f58938890ea7754114905a40b6ba65a837371d435709d4a253147732bcb7a", "outcome": "Yes"}, {"
+
+--- [3] informes 📡 / copy en logs ---
+### /var/log/poly-combos-bot.log  (1125950 B)
+[14:37:20]   [copy] tope diario de señales (5) alcanzado
+[14:46:25]   [copy] tope diario de señales (5) alcanzado
+[15:01:31]   [copy] tope diario de señales (5) alcanzado
+[15:07:35]   [copy] tope diario de señales (5) alcanzado
+[15:10:36]   [copy] tope diario de señales (5) alcanzado
+[15:49:58]   [copy] tope diario de señales (5) alcanzado
+[15:52:58]   [copy] tope diario de señales (5) alcanzado
+[15:56:02]   [copy] tope diario de señales (5) alcanzado
+[16:02:03]   [copy] tope diario de señales (5) alcanzado
+[16:14:38]   [copy] tope diario de señales (5) alcanzado
+[16:17:38]   [copy] tope diario de señales (5) alcanzado
+[16:20:39]   [copy] tope diario de señales (5) alcanzado
+[16:32:44]   [copy] tope diario de señales (5) alcanzado
+[16:35:48]   [copy] tope diario de señales (5) alcanzado
+[16:38:49]   [copy] tope diario de señales (5) alcanzado
+[16:41:49]   [copy] tope diario de señales (5) alcanzado
+[16:44:53]   [copy] tope diario de señales (5) alcanzado
+[16:50:54]   [copy] tope diario de señales (5) alcanzado
+[16:53:54]   [copy] tope diario de señales (5) alcanzado
+[16:56:58]   [copy] tope diario de señales (5) alcanzado
+[16:59:58]   [copy] tope diario de señales (5) alcanzado
+[17:02:59]   [copy] tope diario de señales (5) alcanzado
+[17:06:02]   [copy] tope diario de señales (5) alcanzado
+[17:09:03]   [copy] tope diario de señales (5) alcanzado
+[17:12:03]   [copy] tope diario de señales (5) alcanzado
+[17:15:07]   [copy] tope diario de señales (5) alcanzado
+[17:18:07]   [copy] tope diario de señales (5) alcanzado
+[17:21:07]   [copy] tope diario de señales (5) alcanzado
+[17:24:08]   [copy] señal TARDÍA San Francisco Giants vs. St. Louis Cardinals: él 0.520 → ahora 0.575 (+5.5 pts) · no cuenta
+[17:24:08]   [copy] tope diario de señales (5) alcanzado
+### tail de /var/log/poly-combos-bot.log:
+[17:14:25] [COMBO] 2 legs · cuota est. 1.42 · stake $9.23 (AUTO)
+[17:14:25]   · Will Club Atlético de Madrid win on 2026-09-16? (p=0.76 vol=$537k)
+[17:14:25]   · Will Bayer 04 Leverkusen win on 2026-09-16? (p=0.94 vol=$197k)
+[17:14:26]   RFQ create -> 200 {"rfq_id":"rfq-55140889b1e6ad35c801ab3d","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789578871721,"request":{"rfq_id":"rfq-55140889b1e6ad35c801ab3d",
+[17:14:26]   quote: cuota=1.37 blended=0.729 shares=12.49 total=$9.23
+[17:14:26]   ⚖️ ventaja insuficiente: RFQ 1.37 vs mercado ~1.42 = EV -3.5% < 5% exigidos — NO se acepta ($0)
+[17:14:26]   ❌ combo: ventaja_-3.5_insuficiente
+[17:15:07]   [copy] tope diario de señales (5) alcanzado
+[17:18:07]   [copy] tope diario de señales (5) alcanzado
+[17:21:07]   [copy] tope diario de señales (5) alcanzado
+[17:24:08]   [copy] señal TARDÍA San Francisco Giants vs. St. Louis Cardinals: él 0.520 → ahora 0.575 (+5.5 pts) · no cuenta
+[17:24:08]   [copy] tope diario de señales (5) alcanzado
+[17:24:28] [AUTO] pasada (combos RFQ v11)
+[17:24:29]   pagina 1: +50 mercados, 0 legs de deportes
+[17:24:30]   pagina 2: +50 mercados, 0 legs de deportes
+[17:24:30]   pagina 3: +50 mercados, 12 legs de deportes
+[17:24:30]   pagina 4: +50 mercados, 50 legs de deportes
+[17:24:31]   pagina 5: +50 mercados, 94 legs de deportes
+[17:24:31] [COMBO] 2 legs · cuota est. 1.42 · stake $9.23 (AUTO)
+[17:24:31]   · Will Club Atlético de Madrid win on 2026-09-16? (p=0.76 vol=$537k)
+[17:24:31]   · Will Bayer 04 Leverkusen win on 2026-09-16? (p=0.94 vol=$197k)
+[17:24:32]   RFQ create -> 200 {"rfq_id":"rfq-30a72084301d57bccb48d7e3","status":"AWAITING_REQUESTER_ACCEPTANCE","expires_at":1789579477239,"request":{"rfq_id":"rfq-30a72084301d57bccb48d7e3",
+[17:24:32]   quote: cuota=1.41 blended=0.710 shares=12.81 total=$9.23
+[17:24:32]   ⚖️ ventaja insuficiente: RFQ 1.41 vs mercado ~1.42 = EV -0.7% < 5% exigidos — NO se acepta ($0)
+[17:24:32]   ❌ combo: ventaja_-0.7_insuficiente
+### journal (últimas líneas con copy/📡/error):
+Sep 11 18:05:13 bot-poly systemd[1]: Stopping poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)...
+Sep 11 18:05:13 bot-poly systemd[1]: Stopped poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 11 18:05:16 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 11 20:11:18 bot-poly systemd[1]: Stopping poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)...
+Sep 11 20:11:18 bot-poly systemd[1]: Stopped poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 11 20:11:20 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 11 21:19:49 bot-poly systemd[1]: Stopping poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)...
+Sep 11 21:19:49 bot-poly systemd[1]: Stopped poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 11 21:19:51 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 11 22:04:08 bot-poly systemd[1]: Stopping poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)...
+Sep 11 22:04:08 bot-poly systemd[1]: Stopped poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 11 22:04:08 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 12 06:05:48 bot-poly systemd[1]: Stopping poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)...
+Sep 12 06:05:48 bot-poly systemd[1]: Stopped poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 12 06:05:48 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 12 06:06:01 bot-poly systemd[1]: Stopping poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)...
+Sep 12 06:06:01 bot-poly systemd[1]: Stopped poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 12 06:06:01 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 12 06:16:34 bot-poly systemd[1]: Stopping poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)...
+Sep 12 06:16:34 bot-poly systemd[1]: Stopped poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 12 06:16:34 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 13 07:08:53 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 13 07:58:10 bot-poly systemd[1]: Stopping poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading)...
+Sep 13 07:58:10 bot-poly systemd[1]: Stopped poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+Sep 13 07:58:10 bot-poly systemd[1]: Started poly-combos-bot.service - Poly Combos Bot (Telegram copy-trading).
+
+=== FIN combos_20260916_172520.log ===
