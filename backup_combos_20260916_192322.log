@@ -1,0 +1,72 @@
+=== BACKUP COMBOS — 2026-09-16 19:23:22 UTC — bot-poly ===
+### 1) copia local en el servidor → /root/backups_combos/20260916_192322_v1292
+total 752
+drwxr-xr-x 2 root root   4096 Sep 16 19:23 .
+drwxr-xr-x 3 root root   4096 Sep 16 19:23 ..
+-rw-r--r-- 1 root root 147756 Sep 16 19:23 bot_log_tail2000.txt
+-rw-r--r-- 1 root root 313898 Sep 16 19:21 combos_estado.json
+-rw-r--r-- 1 root root 288885 Sep 16 18:53 poly_combos_bot_v1292.py
+-rw-r--r-- 1 root root     51 Sep 16 19:23 servicio.txt
+--- md5 de la copia local:
+92786076f4bf05bb7b79e339f887a6a4  poly_combos_bot_v1292.py
+17c818bd0ecdbd0ee39ff833e1948fa4  combos_estado.json
+--- backups anteriores en /root/backups_combos/:
+20260916_192322_v1292
+
+limpio: sin patrones de claves/tokens
+
+### 3) diagnóstico poly-backup-github (está FAILED — ¿reutilizable como backup automático?)
+× poly-backup-github.service - Backup semanal del código a GitHub
+     Loaded: loaded (/etc/systemd/system/poly-backup-github.service; static)
+     Active: failed (Result: exit-code) since Wed 2026-09-16 18:00:41 UTC; 1h 22min ago
+TriggeredBy: ● poly-backup-github.timer
+             ● poly-backup-2h.timer
+    Process: 334684 ExecStart=/root/backup_github.sh (code=exited, status=1/FAILURE)
+   Main PID: 334684 (code=exited, status=1/FAILURE)
+        CPU: 26.822s
+
+Sep 16 18:00:01 bot-poly systemd[1]: Starting poly-backup-github.service - Backup semanal del código a GitHub...
+--- unit:
+[Unit]
+Description=Backup semanal del código a GitHub
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/root/backup_github.sh
+StandardOutput=append:/var/log/backup-github.log
+StandardError=append:/var/log/backup-github.log
+--- últimas líneas de su journal:
+Sep 16 14:00:34 bot-poly systemd[1]: Failed to start poly-backup-github.service - Backup semanal del código a GitHub.
+Sep 16 14:00:34 bot-poly systemd[1]: poly-backup-github.service: Consumed 24.862s CPU time.
+Sep 16 16:00:00 bot-poly systemd[1]: Starting poly-backup-github.service - Backup semanal del código a GitHub...
+Sep 16 16:00:32 bot-poly systemd[1]: poly-backup-github.service: Main process exited, code=exited, status=1/FAILURE
+Sep 16 16:00:32 bot-poly systemd[1]: poly-backup-github.service: Failed with result 'exit-code'.
+Sep 16 16:00:32 bot-poly systemd[1]: Failed to start poly-backup-github.service - Backup semanal del código a GitHub.
+Sep 16 16:00:32 bot-poly systemd[1]: poly-backup-github.service: Consumed 22.926s CPU time.
+Sep 16 18:00:01 bot-poly systemd[1]: Starting poly-backup-github.service - Backup semanal del código a GitHub...
+Sep 16 18:00:41 bot-poly systemd[1]: poly-backup-github.service: Main process exited, code=exited, status=1/FAILURE
+Sep 16 18:00:41 bot-poly systemd[1]: poly-backup-github.service: Failed with result 'exit-code'.
+Sep 16 18:00:41 bot-poly systemd[1]: Failed to start poly-backup-github.service - Backup semanal del código a GitHub.
+Sep 16 18:00:41 bot-poly systemd[1]: poly-backup-github.service: Consumed 26.822s CPU time.
+
+### 4) instantánea del estado (resumen legible)
+bandera backfill (copy_ranking_v1): True
+MEMORIA 🧠 — 3 wallets:
+   · BreakTheBank · 2 señ · 100.0% · $11.832 · ROI 118.3%
+   · 0x2c335066 · 15 señ · 60.0% · $18.408 · ROI 24.5%
+   · wr0ngw4yb3tt0r · 8 señ · 25.0% · $-18.011 · ROI -45.0%
+copy_señales: 32 (hoy 2026-09-16: 12 nuevas)
+vigilados: [('0x2c335066', 'veterano'), ('pleaseplease123', 'novato')]
+modo guardado: OFF
+trades_copiados: 4 (4 sin resolver)
+
+### 5) publicación en GitHub (rama arena/01a058fe-bots-backup → backups_completos/20260916_192322_v1292/)
+17c818bd0ecdbd0ee39ff833e1948fa4  combos_estado.json
+92786076f4bf05bb7b79e339f887a6a4  poly_combos_bot_v1292.py
+✅ publicado en la rama de backups
+--- verificación por raw (md5.txt):
+17c818bd0ecdbd0ee39ff833e1948fa4  combos_estado.json
+92786076f4bf05bb7b79e339f887a6a4  poly_combos_bot_v1292.py
+=== FIN backup_combos_20260916_192322.log ===
