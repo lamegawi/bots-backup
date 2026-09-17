@@ -1,0 +1,27 @@
+=== SALDO REAL ESTILO UI · 20260917_192010 UTC ===
+== 1. data-api /value ==
+  $$35.3819
+
+== 2. data-api /positions (desglosado) ==
+  activas (cur>0): 4 → $29.4552
+  redeemable:      40 → init=$197.6839, cur=$0.0000
+  zero value:      0
+
+== 3. CÁLCULOS según lo que hace la UI ==
+  data-api value:          $35.3819
+  suma currentValue activas: $29.4552
+  suma initialValue redeemable: $197.6839
+
+  Si UI muestra 'Cartera total' = value + activas cur value:
+     $64.8371
+  Si UI muestra 'Disponible' = solo value + parte redeemable liquidada:
+     $35.3819
+  Si UI muestra 'Posiciones' = suma activas cur value:
+     $29.4552
+
+  Si sumamos TODO: value + activas + redeemable init = $262.5210
+  (Este sería el máximo si redimes TODO)
+
+== 4. USDC.e on-chain (vía RPC) ==
+  USDC.e: $0.0000
+  CTF: $0.0000
