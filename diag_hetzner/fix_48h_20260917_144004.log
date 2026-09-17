@@ -1,0 +1,84 @@
+=== FIX BOT 48H: detectar mercado Sept 17-19 · 20260917_144004 UTC ===
+
+== 1. ¿Cómo carga mercados el bot 48h? ==
+78:    for i in range(0, kmax + 1):
+95:    for i in range(1, pasos + 1):
+219:    for t in range(9, len(datos) - 2):
+306:# en 48h) cuando Musk se mueve realmente +-40. El modelo compraba
+337:    for _ in range(k):
+
+== 2. ¿Cómo carga mercados el semanal? (referencia) ==
+11:VENTANA = "semanal"
+40:    for i in range(1, k + 1):
+81:    return [round(stake_inicial * (factor ** i), 2) for i in range(pasos)]
+86:    """Regla 'ventaja' (semanal): p_modelo ≥ precio + EDGE_MIN, con filtros."""
+
+== 3. Buscar el archivo que refresca mercados ==
+/opt/polymarket/bot-polymarket-elon/mercado_polymarket.py
+  mercado_polymarket.py: hace fetch de mercados
+/opt/polymarket/bot-polymarket-elon/operar_real.py
+  operar_real.py: hace fetch de mercados
+/opt/polymarket/bot-polymarket-elon/papel.py
+  papel.py: hace fetch de mercados
+/opt/polymarket/bot-polymarket-elon/scraper_tweets_pm.py
+  scraper_tweets_pm.py: hace fetch de mercados
+
+== 4. ¿De dónde viene la lista de mercados? ==
+/opt/polymarket/bot-polymarket-elon/mercado_activo.json
+{
+    "actualizado": "2026-09-17T14:35:16.613614+00:00",
+    "mercados": [
+        {
+            "id": "986503",
+            "titulo": "Elon Musk # tweets September 11 - September 18, 2026?",
+            "slug": "elon-musk-of-tweets-september-11-september-18-2026",
+            "cerrado": false,
+            "volumen": 1911930.3078049999,
+            "endDate": "2026-09-18T16:00:00Z",
+            "inicio_iso": "2026-09-11T12:00:00-04:00",
+            "fin_iso": "2026-09-18T12:00:00-04:00",
+            "duracion_h": 168.0,
+            "tipo": "semanal",
+            "bins": [
+                {
+                    "titulo": "<20",
+                    "lo": 0,
+                    "hi": 19,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 6835.5
+                },
+                {
+                    "titulo": "20-39",
+                    "lo": 20,
+                    "hi": 39,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 167.0
+                },
+                {
+                    "titulo": "40-59",
+                    "lo": 40,
+                    "hi": 59,
+                    "precio_yes": 0.0,
+                    "precio_no": 1.0,
+                    "cuota_yes": null,
+                    "cuota_no": 1.0,
+                    "volumen": 1335.33
+                },
+                {
+                    "titulo": "60-79",
+                    "lo": 60,
+                    "hi": 79,
+                    "precio_yes": 0.0,
+
+== 5. Buscar mercados de Polymarket API directamente ==
+Total mercados activos: 1000
+
+Mercados Elon 48h encontrados en CLOB: 0
+
+Eventos Elon en Gamma: 0
