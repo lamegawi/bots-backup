@@ -1,0 +1,41 @@
+=== FIX SLUG AÑO EN mercado_polymarket.py · 20260917_150147 UTC ===
+Backup: /opt/polymarket/bot-polymarket-elon/mercado_polymarket.py.bak_slug_20260917_150147
+
+== Líneas ANTES ==
+119:        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}")
+123:        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}")
+126:        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.year}")
+
+== Líneas DESPUÉS ==
+119:        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}-{d2.year}")
+123:        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}-{d2.year}")
+126:        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.year}")
+
+== Verificar sintaxis ==
+  ✅ compila
+
+== Refrescar mercado_activo.json ==
+■ Elon Musk # tweets September 11 - September 18, 2026?  [ABIERTO]  tipo: semanal  volumen: $1,941,836
+■ Elon Musk # tweets September 17 - September 19, 2026?  [ABIERTO]  tipo: 48h  volumen: $49,944
+■ Elon Musk # tweets September 15 - September 22, 2026?  [ABIERTO]  tipo: semanal  volumen: $490,523
+■ Elon Musk # tweets September 18 - September 25, 2026?  [ABIERTO]  tipo: semanal  volumen: $119,327
+■ Elon Musk # tweets February 21 - February 23, 2026?  [CERRADO]  tipo: 48h  volumen: $3,208,138
+■ Elon Musk # tweets September 14 - September 16, 2026?  [CERRADO]  tipo: 48h  volumen: $551,382
+
+== Verificar Sept 17-19 detectado ==
+Actualizado: 2026-09-17T15:02:06.018697+00:00
+Total: 7
+
+  >>> ENCONTRADO: Elon Musk # tweets September 17 - September 19, 2026?
+      tipo: 48h | dur: 48.0h
+      slug: elon-musk-of-tweets-september-17-september-19-2026
+      fin_iso: 2026-09-19T12:00:00-04:00
+
+TODOS los 48h:
+  [ABIERTO] Elon Musk # tweets September 17 - September 19, 2026?
+  [CERRADO] Elon Musk # tweets February 21 - February 23, 2026?
+  [CERRADO] Elon Musk # tweets September 14 - September 16, 2026?
+
+== Aplicar mismo fix en semanal ==
+  ✅ semanal compila
+  ✅ mensual compila
