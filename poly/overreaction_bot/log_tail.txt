@@ -1,333 +1,198 @@
-19:30:29 │ INFO     │ 📉 SPIKE: Elche CF vs. Real Madrid CF: Team to Take First Co... | -14.5% | 0.585 → 0.500
-19:33:16 │ INFO     │ 📊 100 mercados monitorizados
-19:34:00 │ INFO     │ 🔍 Evaluando spike: Exact Score: San Martin de San Juan 0 - 3 CSD Tris... | DOWN -29.4%
-19:34:00 │ INFO     │    Precio actual: 0.013 | Corrección: 4.2% | Edge: 4.2%
-19:34:00 │ INFO     │    ❌ Edge insuficiente (4.2% < 8%)
-19:36:04 │ INFO     │ 📊 100 mercados monitorizados
-19:38:51 │ INFO     │ 📊 100 mercados monitorizados
-19:39:35 │ INFO     │ 🔍 Evaluando spike: Exact Score: San Martin de San Juan 2 - 3 CSD Tris... | DOWN -39.4%
-19:39:36 │ INFO     │    Precio actual: 0.009 | Corrección: -15.0% | Edge: 15.0%
-19:39:36 │ INFO     │    ❌ Precio extremo: 0.009
-19:39:37 │ INFO     │ 🔍 Evaluando spike: Exact Score: San Martin de San Juan 3 - 3 CSD Tris... | DOWN -56.2%
-19:39:37 │ INFO     │    Precio actual: 0.006 | Corrección: -14.3% | Edge: 14.3%
-19:39:37 │ INFO     │    ❌ Precio extremo: 0.006
-19:41:41 │ INFO     │ 📊 100 mercados monitorizados
-19:42:28 │ INFO     │ 📊 Ciclo #1125 | 100 mercados | 0 spikes nuevos | 23 pendientes | 0 resueltos
-19:44:28 │ INFO     │ 📊 100 mercados monitorizados
-19:45:13 │ INFO     │ 🔍 Evaluando spike: RKS Rakow Czestochowa vs. Zaglebie Lubin: O/U 7.5 ... | DOWN -99.0%
-19:45:13 │ INFO     │    Precio actual: 0.005 | Corrección: 0.0% | Edge: 0.0%
-19:45:13 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-19:47:17 │ INFO     │ 📊 100 mercados monitorizados
-19:47:54 │ INFO     │ 📉 SPIKE: Exact Score: Independiente Rivadavia 3 - 3 Atletic... | -18.4% | 0.015 → 0.013
-19:50:06 │ INFO     │ 📊 100 mercados monitorizados
-19:52:54 │ INFO     │ 📊 100 mercados monitorizados
-19:55:41 │ INFO     │ 📊 100 mercados monitorizados
-19:58:28 │ INFO     │ 📊 100 mercados monitorizados
-20:01:14 │ INFO     │ 📊 100 mercados monitorizados
-20:04:12 │ INFO     │ 📊 100 mercados monitorizados
-20:04:40 │ INFO     │ 📉 SPIKE: Exact Score: Shōnan Bellmāre 3 - 3 Blaublitz Akita... | -10.8% | 0.029 → 0.025
-20:04:58 │ INFO     │ 🔍 Evaluando spike: Exact Score: FBC Melgar 3 - 3 Sport Boys Associati... | DOWN -87.3%
-20:04:59 │ INFO     │    Precio actual: 0.030 | Corrección: 0.0% | Edge: 0.0%
-20:04:59 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-20:07:03 │ INFO     │ 📊 100 mercados monitorizados
-20:09:50 │ INFO     │ 📊 100 mercados monitorizados
-20:12:38 │ INFO     │ 📊 100 mercados monitorizados
-20:13:22 │ INFO     │ 🔍 Evaluando spike: Exact Score: Pohang Steelers FC 3 - 3 FC Seoul?... | DOWN -39.6%
-20:13:23 │ INFO     │    Precio actual: 0.030 | Corrección: -1.6% | Edge: 1.6%
-20:13:23 │ INFO     │    ❌ Edge insuficiente (1.6% < 8%)
-20:15:26 │ INFO     │ 📊 100 mercados monitorizados
-20:15:47 │ INFO     │ 📉 SPIKE: Falkirk FC vs. Heart of Midlothian FC: O/U 5.5... | -60.0% | 0.085 → 0.034
-20:16:12 │ INFO     │ 🔍 Evaluando spike: Worthing FC vs. Hornchurch FC: 1st Half O/U 1.5... | UP +54.3%
-20:16:13 │ INFO     │    Precio actual: 0.004 | Corrección: 99.4% | Edge: 99.4%
-20:16:13 │ INFO     │    ❌ Precio extremo: 0.997
-20:16:14 │ INFO     │ 🔍 Evaluando spike: Crusaders FC vs. Dungannon Swifts: O/U 2.5... | UP +12.2%
-20:16:14 │ INFO     │    Precio actual: 0.335 | Corrección: 48.1% | Edge: 48.1%
-20:16:14 │ INFO     │    ✅ OPORTUNIDAD: NO @ 0.665 | $25.00 | Edge: 48.1%
-20:16:16 │ INFO     │ 🔍 Evaluando spike: Crusaders FC vs. Dungannon Swifts: O/U 3.5... | UP +40.8%
-20:16:17 │ INFO     │    Precio actual: 0.325 | Corrección: 35.0% | Edge: 35.0%
-20:16:17 │ INFO     │    ✅ OPORTUNIDAD: NO @ 0.675 | $25.00 | Edge: 35.0%
-20:18:22 │ INFO     │ 📊 100 mercados monitorizados
-20:18:56 │ INFO     │ 📉 SPIKE: Exact Score: Jeonbuk Hyundai Motors FC 0 - 3 Gwang... | -10.6% | 0.027 → 0.025
-20:21:12 │ INFO     │ 📊 100 mercados monitorizados
-20:24:00 │ INFO     │ 📊 100 mercados monitorizados
-20:24:47 │ INFO     │ 📊 Ciclo #1140 | 100 mercados | 0 spikes nuevos | 21 pendientes | 0 resueltos
-20:26:47 │ INFO     │ 📊 100 mercados monitorizados
-20:27:34 │ INFO     │ 🔍 Evaluando spike: Exact Score: FK Haugesund 0 - 3 Stroemmen IF?... | DOWN -88.6%
-20:27:34 │ INFO     │    Precio actual: 0.019 | Corrección: -25.5% | Edge: 25.5%
-20:27:34 │ INFO     │    ❌ Precio extremo: 0.019
-20:27:35 │ INFO     │ 🔍 Evaluando spike: Exact Score: Raufoss IL 3 - 0 Stroemsgodset IF?... | DOWN -86.3%
-20:27:35 │ INFO     │    Precio actual: 0.024 | Corrección: -21.3% | Edge: 21.3%
-20:27:35 │ INFO     │    ❌ Precio extremo: 0.024
-20:27:36 │ INFO     │ 🔍 Evaluando spike: Exact Score: Stabaek IF 0 - 3 Sogndal Fotball?... | DOWN -86.6%
-20:27:37 │ INFO     │    Precio actual: 0.024 | Corrección: -21.3% | Edge: 21.3%
-20:27:37 │ INFO     │    ❌ Precio extremo: 0.024
-20:29:41 │ INFO     │ 📊 100 mercados monitorizados
-20:29:58 │ INFO     │ 📈 SPIKE: Exact Score: Portadown FC 3 - 1 Linfield FC?... | +17.6% | 0.425 → 0.500
-20:30:02 │ INFO     │ 📉 SPIKE: Exact Score: Everton FC 0 - 3 Wolverhampton Wander... | -14.4% | 0.006 → 0.005
-20:30:30 │ INFO     │ 🔍 Evaluando spike: Exact Score: FBC Melgar 0 - 3 Sport Boys Associati... | DOWN -83.5%
-20:30:31 │ INFO     │    Precio actual: 0.025 | Corrección: 0.0% | Edge: 0.0%
-20:30:31 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-20:30:32 │ INFO     │ 🔍 Evaluando spike: Exact Score: Club Brugge 0 - 3 KRC Genk?... | DOWN -86.8%
-20:30:32 │ INFO     │    Precio actual: 0.024 | Corrección: -23.0% | Edge: 23.0%
-20:30:32 │ INFO     │    ❌ Precio extremo: 0.024
-20:32:36 │ INFO     │ 📊 100 mercados monitorizados
-20:33:20 │ INFO     │ 🔍 Evaluando spike: Exact Score: UD Las Palmas 0 - 3 Burgos CF?... | DOWN -39.6%
-20:33:20 │ INFO     │    Precio actual: 0.022 | Corrección: -26.2% | Edge: 26.2%
-20:33:20 │ INFO     │    ❌ Precio extremo: 0.022
-20:35:24 │ INFO     │ 📊 100 mercados monitorizados
-20:38:11 │ INFO     │ 📊 100 mercados monitorizados
-20:38:55 │ INFO     │ 🔍 Evaluando spike: Exact Score: Modena FC 2018 0 - 3 Empoli FC?... | DOWN -39.6%
-20:38:56 │ INFO     │    Precio actual: 0.022 | Corrección: -26.2% | Edge: 26.2%
-20:38:56 │ INFO     │    ❌ Precio extremo: 0.022
-20:38:57 │ INFO     │ 🔍 Evaluando spike: Exact Score: Manchester City WFC 0 - 3 Liverpool L... | DOWN -89.1%
-20:38:57 │ INFO     │    Precio actual: 0.025 | Corrección: 0.0% | Edge: 0.0%
-20:38:57 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-20:41:01 │ INFO     │ 📊 100 mercados monitorizados
-20:41:45 │ INFO     │ 🔍 Evaluando spike: Exact Score: Puntarenas FC 0 - 3 Escorpiones de Be... | DOWN -70.1%
-20:41:45 │ INFO     │    Precio actual: 0.022 | Corrección: -27.9% | Edge: 27.9%
-20:41:45 │ INFO     │    ❌ Precio extremo: 0.022
-20:43:49 │ INFO     │ 📊 100 mercados monitorizados
-20:43:50 │ INFO     │ 📉 SPIKE: Game Spread: Guiomar Maristany (-4.5) vs Berfu Cen... | -99.9% | 0.500 → 0.001
-20:44:18 │ INFO     │ 📉 SPIKE: Exact Score: Grimsby Town FC 0 - 3 Crawley Town FC... | -13.3% | 0.025 → 0.022
-20:44:36 │ INFO     │ 🔍 Evaluando spike: Middlesbrough FC vs. Millwall FC: 1st Half O/U 1.5... | DOWN -20.3%
-20:44:37 │ INFO     │    Precio actual: 1.000 | Corrección: 88.6% | Edge: 88.6%
-20:44:37 │ INFO     │    ❌ Precio extremo: 1.000
-20:46:40 │ INFO     │ 📊 100 mercados monitorizados
-20:47:14 │ INFO     │ 📉 SPIKE: Exact Score: Gangwon FC 3 - 3 Jeju SK FC?... | -13.2% | 0.025 → 0.021
-20:49:30 │ INFO     │ 📊 100 mercados monitorizados
-20:50:15 │ INFO     │ 🔍 Evaluando spike: Exact Score: LD Alajuelense 0 - 3 Inter San Carlos... | DOWN -87.3%
-20:50:16 │ INFO     │    Precio actual: 0.030 | Corrección: 0.0% | Edge: 0.0%
-20:50:16 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-20:50:17 │ INFO     │ 🔍 Evaluando spike: Exact Score: APS Atrómitos Athinón 3 - 0 PAOK?... | DOWN -51.2%
-20:50:17 │ INFO     │    Precio actual: 0.039 | Corrección: 0.0% | Edge: 0.0%
-20:50:17 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-20:52:21 │ INFO     │ 📊 100 mercados monitorizados
-20:52:27 │ INFO     │ 📈 SPIKE: Exact Score: Kasımpaşa SK 1 - 0 Konyaspor?... | +10.5% | 0.095 → 0.105
-20:53:01 │ INFO     │ 📉 SPIKE: Exact Score: Royal Antwerp FC 3 - 0 Union Saint-Gi... | -11.9% | 0.027 → 0.024
-20:53:09 │ INFO     │ 🔍 Evaluando spike: Exact Score: Águilas Doradas Rionegro 0 - 3 Deport... | DOWN -94.8%
-20:53:09 │ INFO     │    Precio actual: 0.026 | Corrección: 0.0% | Edge: 0.0%
-20:53:09 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-20:53:10 │ INFO     │ 🔍 Evaluando spike: Exact Score: Águilas Doradas Rionegro 1 - 3 Deport... | DOWN -93.8%
-20:53:10 │ INFO     │    Precio actual: 0.031 | Corrección: 0.0% | Edge: 0.0%
-20:53:10 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-20:53:11 │ INFO     │ 🔍 Evaluando spike: Exact Score: Águilas Doradas Rionegro 2 - 3 Deport... | DOWN -93.7%
-20:53:12 │ INFO     │    Precio actual: 0.031 | Corrección: 0.0% | Edge: 0.0%
-20:53:12 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-20:53:13 │ INFO     │ 🔍 Evaluando spike: Exact Score: Águilas Doradas Rionegro 3 - 3 Deport... | DOWN -93.8%
-20:53:13 │ INFO     │    Precio actual: 0.031 | Corrección: 0.0% | Edge: 0.0%
-20:53:13 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-20:55:17 │ INFO     │ 📊 100 mercados monitorizados
-20:58:04 │ INFO     │ 📊 100 mercados monitorizados
-21:00:53 │ INFO     │ 📊 100 mercados monitorizados
-21:01:37 │ INFO     │ 🔍 Evaluando spike: Elche CF vs. Real Madrid CF: Team to Take First Co... | DOWN -14.5%
-21:01:38 │ INFO     │    Precio actual: 0.070 | Corrección: -86.0% | Edge: 86.0%
-21:01:38 │ INFO     │    ✅ OPORTUNIDAD: YES @ 0.070 | $43.00 | Edge: 86.0%
-21:03:43 │ INFO     │ 📊 100 mercados monitorizados
-21:06:29 │ INFO     │ 📊 100 mercados monitorizados
-21:07:15 │ INFO     │ 📊 Ciclo #1155 | 100 mercados | 0 spikes nuevos | 11 pendientes | 0 resueltos
-21:09:16 │ INFO     │ 📊 100 mercados monitorizados
-21:12:03 │ INFO     │ 📊 100 mercados monitorizados
-21:12:07 │ INFO     │ 📉 SPIKE: Will Al-Fateh be relegated from the 2026-27 Saudi ... | -22.8% | 0.246 → 0.190
-21:14:50 │ INFO     │ 📊 100 mercados monitorizados
-21:17:37 │ INFO     │ 📊 100 mercados monitorizados
-21:18:21 │ INFO     │ 🔍 Evaluando spike: Exact Score: Independiente Rivadavia 3 - 3 Atletic... | DOWN -18.4%
-21:18:21 │ INFO     │    Precio actual: 0.018 | Corrección: 44.0% | Edge: 44.0%
-21:18:21 │ INFO     │    ❌ Precio extremo: 0.018
-21:20:25 │ INFO     │ 📊 100 mercados monitorizados
-21:23:13 │ INFO     │ 📊 100 mercados monitorizados
-21:23:15 │ INFO     │ 📉 SPIKE: Will Meta (META) finish week of September 14 above... | -27.3% | 0.502 → 0.365
-21:26:01 │ INFO     │ 📊 100 mercados monitorizados
-21:28:48 │ INFO     │ 📊 100 mercados monitorizados
-21:31:35 │ INFO     │ 📊 100 mercados monitorizados
-21:34:24 │ INFO     │ 📊 100 mercados monitorizados
-21:35:08 │ INFO     │ 🔍 Evaluando spike: Exact Score: Shōnan Bellmāre 3 - 3 Blaublitz Akita... | DOWN -10.8%
-21:35:08 │ INFO     │    Precio actual: 0.022 | Corrección: -13.7% | Edge: 13.7%
-21:35:08 │ INFO     │    ❌ Precio extremo: 0.022
-21:37:12 │ INFO     │ 📊 100 mercados monitorizados
-21:39:58 │ INFO     │ 📊 100 mercados monitorizados
-21:42:45 │ INFO     │ 📊 100 mercados monitorizados
-21:45:31 │ INFO     │ 📊 100 mercados monitorizados
-21:46:15 │ INFO     │ 🔍 Evaluando spike: Falkirk FC vs. Heart of Midlothian FC: O/U 5.5... | DOWN -60.0%
-21:46:16 │ INFO     │    Precio actual: 0.001 | Corrección: -98.5% | Edge: 98.5%
-21:46:16 │ INFO     │    ❌ Precio extremo: 0.001
-21:48:19 │ INFO     │ 📊 100 mercados monitorizados
-21:49:03 │ INFO     │ 🔍 Evaluando spike: Exact Score: Jeonbuk Hyundai Motors FC 0 - 3 Gwang... | DOWN -10.6%
-21:49:03 │ INFO     │    Precio actual: 0.015 | Corrección: -36.7% | Edge: 36.7%
-21:49:03 │ INFO     │    ❌ Precio extremo: 0.015
-21:49:06 │ INFO     │ 📊 Ciclo #1170 | 100 mercados | 0 spikes nuevos | 9 pendientes | 0 resueltos
-21:51:07 │ INFO     │ 📊 100 mercados monitorizados
-21:53:54 │ INFO     │ 📊 100 mercados monitorizados
-21:54:20 │ INFO     │ 📈 SPIKE: Exact Score: Palermo FC 0 - 3 Calcio Padova?... | +29.7% | 0.039 → 0.050
-21:56:41 │ INFO     │ 📊 100 mercados monitorizados
-21:59:30 │ INFO     │ 📊 100 mercados monitorizados
-21:59:50 │ INFO     │ 📉 SPIKE: Exact Score: Londrina EC 3 - 3 AA Ponte Preta?... | -16.7% | 0.006 → 0.005
-22:00:15 │ INFO     │ 🔍 Evaluando spike: Exact Score: Portadown FC 3 - 1 Linfield FC?... | UP +17.6%
-22:00:15 │ INFO     │    Precio actual: 0.001 | Corrección: 99.9% | Edge: 99.9%
-22:00:15 │ INFO     │    ❌ Precio extremo: 1.000
-22:00:16 │ INFO     │ 🔍 Evaluando spike: Exact Score: Everton FC 0 - 3 Wolverhampton Wander... | DOWN -14.4%
-22:00:17 │ INFO     │    Precio actual: 0.006 | Corrección: 9.1% | Edge: 9.1%
-22:00:17 │ INFO     │    ❌ Precio extremo: 0.006
-22:02:20 │ INFO     │ 📊 100 mercados monitorizados
-22:02:53 │ INFO     │ 📉 SPIKE: Exact Score: Independiente Rivadavia 0 - 3 Atletic... | -49.0% | 0.026 → 0.013
-22:05:10 │ INFO     │ 📊 100 mercados monitorizados
-22:07:56 │ INFO     │ 📊 100 mercados monitorizados
-22:10:42 │ INFO     │ 📊 100 mercados monitorizados
-22:13:29 │ INFO     │ 📊 100 mercados monitorizados
-22:14:12 │ INFO     │ 🔍 Evaluando spike: Game Spread: Guiomar Maristany (-4.5) vs Berfu Cen... | DOWN -99.9%
-22:14:13 │ WARNING  │    Sin precio actual, saltando
-22:14:14 │ INFO     │ 🔍 Evaluando spike: Exact Score: Grimsby Town FC 0 - 3 Crawley Town FC... | DOWN -13.3%
-22:14:14 │ INFO     │    Precio actual: 0.029 | Corrección: 34.1% | Edge: 34.1%
-22:14:14 │ INFO     │    ❌ Precio extremo: 0.029
-22:16:18 │ INFO     │ 📊 100 mercados monitorizados
-22:16:57 │ INFO     │ 📉 SPIKE: Exact Score: Persijap Jepara 3 - 0 Persib Bandung?... | -13.0% | 0.025 → 0.022
-22:16:58 │ INFO     │ 📉 SPIKE: Exact Score: Persijap Jepara 3 - 3 Persib Bandung?... | -13.4% | 0.025 → 0.022
-22:17:04 │ INFO     │ 🔍 Evaluando spike: Exact Score: Gangwon FC 3 - 3 Jeju SK FC?... | DOWN -13.2%
-22:17:05 │ INFO     │    Precio actual: 0.015 | Corrección: -27.9% | Edge: 27.9%
-22:17:05 │ INFO     │    ❌ Precio extremo: 0.015
-22:19:08 │ INFO     │ 📊 100 mercados monitorizados
-22:21:54 │ INFO     │ 📊 100 mercados monitorizados
-22:22:38 │ INFO     │ 🔍 Evaluando spike: Exact Score: Kasımpaşa SK 1 - 0 Konyaspor?... | UP +10.5%
-22:22:38 │ INFO     │    Precio actual: 0.105 | Corrección: 0.0% | Edge: 0.0%
-22:22:38 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-22:22:39 │ INFO     │ 🔍 Evaluando spike: Exact Score: Royal Antwerp FC 3 - 0 Union Saint-Gi... | DOWN -11.9%
-22:22:40 │ INFO     │    Precio actual: 0.016 | Corrección: -31.9% | Edge: 31.9%
-22:22:40 │ INFO     │    ❌ Precio extremo: 0.016
-22:22:43 │ INFO     │ ❌ RESUELTO: Exact Score: Al Hilal SFC 1 - 3 Al Gharafa SC?... | PnL: $-200.00
-22:24:45 │ INFO     │ 📊 100 mercados monitorizados
-22:24:52 │ INFO     │ 📈 SPIKE: Exact Score: Londrina EC 0 - 3 AA Ponte Preta?... | +20.5% | 0.004 → 0.005
-22:27:32 │ INFO     │ 📊 100 mercados monitorizados
-22:30:19 │ INFO     │ 📊 100 mercados monitorizados
-22:30:25 │ INFO     │ 📈 SPIKE: Exact Score: Deportivo Tachira 1 - 1 Academia Puer... | +255.2% | 0.141 → 0.500
-22:30:31 │ INFO     │ 📉 SPIKE: Will the lowest temperature in Amsterdam be 17°C o... | -91.7% | 0.006 → 0.001
-22:31:06 │ INFO     │ 📊 Ciclo #1185 | 100 mercados | 2 spikes nuevos | 10 pendientes | 0 resueltos
-22:33:07 │ INFO     │ 📊 100 mercados monitorizados
-22:35:53 │ INFO     │ 📊 100 mercados monitorizados
-22:36:21 │ INFO     │ 📉 SPIKE: Exact Score: AZ 1 - 3 Telstar 1963?... | -10.0% | 0.034 → 0.031
-22:38:40 │ INFO     │ 📊 100 mercados monitorizados
-22:41:25 │ INFO     │ 📊 100 mercados monitorizados
-22:42:08 │ INFO     │ 🔍 Evaluando spike: Will Al-Fateh be relegated from the 2026-27 Saudi ... | DOWN -22.8%
-22:42:08 │ INFO     │    Precio actual: 0.310 | Corrección: 63.2% | Edge: 63.2%
-22:42:08 │ INFO     │    ✅ OPORTUNIDAD: YES @ 0.310 | $31.58 | Edge: 63.2%
-22:42:10 │ INFO     │ 🧪 DRY RUN Trade: Will Al-Fateh be relegated from the 2026-27 Saudi ... | $31.58
-22:44:15 │ INFO     │ 📊 100 mercados monitorizados
-22:44:36 │ INFO     │ 📉 SPIKE: Exact Score: Real Betis Balompié 0 - 3 Getafe CF?... | -25.0% | 0.006 → 0.004
-22:44:36 │ INFO     │ 📉 SPIKE: Exact Score: Real Betis Balompié 3 - 3 Getafe CF?... | -27.3% | 0.005 → 0.004
-22:44:39 │ INFO     │ 📉 SPIKE: Exact Score: Molde FK 0 - 3 Aalesunds FK?... | -10.6% | 0.034 → 0.030
-22:44:41 │ INFO     │ 📉 SPIKE: Exact Score: US Cremonese 3 - 3 Virtus Entella?... | -10.6% | 0.034 → 0.030
-22:47:07 │ INFO     │ 📊 100 mercados monitorizados
-22:49:53 │ INFO     │ 📊 100 mercados monitorizados
-22:52:39 │ INFO     │ 📊 100 mercados monitorizados
-22:53:23 │ INFO     │ 🔍 Evaluando spike: Will Meta (META) finish week of September 14 above... | DOWN -27.3%
-22:53:23 │ INFO     │    Precio actual: 0.470 | Corrección: 28.8% | Edge: 28.8%
-22:53:23 │ INFO     │    ✅ OPORTUNIDAD: YES @ 0.470 | $25.00 | Edge: 28.8%
-22:55:28 │ INFO     │ 📊 100 mercados monitorizados
-22:55:33 │ INFO     │ 📈 SPIKE: Exact Score: Palermo FC 1 - 0 Calcio Padova?... | +12.2% | 0.098 → 0.110
-22:58:15 │ INFO     │ 📊 100 mercados monitorizados
-23:01:01 │ INFO     │ 📊 100 mercados monitorizados
-23:03:47 │ INFO     │ 📊 100 mercados monitorizados
-23:06:36 │ INFO     │ 📊 100 mercados monitorizados
-23:09:25 │ INFO     │ 📊 100 mercados monitorizados
-23:12:16 │ INFO     │ 📊 100 mercados monitorizados
-23:13:04 │ INFO     │ 📊 Ciclo #1200 | 100 mercados | 0 spikes nuevos | 14 pendientes | 0 resueltos
-23:15:04 │ INFO     │ 📊 100 mercados monitorizados
-23:17:52 │ INFO     │ 📊 100 mercados monitorizados
-23:20:41 │ INFO     │ 📊 100 mercados monitorizados
-23:23:30 │ INFO     │ 📊 100 mercados monitorizados
-23:24:15 │ INFO     │ 🔍 Evaluando spike: Exact Score: Palermo FC 0 - 3 Calcio Padova?... | UP +29.7%
-23:24:16 │ INFO     │    Precio actual: 0.044 | Corrección: 11.0% | Edge: 11.0%
-23:24:16 │ INFO     │    ❌ Precio extremo: 0.956
-23:26:20 │ INFO     │ 📊 100 mercados monitorizados
-23:29:08 │ INFO     │ 📊 100 mercados monitorizados
-23:29:53 │ INFO     │ 🔍 Evaluando spike: Exact Score: Londrina EC 3 - 3 AA Ponte Preta?... | DOWN -16.7%
-23:29:53 │ INFO     │    Precio actual: 0.428 | Corrección: 8460.0% | Edge: 8460.0%
-23:29:53 │ INFO     │    ✅ OPORTUNIDAD: YES @ 0.428 | $200.00 | Edge: 8460.0%
-23:31:59 │ INFO     │ 📊 100 mercados monitorizados
-23:32:45 │ INFO     │ 🔍 Evaluando spike: Exact Score: Independiente Rivadavia 0 - 3 Atletic... | DOWN -49.0%
-23:32:45 │ INFO     │    Precio actual: 0.012 | Corrección: -7.7% | Edge: 7.7%
-23:32:45 │ INFO     │    ❌ Edge insuficiente (7.7% < 8%)
-23:34:49 │ INFO     │ 📊 100 mercados monitorizados
-23:37:37 │ INFO     │ 📊 100 mercados monitorizados
-23:40:26 │ INFO     │ 📊 100 mercados monitorizados
-23:43:16 │ INFO     │ 📊 100 mercados monitorizados
-23:46:04 │ INFO     │ 📊 100 mercados monitorizados
-23:46:49 │ INFO     │ 🔍 Evaluando spike: Exact Score: Persijap Jepara 3 - 0 Persib Bandung?... | DOWN -13.0%
-23:46:50 │ INFO     │    Precio actual: 0.025 | Corrección: 15.9% | Edge: 15.9%
-23:46:50 │ INFO     │    ❌ Precio extremo: 0.025
-23:46:51 │ INFO     │ 🔍 Evaluando spike: Exact Score: Persijap Jepara 3 - 3 Persib Bandung?... | DOWN -13.4%
-23:46:51 │ INFO     │    Precio actual: 0.025 | Corrección: 15.9% | Edge: 15.9%
-23:46:51 │ INFO     │    ❌ Precio extremo: 0.025
-23:48:55 │ INFO     │ 📊 100 mercados monitorizados
-23:51:43 │ INFO     │ 📊 100 mercados monitorizados
-23:54:32 │ INFO     │ 📊 100 mercados monitorizados
-23:54:44 │ INFO     │ 📉 SPIKE: Will Rishi Sharma win the 2026 Saanich mayoral ele... | -11.9% | 0.233 → 0.205
-23:55:18 │ INFO     │ 🔍 Evaluando spike: Exact Score: Londrina EC 0 - 3 AA Ponte Preta?... | UP +20.5%
-23:55:19 │ INFO     │    Precio actual: 0.001 | Corrección: 90.0% | Edge: 90.0%
-23:55:19 │ INFO     │    ❌ Precio extremo: 1.000
-23:55:22 │ INFO     │ 📊 Ciclo #1215 | 100 mercados | 1 spikes nuevos | 9 pendientes | 0 resueltos
-23:57:23 │ INFO     │ 📊 100 mercados monitorizados
-23:57:56 │ INFO     │ 📉 SPIKE: Exact Score: Rams Başakşehir FK 0 - 3 Gençlerbirli... | -10.4% | 0.034 → 0.030
-00:00:15 │ INFO     │ 📊 100 mercados monitorizados
-00:00:32 │ INFO     │ 📈 SPIKE: Will the highest temperature in Shenzhen be 29°C o... | +61.5% | 0.065 → 0.105
-00:01:01 │ INFO     │ 🔍 Evaluando spike: Exact Score: Deportivo Tachira 1 - 1 Academia Puer... | UP +255.2%
-00:01:02 │ INFO     │    Precio actual: 0.460 | Corrección: 8.0% | Edge: 8.0%
-00:01:02 │ INFO     │    ❌ Edge insuficiente (8.0% < 8%)
-00:01:03 │ INFO     │ 🔍 Evaluando spike: Will the lowest temperature in Amsterdam be 17°C o... | DOWN -91.7%
-00:01:03 │ INFO     │    Precio actual: 0.001 | Corrección: 0.0% | Edge: 0.0%
-00:01:03 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-00:03:07 │ INFO     │ 📊 100 mercados monitorizados
-00:05:56 │ INFO     │ 📊 100 mercados monitorizados
-00:06:41 │ INFO     │ 🔍 Evaluando spike: Exact Score: AZ 1 - 3 Telstar 1963?... | DOWN -10.0%
-00:06:41 │ INFO     │    Precio actual: 0.049 | Corrección: 56.5% | Edge: 56.5%
-00:06:41 │ INFO     │    ❌ Precio extremo: 0.049
-00:08:45 │ INFO     │ 📊 100 mercados monitorizados
-00:11:35 │ INFO     │ 📊 100 mercados monitorizados
-00:14:24 │ INFO     │ 📊 100 mercados monitorizados
-00:14:47 │ INFO     │ 📉 SPIKE: Exact Score: Ventforet Kōfu 3 - 3 Tokushima Vortis... | -10.7% | 0.027 → 0.024
-00:15:08 │ INFO     │ 🔍 Evaluando spike: Exact Score: Real Betis Balompié 0 - 3 Getafe CF?... | DOWN -25.0%
-00:15:09 │ INFO     │    Precio actual: 0.006 | Corrección: 33.3% | Edge: 33.3%
-00:15:09 │ INFO     │    ❌ Precio extremo: 0.006
-00:15:10 │ INFO     │ 🔍 Evaluando spike: Exact Score: Real Betis Balompié 3 - 3 Getafe CF?... | DOWN -27.3%
-00:15:10 │ INFO     │    Precio actual: 0.005 | Corrección: 37.5% | Edge: 37.5%
-00:15:10 │ INFO     │    ❌ Precio extremo: 0.005
-00:15:11 │ INFO     │ 🔍 Evaluando spike: Exact Score: Molde FK 0 - 3 Aalesunds FK?... | DOWN -10.6%
-00:15:12 │ INFO     │    Precio actual: 0.049 | Corrección: 63.3% | Edge: 63.3%
-00:15:12 │ INFO     │    ❌ Precio extremo: 0.049
-00:15:13 │ INFO     │ 🔍 Evaluando spike: Exact Score: US Cremonese 3 - 3 Virtus Entella?... | DOWN -10.6%
-00:15:13 │ INFO     │    Precio actual: 0.048 | Corrección: 60.0% | Edge: 60.0%
-00:15:13 │ INFO     │    ❌ Precio extremo: 0.048
-00:17:17 │ INFO     │ 📊 100 mercados monitorizados
-00:17:50 │ INFO     │ 📉 SPIKE: Exact Score: San Martin de San Juan 0 - 3 CSD Tris... | -33.3% | 0.010 → 0.006
-00:17:51 │ INFO     │ 📈 SPIKE: Exact Score: San Martin de San Juan 2 - 3 CSD Tris... | +12.2% | 0.008 → 0.009
-00:17:55 │ INFO     │ 📉 SPIKE: Exact Score: Arsenal WFC 0 - 3 Manchester United W... | -16.4% | 0.030 → 0.025
-00:20:06 │ INFO     │ 📊 100 mercados monitorizados
-00:22:52 │ INFO     │ 📊 100 mercados monitorizados
-00:25:37 │ INFO     │ 📊 100 mercados monitorizados
-00:26:19 │ INFO     │ 🔍 Evaluando spike: Exact Score: Palermo FC 1 - 0 Calcio Padova?... | UP +12.2%
-00:26:20 │ INFO     │    Precio actual: 0.095 | Corrección: 13.6% | Edge: 13.6%
-00:26:20 │ INFO     │    ✅ OPORTUNIDAD: NO @ 0.905 | $25.00 | Edge: 13.6%
-00:28:25 │ INFO     │ 📊 100 mercados monitorizados
-00:28:59 │ INFO     │ 📈 SPIKE: Exact Score: San Martin de San Juan 3 - 3 CSD Tris... | +14.3% | 0.005 → 0.006
-00:31:12 │ INFO     │ 📊 100 mercados monitorizados
-00:33:58 │ INFO     │ 📊 100 mercados monitorizados
-00:36:44 │ INFO     │ 📊 100 mercados monitorizados
-00:37:30 │ INFO     │ 📊 Ciclo #1230 | 100 mercados | 0 spikes nuevos | 8 pendientes | 0 resueltos
-00:39:33 │ INFO     │ 📊 100 mercados monitorizados
-00:42:19 │ INFO     │ 📊 100 mercados monitorizados
-00:45:05 │ INFO     │ 📊 100 mercados monitorizados
-00:47:50 │ INFO     │ 📊 100 mercados monitorizados
-00:50:37 │ INFO     │ 📊 100 mercados monitorizados
-00:50:56 │ INFO     │ 📉 SPIKE: Exact Score: Çorum FK 3 - 3 Alanyaspor?... | -11.7% | 0.034 → 0.030
-00:51:19 │ INFO     │ 📈 SPIKE: Exact Score: Degerfors IF 3 - 0 Hammarby IF?... | +56.2% | 0.016 → 0.025
-00:53:25 │ INFO     │ 📊 100 mercados monitorizados
-00:53:57 │ INFO     │ 📉 SPIKE: 1st Half Spread: Ipswich Town FC (-2.5)... | -47.0% | 0.490 → 0.260
-00:56:13 │ INFO     │ 📊 100 mercados monitorizados
-00:58:59 │ INFO     │ 📊 100 mercados monitorizados
-00:59:22 │ INFO     │ 📉 SPIKE: Exact Score: Yokohama FC 0 - 3 FC Imabari?... | -12.2% | 0.027 → 0.024
-01:01:47 │ INFO     │ 📊 100 mercados monitorizados
-01:04:33 │ INFO     │ 📊 100 mercados monitorizados
-01:07:19 │ INFO     │ 📊 100 mercados monitorizados
-01:10:08 │ INFO     │ 📊 100 mercados monitorizados
-01:11:32 │ ERROR    │ Exception happened while polling for updates.
+22:27:11 │ INFO     │    Precio actual: 0.030 | Corrección: 19.6% | Edge: 19.6%
+22:27:11 │ INFO     │ [SKIP] Exact Score market: Exact Score: Degerfors IF 3 - 1 Hammarby IF?
+22:27:12 │ INFO     │ 🔍 Evaluando spike: Exact Score: Degerfors IF 3 - 3 Hammarby IF?... | DOWN -11.5%
+22:27:13 │ INFO     │    Precio actual: 0.030 | Corrección: 19.6% | Edge: 19.6%
+22:27:13 │ INFO     │ [SKIP] Exact Score market: Exact Score: Degerfors IF 3 - 3 Hammarby IF?
+22:29:15 │ INFO     │ 📊 100 mercados monitorizados
+22:29:22 │ INFO     │ 📉 SPIKE: Exact Score: Hartford Athletic 0 - 3 Sporting Jax?... | -98.0% | 0.230 → 0.004
+22:32:04 │ INFO     │ 📊 100 mercados monitorizados
+22:32:49 │ INFO     │ 🔍 Evaluando spike: Exact Score: Águilas Doradas Rionegro 0 - 3 Deport... | UP +865.4%
+22:32:49 │ INFO     │    Precio actual: 0.026 | Corrección: 89.6% | Edge: 89.6%
+22:32:49 │ INFO     │ [SKIP] Exact Score market: Exact Score: Águilas Doradas Rionegro 0 - 3 Deport
+22:32:50 │ INFO     │ 🔍 Evaluando spike: Exact Score: Águilas Doradas Rionegro 1 - 3 Deport... | UP +709.7%
+22:32:51 │ INFO     │    Precio actual: 0.031 | Corrección: 87.6% | Edge: 87.6%
+22:32:51 │ INFO     │ [SKIP] Exact Score market: Exact Score: Águilas Doradas Rionegro 1 - 3 Deport
+22:32:52 │ INFO     │ 🔍 Evaluando spike: Exact Score: Águilas Doradas Rionegro 2 - 3 Deport... | UP +709.7%
+22:32:52 │ INFO     │    Precio actual: 0.031 | Corrección: 87.6% | Edge: 87.6%
+22:32:52 │ INFO     │ [SKIP] Exact Score market: Exact Score: Águilas Doradas Rionegro 2 - 3 Deport
+22:32:53 │ INFO     │ 🔍 Evaluando spike: Exact Score: Águilas Doradas Rionegro 3 - 3 Deport... | UP +709.7%
+22:32:53 │ INFO     │    Precio actual: 0.031 | Corrección: 87.6% | Edge: 87.6%
+22:32:53 │ INFO     │ [SKIP] Exact Score market: Exact Score: Águilas Doradas Rionegro 3 - 3 Deport
+22:32:54 │ INFO     │ 🔍 Evaluando spike: Exact Score: FBC Melgar 0 - 3 Sport Boys Associati... | UP +821.6%
+22:32:55 │ INFO     │    Precio actual: 0.025 | Corrección: 89.1% | Edge: 89.1%
+22:32:55 │ INFO     │ [SKIP] Exact Score market: Exact Score: FBC Melgar 0 - 3 Sport Boys Associati
+22:32:56 │ INFO     │ 🔍 Evaluando spike: Exact Score: FBC Melgar 3 - 3 Sport Boys Associati... | UP +686.9%
+22:32:56 │ INFO     │    Precio actual: 0.030 | Corrección: 87.3% | Edge: 87.3%
+22:32:56 │ INFO     │ [SKIP] Exact Score market: Exact Score: FBC Melgar 3 - 3 Sport Boys Associati
+22:32:57 │ INFO     │ 🔍 Evaluando spike: Exact Score: CS Huancayo 0 - 3 CU Técnica de Cajam... | UP +821.6%
+22:32:58 │ INFO     │    Precio actual: 0.025 | Corrección: 89.1% | Edge: 89.1%
+22:32:58 │ INFO     │ [SKIP] Exact Score market: Exact Score: CS Huancayo 0 - 3 CU Técnica de Cajam
+22:32:59 │ INFO     │ 🔍 Evaluando spike: Exact Score: Manchester City WFC 0 - 3 Liverpool L... | UP +821.6%
+22:32:59 │ INFO     │    Precio actual: 0.025 | Corrección: 89.1% | Edge: 89.1%
+22:32:59 │ INFO     │ [SKIP] Exact Score market: Exact Score: Manchester City WFC 0 - 3 Liverpool L
+22:33:00 │ INFO     │ 🔍 Evaluando spike: Exact Score: CA Temperley 1 - 3 Club Almagro?... | UP +766.8%
+22:33:00 │ INFO     │    Precio actual: 0.029 | Corrección: 88.4% | Edge: 88.4%
+22:33:00 │ INFO     │ [SKIP] Exact Score market: Exact Score: CA Temperley 1 - 3 Club Almagro?
+22:33:01 │ INFO     │ 🔍 Evaluando spike: Exact Score: CD Maipu 3 - 3 Gimnasia y Esgrima de ... | UP +709.7%
+22:33:02 │ INFO     │    Precio actual: 0.031 | Corrección: 87.6% | Edge: 87.6%
+22:33:02 │ INFO     │ [SKIP] Exact Score market: Exact Score: CD Maipu 3 - 3 Gimnasia y Esgrima de 
+22:35:05 │ INFO     │ 📊 100 mercados monitorizados
+22:35:26 │ INFO     │ 📉 SPIKE: Exact Score: Ventforet Kōfu 3 - 3 Tokushima Vortis... | -17.1% | 0.021 → 0.018
+22:35:30 │ INFO     │ 📉 SPIKE: Exact Score: AZ 1 - 3 Telstar 1963?... | -19.7% | 0.032 → 0.025
+22:35:30 │ INFO     │ 📉 SPIKE: Exact Score: Rams Başakşehir FK 0 - 3 Gençlerbirli... | -10.7% | 0.034 → 0.030
+22:35:36 │ INFO     │ 📉 SPIKE: 1st Half Spread: Ipswich Town FC (-2.5)... | -94.7% | 0.285 → 0.015
+22:35:40 │ INFO     │ 📉 SPIKE: Exact Score: Persijap Jepara 3 - 0 Persib Bandung?... | -59.2% | 0.067 → 0.028
+22:35:40 │ INFO     │ 📉 SPIKE: Exact Score: Persijap Jepara 3 - 3 Persib Bandung?... | -59.2% | 0.067 → 0.028
+22:35:41 │ INFO     │ 📉 SPIKE: Exact Score: Arsenal WFC 0 - 3 Manchester United W... | -66.2% | 0.090 → 0.030
+22:36:01 │ INFO     │ 🔍 Evaluando spike: Exact Score: Deportivo Saprissa 1 - 0 CS Herediano... | DOWN -25.0%
+22:36:01 │ INFO     │    Precio actual: 0.120 | Corrección: 33.3% | Edge: 33.3%
+22:36:01 │ INFO     │ [SKIP] Exact Score market: Exact Score: Deportivo Saprissa 1 - 0 CS Herediano
+22:38:04 │ INFO     │ 📊 100 mercados monitorizados
+22:38:47 │ INFO     │ 🔍 Evaluando spike: Exact Score: Club Brugge 0 - 3 KRC Genk?... | UP +712.4%
+22:38:48 │ INFO     │    Precio actual: 0.028 | Corrección: 87.8% | Edge: 87.8%
+22:38:48 │ INFO     │ [SKIP] Exact Score market: Exact Score: Club Brugge 0 - 3 KRC Genk?
+22:40:51 │ INFO     │ 📊 100 mercados monitorizados
+22:41:06 │ INFO     │ 📈 SPIKE: JJ Bleday: Home Runs O/U 0.5... | +669.2% | 0.065 → 0.500
+22:43:37 │ INFO     │ 📊 100 mercados monitorizados
+22:46:22 │ INFO     │ 📊 100 mercados monitorizados
+22:49:07 │ INFO     │ 📊 100 mercados monitorizados
+22:49:50 │ INFO     │ 🔍 Evaluando spike: Will the lowest temperature in Seattle be 45°F or ... | DOWN -52.7%
+22:49:51 │ INFO     │    Precio actual: 0.140 | Corrección: -36.4% | Edge: 36.4%
+22:49:51 │ INFO     │    ✅ OPORTUNIDAD: YES @ 0.140 | $25.00 | Edge: 36.4%
+22:49:52 │ INFO     │ 🧪 DRY RUN Trade: Will the lowest temperature in Seattle be 45°F or ... | $25.00
+22:49:54 │ INFO     │ 🔍 Evaluando spike: Exact Score: CA San Telmo 3 - 3 CA Estudiantes?... | UP +846.1%
+22:49:55 │ INFO     │    Precio actual: 0.026 | Corrección: 89.4% | Edge: 89.4%
+22:49:55 │ INFO     │ [SKIP] Exact Score market: Exact Score: CA San Telmo 3 - 3 CA Estudiantes?
+22:49:56 │ INFO     │ 🔍 Evaluando spike: Exact Score: Atletico de Rafaela 3 - 3 San Martin ... | UP +842.3%
+22:49:56 │ INFO     │    Precio actual: 0.026 | Corrección: 89.4% | Edge: 89.4%
+22:49:56 │ INFO     │ [SKIP] Exact Score market: Exact Score: Atletico de Rafaela 3 - 3 San Martin 
+22:51:59 │ INFO     │ 📊 100 mercados monitorizados
+22:54:44 │ INFO     │ 📊 100 mercados monitorizados
+22:54:56 │ INFO     │ 📈 SPIKE: Spread: Nashville SC (-2.5)... | +10.9% | 0.135 → 0.150
+22:57:31 │ INFO     │ 📊 100 mercados monitorizados
+22:58:16 │ INFO     │ 📊 Ciclo #75 | 100 mercados | 0 spikes nuevos | 21 pendientes | 0 resueltos
+23:00:17 │ INFO     │ 📊 100 mercados monitorizados
+23:01:02 │ INFO     │ 🔍 Evaluando spike: Exact Score: Gangwon FC 3 - 3 Jeju SK FC?... | UP +46.6%
+23:01:02 │ INFO     │    Precio actual: 0.028 | Corrección: 41.7% | Edge: 41.7%
+23:01:02 │ INFO     │ [SKIP] Exact Score market: Exact Score: Gangwon FC 3 - 3 Jeju SK FC?
+23:03:05 │ INFO     │ 📊 100 mercados monitorizados
+23:05:50 │ INFO     │ 📊 100 mercados monitorizados
+23:08:38 │ INFO     │ 📊 100 mercados monitorizados
+23:11:23 │ INFO     │ 📊 100 mercados monitorizados
+23:14:09 │ INFO     │ 📊 100 mercados monitorizados
+23:16:55 │ INFO     │ 📊 100 mercados monitorizados
+23:17:38 │ INFO     │ 🔍 Evaluando spike: Portuguesa FC vs. Estudiantes de Merida: Estudiant... | DOWN -27.0%
+23:17:38 │ INFO     │    Precio actual: 0.001 | Corrección: -99.9% | Edge: 95.0%
+23:17:38 │ INFO     │    ❌ Precio extremo: 0.001
+23:19:42 │ INFO     │ 📊 100 mercados monitorizados
+23:22:27 │ INFO     │ 📊 100 mercados monitorizados
+23:25:12 │ INFO     │ 📊 100 mercados monitorizados
+23:27:58 │ INFO     │ 📊 100 mercados monitorizados
+23:30:43 │ INFO     │ 📊 100 mercados monitorizados
+23:33:32 │ INFO     │ 📊 100 mercados monitorizados
+23:36:18 │ INFO     │ 📊 100 mercados monitorizados
+23:37:01 │ INFO     │ 🔍 Evaluando spike: Raufoss IL vs. Stroemsgodset IF: O/U 0.5... | DOWN -21.2%
+23:37:01 │ INFO     │    Precio actual: 0.885 | Corrección: 31.1% | Edge: 31.1%
+23:37:01 │ INFO     │    ✅ OPORTUNIDAD: YES @ 0.885 | $25.00 | Edge: 31.1%
+23:37:02 │ INFO     │ 🧪 DRY RUN Trade: Raufoss IL vs. Stroemsgodset IF: O/U 0.5... | $25.00
+23:39:07 │ INFO     │ 📊 100 mercados monitorizados
+23:39:52 │ INFO     │ 📊 Ciclo #90 | 100 mercados | 0 spikes nuevos | 18 pendientes | 0 resueltos
+23:41:53 │ INFO     │ 📊 100 mercados monitorizados
+23:44:38 │ INFO     │ 📊 100 mercados monitorizados
+23:47:24 │ INFO     │ 📊 100 mercados monitorizados
+23:47:25 │ INFO     │ 📉 SPIKE: Hartford Athletic vs. Sporting Jax: O/U 5.5... | -11.1% | 0.315 → 0.280
+23:47:49 │ INFO     │ 📉 SPIKE: Exact Score: Viking FK 0 - 3 Lillestrøm SK?... | -10.1% | 0.034 → 0.031
+23:48:10 │ INFO     │ 🔍 Evaluando spike: Exact Score: Royal Antwerp FC 3 - 0 Union Saint-Gi... | DOWN -87.2%
+23:48:10 │ INFO     │    Precio actual: 0.020 | Corrección: -33.3% | Edge: 33.3%
+23:48:10 │ INFO     │ [SKIP] Exact Score market: Exact Score: Royal Antwerp FC 3 - 0 Union Saint-Gi
+23:50:14 │ INFO     │ 📊 100 mercados monitorizados
+23:53:01 │ INFO     │ 📊 100 mercados monitorizados
+23:55:48 │ INFO     │ 📊 100 mercados monitorizados
+23:58:34 │ INFO     │ 📊 100 mercados monitorizados
+00:01:19 │ INFO     │ 📊 100 mercados monitorizados
+00:02:02 │ INFO     │ 🔍 Evaluando spike: Exact Score: FC Bayern München 0 - 0 1. FC Union B... | DOWN -10.5%
+00:02:03 │ INFO     │    Precio actual: 0.013 | Corrección: -3.8% | Edge: 3.8%
+00:02:03 │ INFO     │ [SKIP] Exact Score market: Exact Score: FC Bayern München 0 - 0 1. FC Union B
+00:04:12 │ INFO     │ 📊 100 mercados monitorizados
+00:06:57 │ INFO     │ 📊 100 mercados monitorizados
+00:09:43 │ INFO     │ 📊 100 mercados monitorizados
+00:12:29 │ INFO     │ 📊 100 mercados monitorizados
+00:13:12 │ INFO     │ 🔍 Evaluando spike: Exact Score: LD Alajuelense 0 - 3 Inter San Carlos... | DOWN -87.4%
+00:13:13 │ INFO     │    Precio actual: 0.020 | Corrección: -33.3% | Edge: 33.3%
+00:13:13 │ INFO     │ [SKIP] Exact Score market: Exact Score: LD Alajuelense 0 - 3 Inter San Carlos
+00:13:14 │ INFO     │ 🔍 Evaluando spike: Exact Score: Agropecuario Argentino 3 - 3 Gimnasia... | DOWN -94.8%
+00:13:14 │ INFO     │    Precio actual: 0.026 | Corrección: 0.0% | Edge: 0.0%
+00:13:14 │ INFO     │ [SKIP] Exact Score market: Exact Score: Agropecuario Argentino 3 - 3 Gimnasia
+00:15:18 │ INFO     │ 📊 100 mercados monitorizados
+00:18:04 │ INFO     │ 📊 100 mercados monitorizados
+00:18:48 │ INFO     │ 🔍 Evaluando spike: BNB Up or Down - September 16, 6PM ET... | UP +69.0%
+00:18:48 │ WARNING  │    Sin precio actual, saltando
+00:18:49 │ INFO     │ 🔍 Evaluando spike: Exact Score: Independiente Rivadavia 0 - 3 Atletic... | UP +648.7%
+00:18:49 │ INFO     │    Precio actual: 0.002 | Corrección: 99.5% | Edge: 95.0%
+00:18:49 │ INFO     │ [SKIP] Exact Score market: Exact Score: Independiente Rivadavia 0 - 3 Atletic
+00:20:53 │ INFO     │ 📊 100 mercados monitorizados
+00:21:38 │ INFO     │ 📊 Ciclo #105 | 100 mercados | 0 spikes nuevos | 14 pendientes | 0 resueltos
+00:23:39 │ INFO     │ 📊 100 mercados monitorizados
+00:26:25 │ INFO     │ 📊 100 mercados monitorizados
+00:26:46 │ INFO     │ 📈 SPIKE: Exact Score: US Cremonese 3 - 3 Virtus Entella?... | +10.2% | 0.025 → 0.027
+00:27:09 │ INFO     │ 🔍 Evaluando spike: Will Marília Campos win the second-most votes in t... | DOWN -10.9%
+00:27:09 │ INFO     │    Precio actual: 0.215 | Corrección: 10.3% | Edge: 10.3%
+00:27:09 │ INFO     │    ❌ Edge insuficiente (10.3% < 12%)
+00:27:10 │ INFO     │ 🔍 Evaluando spike: Exact Score: Shōnan Bellmāre 3 - 3 Blaublitz Akita... | DOWN -10.5%
+00:27:11 │ INFO     │    Precio actual: 0.016 | Corrección: -33.3% | Edge: 33.3%
+00:27:11 │ INFO     │ [SKIP] Exact Score market: Exact Score: Shōnan Bellmāre 3 - 3 Blaublitz Akita
+00:29:15 │ INFO     │ 📊 100 mercados monitorizados
+00:29:58 │ INFO     │ 🔍 Evaluando spike: Exact Score: Hartford Athletic 0 - 3 Sporting Jax?... | DOWN -98.0%
+00:29:58 │ INFO     │    Precio actual: 0.001 | Corrección: -88.9% | Edge: 88.9%
+00:29:58 │ INFO     │ [SKIP] Exact Score market: Exact Score: Hartford Athletic 0 - 3 Sporting Jax?
+00:32:02 │ INFO     │ 📊 100 mercados monitorizados
+00:34:48 │ INFO     │ 📊 100 mercados monitorizados
+00:35:31 │ INFO     │ 🔍 Evaluando spike: Exact Score: Ventforet Kōfu 3 - 3 Tokushima Vortis... | DOWN -17.1%
+00:35:32 │ INFO     │    Precio actual: 0.015 | Corrección: -11.4% | Edge: 11.4%
+00:35:32 │ INFO     │ [SKIP] Exact Score market: Exact Score: Ventforet Kōfu 3 - 3 Tokushima Vortis
+00:35:33 │ INFO     │ 🔍 Evaluando spike: Exact Score: AZ 1 - 3 Telstar 1963?... | DOWN -19.7%
+00:35:33 │ INFO     │    Precio actual: 0.015 | Corrección: -39.2% | Edge: 39.2%
+00:35:33 │ INFO     │ [SKIP] Exact Score market: Exact Score: AZ 1 - 3 Telstar 1963?
+00:35:34 │ INFO     │ 🔍 Evaluando spike: Exact Score: Rams Başakşehir FK 0 - 3 Gençlerbirli... | DOWN -10.7%
+00:35:34 │ INFO     │    Precio actual: 0.026 | Corrección: -13.3% | Edge: 13.3%
+00:35:34 │ INFO     │ [SKIP] Exact Score market: Exact Score: Rams Başakşehir FK 0 - 3 Gençlerbirli
+00:35:35 │ INFO     │ 🔍 Evaluando spike: 1st Half Spread: Ipswich Town FC (-2.5)... | DOWN -94.7%
+00:35:36 │ INFO     │    Precio actual: 0.015 | Corrección: 3.3% | Edge: 3.3%
+00:35:36 │ INFO     │    ❌ Edge insuficiente (3.3% < 12%)
+00:35:37 │ INFO     │ 🔍 Evaluando spike: Exact Score: Persijap Jepara 3 - 0 Persib Bandung?... | DOWN -59.2%
+00:35:37 │ INFO     │    Precio actual: 0.016 | Corrección: -41.8% | Edge: 41.8%
+00:35:37 │ INFO     │ [SKIP] Exact Score market: Exact Score: Persijap Jepara 3 - 0 Persib Bandung?
+00:35:38 │ INFO     │ 🔍 Evaluando spike: Exact Score: Persijap Jepara 3 - 3 Persib Bandung?... | DOWN -59.2%
+00:35:39 │ INFO     │    Precio actual: 0.016 | Corrección: -41.8% | Edge: 41.8%
+00:35:39 │ INFO     │ [SKIP] Exact Score market: Exact Score: Persijap Jepara 3 - 3 Persib Bandung?
+00:35:40 │ INFO     │ 🔍 Evaluando spike: Exact Score: Arsenal WFC 0 - 3 Manchester United W... | DOWN -66.2%
+00:35:40 │ INFO     │    Precio actual: 0.030 | Corrección: 0.0% | Edge: 0.0%
+00:35:40 │ INFO     │ [SKIP] Exact Score market: Exact Score: Arsenal WFC 0 - 3 Manchester United W
+00:37:44 │ INFO     │ 📊 100 mercados monitorizados
+00:38:11 │ INFO     │ 📉 SPIKE: Exact Score: Modena FC 2018 0 - 3 Empoli FC?... | -11.6% | 0.031 → 0.027
+00:38:12 │ INFO     │ 📉 SPIKE: Exact Score: Independiente Rivadavia 3 - 3 Atletic... | -97.1% | 0.153 → 0.004
+00:40:31 │ INFO     │ 📊 100 mercados monitorizados
+00:40:32 │ INFO     │ 📉 SPIKE: Birmingham Legion FC vs. New Mexico United: 1st Ha... | -11.5% | 0.412 → 0.365
+00:41:16 │ INFO     │ 🔍 Evaluando spike: JJ Bleday: Home Runs O/U 0.5... | UP +669.2%
+00:41:16 │ INFO     │    Precio actual: 0.500 | Corrección: 0.0% | Edge: 0.0%
+00:41:16 │ INFO     │    ❌ Edge insuficiente (0.0% < 12%)
+00:43:20 │ INFO     │ 📊 100 mercados monitorizados
+00:46:05 │ INFO     │ 📊 100 mercados monitorizados
+00:46:12 │ INFO     │ 📉 SPIKE: Spread: Saint Louis City SC (-1.5)... | -15.4% | 0.130 → 0.110
+00:48:53 │ INFO     │ 📊 100 mercados monitorizados
+00:51:39 │ INFO     │ 📊 100 mercados monitorizados
+00:54:25 │ INFO     │ 📊 100 mercados monitorizados
+00:55:08 │ INFO     │ 🔍 Evaluando spike: Spread: Nashville SC (-2.5)... | UP +10.9%
+00:55:08 │ INFO     │    Precio actual: 0.150 | Corrección: 0.0% | Edge: 0.0%
+00:55:08 │ INFO     │    ❌ Edge insuficiente (0.0% < 12%)
+00:57:12 │ INFO     │ 📊 100 mercados monitorizados
+00:59:58 │ INFO     │ 📊 100 mercados monitorizados
+01:02:43 │ INFO     │ 📊 100 mercados monitorizados
+01:02:50 │ INFO     │ 📉 SPIKE: Sao Paulo Open (Doubles): Martins/Ortenzi vs Navar... | -44.4% | 0.890 → 0.495
+01:03:29 │ INFO     │ 📊 Ciclo #120 | 100 mercados | 1 spikes nuevos | 8 pendientes | 0 resueltos
+01:05:29 │ INFO     │ 📊 100 mercados monitorizados
+01:08:16 │ INFO     │ 📊 100 mercados monitorizados
+01:10:51 │ ERROR    │ Exception happened while polling for updates.
 Traceback (most recent call last):
   File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
     await do_action()
@@ -356,145 +221,280 @@ Traceback (most recent call last):
   File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
     raise exception
 telegram.error.NetworkError: Bad Gateway
-01:12:56 │ INFO     │ 📊 100 mercados monitorizados
-01:15:45 │ INFO     │ 📊 100 mercados monitorizados
-01:18:33 │ INFO     │ 📊 100 mercados monitorizados
-01:19:21 │ INFO     │ 📊 Ciclo #1245 | 100 mercados | 0 spikes nuevos | 12 pendientes | 0 resueltos
-01:21:22 │ INFO     │ 📊 100 mercados monitorizados
-01:24:10 │ INFO     │ 📊 100 mercados monitorizados
-01:24:55 │ INFO     │ 🔍 Evaluando spike: Will Rishi Sharma win the 2026 Saanich mayoral ele... | DOWN -11.9%
-01:24:56 │ INFO     │    Precio actual: 0.225 | Corrección: 9.8% | Edge: 9.8%
-01:24:56 │ INFO     │    ✅ OPORTUNIDAD: YES @ 0.225 | $25.00 | Edge: 9.8%
-01:27:01 │ INFO     │ 📊 100 mercados monitorizados
-01:27:46 │ INFO     │ 🔍 Evaluando spike: Exact Score: Rams Başakşehir FK 0 - 3 Gençlerbirli... | DOWN -10.4%
-01:27:47 │ INFO     │    Precio actual: 0.048 | Corrección: 60.0% | Edge: 60.0%
-01:27:47 │ INFO     │    ❌ Precio extremo: 0.048
-01:29:50 │ INFO     │ 📊 100 mercados monitorizados
-01:30:36 │ INFO     │ 🔍 Evaluando spike: Will the highest temperature in Shenzhen be 29°C o... | UP +61.5%
-01:30:36 │ INFO     │    Precio actual: 0.115 | Corrección: -9.5% | Edge: 9.5%
-01:30:36 │ INFO     │    ✅ OPORTUNIDAD: NO @ 0.885 | $25.00 | Edge: 9.5%
-01:32:41 │ INFO     │ 📊 100 mercados monitorizados
-01:35:29 │ INFO     │ 📊 100 mercados monitorizados
-01:38:18 │ INFO     │ 📊 100 mercados monitorizados
-01:41:06 │ INFO     │ 📊 100 mercados monitorizados
-01:43:55 │ INFO     │ 📊 100 mercados monitorizados
-01:44:42 │ INFO     │ 🔍 Evaluando spike: Exact Score: Ventforet Kōfu 3 - 3 Tokushima Vortis... | DOWN -10.7%
-01:44:43 │ INFO     │    Precio actual: 0.016 | Corrección: -33.3% | Edge: 33.3%
-01:44:43 │ INFO     │    ❌ Precio extremo: 0.016
-01:46:46 │ INFO     │ 📊 100 mercados monitorizados
-01:47:30 │ INFO     │ 🔍 Evaluando spike: Exact Score: San Martin de San Juan 0 - 3 CSD Tris... | DOWN -33.3%
-01:47:30 │ INFO     │    Precio actual: 0.011 | Corrección: 76.9% | Edge: 76.9%
-01:47:30 │ INFO     │    ❌ Precio extremo: 0.011
-01:47:31 │ INFO     │ 🔍 Evaluando spike: Exact Score: San Martin de San Juan 2 - 3 CSD Tris... | UP +12.2%
-01:47:31 │ INFO     │    Precio actual: 0.009 | Corrección: -11.8% | Edge: 11.8%
-01:47:31 │ INFO     │    ❌ Precio extremo: 0.991
-01:47:32 │ INFO     │ 🔍 Evaluando spike: Exact Score: Arsenal WFC 0 - 3 Manchester United W... | DOWN -16.4%
-01:47:33 │ INFO     │    Precio actual: 0.025 | Corrección: 0.0% | Edge: 0.0%
-01:47:33 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-01:49:36 │ INFO     │ 📊 100 mercados monitorizados
-01:50:12 │ INFO     │ 📉 SPIKE: Exact Score: FK Haugesund 0 - 3 Stroemmen IF?... | -12.0% | 0.024 → 0.021
-01:52:24 │ INFO     │ 📊 100 mercados monitorizados
-01:55:10 │ INFO     │ 📊 100 mercados monitorizados
-01:57:55 │ INFO     │ 📊 100 mercados monitorizados
-01:58:42 │ INFO     │ 🔍 Evaluando spike: Exact Score: San Martin de San Juan 3 - 3 CSD Tris... | UP +14.3%
-01:58:42 │ INFO     │    Precio actual: 0.009 | Corrección: -58.3% | Edge: 58.3%
-01:58:42 │ INFO     │    ❌ Precio extremo: 0.991
-02:00:46 │ INFO     │ 📊 100 mercados monitorizados
-02:01:21 │ INFO     │ 📉 SPIKE: Exact Score: Raufoss IL 3 - 0 Stroemsgodset IF?... | -10.4% | 0.028 → 0.025
-02:01:32 │ INFO     │ 📊 Ciclo #1260 | 100 mercados | 1 spikes nuevos | 6 pendientes | 0 resueltos
-02:03:33 │ INFO     │ 📊 100 mercados monitorizados
-02:06:18 │ INFO     │ 📊 100 mercados monitorizados
-02:09:04 │ INFO     │ 📊 100 mercados monitorizados
-02:11:50 │ INFO     │ 📊 100 mercados monitorizados
-02:14:36 │ INFO     │ 📊 100 mercados monitorizados
-02:17:22 │ INFO     │ 📊 100 mercados monitorizados
-02:20:07 │ INFO     │ 📊 100 mercados monitorizados
-02:20:50 │ INFO     │ 🔍 Evaluando spike: Exact Score: Çorum FK 3 - 3 Alanyaspor?... | DOWN -11.7%
-02:20:50 │ INFO     │    Precio actual: 0.043 | Corrección: 43.3% | Edge: 43.3%
-02:20:50 │ INFO     │    ❌ Precio extremo: 0.043
-02:20:51 │ INFO     │ 🔍 Evaluando spike: Exact Score: Degerfors IF 3 - 0 Hammarby IF?... | UP +56.2%
-02:20:51 │ INFO     │    Precio actual: 0.017 | Corrección: 32.0% | Edge: 32.0%
-02:20:51 │ INFO     │    ❌ Precio extremo: 0.983
-02:22:55 │ INFO     │ 📊 100 mercados monitorizados
-02:23:30 │ INFO     │ 📉 SPIKE: Exact Score: Stabaek IF 0 - 3 Sogndal Fotball?... | -12.2% | 0.027 → 0.024
-02:23:39 │ INFO     │ 🔍 Evaluando spike: 1st Half Spread: Ipswich Town FC (-2.5)... | DOWN -47.0%
-02:23:40 │ INFO     │    Precio actual: 0.485 | Corrección: 86.5% | Edge: 86.5%
-02:23:40 │ INFO     │    ✅ OPORTUNIDAD: YES @ 0.485 | $43.27 | Edge: 86.5%
-02:25:45 │ INFO     │ 📊 100 mercados monitorizados
-02:26:19 │ INFO     │ 📉 SPIKE: Exact Score: Club Brugge 0 - 3 KRC Genk?... | -13.1% | 0.025 → 0.022
-02:28:32 │ INFO     │ 📊 100 mercados monitorizados
-02:29:15 │ INFO     │ 🔍 Evaluando spike: Exact Score: Yokohama FC 0 - 3 FC Imabari?... | DOWN -12.2%
-02:29:16 │ INFO     │    Precio actual: 0.016 | Corrección: -33.3% | Edge: 33.3%
-02:29:16 │ INFO     │    ❌ Precio extremo: 0.016
-02:31:19 │ INFO     │ 📊 100 mercados monitorizados
-02:31:48 │ INFO     │ 📉 SPIKE: Exact Score: UD Las Palmas 0 - 3 Burgos CF?... | -14.9% | 0.024 → 0.020
-02:34:06 │ INFO     │ 📊 100 mercados monitorizados
-02:36:52 │ INFO     │ 📊 100 mercados monitorizados
-02:39:38 │ INFO     │ 📊 100 mercados monitorizados
-02:39:44 │ INFO     │ 📉 SPIKE: Will the Republican Party candidate win the 2026 T... | -12.5% | 0.080 → 0.070
-02:42:25 │ INFO     │ 📊 100 mercados monitorizados
-02:43:10 │ INFO     │ 📊 Ciclo #1275 | 100 mercados | 0 spikes nuevos | 6 pendientes | 0 resueltos
-02:45:10 │ INFO     │ 📊 100 mercados monitorizados
-02:47:55 │ INFO     │ 📊 100 mercados monitorizados
-02:50:41 │ INFO     │ 📊 100 mercados monitorizados
-02:53:26 │ INFO     │ 📊 100 mercados monitorizados
-02:56:12 │ INFO     │ 📊 100 mercados monitorizados
-02:58:58 │ INFO     │ 📊 100 mercados monitorizados
-03:01:44 │ INFO     │ 📊 100 mercados monitorizados
-03:04:30 │ INFO     │ 📊 100 mercados monitorizados
-03:04:40 │ INFO     │ 📉 SPIKE: Will Atlanta, GA face tornado risk on September 15... | -90.0% | 0.005 → 0.001
-03:07:17 │ INFO     │ 📊 100 mercados monitorizados
-03:07:36 │ INFO     │ 📈 SPIKE: Exact Score: Ferro Carril Oeste 0 - 3 Club Ciudad ... | +19.2% | 0.026 → 0.031
-03:07:53 │ INFO     │ 📉 SPIKE: Exact Score: CA Guemes 3 - 3 CA Ferrocarril Midlan... | -16.1% | 0.031 → 0.026
-03:10:05 │ INFO     │ 📊 100 mercados monitorizados
-03:12:51 │ INFO     │ 📊 100 mercados monitorizados
-03:15:36 │ INFO     │ 📊 100 mercados monitorizados
-03:18:22 │ INFO     │ 📊 100 mercados monitorizados
-03:21:08 │ INFO     │ 📊 100 mercados monitorizados
-03:21:51 │ INFO     │ 🔍 Evaluando spike: Exact Score: FK Haugesund 0 - 3 Stroemmen IF?... | DOWN -12.0%
-03:21:52 │ INFO     │    Precio actual: 0.016 | Corrección: -23.8% | Edge: 23.8%
-03:21:52 │ INFO     │    ❌ Precio extremo: 0.016
-03:23:55 │ INFO     │ 📊 100 mercados monitorizados
-03:24:24 │ INFO     │ 📈 SPIKE: Exact Score: Modena FC 2018 0 - 3 Empoli FC?... | +26.5% | 0.021 → 0.027
-03:24:42 │ INFO     │ 📊 Ciclo #1290 | 100 mercados | 1 spikes nuevos | 9 pendientes | 0 resueltos
-03:26:43 │ INFO     │ 📊 100 mercados monitorizados
-03:26:54 │ INFO     │ 📉 SPIKE: Baltimore Orioles vs. New York Mets: O/U 12.5... | -90.0% | 0.005 → 0.001
-03:29:30 │ INFO     │ 📊 100 mercados monitorizados
-03:32:16 │ INFO     │ 📊 100 mercados monitorizados
-03:32:59 │ INFO     │ 🔍 Evaluando spike: Exact Score: Raufoss IL 3 - 0 Stroemsgodset IF?... | DOWN -10.4%
-03:32:59 │ INFO     │    Precio actual: 0.016 | Corrección: -36.0% | Edge: 36.0%
-03:32:59 │ INFO     │    ❌ Precio extremo: 0.016
-03:35:03 │ INFO     │ 📊 100 mercados monitorizados
-03:37:48 │ INFO     │ 📊 100 mercados monitorizados
-03:40:34 │ INFO     │ 📊 100 mercados monitorizados
-03:43:19 │ INFO     │ 📊 100 mercados monitorizados
-03:46:06 │ INFO     │ 📊 100 mercados monitorizados
-03:48:51 │ INFO     │ 📊 100 mercados monitorizados
-03:51:37 │ INFO     │ 📊 100 mercados monitorizados
-03:54:22 │ INFO     │ 📊 100 mercados monitorizados
-03:55:05 │ INFO     │ 🔍 Evaluando spike: Exact Score: Stabaek IF 0 - 3 Sogndal Fotball?... | DOWN -12.2%
-03:55:05 │ INFO     │    Precio actual: 0.016 | Corrección: -33.3% | Edge: 33.3%
-03:55:05 │ INFO     │    ❌ Precio extremo: 0.016
-03:57:09 │ INFO     │ 📊 100 mercados monitorizados
-03:57:31 │ INFO     │ 📉 SPIKE: Exact Score: Puntarenas FC 0 - 3 Escorpiones de Be... | -15.0% | 0.020 → 0.017
-03:57:54 │ INFO     │ 🔍 Evaluando spike: Exact Score: Club Brugge 0 - 3 KRC Genk?... | DOWN -13.1%
-03:57:54 │ INFO     │    Precio actual: 0.016 | Corrección: -27.3% | Edge: 27.3%
-03:57:54 │ INFO     │    ❌ Precio extremo: 0.016
-03:59:58 │ INFO     │ 📊 100 mercados monitorizados
-04:02:45 │ INFO     │ 📊 100 mercados monitorizados
-04:03:28 │ INFO     │ 🔍 Evaluando spike: Exact Score: UD Las Palmas 0 - 3 Burgos CF?... | DOWN -14.9%
-04:03:28 │ INFO     │    Precio actual: 0.027 | Corrección: 35.0% | Edge: 35.0%
-04:03:28 │ INFO     │    ❌ Precio extremo: 0.027
-04:05:32 │ INFO     │ 📊 100 mercados monitorizados
-04:06:18 │ INFO     │ 📊 Ciclo #1305 | 100 mercados | 0 spikes nuevos | 7 pendientes | 0 resueltos
-04:08:18 │ INFO     │ 📊 100 mercados monitorizados
-04:11:04 │ INFO     │ 📊 100 mercados monitorizados
-04:11:47 │ INFO     │ 🔍 Evaluando spike: Will the Republican Party candidate win the 2026 T... | DOWN -12.5%
-04:11:48 │ INFO     │    Precio actual: 0.070 | Corrección: 0.0% | Edge: 0.0%
-04:11:48 │ INFO     │    ❌ Edge insuficiente (0.0% < 8%)
-04:13:51 │ INFO     │ 📊 100 mercados monitorizados
-04:16:37 │ INFO     │ 📊 100 mercados monitorizados
-04:19:23 │ INFO     │ 📊 100 mercados monitorizados
-04:22:10 │ INFO     │ 📊 100 mercados monitorizados
-04:24:55 │ INFO     │ 📊 100 mercados monitorizados
-04:27:41 │ INFO     │ 📊 100 mercados monitorizados
+01:10:53 │ ERROR    │ Exception happened while polling for updates.
+Traceback (most recent call last):
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/ext/_utils/networkloop.py", line 161, in network_retry_loop
+    await do_action()
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/ext/_utils/networkloop.py", line 154, in do_action
+    action_cb_task.result()
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/ext/_updater.py", line 340, in polling_action_cb
+    updates = await self.bot.get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/ext/_extbot.py", line 680, in get_updates
+    updates = await super().get_updates(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/_bot.py", line 4767, in get_updates
+    await self._post(
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/_bot.py", line 712, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/ext/_extbot.py", line 378, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/_bot.py", line 741, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/request/_baserequest.py", line 375, in _request_wrapper
+    raise exception
+telegram.error.NetworkError: Bad Gateway
+01:11:02 │ INFO     │ 📊 100 mercados monitorizados
+01:13:49 │ INFO     │ 📊 100 mercados monitorizados
+01:16:34 │ INFO     │ 📊 100 mercados monitorizados
+01:19:20 │ INFO     │ 📊 100 mercados monitorizados
+01:22:06 │ INFO     │ 📊 100 mercados monitorizados
+01:24:51 │ INFO     │ 📊 100 mercados monitorizados
+01:24:55 │ INFO     │ 📉 SPIKE: Will Kansas City, MO face tornado risk on Septembe... | -96.0% | 0.013 → 0.001
+01:24:55 │ INFO     │ 📉 SPIKE: Will Tampa, FL face tornado risk on September 16?... | -96.0% | 0.013 → 0.001
+01:27:40 │ INFO     │ 📊 100 mercados monitorizados
+01:28:03 │ INFO     │ 📉 SPIKE: Exact Score: AFC Ajax 1 - 3 SBV Excelsior?... | -10.0% | 0.050 → 0.045
+01:30:27 │ INFO     │ 📊 100 mercados monitorizados
+01:33:17 │ INFO     │ 📊 100 mercados monitorizados
+01:36:02 │ INFO     │ 📊 100 mercados monitorizados
+01:38:48 │ INFO     │ 📊 100 mercados monitorizados
+01:41:34 │ INFO     │ 📊 100 mercados monitorizados
+01:44:24 │ INFO     │ 📊 100 mercados monitorizados
+01:45:08 │ INFO     │ 📊 Ciclo #135 | 100 mercados | 0 spikes nuevos | 11 pendientes | 0 resueltos
+01:47:09 │ INFO     │ 📊 100 mercados monitorizados
+01:47:52 │ INFO     │ 🔍 Evaluando spike: Hartford Athletic vs. Sporting Jax: O/U 5.5... | DOWN -11.1%
+01:47:52 │ INFO     │    Precio actual: 0.001 | Corrección: -99.8% | Edge: 95.0%
+01:47:52 │ INFO     │    ❌ Precio extremo: 0.001
+01:47:53 │ INFO     │ 🔍 Evaluando spike: Exact Score: Viking FK 0 - 3 Lillestrøm SK?... | DOWN -10.1%
+01:47:53 │ INFO     │    Precio actual: 0.046 | Corrección: 48.4% | Edge: 48.4%
+01:47:53 │ INFO     │ [SKIP] Exact Score market: Exact Score: Viking FK 0 - 3 Lillestrøm SK?
+01:49:57 │ INFO     │ 📊 100 mercados monitorizados
+01:50:24 │ INFO     │ 📈 SPIKE: Exact Score: Jeonbuk Hyundai Motors FC 0 - 3 Gwang... | +81.8% | 0.016 → 0.029
+01:50:25 │ INFO     │ 📈 SPIKE: Exact Score: Pohang Steelers FC 3 - 3 FC Seoul?... | +87.4% | 0.015 → 0.029
+01:52:47 │ INFO     │ 📊 100 mercados monitorizados
+01:55:32 │ INFO     │ 📊 100 mercados monitorizados
+01:55:53 │ INFO     │ 📉 SPIKE: Exact Score: AFC Ajax 0 - 3 SBV Excelsior?... | -10.0% | 0.050 → 0.045
+01:58:19 │ INFO     │ 📊 100 mercados monitorizados
+02:01:05 │ INFO     │ 📊 100 mercados monitorizados
+02:03:54 │ INFO     │ 📊 100 mercados monitorizados
+02:06:39 │ INFO     │ 📊 100 mercados monitorizados
+02:09:25 │ INFO     │ 📊 100 mercados monitorizados
+02:12:10 │ INFO     │ 📊 100 mercados monitorizados
+02:14:54 │ INFO     │ 📊 100 mercados monitorizados
+02:15:35 │ INFO     │ 📉 SPIKE: Exact Score: NK Maribor 3 - 3 Aluminij Kidricevo?... | -15.2% | 0.017 → 0.014
+02:17:42 │ INFO     │ 📊 100 mercados monitorizados
+02:20:26 │ INFO     │ 📊 100 mercados monitorizados
+02:23:11 │ INFO     │ 📊 100 mercados monitorizados
+02:23:25 │ INFO     │ 📉 SPIKE: Exact Score: Real Betis Balompié 0 - 3 Getafe CF?... | -15.4% | 0.007 → 0.005
+02:25:57 │ INFO     │ 📊 100 mercados monitorizados
+02:26:40 │ INFO     │ 🔍 Evaluando spike: Exact Score: US Cremonese 3 - 3 Virtus Entella?... | UP +10.2%
+02:26:40 │ INFO     │    Precio actual: 0.020 | Corrección: 25.9% | Edge: 25.9%
+02:26:40 │ INFO     │ [SKIP] Exact Score market: Exact Score: US Cremonese 3 - 3 Virtus Entella?
+02:26:44 │ INFO     │ 📊 Ciclo #150 | 100 mercados | 0 spikes nuevos | 13 pendientes | 0 resueltos
+02:28:44 │ INFO     │ 📊 100 mercados monitorizados
+02:31:31 │ INFO     │ 📊 100 mercados monitorizados
+02:34:17 │ INFO     │ 📊 100 mercados monitorizados
+02:34:20 │ INFO     │ 📉 SPIKE: Exact Score: AD Municipal Pérez Zeledón 0 - 1 Spor... | -26.1% | 0.115 → 0.085
+02:37:03 │ INFO     │ 📊 100 mercados monitorizados
+02:37:46 │ INFO     │ 🔍 Evaluando spike: Exact Score: Modena FC 2018 0 - 3 Empoli FC?... | DOWN -11.6%
+02:37:46 │ INFO     │    Precio actual: 0.040 | Corrección: 48.1% | Edge: 48.1%
+02:37:46 │ INFO     │ [SKIP] Exact Score market: Exact Score: Modena FC 2018 0 - 3 Empoli FC?
+02:37:47 │ INFO     │ 🔍 Evaluando spike: Exact Score: Independiente Rivadavia 3 - 3 Atletic... | DOWN -97.1%
+02:37:48 │ WARNING  │    Sin precio actual, saltando
+02:39:51 │ INFO     │ 📊 100 mercados monitorizados
+02:40:35 │ INFO     │ 🔍 Evaluando spike: Birmingham Legion FC vs. New Mexico United: 1st Ha... | DOWN -11.5%
+02:40:35 │ INFO     │    Precio actual: 1.000 | Corrección: 173.8% | Edge: 95.0%
+02:40:35 │ INFO     │    ❌ Precio extremo: 1.000
+02:42:39 │ INFO     │ 📊 100 mercados monitorizados
+02:45:25 │ INFO     │ 📊 100 mercados monitorizados
+02:45:51 │ INFO     │ 📉 SPIKE: Exact Score: UD Las Palmas 0 - 3 Burgos CF?... | -11.8% | 0.021 → 0.018
+02:45:54 │ INFO     │ 📉 SPIKE: Exact Score: FK Haugesund 0 - 3 Stroemmen IF?... | -15.7% | 0.015 → 0.013
+02:46:12 │ INFO     │ 🔍 Evaluando spike: Spread: Saint Louis City SC (-1.5)... | DOWN -15.4%
+02:46:12 │ INFO     │    Precio actual: 0.200 | Corrección: 81.8% | Edge: 81.8%
+02:46:12 │ INFO     │    ✅ OPORTUNIDAD: YES @ 0.200 | $40.91 | Edge: 81.8%
+02:48:17 │ INFO     │ 📊 100 mercados monitorizados
+02:51:03 │ INFO     │ 📊 100 mercados monitorizados
+02:53:48 │ INFO     │ 📊 100 mercados monitorizados
+02:54:21 │ INFO     │ 📉 SPIKE: Exact Score: CA Temperley 0 - 3 Club Almagro?... | -13.0% | 0.018 → 0.016
+02:56:36 │ INFO     │ 📊 100 mercados monitorizados
+02:57:22 │ ERROR    │ No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpcore/_async/connection.py", line 101, in handle_async_request
+    raise exc
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpcore/_async/connection.py", line 78, in handle_async_request
+    stream = await self._connect(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpcore/_async/connection.py", line 124, in _connect
+    stream = await self._network_backend.connect_tcp(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpcore/_backends/auto.py", line 31, in connect_tcp
+    return await self._backend.connect_tcp(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpcore/_backends/anyio.py", line 113, in connect_tcp
+    with map_exceptions(exc_map):
+  File "/usr/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/request/_httpxrequest.py", line 279, in do_request
+    res = await self._client.request(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpx/_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+  File "/usr/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/ext/_application.py", line 1315, in process_update
+    await coroutine
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/ext/_handlers/basehandler.py", line 159, in handle_update
+    return await self.callback(update, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/bot/telegram_bot.py", line 148, in _buttons
+    elif d == "btn_positions": await self._panel_positions(query)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/bot/telegram_bot.py", line 212, in _panel_positions
+    await query.edit_message_text(msg[:4096], parse_mode=ParseMode.HTML, reply_markup=kb)
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/_callbackquery.py", line 269, in edit_message_text
+    return await self._get_message().edit_text(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/_message.py", line 4473, in edit_text
+    return await self.get_bot().edit_message_text(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/ext/_extbot.py", line 1763, in edit_message_text
+    return await super().edit_message_text(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/_bot.py", line 4465, in edit_message_text
+    return await self._send_message(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/ext/_extbot.py", line 638, in _send_message
+    result = await super()._send_message(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/_bot.py", line 828, in _send_message
+    result = await self._post(
+             ^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/_bot.py", line 712, in _post
+    return await self._do_post(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/ext/_extbot.py", line 378, in _do_post
+    return await super()._do_post(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/_bot.py", line 741, in _do_post
+    result = await request.post(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/request/_baserequest.py", line 198, in post
+    result = await self._request_wrapper(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/request/_baserequest.py", line 305, in _request_wrapper
+    code, payload = await self.do_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/polymarket/poly_overreaction_bot/venv/lib/python3.12/site-packages/telegram/request/_httpxrequest.py", line 296, in do_request
+    raise TimedOut from err
+telegram.error.TimedOut: Timed out
+02:59:23 │ INFO     │ 📊 100 mercados monitorizados
+03:02:08 │ INFO     │ 📊 100 mercados monitorizados
+03:02:51 │ INFO     │ 🔍 Evaluando spike: Sao Paulo Open (Doubles): Martins/Ortenzi vs Navar... | DOWN -44.4%
+03:02:51 │ WARNING  │    Sin precio actual, saltando
+03:04:55 │ INFO     │ 📊 100 mercados monitorizados
+03:05:30 │ INFO     │ 📉 SPIKE: Exact Score: CA Temperley 2 - 3 Club Almagro?... | -12.8% | 0.018 → 0.015
+03:07:42 │ INFO     │ 📊 100 mercados monitorizados
+03:08:26 │ INFO     │ 📊 Ciclo #165 | 100 mercados | 0 spikes nuevos | 13 pendientes | 0 resueltos
+03:10:26 │ INFO     │ 📊 100 mercados monitorizados
+03:13:12 │ INFO     │ 📊 100 mercados monitorizados
+03:15:58 │ INFO     │ 📊 100 mercados monitorizados
+03:18:45 │ INFO     │ 📊 100 mercados monitorizados
+03:21:31 │ INFO     │ 📊 100 mercados monitorizados
+03:24:16 │ INFO     │ 📊 100 mercados monitorizados
+03:24:59 │ INFO     │ 🔍 Evaluando spike: Will Kansas City, MO face tornado risk on Septembe... | DOWN -96.0%
+03:24:59 │ WARNING  │    Sin precio actual, saltando
+03:25:00 │ INFO     │ 🔍 Evaluando spike: Will Tampa, FL face tornado risk on September 16?... | DOWN -96.0%
+03:25:01 │ WARNING  │    Sin precio actual, saltando
+03:27:04 │ INFO     │ 📊 100 mercados monitorizados
+03:27:47 │ INFO     │ 🔍 Evaluando spike: Exact Score: AFC Ajax 1 - 3 SBV Excelsior?... | DOWN -10.0%
+03:27:47 │ INFO     │    Precio actual: 0.050 | Corrección: 11.1% | Edge: 11.1%
+03:27:47 │ INFO     │ [SKIP] Exact Score market: Exact Score: AFC Ajax 1 - 3 SBV Excelsior?
+03:29:51 │ INFO     │ 📊 100 mercados monitorizados
+03:30:21 │ INFO     │ 📈 SPIKE: Exact Score: Stabaek IF 0 - 3 Sogndal Fotball?... | +32.2% | 0.012 → 0.015
+03:30:34 │ INFO     │ 📈 SPIKE: Exact Score: Bohemians Dublin FC 0 - 3 Drogheda Un... | +14.3% | 0.007 → 0.008
+03:32:40 │ INFO     │ 📊 100 mercados monitorizados
+03:35:25 │ INFO     │ 📊 100 mercados monitorizados
+03:38:11 │ INFO     │ 📊 100 mercados monitorizados
+03:38:30 │ INFO     │ 📈 SPIKE: Exact Score: Yokohama FC 0 - 3 FC Imabari?... | +93.5% | 0.015 → 0.030
+03:40:58 │ INFO     │ 📊 100 mercados monitorizados
+03:43:44 │ INFO     │ 📊 100 mercados monitorizados
+03:46:29 │ INFO     │ 📊 100 mercados monitorizados
+03:49:15 │ INFO     │ 📊 100 mercados monitorizados
+03:49:58 │ INFO     │ 🔍 Evaluando spike: Exact Score: Jeonbuk Hyundai Motors FC 0 - 3 Gwang... | UP +81.8%
+03:49:58 │ INFO     │    Precio actual: 0.027 | Corrección: 6.9% | Edge: 6.9%
+03:49:58 │ INFO     │ [SKIP] Exact Score market: Exact Score: Jeonbuk Hyundai Motors FC 0 - 3 Gwang
+03:49:59 │ INFO     │ 🔍 Evaluando spike: Exact Score: Pohang Steelers FC 3 - 3 FC Seoul?... | UP +87.4%
+03:50:00 │ INFO     │    Precio actual: 0.027 | Corrección: 6.9% | Edge: 6.9%
+03:50:00 │ INFO     │ [SKIP] Exact Score market: Exact Score: Pohang Steelers FC 3 - 3 FC Seoul?
+03:50:03 │ INFO     │ 📊 Ciclo #180 | 100 mercados | 0 spikes nuevos | 11 pendientes | 0 resueltos
+03:52:03 │ INFO     │ 📊 100 mercados monitorizados
+03:52:38 │ INFO     │ 📉 SPIKE: Exact Score: Djurgardens IF 0 - 3 IF Elfsborg?... | -12.7% | 0.018 → 0.016
+03:52:39 │ INFO     │ 📉 SPIKE: Exact Score: Degerfors IF 3 - 1 Hammarby IF?... | -12.7% | 0.018 → 0.016
+03:54:56 │ INFO     │ 📊 100 mercados monitorizados
+03:55:39 │ INFO     │ 🔍 Evaluando spike: Exact Score: AFC Ajax 0 - 3 SBV Excelsior?... | DOWN -10.0%
+03:55:40 │ INFO     │    Precio actual: 0.050 | Corrección: 11.1% | Edge: 11.1%
+03:55:40 │ INFO     │ [SKIP] Exact Score market: Exact Score: AFC Ajax 0 - 3 SBV Excelsior?
+03:57:43 │ INFO     │ 📊 100 mercados monitorizados
+03:58:19 │ INFO     │ 📉 SPIKE: Exact Score: Degerfors IF 3 - 3 Hammarby IF?... | -11.4% | 0.017 → 0.015
+04:00:29 │ INFO     │ 📊 100 mercados monitorizados
+04:03:14 │ INFO     │ 📊 100 mercados monitorizados
+04:05:59 │ INFO     │ 📊 100 mercados monitorizados
+04:08:44 │ INFO     │ 📊 100 mercados monitorizados
+04:11:29 │ INFO     │ 📊 100 mercados monitorizados
+04:14:14 │ INFO     │ 📊 100 mercados monitorizados
+04:14:57 │ INFO     │ 🔍 Evaluando spike: Exact Score: NK Maribor 3 - 3 Aluminij Kidricevo?... | DOWN -15.2%
+04:14:57 │ INFO     │    Precio actual: 0.013 | Corrección: -3.6% | Edge: 3.6%
+04:14:57 │ INFO     │ [SKIP] Exact Score market: Exact Score: NK Maribor 3 - 3 Aluminij Kidricevo?
+04:17:01 │ INFO     │ 📊 100 mercados monitorizados
+04:19:46 │ INFO     │ 📊 100 mercados monitorizados
+04:22:32 │ INFO     │ 📊 100 mercados monitorizados
+04:23:14 │ INFO     │ 🔍 Evaluando spike: Exact Score: Real Betis Balompié 0 - 3 Getafe CF?... | DOWN -15.4%
+04:23:15 │ INFO     │    Precio actual: 0.005 | Corrección: 0.0% | Edge: 0.0%
+04:23:15 │ INFO     │ [SKIP] Exact Score market: Exact Score: Real Betis Balompié 0 - 3 Getafe CF?
+04:25:19 │ INFO     │ 📊 100 mercados monitorizados
+04:28:04 │ INFO     │ 📊 100 mercados monitorizados
