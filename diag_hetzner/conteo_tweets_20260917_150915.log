@@ -1,0 +1,46 @@
+=== CONTEO TWEETS POR VENTANA · 20260917_150915 UTC ===
+
+== 1. ¿De dónde sale el conteo? ==
+-rw-r--r-- 1 root root 1130 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/datos_ejemplo.csv
+-rw-r--r-- 1 root root  756 Sep 14 09:47 /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+-rw-r--r-- 1 root root 1091 Sep  2 18:16 /opt/polymarket/bot-polymarket-elon/resultados_real.csv
+-rw-r--r-- 1 root root  196 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/resultados_simulacion.csv
+-rw-r--r-- 1 root root  698 Sep 12 07:08 /opt/polymarket/bot-polymarket-elon-semanal/datos_elon.csv
+-rw-r--r-- 1 root root 3741 Sep  4 18:09 /opt/polymarket/bot-polymarket-elon-semanal/resultados_real_semanal.csv
+
+== 2. Últimas líneas del CSV principal ==
+
+== 3. ¿Cómo cuenta los tweets el bot semanal? ==
+7:import csv
+23:CSV_PATH = os.path.join(DATA_DIR, "datos_elon.csv")
+50:def cargar_csv():
+57:            r = csv.DictReader(f)
+103:    datos = cargar_csv()
+
+== 4. ¿Cuántos tweets hay en el rango Sept 11-18? ==
+Ahora (ET): 2026-09-17T11:09:15.365604-04:00
+
+=== /opt/polymarket/bot-polymarket-elon-mensual-v2/datos_elon.csv ===
+  Header: fecha,tweets
+  Columnas: ['fecha', 'tweets']
+  ⚠️ no encontré columna de fecha
+=== /opt/polymarket/bot-polymarket-elon-mensual/datos_elon.csv ===
+  Header: fecha,tweets
+  Columnas: ['fecha', 'tweets']
+  ⚠️ no encontré columna de fecha
+=== /opt/polymarket/bot-polymarket-elon-v2/datos_elon.csv ===
+  Header: fecha,tweets
+  Columnas: ['fecha', 'tweets']
+  ⚠️ no encontré columna de fecha
+=== /opt/polymarket/bot-polymarket-elon/datos_elon.csv ===
+  Header: fecha,tweets
+  Columnas: ['fecha', 'tweets']
+  ⚠️ no encontré columna de fecha
+=== /opt/polymarket/bot-polymarket-elon/datos_ejemplo.csv ===
+  Header: fecha,tweets
+  Columnas: ['fecha', 'tweets']
+  ⚠️ no encontré columna de fecha
+=== /opt/polymarket/bot-polymarket-elon-semanal/datos_elon.csv ===
+  Header: fecha,tweets
+  Columnas: ['fecha', 'tweets']
+  ⚠️ no encontré columna de fecha
