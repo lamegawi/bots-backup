@@ -1,0 +1,342 @@
+=== DIAGNÓSTICO mercado_polymarket.py · 20260917_144252 UTC ===
+
+== 1. Contenido completo del archivo ==
+305 /opt/polymarket/bot-polymarket-elon/mercado_polymarket.py
+
+     1	#!/usr/bin/env python3
+     2	# -*- coding: utf-8 -*-
+     3	"""
+     4	MERCADOS POLYMARKET — «Elon Musk # tweets» (precios y cuotas en vivo)
+     5	=====================================================================
+     6	Descarga TODOS los mercados de Polymarket sobre el nº de tweets de
+     7	@elonmusk (48h, semanales y mensuales), parsea los bins (rangos) y
+     8	precios YES, calcula las cuotas (=1/precio), identifica la ventana
+     9	(48 h, semanal, mensual) y guarda todo en mercado_activo.json.
+    10	
+    11	DETECCIÓN AUTOMÁTICA DE VENTANAS NUEVAS
+    12	----------------------------------------
+    13	Siempre que una ventana termina, Polymarket crea la siguiente. Este
+    14	módulo enumera día a día TODOS los slugs posibles de ventanas
+    15	recientes y futuras (48h día a día, semanales día a día, mensuales
+    16	mes a mes), así que cualquier ventana nueva se detecta en la misma
+    17	pasada en que se crea, se añade a mercado_activo.json y se avisa por
+    18	ntfy (🆕 Nueva ventana). Las ventanas ya vistas se guardan en
+    19	ventanas_vistas.json para no repetir avisos y para no re-sondear las
+    20	que ya se resolvieron.
+    21	
+    22	USO:
+    23	  python3 mercado_polymarket.py            # tabla en pantalla + guardar JSON
+    24	  python3 mercado_polymarket.py --json     # solo salida JSON (para scripting)
+    25	"""
+    26	import argparse
+    27	import json
+    28	import re
+    29	import subprocess
+    30	import sys
+    31	from datetime import datetime, timedelta, timezone
+    32	from zoneinfo import ZoneInfo
+    33	
+    34	try:
+    35	    ET = ZoneInfo("America/New_York")
+    36	except Exception:
+    37	    # Windows sin tzdata: fallback a hora fija de verano (UTC-4)
+    38	    from datetime import timedelta
+    39	    from datetime import timezone as _tz
+    40	    ET = _tz(timedelta(hours=-4), name="EDT")
+    41	GAMMA = "https://gamma-api.polymarket.com/public-search?q=%22elon%20musk%22&limit=100"
+    42	SALIDA = "mercado_activo.json"
+    43	VISTAS = "ventanas_vistas.json"
+    44	MESES = {"January": 1, "February": 2, "March": 3, "April": 4, "May": 5, "June": 6,
+    45	         "July": 7, "August": 8, "September": 9, "October": 10, "November": 11,
+    46	         "December": 12}
+    47	MESES_NOMBRE = {1: "january", 2: "february", 3: "march", 4: "april", 5: "may",
+    48	                6: "june", 7: "july", 8: "august", 9: "september", 10: "october",
+    49	                11: "november", 12: "december"}
+    50	
+    51	
+    52	def curl(url):
+    53	    r = subprocess.run(["curl", "-s", "--max-time", "40", url],
+    54	                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+    55	    if r.returncode != 0 or not r.stdout.strip():
+    56	        raise RuntimeError("curl falló o respuesta vacía")
+    57	    return json.loads(r.stdout)
+    58	
+    59	
+    60	def _cargar_vistas():
+    61	    try:
+    62	        d = json.load(open(VISTAS, encoding="utf-8"))
+    63	        return d.get("vistas", {})
+    64	    except Exception:
+    65	        return {}
+    66	
+    67	
+    68	def _guardar_vistas(vistas):
+    69	    try:
+    70	        with open(VISTAS, "w", encoding="utf-8") as f:
+    71	            json.dump({"actualizado": datetime.now(timezone.utc).isoformat(),
+    72	                       "vistas": vistas}, f, ensure_ascii=False, indent=1)
+    73	    except Exception:
+    74	        pass
+    75	
+    76	
+    77	def _detectar_nuevas(res):
+    78	    """Compara las ventanas del JSON con las ya vistas. Devuelve la lista de
+    79	    ventanas ABIERTAS nuevas (nunca vistas antes) y actualiza el registro.
+    80	    Las ventanas que ya no están abiertas se marcan como resueltas (no se
+    81	    volverán a sondear)."""
+    82	    vistas = _cargar_vistas()
+    83	    nuevas = []
+    84	    ahora = datetime.now(timezone.utc)
+    85	    for mk in res:
+    86	        slug = mk.get("slug") or ""
+    87	        if not slug:
+    88	            continue
+    89	        if mk["cerrado"] or (mk.get("fin_iso") and datetime.fromisoformat(mk["fin_iso"]) < ahora):
+    90	            vistas[slug] = {"cerrada": True, "primera_vista": vistas.get(slug, {}).get("primera_vista", datetime.now(timezone.utc).isoformat())}
+    91	            continue
+    92	        if slug not in vistas:
+    93	            vistas[slug] = {"cerrada": False, "primera_vista": datetime.now(timezone.utc).isoformat()}
+    94	            nuevas.append(mk)
+    95	    _guardar_vistas(vistas)
+    96	    return nuevas
+    97	
+    98	
+    99	def fetch_events():
+   100	    """Búsqueda pública + enumeración de slugs de TODAS las ventanas
+   101	    posibles (48h día a día, semanales día a día, mensuales mes a mes).
+   102	    Así, cuando una ventana termina y Polymarket crea la siguiente, esta
+   103	    se detecta en la misma pasada (sin importar el día en que la creen).
+   104	
+   105	    Solo se sondean los slugs que la búsqueda pública no devuelve y que
+   106	    no están registrados como resueltos (eficiencia: ~0-3 requests/pasada
+   107	    en condiciones normales)."""
+   108	    d = curl(GAMMA)
+   109	    eventos = [e for e in d.get("events", []) if "tweets" in (e.get("title") or "").lower()]
+   110	    vistos = {e.get("id"): e for e in eventos if e.get("id")}
+   111	    vistos_slugs = {e.get("slug"): e for e in eventos if e.get("slug")}
+   112	    conocidas = _cargar_vistas()
+   113	
+   114	    hoy = datetime.now(timezone.utc).date()
+   115	    slugs = set()
+   116	    for i in range(-2, 16):            # 48h: desde hace 2 días hasta +15 (día a día)
+   117	        d1 = hoy + timedelta(days=i)
+   118	        d2 = d1 + timedelta(days=2)
+   119	        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}")
+   120	    for i in range(-7, 22):            # semanales: desde hace 7 días hasta +21 (día a día)
+   121	        d1 = hoy + timedelta(days=i)
+   122	        d2 = d1 + timedelta(days=7)
+   123	        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}")
+   124	    for delta in (-2, -1, 0, 1, 2, 3):  # mensuales: 2 atrás, actual y 3 futuros
+   125	        d1 = hoy + timedelta(days=31 * delta)
+   126	        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.year}")
+   127	
+   128	    for s in sorted(slugs):
+   129	        if s in vistos_slugs:          # ya lo trae la búsqueda pública
+   130	            continue
+   131	        info = conocidas.get(s)
+   132	        if info and info.get("cerrada"):
+   133	            continue                   # resuelta: no volverá a abrirse
+   134	        try:
+   135	            data = curl(f"https://gamma-api.polymarket.com/events?slug={s}")
+   136	            if isinstance(data, list) and data and not data[0].get("closed"):
+   137	                vistos.setdefault(data[0].get("id"), data[0])
+   138	        except Exception:
+   139	            pass
+   140	    return list(vistos.values())
+   141	
+   142	
+   143	def parse_bin(titulo):
+   144	    """'<20' → (0,19) · '20-39' → (20,39) · '1000+' → (1000,∞)"""
+   145	    t = (titulo or "").strip()
+   146	    m = re.match(r"^<(\d+)$", t)
+   147	    if m:
+   148	        return (0, int(m.group(1)) - 1)
+   149	    m = re.match(r"^(\d+)\s*[-–]\s*(\d+)$", t)
+   150	    if m:
+   151	        return (int(m.group(1)), int(m.group(2)))
+   152	    m = re.match(r"^(\d+)\+$", t)
+   153	    if m:
+   154	        return (int(m.group(1)), float("inf"))
+   155	    return None
+   156	
+   157	
+   158	def parse_ventana(desc, end_iso, titulo):
+   159	    """Ventana del mercado:
+   160	    - 48h/semanal: 'from August 15 12:00 PM ET to August 17, 2026 12:00 PM ET'.
+   161	    - MENSUSAL: 'during the month of August 2026' → día 1 00:00 ET al día 1
+   162	      del mes siguiente 00:00 ET (fin = endDate cuando existe).
+   163	    Devuelve (inicio_utc, fin_utc) o None."""
+   164	    # ---- mensual: "the month of August 2026" en la descripción/título
+   165	    m = re.search(r"month of ([A-Z][a-z]+) (\d{4})", desc or "")
+   166	    if not m:
+   167	        m = re.search(r"in ([A-Z][a-z]+) (\d{4})", titulo or "")
+   168	    if m:
+   169	        mes, anio = m.group(1), int(m.group(2))
+   170	        if mes in MESES:
+   171	            inicio = datetime(anio, MESES[mes], 1, 0, 0, tzinfo=ET)
+   172	            if end_iso:
+   173	                fin = datetime.fromisoformat(end_iso.replace("Z", "+00:00")).astimezone(ET)
+   174	            else:
+   175	                nxt = anio + 1 if MESES[mes] == 12 else anio
+   176	                nm = 1 if MESES[mes] == 12 else MESES[mes] + 1
+   177	                fin = datetime(nxt, nm, 1, 0, 0, tzinfo=ET)
+   178	            if inicio < fin:
+   179	                return inicio, fin
+   180	            return None
+   181	    # ---- 48h / semanal: "from ... to ..."
+   182	    pat = re.compile(
+   183	        r"from ([A-Z][a-z]+) (\d{1,2})(?:,? (\d{4}))? (\d{1,2}):(\d{2}) ([AP]M) ET "
+   184	        r"to ([A-Z][a-z]+) (\d{1,2})(?:,? (\d{4}))? (\d{1,2}):(\d{2}) ([AP]M) ET")
+   185	    mm = pat.search(desc or "")
+   186	    if not mm:
+   187	        return None
+   188	
+   189	    def to_dt(month, day, year, hh, mm2, ap):
+   190	        anio = int(year) if year else int(end_iso[:4])
+   191	        h = int(hh) % 12 + (12 if ap == "PM" else 0)
+   192	        return datetime(anio, MESES[month], int(day), h, int(mm2), tzinfo=ET)
+   193	
+   194	    inicio = to_dt(mm.group(1), mm.group(2), mm.group(3), mm.group(4), mm.group(5), mm.group(6))
+   195	    fin = to_dt(mm.group(7), mm.group(8), mm.group(9), mm.group(10), mm.group(11), mm.group(12))
+   196	    if inicio >= fin:
+   197	        return None
+   198	    return inicio, fin
+   199	
+   200	
+   201	def procesar(events):
+   202	    res = []
+   203	    for ev in events:
+   204	        bins = []
+   205	        for m in ev.get("markets", []):
+   206	            bin_ = parse_bin(m.get("groupItemTitle") or "")
+   207	            if not bin_:
+   208	                continue
+   209	            try:
+   210	                precios = json.loads(m.get("outcomePrices") or "[]")
+   211	            except Exception:
+   212	                continue
+   213	            if len(precios) < 2:
+   214	                continue
+   215	            try:
+   216	                px = float(precios[0])
+   217	                pn = float(precios[1]) if precios[1] not in (None, "") else 1 - px
+   218	            except Exception:
+   219	                continue
+   220	            cuota_yes = 1 / px if px > 0 else None
+   221	            cuota_no = 1 / (1 - px) if px < 1 else None
+   222	            try:
+   223	                volumen = float(m.get("volume") or 0)
+   224	            except Exception:
+   225	                volumen = 0
+   226	            bins.append({"titulo": m.get("groupItemTitle"), "lo": bin_[0],
+   227	                         "hi": bin_[1], "precio_yes": round(px, 4),
+   228	                         "precio_no": round(pn, 4), "cuota_yes": cuota_yes,
+   229	                         "cuota_no": cuota_no, "volumen": volumen})
+   230	        if not bins:
+   231	            continue
+   232	        ventana = parse_ventana(ev.get("description"), ev.get("endDate") or "",
+   233	                                ev.get("title") or "")
+   234	        dur_h = None
+   235	        tipo = "otro"
+   236	        if ventana:
+   237	            dur_h = (ventana[1] - ventana[0]).total_seconds() / 3600
+   238	            if abs(dur_h - 48) < 2:
+   239	                tipo = "48h"
+   240	            elif abs(dur_h - 168) < 8:
+   241	                tipo = "semanal"
+   242	            elif 660 < dur_h < 780:            # 28-32 días → mensual
+   243	                tipo = "mensual"
+   244	            else:
+   245	                tipo = "otro"
+   246	        res.append({
+   247	            "id": ev.get("id"), "titulo": ev.get("title"), "slug": ev.get("slug"),
+   248	            "cerrado": bool(ev.get("closed")), "volumen": ev.get("volume"),
+   249	            "endDate": ev.get("endDate"),
+   250	            "inicio_iso": ventana[0].isoformat() if ventana else None,
+   251	            "fin_iso": ventana[1].isoformat() if ventana else None,
+   252	            "duracion_h": dur_h, "tipo": tipo, "bins": bins})
+   253	    res.sort(key=lambda x: (x["cerrado"], x["fin_iso"] or ""))
+   254	    return res
+   255	
+   256	
+   257	def actualizar_mercado():
+   258	    """Descarga, procesa y guarda mercado_activo.json. Devuelve la lista.
+   259	    Si detecta ventanas NUEVAS (recién creadas), las añade al registro y
+   260	    avisa por ntfy (🆕 Nueva ventana)."""
+   261	    res = procesar(fetch_events())
+   262	    with open(SALIDA, "w", encoding="utf-8") as f:
+   263	        json.dump({"actualizado": datetime.now(timezone.utc).isoformat(),
+   264	                   "mercados": res}, f, ensure_ascii=False, indent=1)
+   265	    nuevas = _detectar_nuevas(res)
+   266	    for mk in nuevas:
+   267	        try:
+   268	            import notificar
+   269	            notificar.ventana_nueva(mk)
+   270	        except Exception:
+   271	            pass
+   272	    return res
+   273	
+   274	
+   275	def main():
+   276	    ap = argparse.ArgumentParser(description="Mercados Polymarket de tweets de @elonmusk")
+   277	    ap.add_argument("--json", action="store_true", help="salida solo JSON")
+   278	    args = ap.parse_args()
+   279	    res = actualizar_mercado()
+   280	    if args.json:
+   281	        print(json.dumps(res, ensure_ascii=False, indent=1))
+   282	        return
+   283	    print(f"Mercados Polymarket «Elon Musk # tweets»  (actualizado: "
+   284	          f"{datetime.now(ET).strftime('%Y-%m-%d %H:%M %Z')})")
+   285	    print("=" * 92)
+   286	    for mk in res:
+   287	        estado = "CERRADO" if mk["cerrado"] else "ABIERTO"
+   288	        print(f"\n■ {mk['titulo']}  [{estado}]  tipo: {mk['tipo']}  "
+   289	              f"volumen: ${mk['volumen']:,.0f}")
+   290	        if mk.get("inicio_iso"):
+   291	            print(f"   ventana: {mk['inicio_iso']} → {mk['fin_iso']} "
+   292	                  f"({mk['duracion_h']:.0f} h)")
+   293	        print(f"   {'bin':<10}{'precio YES':>12}{'cuota YES':>12}{'cuota NO':>12}"
+   294	              f"{'volumen':>12}")
+   295	        for b in mk["bins"]:
+   296	            cy = f"{b['cuota_yes']:.2f}" if b["cuota_yes"] else "—"
+   297	            cn = f"{b['cuota_no']:.2f}" if b["cuota_no"] else "—"
+   298	            marca = "  ← cuota ≥ 3" if (b["cuota_yes"] and b["cuota_yes"] >= 3) or \
+   299	                    (b["cuota_no"] and b["cuota_no"] >= 3) else ""
+   300	            print(f"   {b['titulo']:<10}{b['precio_yes']:>12.4f}{cy:>12}{cn:>12}"
+   301	                  f"{b['volumen']:>12,.0f}{marca}")
+   302	
+   303	
+   304	if __name__ == "__main__":
+   305	    main()
+
+== 2. ¿Cómo determina si es 48h? ==
+7:@elonmusk (48h, semanales y mensuales), parsea los bins (rangos) y
+9:(48 h, semanal, mensual) y guarda todo en mercado_activo.json.
+15:recientes y futuras (48h día a día, semanales día a día, mensuales
+89:        if mk["cerrado"] or (mk.get("fin_iso") and datetime.fromisoformat(mk["fin_iso"]) < ahora):
+101:    posibles (48h día a día, semanales día a día, mensuales mes a mes).
+116:    for i in range(-2, 16):            # 48h: desde hace 2 días hasta +15 (día a día)
+160:    - 48h/semanal: 'from August 15 12:00 PM ET to August 17, 2026 12:00 PM ET'.
+181:    # ---- 48h / semanal: "from ... to ..."
+235:        tipo = "otro"
+238:            if abs(dur_h - 48) < 2:
+239:                tipo = "48h"
+241:                tipo = "semanal"
+243:                tipo = "mensual"
+245:                tipo = "otro"
+251:            "fin_iso": ventana[1].isoformat() if ventana else None,
+252:            "duracion_h": dur_h, "tipo": tipo, "bins": bins})
+253:    res.sort(key=lambda x: (x["cerrado"], x["fin_iso"] or ""))
+288:        print(f"\n■ {mk['titulo']}  [{estado}]  tipo: {mk['tipo']}  "
+291:            print(f"   ventana: {mk['inicio_iso']} → {mk['fin_iso']} "
+292:                  f"({mk['duracion_h']:.0f} h)")
+
+== 3. ¿Qué URL/endpoint usa? ==
+41:GAMMA = "https://gamma-api.polymarket.com/public-search?q=%22elon%20musk%22&limit=100"
+52:def curl(url):
+53:    r = subprocess.run(["curl", "-s", "--max-time", "40", url],
+56:        raise RuntimeError("curl falló o respuesta vacía")
+99:def fetch_events():
+108:    d = curl(GAMMA)
+135:            data = curl(f"https://gamma-api.polymarket.com/events?slug={s}")
+261:    res = procesar(fetch_events())
