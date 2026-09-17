@@ -1,0 +1,11 @@
+{
+  "saldo": 228.45,
+  "paso": 1,
+  "activa": null,
+  "abierta": null,
+  "historial": [],
+  "_sincronizado_con_real": true,
+  "_sincronizado_ts": "2026-09-12T07:31:17Z",
+  "_bankroll_inicial_real": 228.45,
+  "_pnl_historico_acumulado": 0.0
+}
