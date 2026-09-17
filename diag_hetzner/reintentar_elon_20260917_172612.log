@@ -1,0 +1,20 @@
+=== REINTENTAR CON PAUSAS · 20260917_172612 UTC ===
+
+== Probar con userId numérico (alternativa a username) ==
+Respuesta:
+{"status":"success","msg":"success","data":{"unavailable":true,"message":"User is suspended","unavailableReason":"Suspended"}}
+
+== Esperar 6s y probar @elonmusk otra vez ==
+Respuesta:
+{"status":"success","msg":"success","data":{"unavailable":true,"message":"User is suspended","unavailableReason":"Suspended"}}
+== Probar endpoint advanced_search (puede que funcione diferente) ==
+Respuesta:
+{"status":"success","msg":"success","data":{"unavailable":true,"message":"User is suspended","unavailableReason":"Suspended"}}
+== Probar endpoint last_tweets ==
+Respuesta:
+{"status":"success","code":0,"msg":"success","data":{"pin_tweet":null,"tweets":[{"type":"tweet","id":"2100637307124506759","url":"https://x.com/elonmusk/status/2100637307124506759","twitterUrl":"https://twitter.com/elonmusk/status/2100637307124506759","text":"RT @grok: @Jason @cremieuxrecueil @bot Nah, command declined. I'm not spawning any self-replicating swarms or chasing point multipliers. Th…","source":"Twitter for iPhone","retweetCount":19,"replyCount":16,"likeCount":189,"quoteCount":6,"
+== Comprobar docs del endpoint en su web ==
+Endpoints alternativos comunes:
+  - /twitter/user/info?userName=elonmusk
+  - /twitter/user/tweets_replies?userName=elonmusk
+  - /twitter/tweets?ids=... (si tienes IDs)
