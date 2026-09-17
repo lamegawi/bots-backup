@@ -1,0 +1,21 @@
+=== PROBAR VARIANTES DE @elonmusk · 20260917_172008 UTC ===
+
+== Probando @elonmusk ==
+  status: success
+  ❌ No disponible: Suspended
+
+== Probando @ElonMusk ==
+  status: ?
+  ❌ {'error': 'Too Many Requests', 'message': 'For free-tier users, the QPS limit is one request every 5 seconds.'}
+
+== Probando @elon ==
+  status: ?
+  ❌ {'error': 'Too Many Requests', 'message': 'For free-tier users, the QPS limit is one request every 5 seconds.'}
+
+== Probando @elonmuskwhisper ==
+  status: ?
+  ❌ {'error': 'Too Many Requests', 'message': 'For free-tier users, the QPS limit is one request every 5 seconds.'}
+
+== Probando @elonreevmusk ==
+  status: ?
+  ❌ {'error': 'Too Many Requests', 'message': 'For free-tier users, the QPS limit is one request every 5 seconds.'}
