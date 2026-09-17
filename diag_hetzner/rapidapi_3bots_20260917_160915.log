@@ -1,0 +1,32 @@
+=== SETUP RAPIDAPI · 3 BOTS · 20260917_160915 UTC ===
+
+== 1. Verificar los 3 directorios de bots ==
+  ✅ /opt/polymarket/bot-polymarket-elon
+-rw-r--r-- 1 root root 1130 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/datos_ejemplo.csv
+-rw-r--r-- 1 root root  756 Sep 14 09:47 /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+  ✅ /opt/polymarket/bot-polymarket-trump
+-rw-r--r-- 1 root root 3397 Sep 17 16:02 /opt/polymarket/bot-polymarket-trump/datos_trump.csv
+  ✅ /opt/polymarket/bot-polymarket-zelenskyy
+-rw-r--r-- 1 root root 2652 Sep 17 16:07 /opt/polymarket/bot-polymarket-zelenskyy/datos_zelen.csv
+
+== 2. Backup scripts actuales ==
+  ✅ backup /opt/polymarket/bot-polymarket-elon/recoger_tweets.py
+  ✅ backup /opt/polymarket/bot-polymarket-trump/recoger_tweets.py
+  ✅ backup /opt/polymarket/bot-polymarket-zelenskyy/recoger_tweets.py
+
+== 3. Crear script común que cubre los 3 bots ==
+✅ Script creado: /opt/polymarket/recoger_tweets_rapidapi.py
+
+== 4. Probar si hay API key configurada ==
+⚠️  RAPIDAPI_KEY no está en /etc/polymarket.env
+
+PASOS PARA OBTENERLA:
+  1. Ve a https://rapidapi.com (regístrate gratis)
+  2. Busca 'twitter154' en el marketplace
+  3. Suscríbete al plan Basic ($10/mes)
+  4. Copia tu X-RapidAPI-Key
+  5. Añade a /etc/polymarket.env:
+     RAPIDAPI_KEY=tu_clave_aqui
+
+== 5. Cron: ejecutar para los 3 bots cada 2h ==
+✅ Cron añadido (cubre los 3 bots con 1 sola suscripción)
