@@ -1,0 +1,54 @@
+=== FIX SCRAPER · 20260917_152139 UTC ===
+
+== ANTES: ¿quién ejecuta recoger_tweets.py? ==
+(si no aparece, NADIE lo ejecuta)
+
+== 1. Crear cron para recoger_tweets.py cada 2h ==
+Nuevo crontab:
+0 9 * * 1 /usr/bin/python3 -u /root/seguimiento_semanal.py >> /root/semanal.log 2>&1
+1 0 1 * * /usr/bin/python3 -u /root/reset_mensual.py >> /root/reset.log 2>&1
+# Bot Menciones — chequeo cada 6 horas
+0 */6 * * * /opt/polymarket/test_salud_mention.sh >> /var/log/salud_mention_cron.log 2>&1
+# Bot Menciones — backup diario a las 04:00 UTC
+*/5 * * * * /opt/polymarket/scraper_cron_elon.sh
+# Overreaction bot — salud cada 6h
+0 */6 * * * /opt/polymarket/test_salud_overreaction.sh >> /var/log/salud_overreaction_cron.log 2>&1
+# Overreaction bot — backup diario 04:30 UTC
+30 4 * * * /opt/polymarket/backup_overreaction.sh >> /var/log/backup_overreaction_cron.log 2>&1
+35 4 * * * /opt/polymarket/backup_mention.sh >> /var/log/backup_mention.log 2>&1
+0 */2 * * * cd /opt/polymarket/bot-polymarket-elon && /usr/bin/python3 recoger_tweets.py --dias 30 >> /var/log/poly/recoger_tweets_$(date +\%Y\%m\%d).log 2>&1
+
+== 2. Ejecutar recoger_tweets.py manualmente para empezar ==
+Ejecutando recoger_tweets.py --dias 30...
+usage: recoger_tweets.py [-h] [--fuente {jina,xcancel,api}] [--sin-reposts]
+                         [--resumen] [--loop] [--intervalo INTERVALO]
+                         [--mercado] [--papel] [--limpiar] [--manual FECHA N]
+recoger_tweets.py: error: unrecognized arguments: --dias 30
+
+== 3. Verificar que el CSV se actualizó ==
+-rw-r--r-- 1 root root 756 Sep 14 09:47 datos_elon.csv
+
+Últimas 10 líneas del CSV:
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+2026-09-10,22
+2026-09-11,30
+2026-09-12,16
+2026-09-13,39
+
+== 4. Para los OTROS bots (semanal, mensual) ==
+--- /opt/polymarket/bot-polymarket-elon-semanal ---
+  ✅ CSV sincronizado desde bot 48h
+--- /opt/polymarket/bot-polymarket-elon-mensual ---
+  ✅ CSV sincronizado desde bot 48h
+
+== 5. Verificar el semanal ==
+2026-09-09,22
+2026-09-10,22
+2026-09-11,30
+2026-09-12,16
+2026-09-13,39
