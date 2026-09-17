@@ -1,0 +1,26 @@
+=== BUSCAR PROXY WALLET REAL · 20260917_192203 UTC ===
+
+== 1. EOA: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0 ==
+  (esta es la wallet que tú firmaste)
+
+== 2. Buscar proxy wallet asociada ==
+  File "<stdin>", line 28
+    matches = re.findall(r'proxyWallet["\\']?\s*[:=]\s*["\\']?(0x[a-fA-F0-9]{40})', html)
+                                           ^
+SyntaxError: closing parenthesis ']' does not match opening parenthesis '('
+
+== 3. Buscar proxy wallet desde el archivo de config del bot ==
+
+== 4. Buscar en los logs systemd alguna pista ==
+Sep 15 12:35:59 bot-poly python3[60471]: [2026-09-15 12:35:59]    ✅ ORDEN ENVIADA: 0xe48433f1322e24833c75c876ffc3725472e12db74818a80cf23070654ffb0f20
+Sep 15 13:06:44 bot-poly python3[60471]: [2026-09-15 13:06:44]    ✅ ORDEN ENVIADA: 0x4c86cd1b0668ca85b9f3854ca9f1dc884054b49b79f6ade58f0e09d70844159f
+Sep 15 13:37:28 bot-poly python3[60471]: [2026-09-15 13:37:28]    ✅ ORDEN ENVIADA: 0x7867dc540e436ac7ab5bca4e3aaa205bbe9cb364987e0e99100725e75510e55e
+Sep 15 14:08:12 bot-poly python3[60471]: [2026-09-15 14:08:12]    ✅ ORDEN ENVIADA: 0x714d58bcd2cc742d46250e884e2014c03a6ab13f65a8e0fdf6463deff8a548e6
+Sep 15 14:38:57 bot-poly python3[60471]: [2026-09-15 14:38:57]    ✅ ORDEN ENVIADA: 0xd7b0cd6f3d4568ad8c157d6c0f4b66e83b9185e04978bc39b1e410b4d2f481c2
+
+== 5. Probar el relayer de Polymarket ==
+{"address":"0xd56ff23b049331cc25e9857ce053d95d5ecf1fab"}
+
+
+== 6. Probar otro endpoint con la EOA ==
+
