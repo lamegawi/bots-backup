@@ -1,0 +1,133 @@
+=== VENTANAS ACTIVAS POR BOT · 20260917_142137 UTC ===
+
+== 1. Estado de los 3 servicios de Elon ==
+--- poly-elon ---
+● poly-elon.service - Bot Polymarket Elon 48h (v1)
+     Loaded: loaded (/etc/systemd/system/poly-elon.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-13 19:54:24 UTC; 3 days ago
+   Main PID: 56815 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 46.0M (peak: 55.2M)
+        CPU: 57min 14.051s
+     CGroup: /system.slice/poly-elon.service
+
+--- poly-elon-semanal ---
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-13 20:39:57 UTC; 3 days ago
+   Main PID: 60471 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 45.4M (peak: 50.2M)
+        CPU: 25min 763ms
+     CGroup: /system.slice/poly-elon-semanal.service
+
+--- poly-elon-mensual ---
+Unit poly-elon-mensual.service could not be found.
+
+
+== 2. Últimas 30 líneas de log de CADA bot ==
+============ poly-elon ============
+Sep 12 06:05:48 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+Sep 12 06:05:49 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+Sep 12 06:05:49 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 12 06:05:49 bot-poly systemd[1]: poly-elon.service: Consumed 13min 31.304s CPU time, 87.8M memory peak, 0B memory swap peak.
+Sep 12 06:05:49 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 12 06:06:01 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+Sep 12 06:06:01 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+Sep 12 06:06:01 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 12 06:06:01 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+-- Boot f32c12163e2e4dfca752290cc1b50054 --
+Sep 13 07:08:53 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 13 19:54:24 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+Sep 13 19:54:24 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Consumed 9min 1.812s CPU time, 55.8M memory peak, 0B memory swap peak.
+Sep 13 19:54:24 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+
+============ poly-elon-semanal ============
+Sep 17 13:53:35 bot-poly python3[60471]: [2026-09-17 13:53:35]   bin 160-179 | YES @ 0.135 | EV=+3.111
+Sep 17 13:53:35 bot-poly python3[60471]: [2026-09-17 13:53:35]
+Sep 17 13:53:35 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 11 - September 18, 20
+Sep 17 13:53:35 bot-poly python3[60471]: [2026-09-17 13:53:35]    bin 160-179 YES EV=+6.116
+Sep 17 13:53:55 bot-poly python3[60471]: [2026-09-17 13:53:55]    🚫 PUERTA DEL GESTOR: no compro 160-179 YES →    bin [160-179] · proyección 99 → no llega al mínimo (99<160)
+Sep 17 13:53:55 bot-poly python3[60471]: [2026-09-17 13:53:55] ════════════════════════════════════════════
+Sep 17 13:53:55 bot-poly python3[60471]: [2026-09-17 13:53:55] Pasada completada
+Sep 17 13:53:55 bot-poly python3[60471]: [2026-09-17 13:53:55] Próxima pasada en 15 min
+Sep 17 14:08:55 bot-poly python3[60471]: [2026-09-17 14:08:55] ════════════════════════════════════════════
+Sep 17 14:08:55 bot-poly python3[60471]: [2026-09-17 14:08:55] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 17 14:08:55 bot-poly python3[60471]: [2026-09-17 14:08:55] ════════════════════════════════════════════
+Sep 17 14:08:55 bot-poly python3[60471]: [2026-09-17 14:08:55] AVG7=25.00  AVG30=27.77  R=0.900  ajuste=0.960
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32] 3 mercados semanales abiertos
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32] saldo=$59.8319  paso=1  activa=no
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32]   bin 160-179 | YES @ 0.025 | EV=+20.767
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32]   bin 160-179 | YES @ 0.195 | EV=+1.846
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32]   bin 140-159 | YES @ 0.065 | EV=+2.779
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32]   bin 160-179 | YES @ 0.135 | EV=+3.111
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32]
+Sep 17 14:09:32 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 11 - September 18, 20
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32]    bin 160-179 YES EV=+20.767
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32]    🚫 PUERTA DEL GESTOR: no compro 160-179 YES →    bin [160-179] · proyección 99 → no llega al mínimo (99<160)
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32] ════════════════════════════════════════════
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32] Pasada completada
+Sep 17 14:09:32 bot-poly python3[60471]: [2026-09-17 14:09:32] Próxima pasada en 15 min
+
+============ poly-elon-mensual ============
+-- No entries --
+
+
+== 3. ¿Qué mercados sigue CADA bot? ==
+--- bot-polymarket-elon ---
+  mercado_activo.json:
+    6 mercados registrados
+      [semanal] Elon Musk # tweets September 11 - September 18, 2026? | cerrado=False | fin=2026-09-18T12:00
+      [semanal] Elon Musk # tweets September 15 - September 22, 2026? | cerrado=False | fin=2026-09-22T12:00
+      [semanal] Elon Musk # tweets September 18 - September 25, 2026? | cerrado=False | fin=2026-09-25T12:00
+      [mensual] Elon Musk # tweets in October 2026? | cerrado=False | fin=2026-11-01T00:00
+      [48h] Elon Musk # tweets February 21 - February 23, 2026? | cerrado=True | fin=2026-02-23T12:00
+      [48h] Elon Musk # tweets September 14 - September 16, 2026? | cerrado=True | fin=2026-09-16T12:00
+
+--- bot-polymarket-elon-semanal ---
+  mercado_activo.json:
+    6 mercados registrados
+      [48h] Elon Musk # tweets September 10 - September 12, 2026? | cerrado=False | fin=2026-09-12T12:00
+      [semanal] Elon Musk # tweets September 8 - September 15, 2026? | cerrado=False | fin=2026-09-15T12:00
+      [semanal] Elon Musk # tweets September 11 - September 18, 2026? | cerrado=False | fin=2026-09-18T12:00
+      [mensual] Elon Musk # tweets in October 2026? | cerrado=False | fin=2026-11-01T00:00
+      [48h] Elon Musk # tweets February 21 - February 23, 2026? | cerrado=True | fin=2026-02-23T12:00
+      [semanal] Elon Musk # tweets September 4 - September 11, 2026? | cerrado=True | fin=2026-09-11T12:00
+
+--- bot-polymarket-elon-mensual ---
+  mercado_activo.json:
+    6 mercados registrados
+      [semanal] Elon Musk # tweets September 11 - September 18, 2026? | cerrado=False | fin=2026-09-18T12:00
+      [semanal] Elon Musk # tweets September 15 - September 22, 2026? | cerrado=False | fin=2026-09-22T12:00
+      [semanal] Elon Musk # tweets September 18 - September 25, 2026? | cerrado=False | fin=2026-09-25T12:00
+      [mensual] Elon Musk # tweets in October 2026? | cerrado=False | fin=2026-11-01T00:00
+      [48h] Elon Musk # tweets February 21 - February 23, 2026? | cerrado=True | fin=2026-02-23T12:00
+      [48h] Elon Musk # tweets September 14 - September 16, 2026? | cerrado=True | fin=2026-09-16T12:00
+
+
+== 4. ¿Qué VENTANA tiene configurada cada bot? ==
+--- bot-polymarket-elon ---
+105:def cargar_csv(path):
+
+--- bot-polymarket-elon-semanal ---
+11:VENTANA = "semanal"
+50:def cargar_csv():
+
+--- bot-polymarket-elon-mensual ---
+25:VENTANA        = "mensual"     # 48h | semanal | mensual
+84:def cargar_csv(path):
+
+
+== 5. ¿El bot 48h está cargando mercados? ==
+Comprobar mercado_activo.json del bot 48h:
+Total: 6
+Actualizado: 2026-09-17T14:16:09.229720+00:00
+  semanales: 4
+  otros (48h o menos): 2
+
+== 6. ¿El bot mensual existe / está corriendo? ==
+ls: cannot access '/etc/systemd/system/poly-elon-mensual.service': No such file or directory
+/etc/systemd/system/poly-mensual.service
+root         782       1  0 Sep13 ?        00:03:15 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
