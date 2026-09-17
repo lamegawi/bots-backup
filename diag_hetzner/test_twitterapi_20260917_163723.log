@@ -1,0 +1,42 @@
+=== TEST TWITTERAPI.IO · 20260917_163723 UTC ===
+API key: new1_c38...3248
+
+== 1. Test endpoint con @elonmusk ==
+-rw-r--r-- 1 root root 126 Sep 17 16:37 /tmp/test_response.json
+
+Respuesta:
+{"status":"success","msg":"success","data":{"unavailable":true,"message":"User is suspended","unavailableReason":"Suspended"}}
+
+
+== 2. Si funcionó, ejecutar script para los 3 bots ==
+✅ Respuesta válida
+  data: {'unavailable': True, 'message': 'User is suspended', 'unavailableReason': 'Suspended'}
+
+== 3. Si todo OK, ejecutar el script para los 3 bots ==
+❌ ERROR: configura RAPIDAPI_KEY (export RAPIDAPI_KEY=xxx)
+
+== 4. Ver CSVs actualizados ==
+--- /opt/polymarket/bot-polymarket-elon/datos_elon.csv ---
+-rw-r--r-- 1 root root 756 Sep 14 09:47 /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+2026-09-09,22
+2026-09-10,22
+2026-09-11,30
+2026-09-12,16
+2026-09-13,39
+
+--- /opt/polymarket/bot-polymarket-trump/datos_trump.csv ---
+-rw-r--r-- 1 root root 3397 Sep 17 16:33 /opt/polymarket/bot-polymarket-trump/datos_trump.csv
+2026-09-12,1
+2026-09-13,12
+2026-09-14,28
+2026-09-15,8
+2026-09-16,10
+
+--- /opt/polymarket/bot-polymarket-zelenskyy/datos_zelen.csv ---
+-rw-r--r-- 1 root root 2652 Sep 17 16:34 /opt/polymarket/bot-polymarket-zelenskyy/datos_zelen.csv
+2026-09-12,10
+2026-09-13,2
+2026-09-14,12
+2026-09-15,12
+2026-09-16,4
+
