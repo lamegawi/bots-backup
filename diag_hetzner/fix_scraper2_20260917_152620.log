@@ -1,0 +1,136 @@
+=== FIX SCRAPER v2 · 20260917_152620 UTC ===
+
+== 1. Leer docstring de recoger_tweets.py para argumentos correctos ==
+     Sin API key. ~15-20 tweets por pasada: en modo --loop se acumula.
+USO:
+  python3 recoger_tweets.py --dias 30              # pasada única
+  python3 recoger_tweets.py --resumen              # conteos diarios + métricas
+  python3 recoger_tweets.py --loop --intervalo 20  # continuo (recomendado)
+  python3 recoger_tweets.py --manual 2026-08-08 35 # corregir un día a mano
+  python3 recoger_tweets.py --limpiar              # borrar datos y empezar de cero
+  0 12 * * * cd /ruta/estrategia_elon_tweets && python3 recoger_tweets.py --dias 30 >> recoger.log 2>&1
+# ----------------------------------------------------------------------------
+
+== 2. Ver la sección argparse ==
+    ap.add_argument("--fuente", choices=["jina", "xcancel", "api"], default="jina",
+                    help="fuente de datos (api requiere X_BEARER_TOKEN)")
+    ap.add_argument("--sin-reposts", action="store_true",
+                    help="excluir reposts del conteo")
+    ap.add_argument("--resumen", action="store_true", help="mostrar conteos y métricas")
+    ap.add_argument("--loop", action="store_true", help="modo continuo (polling)")
+    ap.add_argument("--intervalo", type=int, default=15, help="minutos entre pasadas")
+    ap.add_argument("--mercado", action="store_true",
+                    help="refrescar también los precios de Polymarket en cada pasada")
+    ap.add_argument("--papel", action="store_true",
+                    help="ejecutar también el paper trading (abrir/resolver apuestas simuladas)")
+    ap.add_argument("--limpiar", action="store_true", help="borrar estado y CSV y empezar de cero")
+    ap.add_argument("--manual", nargs=2, metavar=("FECHA", "N"),
+                    help="añadir/corregir un día: --manual 2026-08-08 35")
+    args = ap.parse_args()
+
+    if args.limpiar:
+        for f in (CSV, ESTADO):
+            if os.path.exists(f):
+                os.remove(f)
+        print("Estado y CSV borrados. Empieza de cero.")
+        return
+
+    if args.manual:
+        filas = {}
+        if os.path.exists(CSV):
+            with open(CSV, newline="", encoding="utf-8") as f:
+                for r in csv.DictReader(f):
+                    filas[r["fecha"]] = int(r["tweets"])
+        filas[args.manual[0]] = int(args.manual[1])
+        with open(CSV, "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["fecha", "tweets"])
+            for f_ in sorted(filas):
+                w.writerow([f_, filas[f_]])
+        print(f"Manual: {args.manual[0]} = {args.manual[1]} tweets. CSV actualizado.")
+        return
+
+    if args.resumen:
+        resumen()
+
+== 3. Probar recoger_tweets.py sin argumentos ==
+usage: recoger_tweets.py [-h] [--fuente {jina,xcancel,api}] [--sin-reposts]
+                         [--resumen] [--loop] [--intervalo INTERVALO]
+                         [--mercado] [--papel] [--limpiar] [--manual FECHA N]
+
+Recogida automática de tweets de @elonmusk
+
+options:
+  -h, --help            show this help message and exit
+  --fuente {jina,xcancel,api}
+                        fuente de datos (api requiere X_BEARER_TOKEN)
+  --sin-reposts         excluir reposts del conteo
+  --resumen             mostrar conteos y métricas
+  --loop                modo continuo (polling)
+  --intervalo INTERVALO
+                        minutos entre pasadas
+  --mercado             refrescar también los precios de Polymarket en cada
+                        pasada
+  --papel               ejecutar también el paper trading (abrir/resolver
+                        apuestas simuladas)
+  --limpiar             borrar estado y CSV y empezar de cero
+  --manual FECHA N      añadir/corregir un día: --manual 2026-08-08 35
+
+== 4. Ejecutar con --resumen (modo por defecto sin --loop) ==
+fecha        tweets
+2026-08-27       30
+2026-08-28        7
+2026-08-29       16
+2026-08-30        9
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+2026-09-10       22
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+
+AVG7 = 25.00  V2 = 55  R = 1.100  ajuste = 1.050  λ48 = 52.5
+Días completos en CSV: 50
+
+== 5. Si --resumen funciona, ejecutar en modo normal (sin args) ==
+[2026-09-17T11:26:20.965477-04:00] Recogiendo @elonmusk (fuente: jina)…
+  jina-tw: [ERROR] jina en pausa (descanso tras fallos)
+  jina-x: [ERROR] jina en pausa (descanso tras fallos)
+  nitter nitter.tiekoetter.com: sin items
+  nitter xcancel.com: sin items
+  nitter nitter.poast.org: curl falló (56): 
+  nitter nitter.privacyredirect.com: sin items
+  nitter lightbrd.com: sin items
+  nitter nitter.space: sin items
+  nitter nitter.tiekoetter.com: sin items
+  nitter xcancel.com: sin items
+  nitter nitter.poast.org: curl falló (56): 
+  nitter nitter.privacyredirect.com: sin items
+  nitter lightbrd.com: sin items
+  nitter nitter.space: sin items
+  nitter: sin items
+  Sin datos de ninguna fuente. Reintenta en un rato.
+
+== 6. Verificar CSV actualizado ==
+-rw-r--r-- 1 root root 756 Sep 14 09:47 datos_elon.csv
+
+Últimas 15 líneas:
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+2026-09-10,22
+2026-09-11,30
+2026-09-12,16
+2026-09-13,39
