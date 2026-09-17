@@ -1,0 +1,84 @@
+=== ACTIVAR --actualizar-csv · 20260917_153840 UTC ===
+Backup OK
+
+== ANTES ==
+#!/usr/bin/env bash
+# Ejecuta el scraper de Polymarket SIN --actualizar-csv.
+# El TWEET_COUNT es el TOTAL del periodo, no el conteo de un día.
+# Si activamos --actualizar-csv, sobreescribe 09-10 con el TOTAL.
+TS=$(date -u +%Y%m%d_%H%M%S)
+LOG=/var/log/poly/scraper_elon_${TS}.log
+cd /opt/polymarket/bot-polymarket-elon
+python3 scraper_tweets_pm.py --user elonmusk >> "$LOG" 2>&1
+# limpiar logs de más de 7 días
+find /var/log/poly/scraper_elon_*.log -mtime +7 -delete 2>/dev/null
+
+== Aplicar fix: añadir --actualizar-csv ==
+
+== DESPUÉS ==
+#!/usr/bin/env bash
+# Ejecuta el scraper de Polymarket SIN --actualizar-csv.
+# El TWEET_COUNT es el TOTAL del periodo, no el conteo de un día.
+# Si activamos --actualizar-csv, sobreescribe 09-10 con el TOTAL.
+TS=$(date -u +%Y%m%d_%H%M%S)
+LOG=/var/log/poly/scraper_elon_${TS}.log
+cd /opt/polymarket/bot-polymarket-elon
+python3 scraper_tweets_pm.py --user elonmusk --actualizar-csv >> "$LOG" 2>&1
+# limpiar logs de más de 7 días
+find /var/log/poly/scraper_elon_*.log -mtime +7 -delete 2>/dev/null
+
+== Ejecutar pasada manual ==
+  "fuente": "gamma-api.polymarket.com",
+  "bins": {
+    "0-19": 0.0,
+    "20-39": 0.0,
+    "40-59": 0.0,
+    "60-79": 0.0,
+    "80-99": 0.0,
+    "100-119": 0.0,
+    "120-139": 0.0,
+    "140-159": 0.0,
+    "160-179": 1.0,
+    "180-199": 0.0,
+    "200-219": 0.0,
+    "220-239": 0.0,
+    "240-259": 0.0,
+    "260-279": 0.0,
+    "280-299": 0.0,
+    "300-319": 0.0,
+    "320-339": 0.0,
+    "340-359": 0.0,
+    "360-379": 0.0,
+    "380-399": 0.0,
+    "400-419": 0.0,
+    "420-439": 0.0,
+    "440-459": 0.0,
+    "460-479": 0.0,
+    "480-499": 0.0
+  }
+}
+[AVISO] no hay tweet_count, no se actualiza CSV
+
+== Ver CSV actualizado ==
+-rw-r--r-- 1 root root 756 Sep 14 09:47 datos_elon.csv
+
+Últimas 15 líneas:
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+2026-09-10,22
+2026-09-11,30
+2026-09-12,16
+2026-09-13,39
+
+== Sincronizar a semanal y mensual ==
+  ✅ sincronizado a /opt/polymarket/bot-polymarket-elon-semanal
+  ✅ sincronizado a /opt/polymarket/bot-polymarket-elon-mensual
