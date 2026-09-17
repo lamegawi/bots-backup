@@ -171,9 +171,54 @@ def chequear_bot(bot):
         tiene_sl = False
         try:
             for a in c.algo_pendientes(iid):
-                if a.get("slTriggerPx"):
-                    tiene_sl = True
-                    break
+                if not a.get("slTriggerPx"):
+                    continue
+                tiene_sl = True
+                # FIXSLSZ_ARENA: validar tamano y reduceOnly, no solo existencia
+                _sz = int(float(a.get("sz") or 0))
+                _ro = str(a.get("reduceOnly", "")).lower() == "true"
+                if _sz == pos_qty and _ro:
+                    continue
+                _lado = "sell" if direccion == "LONG" else "buy"
+                if _ro:
+                    try:
+                        c._req("POST", "/api/v5/trade/amend-algos",
+                               [{"instId": iid, "algoId": str(a.get("algoId")),
+                                 "newSz": str(pos_qty)}])
+                        reparaciones += 1
+                        rep.append("\U0001F527 " + base + ": SL reajustado "
+                                   + str(_sz) + "->" + str(pos_qty) + " ct")
+                    except Exception as e:
+                        rep.append("\U0001F534 " + base + ": no pude reajustar el SL: "
+                                   + str(e)[:60])
+                else:
+                    # reduceOnly=false no se puede enmendar (OKX no tiene
+                    # newReduceOnly): se recrea. Primero el nuevo, se verifica
+                    # vivo, y solo entonces se cancela el viejo.
+                    try:
+                        _px = float(a.get("slTriggerPx"))
+                        _nuevo = c.orden_algo_sl(iid, _lado, round(_px, 8), pos_qty)
+                        _vivo = any(str(_x.get("algoId")) == str(_nuevo)
+                                    for _x in c.algo_pendientes(iid) or [])
+                        if _nuevo and _vivo:
+                            try:
+                                c.cancelar_algo(iid, a.get("algoId"))
+                            except Exception:
+                                pass
+                            reparaciones += 1
+                            rep.append("\U0001F527 " + base + ": SL recreado con "
+                                       "reduceOnly (" + str(pos_qty) + " ct)")
+                        else:
+                            if _nuevo:
+                                try:
+                                    c.cancelar_algo(iid, _nuevo)
+                                except Exception:
+                                    pass
+                            rep.append("\U0001F534 " + base + ": no pude recrear el SL, "
+                                       "se mantiene el viejo")
+                    except Exception as e:
+                        rep.append("\U0001F534 " + base + ": error recreando SL: "
+                                   + str(e)[:60])
         except Exception:
             tiene_sl = True  # si no puedo comprobar, no toco nada
         if tiene_sl:

@@ -848,7 +848,10 @@
   "atr": 1.7108141836038604e-05,
   "stop_dist_pct": 3.572,
   "apalancamiento": 5,
-  "estado": "abierta"
+  "estado": "cerrada",
+  "ts_cierre": "2026-09-16 08:25",
+  "pnl_usd": null,
+  "motivo": "?"
  },
  {
   "id": 1789515596093,
@@ -864,5 +867,43 @@
   "stop_dist_pct": 2.797,
   "apalancamiento": 7,
   "estado": "abierta"
+ },
+ {
+  "id": 1789596365222,
+  "ts_apertura": "2026-09-17 00:06",
+  "bot": "demo",
+  "moneda": "ETH",
+  "direccion": "SHORT",
+  "entrada": 2388.32,
+  "contratos": 298,
+  "riesgo_usd": 9.99,
+  "score": 3.963295941365209,
+  "atr": 22.351188030578896,
+  "stop_dist_pct": 1.404,
+  "apalancamiento": 10,
+  "estado": "cerrada",
+  "ts_cierre": "2026-09-17 02:09",
+  "pnl_usd": -9.81,
+  "r_resultado": -0.98,
+  "motivo": "SL"
+ },
+ {
+  "id": 1789605380125,
+  "ts_apertura": "2026-09-17 02:36",
+  "bot": "demo",
+  "moneda": "IOST",
+  "direccion": "LONG",
+  "entrada": 0.0008174,
+  "contratos": 250,
+  "riesgo_usd": 9.98,
+  "score": 3.001117005029596,
+  "atr": 2.6614902765777128e-05,
+  "stop_dist_pct": 4.884,
+  "apalancamiento": 4,
+  "estado": "cerrada",
+  "ts_cierre": "2026-09-17 04:21",
+  "pnl_usd": 12.54,
+  "r_resultado": 1.26,
+  "motivo": "TP"
  }
 ]

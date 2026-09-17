@@ -1,51 +1,4 @@
 {
-  "IOST: SHORT": {
-    "symbol": "IOST",
-    "direction": "SHORT",
-    "entry": 0.0007183,
-    "contratos": 390,
-    "sl_algo_id": "3926250485334962177",
-    "state": "opened",
-    "risk_usd": 10.008262974082584,
-    "opened_at": 1789513783.795721,
-    "dist": 0.03572632,
-    "initial_sl": 0.00074396,
-    "tp_levels": [
-      {
-        "nivel": "1.0R",
-        "precio": 0.00070119,
-        "sz": 78,
-        "algoId": "3926250491810967553"
-      },
-      {
-        "nivel": "1.5R",
-        "precio": 0.00069264,
-        "sz": 78,
-        "algoId": "3926250498656071681"
-      },
-      {
-        "nivel": "2.0R",
-        "precio": 0.00068408,
-        "sz": 78,
-        "algoId": "3926250505333403649"
-      },
-      {
-        "nivel": "2.5R",
-        "precio": 0.00067553,
-        "sz": 78,
-        "algoId": "3926250511742300161"
-      },
-      {
-        "nivel": "3.0R",
-        "precio": 0.00066698,
-        "sz": 78,
-        "algoId": "3926250518016978945"
-      }
-    ],
-    "sw_sl_px": 0.00074396,
-    "sl_v2": true,
-    "qty_vista": 390.0
-  },
   "DOGE: SHORT": {
     "symbol": "DOGE",
     "direction": "SHORT",
@@ -91,6 +44,6 @@
     ],
     "sw_sl_px": 0.08225845,
     "sl_v2": true,
-    "qty_vista": 447.0
+    "qty_vista": 358.0
   }
 }

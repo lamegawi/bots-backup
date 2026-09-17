@@ -715,6 +715,32 @@ def manage_positions():
             enviar(f"✅ *TP parcial (DEMO)*: {base} {direction}\n"
                    f"Cerrados ~{cerr} ct · quedan {qty:g} ct · "
                    f"P&L actual {unreal:+.2f} USDC")
+        # FIXSZ_ARENA: tras un fill parcial el SL queda sobredimensionado;
+        # se reajusta al tamano real de la posicion (amend-algos + newSz).
+        try:
+            for _a in client.algo_pendientes(inst_id) or []:
+                if not _a.get("slTriggerPx"):
+                    continue
+                _sz = int(float(_a.get("sz") or 0))
+                if _sz == int(qty):
+                    continue
+                client._check(client._post("/api/v5/trade/amend-algos", [{
+                    "instId": inst_id,
+                    "algoId": str(_a.get("algoId")),
+                    "newSz": str(int(qty)),
+                }]), "amend-algos-sz")
+                _msg = ("\U0001F527 *SL reajustado*: %s %s de %d a %d ct "
+                        "(fill parcial)" % (base, direction, _sz, int(qty)))
+                print("  [FIXSZ] " + _msg)
+                try:
+                    enviar(_msg)
+                except NameError:
+                    try:
+                        _tg_send(_msg, teclado())
+                    except Exception:
+                        pass
+        except Exception as _esz:
+            print("  [FIXSZ] no pude reajustar el SL: %s" % str(_esz)[:100])
         m["qty_vista"] = qty
         changed = True
 
