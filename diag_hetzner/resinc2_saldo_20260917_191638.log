@@ -1,0 +1,33 @@
+=== RE-SINCRONIZAR SALDO A $163 · 20260917_191638 UTC ===
+
+== ANTES ==
+/opt/polymarket/bot-polymarket-elon/real.json: saldo=$122.0
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json: saldo=$122.0
+/opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json: saldo=$122.0
+
+== Backup ==
+  ✅ backup real.json
+  ✅ backup real_semanal.json
+  ✅ backup real_mensual.json
+
+== Sincronizando a $163.00 ==
+  ✅ /opt/polymarket/bot-polymarket-elon/real.json: $122.00 → $163.00
+  ✅ /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json: $122.00 → $163.00
+  ✅ /opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json: $122.00 → $163.00
+
+== DESPUÉS ==
+/opt/polymarket/bot-polymarket-elon/real.json: saldo=$163.0
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json: saldo=$163.0
+/opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json: saldo=$163.0
+
+== Backup completo ==
+
+[2/3] Snapshot de codigo...
+  ✓ git HEAD: e4536be6
+
+[3/3] Generando informe...
+  ✓ informe: backups_completos/2026-09-17_20260917_191638/informe_20260917_191638.txt
+
+======================================================================
+BACKUP COMPLETO TERMINADO · 3 JSONs respaldados
+======================================================================
