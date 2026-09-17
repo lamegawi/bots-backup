@@ -1,0 +1,178 @@
+=== DIAGNÓSTICO SCRAPER TWEETS · 20260917_151221 UTC ===
+
+== 1. ¿Qué proceso actualiza datos_elon.csv? ==
+
+== 2. ¿Hay cron / systemd para scraper? ==
+*/5 * * * * /opt/polymarket/scraper_cron_elon.sh
+
+e2scrub_all
+poly_monitoreo
+sysstat
+
+== 3. Buscar script que escribe datos_elon.csv ==
+/opt/polymarket/bot-polymarket-elon/compara_senal.py
+/opt/polymarket/bot-polymarket-elon/papel.py
+/opt/polymarket/bot-polymarket-elon/recoger_tweets.py
+/opt/polymarket/bot-polymarket-elon/scraper_tweets_pm.py
+/opt/polymarket/bot-polymarket-elon/recoger_tweets.py.bakT3
+/opt/polymarket/bot-polymarket-elon/operar_real.py.bak_puerta_20260913_195424
+/opt/polymarket/bot-polymarket-elon/bot_completo.zip
+/opt/polymarket/bot-polymarket-elon/bot.py
+/opt/polymarket/bot-polymarket-elon/mercado_ultima_oportunidad.py
+/opt/polymarket/bot-polymarket-elon/construir_serie.py
+
+== 4. Contenido del CSV semanal actual ==
+fecha,tweets
+2026-05-11,1
+2026-07-25,15
+2026-07-26,14
+2026-07-27,15
+2026-07-28,17
+2026-07-29,21
+2026-07-30,31
+2026-07-31,38
+2026-08-01,32
+2026-08-02,25
+2026-08-03,24
+2026-08-04,26
+2026-08-05,25
+2026-08-06,25
+2026-08-07,26
+2026-08-08,26
+2026-08-09,18
+2026-08-10,19
+2026-08-11,17
+2026-08-12,33
+2026-08-13,50
+2026-08-14,22
+2026-08-15,22
+2026-08-16,5
+2026-08-17,21
+2026-08-18,37
+2026-08-19,76
+2026-08-20,85
+2026-08-21,52
+2026-08-22,14
+2026-08-23,31
+2026-08-24,33
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+2026-09-10,22
+2026-09-11,30
+
+== 5. Contenido del CSV 48h actual ==
+fecha,tweets
+2025-01-24,1
+2026-02-26,1
+2026-05-11,1
+2026-07-25,15
+2026-07-26,14
+2026-07-27,15
+2026-07-28,17
+2026-07-29,21
+2026-07-30,31
+2026-07-31,38
+2026-08-01,32
+2026-08-02,25
+2026-08-03,24
+2026-08-04,26
+2026-08-05,25
+2026-08-06,25
+2026-08-07,26
+2026-08-08,26
+2026-08-09,18
+2026-08-10,29
+2026-08-11,17
+2026-08-12,33
+2026-08-13,50
+2026-08-14,22
+2026-08-15,26
+2026-08-16,9
+2026-08-17,21
+2026-08-18,47
+2026-08-19,86
+2026-08-20,85
+2026-08-21,52
+2026-08-22,17
+2026-08-23,31
+2026-08-24,33
+2026-08-25,26
+2026-08-26,14
+2026-08-27,30
+2026-08-28,7
+2026-08-29,16
+2026-08-30,9
+2026-09-03,1
+2026-09-05,5
+2026-09-06,21
+2026-09-07,21
+2026-09-08,25
+2026-09-09,22
+2026-09-10,22
+2026-09-11,30
+2026-09-12,16
+2026-09-13,39
+
+== 6. Verificar API de Twitter/X ==
+¿Existe TWITTER_BEARER_TOKEN?
+
+Probar si la API responde:
+  ⚠️ NO hay bearer token en /etc/polymarket.env
+  Tokens en /etc/polymarket.env:
+    POLY_PRIVATE_KEY
+    POLY_WALLET_ADDRESS
+    POLY_RELAYER_API_KEY
+    POLY_RELAYER_API_KEY_ADDRESS
+    REAL_CONFIRMADO
+    HTTP_PROXY
+    HTTPS_PROXY
+    ALL_PROXY
+    NO_PROXY
+    LOCK_APUESTAS
+    TELEGRAM_BOT_TOKEN
+    TELEGRAM_CHAT_ID
+    TRUMP_BOT_TOKEN
+    MENTION_TELEGRAM_BOT_TOKEN
+    MENTION_TELEGRAM_CHAT_ID
+    MENTION_DRY_RUN
+    OVERREACTION_TELEGRAM_TOKEN
+    OVERREACTION_DRY_RUN
+
+== 7. ¿Está el scraper en algún servicio? ==
+ls: cannot access '/opt/polymarket/scraper_tweets.py': No such file or directory
+ls: cannot access '/opt/polymarket/scripts_despliegue/scraper*.sh': No such file or directory
+-- No entries --
+-- No entries --
+-- No entries --
+
+== 8. Logs de los últimos 5 días ==
+Sep 17 14:25:01 bot-poly CRON[460074]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 17 14:25:05 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 11 - September 18, 20
+Sep 17 14:30:01 bot-poly CRON[460692]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 17 14:30:19 bot-poly python3[788]: [2026-09-17 10:30:19 EDT]       · tweets únicos: 5030 (reposts 0) · CSV: 229 días (nuevos/mejorados: 0)
+Sep 17 14:30:39 bot-poly python3[788]: fecha        tweets
+Sep 17 14:35:01 bot-poly CRON[461235]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 17 14:40:01 bot-poly CRON[461679]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 17 14:40:39 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 11 - September 18, 20
+Sep 17 14:45:01 bot-poly CRON[462279]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 17 14:45:41 bot-poly python3[788]: [2026-09-17 10:45:41 EDT]       · tweets únicos: 5030 (reposts 0) · CSV: 229 días (nuevos/mejorados: 0)
+Sep 17 14:46:01 bot-poly python3[788]: fecha        tweets
+Sep 17 14:50:01 bot-poly CRON[462750]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 17 14:55:01 bot-poly CRON[463328]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 17 14:56:12 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 11 - September 18, 20
+Sep 17 15:00:01 bot-poly CRON[463707]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 17 15:01:03 bot-poly python3[788]: [2026-09-17 11:01:03 EDT]       · tweets únicos: 5030 (reposts 0) · CSV: 229 días (nuevos/mejorados: 0)
+Sep 17 15:01:22 bot-poly python3[788]: fecha        tweets
+Sep 17 15:05:01 bot-poly CRON[464322]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 17 15:10:01 bot-poly CRON[464752]: (root) CMD (/opt/polymarket/scraper_cron_elon.sh)
+Sep 17 15:11:45 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 11 - September 18, 20
