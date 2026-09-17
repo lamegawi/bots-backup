@@ -1,0 +1,33 @@
+=== BUSCAR SLUG MERCADO SEPT 17-19 · 20260917_145718 UTC ===
+== 1. Probar slugs directos ==
+  ❌ elon-musk-of-tweets-september-17-september-19: lista vacía
+  ✅ elon-musk-of-tweets-september-17-september-19-2026
+    title: Elon Musk # tweets September 17 - September 19, 2026?
+    closed: False
+    endDate: 2026-09-19T16:00:00Z
+    markets: 10
+  ❌ elon-musk-tweets-september-17-september-19: lista vacía
+  ❌ elon-musk-tweet-count-september-17-september-19: lista vacía
+  ❌ elon-musk-tweets-september-17-to-september-19: lista vacía
+  ❌ will-elon-musk-post-tweets-between-september-17: lista vacía
+
+== 2. Buscar por palabra 'september 17' ==
+  Encontrados: 5 eventos, 0 de Elon
+
+== 3. Búsqueda libre 'elon musk' reciente ==
+  · Elon Musk # tweets September 11 - September 18, 2026?
+    slug: elon-musk-of-tweets-september-11-september-18-2026
+    closed: False
+    endDate: 2026-09-18T16:00:00Z
+  · Elon Musk # tweets September 15 - September 22, 2026?
+    slug: elon-musk-of-tweets-september-15-september-22-2026
+    closed: False
+    endDate: 2026-09-22T16:00:00Z
+  · Elon Musk # tweets September 14 - September 16, 2026?
+    slug: elon-musk-of-tweets-september-14-september-16-2026
+    closed: True
+    endDate: 2026-09-16T16:00:00Z
+  · Elon Musk # tweets September 18 - September 25, 2026?
+    slug: elon-musk-of-tweets-september-18-september-25-2026
+    closed: False
+    endDate: 2026-09-25T16:00:00Z
