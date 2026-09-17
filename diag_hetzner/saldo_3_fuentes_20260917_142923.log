@@ -1,0 +1,47 @@
+=== SALDO DESDE 3 FUENTES · 20260917_142923 UTC ===
+
+Tu UI dice: Cartera $191.66 / Disponible $154.50 / Posiciones $37.16
+
+== 1. data-api.polymarket.com/value ==
+[{"user":"0xb0e1197098e6d427c01720f1631cad24ce740fa0","value":47.7985}]
+
+== 2. data-api.polymarket.com/positions ==
+  TOTAL: 44
+  - redeemable:    40
+  - activas:       4
+  - zero value:    40
+  suma currentValue (todas):  $33.0556
+  suma currentValue activas:  $33.0556
+  suma currentValue redima:   $0.0000
+
+  -- ACTIVAS (cur > 0) --
+    · Will Donald Trump post 60-79 Truth Social posts from Septemb
+      size=58.44 cur=$11.9802 pnl=$+7.4803 end=2026-09-18
+    · Will Romeu Zema win the 2026 Brazilian presidential election
+      size=36.21 cur=$0.0181 pnl=$-2.9818 end=2026-10-04
+    · 2026 Balance of Power: D Senate, D House
+      size=30.61 cur=$18.2142 pnl=$+3.2142 end=2026-11-03
+    · Will Zelenskyy post 80-99 posts from September 11 to Septemb
+      size=4.59 cur=$2.8431 pnl=$+1.4673 end=2026-09-18
+
+  -- REDEEMABLE (40) --
+  suma initialValue redima: $197.6839
+
+== 3. USDC.e on-chain ==
+  -- https://polygon-bor-rpc.publicnode.com --
+    USDC.e Polygon: $0.0000
+    USDC nuevo: ERROR
+    CTF: $0.0000
+
+  -- https://polygon.drpc.org --
+    USDC.e Polygon: $0.0000
+    USDC nuevo: ERROR
+    CTF: $0.0000
+
+== 4. Suma manual ==
+  data-api value:                 $47.7985
+  suma currentValue activas:       $33.0556
+  suma initialValue redeemable:    $197.6839
+  TOTAL ESTIMADO:                  $278.5380
+  Tu UI:                           $191.66
+  Diferencia:                      $+86.8780
