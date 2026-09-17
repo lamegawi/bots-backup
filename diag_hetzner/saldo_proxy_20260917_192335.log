@@ -1,0 +1,26 @@
+=== SALDO PROXY WALLET REAL · 20260917_192335 UTC ===
+== 1. data-api /value (con PROXY wallet) ==
+  PROXY: $0.0000
+
+== 1b. data-api /value (con EOA) ==
+  EOA: $35.3527
+
+== 2. data-api /positions (PROXY) ==
+  TOTAL: 0
+  activas: 0 → $0.0000
+  redeemable: 0 → init=$0.0000
+
+== 3. USDC.e on-chain en la PROXY ==
+  USDC.e (proxy): $0.0000
+  CTF (proxy): $0.0000
+
+== 4. Otras posibles wallets vinculadas (vía relayer) ==
+  https://relayer-v2.polymarket.com/derive?address=0xb0E1197098E6d427c01720F1631cAD24CE740FA0: HTTP Error 404: Not Found
+  https://relayer-v2.polymarket.com/wallet/0xb0E1197098E6d427c01720F1631cAD24CE740FA0: HTTP Error 404: Not Found
+  https://relayer-v2.polymarket.com/funder/0xb0E1197098E6d427c01720F1631cAD24CE740FA0: HTTP Error 404: Not Found
+
+== 5. Total estimado ==
+  Tu UI: $191.66 / $163.00
+  Esperaríamos:
+  - Si UI = 'Cartera total' = value (proxy) + activas cur + redeemable init
+  - Si UI = 'Disponible' = solo lo liquidable ya
