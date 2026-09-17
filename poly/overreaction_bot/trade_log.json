@@ -41,7 +41,7 @@
       "edge": 0.3182,
       "spike_change": -0.2308,
       "end_date": "2026-11-03T12:00:00Z",
-      "status": "open",
+      "status": "cancelled",
       "timestamp": "2026-09-12 01:07:12 UTC",
       "dry_run": true
     },
@@ -151,18 +151,46 @@
       "edge": 0.6316,
       "spike_change": -0.2276,
       "end_date": "2027-07-01T03:59:00Z",
-      "status": "open",
+      "status": "cancelled",
       "timestamp": "2026-09-15 22:42:10 UTC",
+      "dry_run": true
+    },
+    {
+      "trade_id": "or_1789598992",
+      "market_id": "0xc78a839486875e608d8212368eaf63e6fb61a052c9c991d0b08d6599c931882b",
+      "question": "Will the lowest temperature in Seattle be 45°F or below on September 16?",
+      "side": "YES",
+      "entry_price": 0.14,
+      "size": 25.0,
+      "edge": 0.3636,
+      "spike_change": -0.5274,
+      "end_date": "2026-09-16T12:00:00Z",
+      "status": "open",
+      "timestamp": "2026-09-16 22:49:52 UTC",
+      "dry_run": true
+    },
+    {
+      "trade_id": "or_1789601822",
+      "market_id": "0x8cb393ef7b54159eedfda44b27120b3bc6ed91d088e858f6d3ca8af601b8bec4",
+      "question": "Raufoss IL vs. Stroemsgodset IF: O/U 0.5",
+      "side": "YES",
+      "entry_price": 0.885,
+      "size": 25.0,
+      "edge": 0.3111,
+      "spike_change": -0.2117,
+      "end_date": "2026-09-20T15:00:00Z",
+      "status": "open",
+      "timestamp": "2026-09-16 23:37:02 UTC",
       "dry_run": true
     }
   ],
   "summary": {
-    "total": 10,
+    "total": 12,
     "open": 5,
     "wins": 2,
     "losses": 3,
     "win_rate": 0.4,
     "total_pnl": -358.52,
-    "total_invested": 606.58
+    "total_invested": 656.58
   }
 }
