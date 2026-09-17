@@ -1,0 +1,41 @@
+=== ENCONTRAR ENDPOINT QUE USA LA UI · 20260917_192807 UTC ===
+
+== 1. Cargar el HTML de la UI y extraer endpoints JS ==
+ls: cannot access '/tmp/ui.html': No such file or directory
+
+Endpoints encontrados en scripts JS:
+grep: /tmp/ui.html: No such file or directory
+
+== 2. Buscar llamadas a /portfolio o /user ==
+grep: /tmp/ui.html: No such file or directory
+
+== 3. Probar endpoint /portfolio ==
+
+== 4. Probar /users con EOA ==
+
+== 5. Probar el endpoint que devuelve balance y redeemable juntos ==
+--- https://polymarket.com/api/balance/0xb0E1197098E6d427c01720F1631cAD24CE740FA0 ---
+
+
+--- https://polymarket.com/api/user/0xb0E1197098E6d427c01720F1631cAD24CE740FA0/balance ---
+
+
+--- https://polymarket.com/api/users/0xb0E1197098E6d427c01720F1631cAD24CE740FA0 ---
+
+
+--- https://strapi-matic.polymarket.com/users?filters[address]=0xb0E1197098E6d427c01720F1631cAD24CE740FA0 ---
+
+
+--- https://gamma-api.polymarket.com/users/0xb0E1197098E6d427c01720F1631cAD24CE740FA0 ---
+
+
+--- https://gamma-api.polymarket.com/users?address=0xb0E1197098E6d427c01720F1631cAD24CE740FA0 ---
+{"type":"authorization error","error":"invalid token/cookies"}
+
+
+
+== 6. Probar el endpoint interno de portfolio ==
+
+
+== 7. Búsqueda en código fuente de polymarket (si está en GitHub) ==
+items: 0
