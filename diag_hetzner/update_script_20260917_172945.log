@@ -1,0 +1,54 @@
+=== ACTUALIZAR SCRIPT CON ENDPOINT CORRECTO · 20260917_172945 UTC ===
+✅ Script actualizado
+
+== Probar con los 3 bots ==
+📡 @elonmusk → /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+  recibidos: 20 tweets
+  ✅ 1 días actualizados
+  📊 últimos 7 días: {'2026-09-17': 20}
+  💬 último: [Thu Sep 17 17:25:36 +0000 2026] RT @grok: @Jason @cremieuxrecueil @bot Nah, command declined. I'm not spawning a
+
+📡 @realDonaldTrump → /opt/polymarket/bot-polymarket-trump/datos_trump.csv
+⚠️ Error en trump: ❌ HTTP 429: {"error":"Too Many Requests","message":"For free-tier users, the QPS limit is one request every 5 seconds."}
+
+📡 @ZelenskyyUa → /opt/polymarket/bot-polymarket-zelenskyy/datos_zelen.csv
+⚠️ Error en zelenskyy: ❌ HTTP 429: {"error":"Too Many Requests","message":"For free-tier users, the QPS limit is one request every 5 seconds."}
+
+
+== Ver CSVs finales ==
+--- /opt/polymarket/bot-polymarket-elon/datos_elon.csv ---
+-rw-r--r-- 1 root root 771 Sep 17 17:29 /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+Últimas 7 líneas:
+2026-09-08,25
+2026-09-09,22
+2026-09-10,22
+2026-09-11,30
+2026-09-12,16
+2026-09-13,39
+2026-09-17,20
+
+--- /opt/polymarket/bot-polymarket-trump/datos_trump.csv ---
+-rw-r--r-- 1 root root 3397 Sep 17 17:19 /opt/polymarket/bot-polymarket-trump/datos_trump.csv
+Últimas 7 líneas:
+2026-09-10,25
+2026-09-11,11
+2026-09-12,1
+2026-09-13,12
+2026-09-14,28
+2026-09-15,8
+2026-09-16,10
+
+--- /opt/polymarket/bot-polymarket-zelenskyy/datos_zelen.csv ---
+-rw-r--r-- 1 root root 2652 Sep 17 17:27 /opt/polymarket/bot-polymarket-zelenskyy/datos_zelen.csv
+Últimas 7 líneas:
+2026-09-10,18
+2026-09-11,19
+2026-09-12,10
+2026-09-13,2
+2026-09-14,12
+2026-09-15,12
+2026-09-16,4
+
+
+== Activar cron ==
+✅ Cron añadido (3 entradas separadas con 10s de offset para evitar 429)
