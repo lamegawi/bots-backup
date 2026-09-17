@@ -1,0 +1,61 @@
+=== VERIFICACIÓN FINAL · 20260917_173706 UTC ===
+
+== 1. Ejecutar los 3 bots con pausas correctas (7s entre cada uno) ==
+--- ELON ---
+📡 @elonmusk → /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+  recibidos: 20 tweets
+  ✅ 1 días actualizados
+  📊 últimos 7 días: {'2026-09-17': 20}
+  💬 último: [Thu Sep 17 17:25:36 +0000 2026] RT @grok: @Jason @cremieuxrecueil @bot Nah, command declined. I'm not spawning a
+
+--- TRUMP ---
+📡 @realDonaldTrump → /opt/polymarket/bot-polymarket-trump/datos_trump.csv
+  recibidos: 20 tweets
+  ✅ 4 días actualizados
+  📊 últimos 7 días: {'2026-09-08': 2, '2026-09-09': 5, '2026-09-11': 1, '2026-09-12': 3}
+  💬 último: [Sat Sep 12 03:13:01 +0000 2026] https://t.co/a0fQYvZWlo
+
+--- ZELENSKYY ---
+📡 @ZelenskyyUa → /opt/polymarket/bot-polymarket-zelenskyy/datos_zelen.csv
+  recibidos: 20 tweets
+  ✅ 3 días actualizados
+  📊 últimos 7 días: {'2026-09-15': 7, '2026-09-16': 3, '2026-09-17': 10}
+  💬 último: [Thu Sep 17 14:09:31 +0000 2026] Commander-in-Chief of the Armed Forces of Ukraine Mykhailo Drapatyi delivered a 
+
+== 2. CSVs actualizados ==
+--- /opt/polymarket/bot-polymarket-elon/datos_elon.csv ---
+-rw-r--r-- 1 root root 771 Sep 17 17:37 /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+Últimas 5 líneas:
+2026-09-10,22
+2026-09-11,30
+2026-09-12,16
+2026-09-13,39
+2026-09-17,20
+
+--- /opt/polymarket/bot-polymarket-trump/datos_trump.csv ---
+-rw-r--r-- 1 root root 3395 Sep 17 17:37 /opt/polymarket/bot-polymarket-trump/datos_trump.csv
+Últimas 5 líneas:
+2026-09-12,3
+2026-09-13,12
+2026-09-14,28
+2026-09-15,8
+2026-09-16,10
+
+--- /opt/polymarket/bot-polymarket-zelenskyy/datos_zelen.csv ---
+-rw-r--r-- 1 root root 2666 Sep 17 17:37 /opt/polymarket/bot-polymarket-zelenskyy/datos_zelen.csv
+Últimas 5 líneas:
+2026-09-13,2
+2026-09-14,12
+2026-09-15,7
+2026-09-16,3
+2026-09-17,10
+
+
+== 3. Cron instalado ==
+# twitterapi.io: tweets para Elon + Trump + Zelenskyy cada 2h
+5 */2 * * * cd /opt/polymarket && sleep 6 && /usr/bin/python3 recoger_tweets_rapidapi.py --bot elon >> /var/log/poly/twitterapi_elon_$(date +\%Y\%m\%d).log 2>&1
+15 */2 * * * cd /opt/polymarket && sleep 12 && /usr/bin/python3 recoger_tweets_rapidapi.py --bot trump >> /var/log/poly/twitterapi_trump_$(date +\%Y\%m\%d).log 2>&1
+25 */2 * * * cd /opt/polymarket && sleep 18 && /usr/bin/python3 recoger_tweets_rapidapi.py --bot zelenskyy >> /var/log/poly/twitterapi_zelen_$(date +\%Y\%m\%d).log 2>&1
+
+== 4. Ejecutar backup_completo.py para guardar todo ==
+/usr/bin/python3: can't open file '/opt/polymarket/scripts_despliegue/backup_completo.py': [Errno 2] No such file or directory
