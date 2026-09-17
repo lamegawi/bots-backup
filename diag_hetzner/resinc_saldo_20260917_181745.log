@@ -1,0 +1,26 @@
+=== RE-SINCRONIZAR SALDO A $122 · 20260917_181745 UTC ===
+
+== ANTES ==
+/opt/polymarket/bot-polymarket-elon/real.json: saldo=59.8319
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json: saldo=59.8319
+/opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json: saldo=59.8319
+
+== Backup con timestamp ==
+  ✅ backup real.json
+  ✅ backup real_semanal.json
+  ✅ backup real_mensual.json
+
+== Sincronizando a $122.00 ==
+  ✅ /opt/polymarket/bot-polymarket-elon/real.json: $59.83 → $122.00
+  ✅ /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json: $59.83 → $122.00
+  ✅ /opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json: $59.83 → $122.00
+
+== DESPUÉS ==
+/opt/polymarket/bot-polymarket-elon/real.json: saldo=$122.00 (anterior: $59.83)
+/opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json: saldo=$122.00 (anterior: $59.83)
+/opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json: saldo=$122.00 (anterior: $59.83)
+
+== Backup completo ==
+/usr/bin/python3: can't open file '/opt/polymarket/backup_completo.py': [Errno 2] No such file or directory
+monitorear_bots.sh
+/root/backup_completo.py
