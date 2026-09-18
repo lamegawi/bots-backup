@@ -1,0 +1,56 @@
+=== CLOB BALANCE CON SDK V2 · 20260918_192614 UTC ===
+FUNDER: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+CHAIN_ID: 137
+
+== 1. Métodos disponibles para balance/allowance ==
+  get_balance_allowance
+  update_balance_allowance
+
+== 2. Probar get_balance_allowance ==
+  ERROR: API Credentials are needed to interact with this endpoint!
+
+== 3. get_balance_allowance con asset_type ==
+  ERROR: ClobClient.get_balance_allowance() got an unexpected keyword argument 'asset_type'
+
+== 4. get_usdc_balance ==
+  No existe: 'ClobClient' object has no attribute 'get_usdc_balance'
+
+== 5. get_positions / get_trades ==
+  ERROR: 'ClobClient' object has no attribute 'get_positions'
+
+== 6. REST directo al CLOB ==
+  https://clob.polymarket.com/balance?user=0xb0E1197098E6d427c01720F1631cAD24CE740FA0: ERROR HTTP Error 404: Not Found
+  https://clob.polymarket.com/v1/balance?user=0xb0E1197098E6d427c01720F1631cAD24CE740FA0: ERROR HTTP Error 404: Not Found
+  https://clob.polymarket.com/portfolio/0xb0E1197098E6d427c01720F1631cAD24CE740FA0: ERROR HTTP Error 404: Not Found
+
+== 7. Tipos disponibles en clob_types ==
+  Any
+  ApiCreds
+  AssetType
+  BalanceAllowanceParams
+  BookParams
+  ContractConfig
+  CreateOrderOptions
+  DropNotificationParams
+  Literal
+  MarketOrderArgs
+  OpenOrderParams
+  Optional
+  OrderArgs
+  OrderBookSummary
+  OrderScoringParams
+  OrderSummary
+  OrderType
+  OrdersScoringParams
+  PartialCreateOrderOptions
+  PostOrdersArgs
+  ReadonlyApiKeyResponse
+  RequestArgs
+  RoundConfig
+  SignedOrder
+  TickSize
+  TradeParams
+  ZERO_ADDRESS
+  asdict
+  dataclass
+  dumps
