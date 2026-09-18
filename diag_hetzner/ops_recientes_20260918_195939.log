@@ -1,0 +1,41 @@
+=== OPERACIONES RECIENTES EN LOS 3 BOTS · 20260918_195939 UTC ===
+
+== 1. Bot 48h (Elon) ==
+Última operación:
+7fabd7fc2966,2026-09-02,elon-musk-of-tweets-august-31-september-2-2026,40-64,NO,0.22,4.55,0.0,5,10.0,40-64,P,-10.0,477.84
+
+Fecha archivo:
+Modify: 2026-09-02 18:16:12.525142568 +0000
+
+== 2. Bot Semanal (Elon) ==
+-rw-r--r-- 1 root root 3741 Sep  4 18:09 /opt/polymarket/bot-polymarket-elon-semanal/resultados_real_semanal.csv
+Últimas 5 operaciones:
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.007,142.86,0.1727,2,8.4,vendido por el gestor,P,-8.4,1171.01
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0055,181.82,0.1747,3,4.12,vendido por el gestor,P,-4.12,1166.89
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0035,285.71,0.1765,4,10.0,vendido por el gestor,P,-10.0,1156.89
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0055,181.82,0.177,5,10.0,vendido por el gestor,P,-10.0,1146.89
+21ec487f1602,2026-09-04,elon-musk-of-tweets-august-28-september-4-2026,220-239,NO,0.002,500.0,0.0,6,10.0,220-239,P,-10.0,1136.89
+
+Fecha archivo:
+Modify: 2026-09-04 18:09:12.967345271 +0000
+
+== 3. Bot Mensual (Elon) ==
+ls: cannot access '/opt/polymarket/bot-polymarket-elon-mensual/resultados_real_mensual.csv': No such file or directory
+Últimas 5 operaciones:
+tail: cannot open '/opt/polymarket/bot-polymarket-elon-mensual/resultados_real_mensual.csv' for reading: No such file or directory
+
+Fecha archivo:
+
+== 4. Buscar en logs systemd alguna orden reciente ==
+Sep 18 06:32:38 bot-poly python3[60471]: [2026-09-18 06:32:38]    usando SDK V2 (formato de orden moderno)
+Sep 18 06:32:39 bot-poly python3[60471]: [2026-09-18 06:32:39]    enviando orden BUY 28.70 shares @ $0.11499999999999999
+Sep 18 06:32:40 bot-poly python3[60471]: [2026-09-18 06:32:40]    ✅ ORDEN ENVIADA: 0xe5bfcd30b8e2d782d0868bde7179b443aa0cb1dc914f2f71c14b741660de7157
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]    usando SDK V2 (formato de orden moderno)
+Sep 18 17:25:30 bot-poly python3[60471]: [2026-09-18 17:25:30]    enviando orden BUY 6600.00 shares @ $0.0004999999999999449
+Sep 18 17:25:30 bot-poly python3[60471]:   File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 236, in try_ejecutar_orden
+Sep 18 17:41:03 bot-poly python3[60471]: [2026-09-18 17:41:03]    usando SDK V2 (formato de orden moderno)
+Sep 18 17:41:04 bot-poly python3[60471]: [2026-09-18 17:41:04]    enviando orden BUY 6600.00 shares @ $0.0004999999999999449
+Sep 18 17:41:09 bot-poly python3[60471]:   File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 236, in try_ejecutar_orden
+Sep 18 17:56:42 bot-poly python3[60471]: [2026-09-18 17:56:42]    usando SDK V2 (formato de orden moderno)
+Sep 18 17:56:43 bot-poly python3[60471]: [2026-09-18 17:56:43]    enviando orden BUY 6600.00 shares @ $0.0004999999999999449
+Sep 18 17:56:43 bot-poly python3[60471]:   File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 236, in try_ejecutar_orden
