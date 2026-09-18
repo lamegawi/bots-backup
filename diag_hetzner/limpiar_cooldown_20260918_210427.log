@@ -1,0 +1,27 @@
+=== LIMPIAR COOLDOWN · 20260918_210427 UTC ===
+✅ Cooldown vaciado
+{}
+
+Reiniciando poly-elon...
+
+== Primeros logs después del reinicio ==
+Sep 13 19:54:24 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+Sep 13 19:54:24 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Consumed 9min 1.812s CPU time, 55.8M memory peak, 0B memory swap peak.
+Sep 13 19:54:24 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 18 20:42:39 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+Sep 18 20:42:39 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+Sep 18 20:42:39 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 18 20:42:39 bot-poly systemd[1]: poly-elon.service: Consumed 1h 18min 27.384s CPU time, 55.2M memory peak, 0B memory swap peak.
+Sep 18 20:42:39 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 18 21:04:27 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+Sep 18 21:04:28 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+Sep 18 21:04:28 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 18 21:04:28 bot-poly systemd[1]: poly-elon.service: Consumed 16.896s CPU time, 47.9M memory peak, 0B memory swap peak.
+Sep 18 21:04:28 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+
+Esperando 60s a ver si manda CASI SEÑAL...
+
+== Logs después de 60s ==
+-- No entries --
