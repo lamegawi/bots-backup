@@ -1,0 +1,137 @@
+=== ERROR LÍNEA 236 · 20260918_200618 UTC ===
+
+== 1. Ver la línea 236 del bot_semanal.py ==
+            log(f"   [aviso] no se pudieron derivar API creds: {e}")
+
+        # crear orden
+        order = OrderArgs(
+            token_id=str(token_id),
+            price=float(precio),
+            side="BUY",
+            size=float(stake / precio),
+        )
+        log(f"   enviando orden BUY {stake/precio:.2f} shares @ ${precio}")
+
+        resp = client.create_and_post_order(order)
+        order_id = resp.get("orderID") or resp.get("order_id") or "?"
+        log(f"   ✅ ORDEN ENVIADA: {order_id}")
+
+        estado['activa'] = {
+            'slug': slug,
+            'bin': f"{lo}-{hi}",
+            'lado': lado,
+            'precio': precio,
+            'cuota': cuota,
+
+== 2. Ver el contexto completo de la función ==
+95-
+96-        if mejor:
+97-            log(f"\nMejor señal: {mejor[0].get('titulo','?')[:50]}")
+98-            log(f"   bin {mejor[1].get('lo')}-{mejor[1].get('hi')} {mejor[3]} EV={mejor[4]:+.3f}")
+99-            if opts.modo == "real":
+100:                try_ejecutar_orden(mejor, estado, m)
+101-            else:
+102-                log("   (modo != real, no se ejecuta)")
+103-        else:
+104-            log("Sin señales válidas")
+105-        log("════════════════════════════════════════════")
+106-        log("Pasada completada")
+107-    except Exception as e:
+108-        log(f"ERROR: {e}")
+109-        import traceback
+110-        log(traceback.format_exc())
+111-
+112-
+113-
+114-def inyectar_proxy_sdk(proxy_url=None):
+115-    """Inyecta proxy en el cliente httpx del SDK. Patrón del agente de combos."""
+--
+139-        except (TypeError, ImportError):
+140-            continue
+141-    log("  ❌ no se pudo inyectar proxy en SDK")
+142-    return False
+143-
+144:def try_ejecutar_orden(mejor, estado, metricas):
+145-    import senal
+146-    mkt, b, decision, lado, ev, motivo = mejor
+147-    slug = mkt.get('slug', '')
+148-    lo, hi = b.get('lo'), b.get('hi')
+149-    precio = b.get('precio_yes') if lado == "YES" else 1 - b.get('precio_yes', 0)
+150-    cuota = b.get('cuota_yes') if lado == "YES" else b.get('cuota_no')
+151-    token_id = b.get('token_id_yes') if lado == "YES" else b.get('token_id_no')
+152-
+153-    if not token_id:
+154-        log(f"   sin token_id para {lado}, saltamos")
+155-        return
+156-
+157-    # ---- PUERTA DEL GESTOR (parche semanal v2, 13-sep): no comprar un cajón
+158-    # que el gestor de posiciones cerraría acto seguido con su proyección
+159-    # fresca. (La puerta v1 vive en operar_real_semanal.abrir(); esta es la
+
+== 3. Ver el error completo del 17:25 ==
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29] 3 mercados semanales abiertos
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29] saldo=$188.4  paso=1  activa=no
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]   bin 200-219 | NO @ 1.000 | EV=+1986.423
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]   bin 140-159 | YES @ 0.037 | EV=+6.496
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]   bin 160-179 | YES @ 0.170 | EV=+2.213
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]   bin 140-159 | YES @ 0.088 | EV=+2.194
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]   bin 160-179 | YES @ 0.145 | EV=+2.766
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]
+Sep 18 17:25:29 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 11 - September 18, 20
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]    bin 200-219 NO EV=+1986.423
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]    · puerta del gestor: OK (quedan -1.4h (dejar resolver))
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]    stake=$3.3  paso=1
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]    token_id: 994298373064688868785755108057...
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]    proxy configurado: http://100.83.57.99:8888
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]   ✅ proxy SDK inyectado con {'http2': True, 'proxy': 'http://100.83.57.99:8888'}
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]    usando SDK V2 (formato de orden moderno)
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]    importando ClobClient + OrderArgs OK
+Sep 18 17:25:29 bot-poly python3[60471]: [2026-09-18 17:25:29]    cliente creado
+Sep 18 17:25:30 bot-poly python3[60471]: [2026-09-18 17:25:30]    ✅ API creds derivadas
+Sep 18 17:25:30 bot-poly python3[60471]: [2026-09-18 17:25:30]    enviando orden BUY 6600.00 shares @ $0.0004999999999999449
+Sep 18 17:25:30 bot-poly python3[60471]: [2026-09-18 17:25:30]    ERROR ejecutando: invalid price (0.0004999999999999449), min: 0.001 - max: 0.999
+Sep 18 17:25:30 bot-poly python3[60471]: [2026-09-18 17:25:30] Traceback (most recent call last):
+Sep 18 17:25:30 bot-poly python3[60471]:   File "/opt/polymarket/bot-polymarket-elon-semanal/bot_semanal.py", line 236, in try_ejecutar_orden
+Sep 18 17:25:30 bot-poly python3[60471]:     resp = client.create_and_post_order(order)
+Sep 18 17:25:30 bot-poly python3[60471]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Sep 18 17:25:30 bot-poly python3[60471]:   File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 848, in create_and_post_order
+Sep 18 17:25:30 bot-poly python3[60471]:     return self._retry_on_version_update(
+Sep 18 17:25:30 bot-poly python3[60471]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Sep 18 17:25:30 bot-poly python3[60471]:   File "/usr/local/lib/python3.12/dist-packages/py_clob_client_v2/client.py", line 1242, in _retry_on_version_update
+Sep 18 17:25:30 bot-poly python3[60471]:     result = func()
+
+== 4. ¿La orden de las 06:32 ESTÁ en el JSON? ==
+activa: None
+abierta: None
+saldo: 227.98
+Encontrada en historial:
+{
+  "id": "reconc",
+  "fecha": "2026-09-18T06:32:40.102021",
+  "mercado": "elon-musk-of-tweets-september-11-september-18-2026",
+  "bin": "",
+  "lado": "NO",
+  "precio": 0.11499999999999999,
+  "cuota": 8.695652173913045,
+  "p_modelo": 0,
+  "paso": 1,
+  "stake": 3.3,
+  "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+  "resultado": "G",
+  "beneficio": 25.4,
+  "saldo": 188.4
+}
+
+== 5. Historial reciente completo ==
+Total en historial: 29
+Últimas 5:
+  2026-09-16T01:42:05.056900 | bin=         | YES | res=G | ben=$+596.70
+    real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+  2026-09-16T02:12:49.292242 | bin=         | YES | res=G | ben=$+504.39
+    real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+  2026-09-16T02:43:36.217549 | bin=         | YES | res=G | ben=$+504.39
+    real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+  2026-09-16T03:14:20.434919 | bin=         | YES | res=G | ben=$+436.70
+    real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+  2026-09-18T06:32:40.102021 | bin=         | NO  | res=G | ben=$+25.40
+    real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
