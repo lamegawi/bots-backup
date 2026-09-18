@@ -1,0 +1,77 @@
+=== INVESTIGAR CASI SEÑAL · 20260918_205655 UTC ===
+
+== 1. ¿Qué bots de Telegram están corriendo? ==
+root         786       1  0 Sep13 ?        00:01:34 /usr/bin/python3 /opt/polymarket/poly_telegram_zelen.py
+root         789       1  0 Sep13 ?        00:01:26 /usr/bin/python3 /opt/polymarket/poly_telegram_trump.py
+root       59766       1  0 Sep13 ?        00:01:24 /usr/bin/python3 /opt/polymarket/poly_telegram_bot.py
+
+== 2. Configuración de cada Telegram bot ==
+--- /etc/systemd/system/poly-telegram.service ---
+--- /etc/systemd/system/poly-telegram-trump.service ---
+--- /etc/systemd/system/poly-telegram-zelen.service ---
+
+== 3. ¿Qué archivos Python generan los mensajes? ==
+/opt/polymarket/poly_telegram_bot.py
+/opt/polymarket/poly_telegram_trump.py
+/opt/polymarket/poly_telegram_zelen.py
+
+Buscar 'CASI SEÑAL' o 'casi_senal':
+/opt/polymarket/bot-polymarket-elon/bot.py
+/opt/polymarket/bot-polymarket-elon-mensual/bot_mensual.py
+/opt/polymarket/bot-polymarket-elon-mensual/notificar.py
+/opt/polymarket/bot-polymarket-elon-mensual-v2/bot_mensual.py
+/opt/polymarket/bot-polymarket-elon-mensual-v2/notificar.py
+/opt/polymarket/bot-polymarket-elon/notificar.py
+/opt/polymarket/bot-polymarket-elon-semanal/notificar.py
+/opt/polymarket/bot-polymarket-elon-semanal/notificar_semanal.py
+/opt/polymarket/bot-polymarket-elon-v2/bot.py
+/opt/polymarket/bot-polymarket-elon-v2/notificar.py
+/opt/polymarket/bot-polymarket-elon-v2/notificar_v2_48h.py
+/opt/polymarket/bot-polymarket-trump/bot_semanal.py
+/opt/polymarket/bot-polymarket-trump/notificar.py
+/opt/polymarket/bot-polymarket-trump/notificar_semanal.py
+/opt/polymarket/bot-polymarket-zelenskyy/bot_semanal.py
+/opt/polymarket/bot-polymarket-zelenskyy/notificar.py
+/opt/polymarket/bot-polymarket-zelenskyy/notificar_semanal.py
+
+== 4. ¿Quién envía a Telegram desde Elon? ==
+ls: cannot access '/opt/polymarket/bot-polymarket-elon/*telegram*': No such file or directory
+/opt/polymarket/bot-polymarket-elon/notificar.py
+
+    import notificar
+            notificar.alerta_error(
+            notificar.alerta_error(
+        notificar.casi_senal(evaluados)
+        cfg = notificar.cargar_config()
+        notificar.resumen_diario(saldo=est["saldo"], paso=est["paso"],
+    ap.add_argument("--notificar-test", action="store_true",
+    if args.notificar_test:
+        res = notificar.enviar("🧪 Prueba del bot. Si lo ves en el móvil, todo funciona.",
+        print("Config:", notificar.estado_texto())
+
+== 5. Comparar los 3 bots: ¿quién tiene 'casi_senal'? ==
+Trump:
+/opt/polymarket/bot-polymarket-trump/bot_semanal.py
+/opt/polymarket/bot-polymarket-trump/notificar.py
+/opt/polymarket/bot-polymarket-trump/notificar_semanal.py
+Zelenskyy:
+/opt/polymarket/bot-polymarket-zelenskyy/bot_semanal.py
+/opt/polymarket/bot-polymarket-zelenskyy/notificar.py
+/opt/polymarket/bot-polymarket-zelenskyy/notificar_semanal.py
+Elon:
+/opt/polymarket/bot-polymarket-elon/bot.py
+/opt/polymarket/bot-polymarket-elon/notificar.py
+
+== 6. ¿Cómo se llama la función en Trump? ==
+/opt/polymarket/bot-polymarket-trump/bot_semanal.py:197:def avisar_casi_senal():
+/opt/polymarket/bot-polymarket-trump/notificar.py:100:               f"https://api.telegram.org/bot{tg['token']}/sendMessage",
+/opt/polymarket/bot-polymarket-trump/notificar.py:190:def casi_senal(evaluados, horas=6):
+/opt/polymarket/bot-polymarket-trump/notificar_semanal.py:96:               f"https://api.telegram.org/bot{tg['token']}/sendMessage",
+/opt/polymarket/bot-polymarket-trump/notificar_semanal.py:187:def casi_senal(evaluados, horas=6):
+/opt/polymarket/bot-polymarket-trump/senal.py:161:def formatear_senal(m, lo, hi, precio_yes, ya_publicados, horas, paso=None):
+
+== 7. Ver el módulo notificar.py o similar ==
+ls: cannot access '/opt/polymarket/notificar*.py': No such file or directory
+/opt/polymarket/bot-polymarket-trump/notificar.py
+/opt/polymarket/bot-polymarket-trump/notificar_semanal.py
+/opt/polymarket/bot-polymarket-elon/notificar.py
