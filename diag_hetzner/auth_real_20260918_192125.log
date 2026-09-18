@@ -1,0 +1,19 @@
+=== AUTH CON EOA REAL · 20260918_192125 UTC ===
+== 1. Autenticar con tu EOA real (0x8a22...) ==
+EOA: 0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6
+Timestamp: 1789759285
+Mensaje: Sign in to Polymarket
+Timestamp: 1789759285...
+Firma: 0xcafdac30ff0b82a098...
+❌ Error: OpenerDirector.open() got an unexpected keyword argument 'context'
+
+== 2. Probar otros endpoints de auth ==
+❌ https://polymarket.com/api/auth/magic: OpenerDirector.open() got an unexpected keyword argument 'context'
+❌ https://polymarket.com/api/auth/wallet: OpenerDirector.open() got an unexpected keyword argument 'context'
+❌ https://polymarket.com/api/auth/verify: OpenerDirector.open() got an unexpected keyword argument 'context'
+❌ https://gamma-api.polymarket.com/auth: OpenerDirector.open() got an unexpected keyword argument 'context'
+
+== 3. Probar CLOB API autenticada ==
+✅ API creds: ApiCreds(api_key='3b509bb7-76b5-30a4-918f-a2ef8af8166b', api_secret='1CGgBH2SFsBeRdY_nch9Dnq-AwNF7h1-tu2jweC9yt4=', api_passphrase='7b2ec674551e612378d53f6163cf5599b69fac22450e4fd80272e887eb185518')
+⚠️ balance error: 'ClobClient' object has no attribute 'get_usdc_balance'
+⚠️ balance-allowance error: cannot import name 'BalanceAllowanceRequest' from 'py_clob_client.clob_types' (/usr/local/lib/python3.12/dist-packages/py_clob_client/clob_types.py)
