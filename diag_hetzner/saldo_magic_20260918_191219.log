@@ -1,0 +1,23 @@
+=== SALDO REAL CON MAGIC.LINK · 20260918_191219 UTC ===
+
+== 1. Verificar credenciales disponibles ==
+EOA: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+POLY_PRIVATE_KEY: 0x5a140f...fc888af3
+
+MAGIC_LINK_KEY presente:
+  ⚠️ No
+
+== 2. Buscar MAGIC_LINK_KEY en archivos ==
+
+
+== 3. Verificar que el bot puede firmar mensajes ==
+EOA: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+PRIVATE_KEY: 0x5a140f...fc888af3
+✅ Cuenta derivada: 0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6
+⚠️ NO coincide: cuenta=0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6 EOA=0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+✅ Firma generada correctamente
+   signature: 6bd84b9e95497d385fb6...
+⚠️ Auth error: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1000)>
+
+== 4. Si tenemos token, consultar saldo ==
+⚠️ No hay token, saltando
