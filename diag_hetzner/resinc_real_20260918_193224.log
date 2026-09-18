@@ -1,0 +1,37 @@
+=== SINCRONIZAR SALDO REAL $227.98 · 20260918_193224 UTC ===
+
+Tu UI dice: $163.00
+CLOB API autenticado dice: $227.98
+Diferencia: +$64.98
+
+== ANTES ==
+  /opt/polymarket/bot-polymarket-elon/real.json: saldo=$163.0
+  /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json: saldo=$188.4
+  /opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json: saldo=$163.0
+
+== Backup ==
+  ✅ backup
+  ✅ backup
+  ✅ backup
+
+== Sincronizando a $227.98 (CLOB autenticado) ==
+  ✅ /opt/polymarket/bot-polymarket-elon/real.json: $163.00 → $227.98
+  ✅ /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json: $188.40 → $227.98
+  ✅ /opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json: $163.00 → $227.98
+
+== DESPUÉS ==
+  /opt/polymarket/bot-polymarket-elon/real.json: saldo=$227.98
+  /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json: saldo=$227.98
+  /opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json: saldo=$227.98
+
+== Backup completo ==
+
+[2/3] Snapshot de codigo...
+  ✓ git HEAD: ecdbcf6f
+
+[3/3] Generando informe...
+  ✓ informe: backups_completos/2026-09-18_20260918_193225/informe_20260918_193225.txt
+
+======================================================================
+BACKUP COMPLETO TERMINADO · 3 JSONs respaldados
+======================================================================
