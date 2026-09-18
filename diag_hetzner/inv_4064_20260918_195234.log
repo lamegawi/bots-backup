@@ -1,0 +1,172 @@
+=== INVESTIGACION BIN 40-64 · 20260918_195234 UTC ===
+
+== 1. ¿Qué predice el modelo para bin 40-64? ==
+84:def p_bin(lo, hi, lam):
+85-    """P(lo ≤ X ≤ hi) con X ~ Poisson(lam). hi puede ser inf."""
+86-    if hi == math.inf:
+87-        return 1.0 - poisson_cdf(lo - 1, lam)
+88-    return poisson_cdf(hi, lam) - poisson_cdf(lo - 1, lam)
+89-
+90-
+91-def tabla_apuestas(stake_inicial=STAKE_INICIAL, factor=FACTOR, pasos=PASOS_MAX):
+92-    """Genera la tabla de apuestas (stake, pérdida acumulada, beneficio neto)."""
+93-    filas = []
+94-    perdida_prev = 0.0
+95-    for i in range(1, pasos + 1):
+96-        stake = math.ceil(stake_inicial * factor ** (i - 1) * 100) / 100  # redondeo al alza
+97-        perdida_acum = perdida_prev + stake
+98-        # beneficio neto si acierta a cuota 3.00 (pago = stake × 2):
+99-        benef = round(stake * (CUOTA_MINIMA - 1) - perdida_prev, 2)
+--
+132:def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
+133-    """Aplica las reglas R1–R5 y devuelve (p_modelo, cuota_yes, cuota_no,
+134-    veredicto, razon)."""
+135-    if math.isnan(m["r"]):
+136-        return None, None, None, "PASAR", "AVG7 = 0: sin actividad base"
+137-    lam_rest = m["lam48"] * max(0.0, (48.0 - horas)) / 48.0
+138-    # ====== ANTI-BIN-PERDIDO (10/09) ======
+139-    # Si los tweets ya publicados + los esperados (restantes) ya
+140-    # SUPERAN el techo del bin, el bin está matemáticamente perdido
+141-    # para YES. Y si t0 >= lo, está matemáticamente ganado para YES.
+142-    # Esto evita comprar un bin de 120-139 cuando ya hay 129 tweets
+143-    # en la ventana (el bot compraba a precio 0.001 esperando que
+144-    # el mercado le pagara 1.0 si ganaba — long shot absurdo).
+145-    t0 = ya_publicados
+146-    if hi != math.inf and t0 + lam_rest > hi:
+147-        return 0.0, None, None, "PASAR", \
+--
+376:def p_bin(lo, hi, lam):
+377-    """P(lo <= X <= hi). Empirica si hay estado; Poisson original si no."""
+378-    if not _EMP["on"]:
+379-        return _p_bin_orig(lo, hi, lam)
+380-    try:
+381-        dias = _EMP["dias"]
+382-        avg7 = _EMP["avg7"]
+383-        aj = _EMP["ajuste"]
+384-        if (not dias) or (not avg7) or avg7 <= 0 or (not aj) or aj <= 0 \
+385-                or lam is None or lam <= 0 or hi is None or lo is None:
+386-            return _p_bin_orig(lo, hi, lam)
+387-        base_diaria = avg7 * aj
+388-        dias_eq = lam / base_diaria          # = horas restantes / 24
+389-        k = int(dias_eq)
+390-        frac = dias_eq - k
+391-        dist = _emp_dist(k, frac, dias)
+
+== 2. Datos historicos: ¿cuántos tweets tiene Elon realmente por periodo? ==
+Tweets en últimos 51 días:
+  Media:   24.8
+  Mediana: 22
+  Min:     1
+  Max:     86
+  Distribución:
+    <10: 8 (16%)
+    10-19: 10 (20%)
+    20-29: 19 (37%)
+    30-39: 9 (18%)
+    40-49: 1 (2%)
+    50-59: 2 (4%)
+    60-79: 0 (0%)
+    80-99: 2 (4%)
+    100+: 0 (0%)
+
+== 3. Simular probabilidades para mercado 48h ==
+AVG usado: 25 tweets/día
+Para 48h: lambda = 50
+
+Distribución Poisson para 48h (50 tweets esperados):
+  P(X=  0) =  0.00%   (acum < 0:   0.0%)
+  P(X=  5) =  0.00%   (acum < 5:   0.0%)
+  P(X= 10) =  0.00%   (acum < 10:   0.0%)
+  P(X= 15) =  0.00%   (acum < 15:   0.0%)
+  P(X= 20) =  0.00%   (acum < 20:   0.0%)
+  P(X= 25) =  0.00%   (acum < 25:   0.0%)
+  P(X= 30) =  0.07%   (acum < 30:   0.2%)
+  P(X= 35) =  0.54%   (acum < 35:   1.6%)
+  P(X= 40) =  2.15%   (acum < 40:   8.6%)
+  P(X= 45) =  4.58%   (acum < 45:  26.7%)
+  P(X= 50) =  5.63%   (acum < 50:  53.8%)
+  P(X= 55) =  4.22%   (acum < 55:  78.4%)
+  P(X= 60) =  2.01%   (acum < 60:  92.8%)
+  P(X= 65) =  0.63%   (acum < 65:  98.3%)
+  P(X= 70) =  0.14%   (acum < 70:  99.7%)
+  P(X= 75) =  0.02%   (acum < 75: 100.0%)
+  P(X= 80) =  0.00%   (acum < 80: 100.0%)
+  P(X= 85) =  0.00%   (acum < 85: 100.0%)
+  P(X= 90) =  0.00%   (acum < 90: 100.0%)
+  P(X= 95) =  0.00%   (acum < 95: 100.0%)
+  P(X=100) =  0.00%   (acum < 100: 100.0%)
+  P(X=105) =  0.00%   (acum < 105: 100.0%)
+  P(X=110) =  0.00%   (acum < 110: 100.0%)
+  P(X=115) =  0.00%   (acum < 115: 100.0%)
+  P(X=120) =  0.00%   (acum < 120: 100.0%)
+  P(X=125) =  0.00%   (acum < 125: 100.0%)
+  P(X=130) =  0.00%   (acum < 130: 100.0%)
+  P(X=135) =  0.00%   (acum < 135: 100.0%)
+  P(X=140) =  0.00%   (acum < 140: 100.0%)
+  P(X=145) =  0.00%   (acum < 145: 100.0%)
+  P(X=150) =  0.00%   (acum < 150: 100.0%)
+  P(X=155) =  0.00%   (acum < 155: 100.0%)
+  P(X=160) =  0.00%   (acum < 160: 100.0%)
+  P(X=165) =  0.00%   (acum < 165: 100.0%)
+  P(X=170) =  0.00%   (acum < 170: 100.0%)
+Traceback (most recent call last):
+  File "<stdin>", line 12, in <module>
+OverflowError: int too large to convert to float
+
+== 4. Mirar la lógica del bot: qué hace cuando ve bin 40-64 ==
+
+
+def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
+    """Aplica las reglas R1–R5 y devuelve (p_modelo, cuota_yes, cuota_no,
+    veredicto, razon)."""
+    if math.isnan(m["r"]):
+        return None, None, None, "PASAR", "AVG7 = 0: sin actividad base"
+    lam_rest = m["lam48"] * max(0.0, (48.0 - horas)) / 48.0
+    # ====== ANTI-BIN-PERDIDO (10/09) ======
+    # Si los tweets ya publicados + los esperados (restantes) ya
+    # SUPERAN el techo del bin, el bin está matemáticamente perdido
+    # para YES. Y si t0 >= lo, está matemáticamente ganado para YES.
+    # Esto evita comprar un bin de 120-139 cuando ya hay 129 tweets
+    # en la ventana (el bot compraba a precio 0.001 esperando que
+    # el mercado le pagara 1.0 si ganaba — long shot absurdo).
+    t0 = ya_publicados
+    if hi != math.inf and t0 + lam_rest > hi:
+        return 0.0, None, None, "PASAR", \
+            f"bin perdido matemáticamente: t0={t0} + λ_rest={lam_rest:.1f} > hi={hi}"
+    if hi == math.inf and t0 + lam_rest < lo * 0.5:
+        # bin "≥ lo" donde ya está claro que NO se llegará
+        return 0.0, None, None, "PASAR", \
+            f"bin ≥{lo} inalcanzable: t0={t0} + λ_rest={lam_rest:.1f} << {lo}"
+--
+
+def formatear_senal(m, lo, hi, precio_yes, ya_publicados, horas, paso=None):
+    p, c_yes, c_no, veredicto, razon = decision(m, lo, hi, precio_yes, ya_publicados, horas)
+    print("=" * 72)
+    print(f"SEÑAL  ·  fecha de datos: {m['fecha_base']}  ·  bin [{lo}, {hi if hi != math.inf else '∞'}]  ·  precio YES {precio_yes:.3f}")
+    print("=" * 72)
+    print(f"  Últimos 7 días        : {m['ult7']}")
+    print(f"  Últimos 2 días        : {m['ult2']}")
+    print(f"  AVG7 (media 7 días)   : {m['avg7']:.2f} tweets/día")
+    print(f"  V2   (últimos 2 días) : {m['v2']} tweets")
+    print(f"  R    = V2/(2·AVG7)    : {m['r']:.3f}   ({'bajo → posible recuperación' if m['r'] < 1 else 'alto → momentum'})")
+    print(f"  ajuste(R)             : {m['ajuste']:.3f}")
+    print(f"  λ48 (esperado 48 h)   : {m['lam48']:.1f} tweets")
+    if horas > 0:
+        print(f"  ya publicados         : {ya_publicados}  ·  horas transcurridas: {horas}")
+    print(f"  p_modelo = P({lo} ≤ X ≤ {hi if hi != math.inf else '∞'}) : {p:.1%}" if p is not None else "  p_modelo = n/d")
+    if c_yes is not None:
+        print(f"  cuota YES = {c_yes:.2f}  ·  cuota NO = {c_no:.2f}")
+    print(f"  ► VEREDICTO: {veredicto}")
+    print(f"    Razón: {razon}")
+    if veredicto.startswith("APOSTAR") and paso is not None:
+        fila = tabla_apuestas()[paso - 1]
+        print(f"    Paso {paso} del ciclo → stake ${fila[1]:.2f}  (pérdida acumulada si falla: ${fila[2]:.2f})")
+--
+        hist = datos[:t]                      # solo días ya completos
+        m = metricas(hist)
+
+== 5. Comparar predicciones vs realidad ==
+Operaciones en bin 40-64: 3
+  2026-08-30 elon-musk-of-tweets-august-29- | p_modelo=0.1429 | lado=NO  | res=P | ben=$-10.00 | vendido/desaparecido (sin registro del gestor)
+  2026-09-01 elon-musk-of-tweets-august-31- | p_modelo=0.0000 | lado=NO  | res=P | ben=$-10.00 | vendido/desaparecido (sin registro del gestor)
+  2026-09-02 elon-musk-of-tweets-august-31- | p_modelo=0.0000 | lado=NO  | res=P | ben=$-10.00 | 40-64
