@@ -1,0 +1,33 @@
+=== VERIFICAR POST-REINICIO · 20260918_204431 UTC ===
+Esperando 5 minutos para que completen ciclos...
+
+== 1. Pasadas generadas ==
+48h (esperadas ~6):
+0
+Semanal (esperadas ~2):
+1
+Mensual (esperadas ~6):
+0
+
+== 2. Últimas señales ==
+48h:
+
+Semanal:
+Sep 18 20:29:43 bot-poly python3[602900]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+Sep 18 20:45:06 bot-poly python3[602900]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+
+Mensual:
+
+== 3. ¿Órdenes enviadas? ==
+48h (última 5 min):
+0
+Semanal (última 5 min):
+0
+Mensual (última 5 min):
+0
+
+== 4. CPU actual ==
+    PID %CPU %MEM     ELAPSED CMD
+    788  0.0  2.2  5-13:40:36 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+ 603966  0.2  1.2       06:52 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+ 603971  0.1  1.1       06:50 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
