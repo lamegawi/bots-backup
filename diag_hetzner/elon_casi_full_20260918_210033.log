@@ -1,0 +1,158 @@
+=== CASI_SENAL DE ELON COMPLETA · 20260918_210033 UTC ===
+
+== Líneas 190-270 del notificar.py de Elon ==
+def casi_senal(evaluados, horas=6):
+    """Avisa cuando un mercado tiene un bin CERCA de cumplir las reglas de
+    esta ventana (ver senal.py: REGLA absoluta o de ventaja) pero NO se
+    apuesta. Informativo. Máx. 1 aviso por mercado cada `horas` horas."""
+    import senal
+    ventana = getattr(senal, "VENTANA", None)
+    regla = getattr(senal, "REGLA", "absoluta")
+    edge = getattr(senal, "EDGE_MIN", 0.10)
+    p_floor = getattr(senal, "P_FLOOR", 0.15)
+    cmin = getattr(senal, "CUOTA_MINIMA", 3.0)
+    pmin = getattr(senal, "P_MIN_YES", 0.60)
+    pmax = getattr(senal, "P_MAX_NO", 0.30)
+    for ev in evaluados:
+        if ventana is not None:
+            if ev.get("tipo") != ventana:
+                continue
+        elif ev.get("tipo") != "48h":
+            continue
+        mejor = None      # (distancia, lado, bin, p, cuota_lado)
+        for b in ev["bins"]:
+            p = b["p_modelo"]
+            precio = b["precio_yes"]
+            cy = b["cuota_yes"] or 0
+            cn = b["cuota_no"] or 0
+            if regla == "ventaja":
+                vy = p - precio
+                vn = (1 - p) - (1 - precio)
+                if p >= p_floor and (vy >= edge * 0.5 or cy >= cmin):
+                    d = max(0.0, edge - vy) + max(0.0, cmin - cy) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "YES", b, p, cy, cn, vy)
+                if (1 - p) >= p_floor and (vn >= edge * 0.5 or cn >= cmin):
+                    d = max(0.0, edge - vn) + max(0.0, cmin - cn) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "NO", b, p, cy, cn, vn)
+            else:
+                # regla absoluta (48 h): cerca en p_modelo o ya tiene cuota
+                if p >= 0.50 or cy >= 3.0:
+                    d = max(0.0, pmin - p) + max(0.0, cmin - cy) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "YES", b, p, cy, cn, p - precio)
+                if p <= 0.35 or cn >= 3.0:
+                    d = max(0.0, p - pmax) + max(0.0, cmin - cn) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "NO", b, p, cy, cn, p - precio)
+        if mejor is None or mejor[0] > 0.15:
+            continue
+        d, lado, b, p, cy, cn, ventaja = mejor
+        clave = f"casi_{ev['titulo'][:40]}"
+        if not _puede_avisar(clave, horas=horas):
+            continue
+        cuota_lado = cy if lado == "YES" else cn
+        if regla == "ventaja":
+            if ventaja < edge:
+                falta = (f"ventaja {ventaja:.0%}pp < {edge:.0%}pp "
+                         f"(necesita p_modelo - precio ≥ {edge:.0%})")
+            else:
+                falta = f"cuota {cuota_lado:.2f} < {cmin:.2f}"
+        else:
+            if cuota_lado < cmin:
+                falta = f"cuota {cuota_lado:.2f} < {cmin:.2f} (falta precio más barato)"
+            else:
+                falta = f"p_modelo {p:.0%} fuera de zona (necesita ≥60% o ≤30%)"
+        # enlace directo al mercado (para operar manualmente)
+        slug = ev.get('slug') or ''
+        enlace = f"https://polymarket.com/event/{slug}" if slug else ""
+        mensaje = (
+            f"🟡 CASI SEÑAL — NO se apuesta (informativo)\n"
+            f"{ev['titulo']}\n"
+            f"Bin {b['titulo']} · lado {lado} · p_modelo {p:.0%}\n"
+            f"Cuota YES {cy:.2f} · NO {cn:.2f}\n"
+            f"Falta: {falta}\n"
+            f"🔗 {enlace}\n"
+            f"{saldo_ntfy.saldo_real_texto()}"
+        )
+        enviar(mensaje, titulo="👀 Casi señal (sin apuesta)",
+               etiqueta="eyes", prioridad="default")
+
+
+def alerta_error(texto, horas=1):
+    """Aviso de error (recogida de datos, mercado…) con prioridad ALTA.
+
+== Última parte: envío del mensaje ==
+                        mejor = (d, "YES", b, p, cy, cn, p - precio)
+                if p <= 0.35 or cn >= 3.0:
+                    d = max(0.0, p - pmax) + max(0.0, cmin - cn) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "NO", b, p, cy, cn, p - precio)
+        if mejor is None or mejor[0] > 0.15:
+            continue
+        d, lado, b, p, cy, cn, ventaja = mejor
+        clave = f"casi_{ev['titulo'][:40]}"
+        if not _puede_avisar(clave, horas=horas):
+            continue
+        cuota_lado = cy if lado == "YES" else cn
+        if regla == "ventaja":
+            if ventaja < edge:
+                falta = (f"ventaja {ventaja:.0%}pp < {edge:.0%}pp "
+                         f"(necesita p_modelo - precio ≥ {edge:.0%})")
+            else:
+                falta = f"cuota {cuota_lado:.2f} < {cmin:.2f}"
+        else:
+            if cuota_lado < cmin:
+                falta = f"cuota {cuota_lado:.2f} < {cmin:.2f} (falta precio más barato)"
+            else:
+                falta = f"p_modelo {p:.0%} fuera de zona (necesita ≥60% o ≤30%)"
+        # enlace directo al mercado (para operar manualmente)
+        slug = ev.get('slug') or ''
+        enlace = f"https://polymarket.com/event/{slug}" if slug else ""
+        mensaje = (
+            f"🟡 CASI SEÑAL — NO se apuesta (informativo)\n"
+            f"{ev['titulo']}\n"
+            f"Bin {b['titulo']} · lado {lado} · p_modelo {p:.0%}\n"
+            f"Cuota YES {cy:.2f} · NO {cn:.2f}\n"
+            f"Falta: {falta}\n"
+            f"🔗 {enlace}\n"
+            f"{saldo_ntfy.saldo_real_texto()}"
+        )
+        enviar(mensaje, titulo="👀 Casi señal (sin apuesta)",
+               etiqueta="eyes", prioridad="default")
+
+
+def alerta_error(texto, horas=1):
+    """Aviso de error (recogida de datos, mercado…) con prioridad ALTA.
+
+== ¿Cómo llama bot.py a casi_senal? ==
+        datos = senal.cargar_csv("datos_elon.csv")
+        m = senal.metricas(datos)
+        mercados = json.load(open(mp.SALIDA, encoding="utf-8"))["mercados"]
+        evaluados, _ = senal_vivo.evaluar(m["avg7"], m["v2"], m["ajuste"],
+                                          m["lam48"], mercados, 1)
+        notificar.casi_senal(evaluados)
+    except Exception as e:
+        log(f"      · aviso casi-señal: {e}")
+
+
+def avisar_resumen_diario():
+    """Envía el resumen diario una vez al día, a la hora configurada
+    (config.json → "resumen": {"hora": H}; -1 = desactivado)."""
+    try:
+        cfg = notificar.cargar_config()
+        hora = int((cfg.get("resumen") or {}).get("hora", 20))
+
+== Cooldown actual de Elon ==
+-rw-r--r-- 1 root root    945 Sep 18 20:10 /opt/polymarket/bot-polymarket-elon/avisos_cooldown.json
+-rw-r--r-- 1 root root    202 Aug 22 04:36 /opt/polymarket/bot-polymarket-elon/config.json
+-rw-r--r-- 1 root root     35 Aug 22 04:01 /opt/polymarket/bot-polymarket-elon/estado_bot.json
+-rw-r--r-- 1 root root 175719 Sep 14 09:47 /opt/polymarket/bot-polymarket-elon/estado_tweets.json
+-rw-r--r-- 1 root root   1383 Aug 17 20:24 /opt/polymarket/bot-polymarket-elon/fuentes_serie.json
+-rw-r--r-- 1 root root  35494 Sep 18 20:55 /opt/polymarket/bot-polymarket-elon/mercado_activo.json
+-rw-r--r-- 1 root root    695 Sep 10 20:00 /opt/polymarket/bot-polymarket-elon/polymarket_oficial.json
+-rw------- 1 root root   3930 Sep 18 20:17 /opt/polymarket/bot-polymarket-elon/real.json
+-rw-r--r-- 1 root root   4576 Sep 18 20:55 /opt/polymarket/bot-polymarket-elon/ventanas_vistas.json
+
+== Ver logs si casi_senal ha fallado ==
