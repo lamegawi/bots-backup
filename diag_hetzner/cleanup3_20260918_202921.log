@@ -1,0 +1,31 @@
+=== LIMPIEZA FINAL · 20260918_202921 UTC ===
+Última ocurrencia (borrar): línea 238
+
+== DESPUÉS (debe quedar solo 1) ==
+235:            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+✅ compila
+
+Servicio:
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-18 20:29:21 UTC; 3s ago
+   Main PID: 602900 (python3)
+      Tasks: 2 (limit: 4538)
+
+== Líneas finales 230-245 ==
+            price=float(precio),
+            side="BUY",
+            size=float(stake / precio),
+        )
+        if precio < 0.001 or precio > 0.999:
+            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+            return
+        log(f"   enviando orden BUY {stake/precio:.2f} shares @ ${precio}")
+
+        resp = client.create_and_post_order(order)
+        order_id = resp.get("orderID") or resp.get("order_id") or "?"
+        log(f"   ✅ ORDEN ENVIADA: {order_id}")
+
+        estado['activa'] = {
+            'slug': slug,
+            'bin': f"{lo}-{hi}",
