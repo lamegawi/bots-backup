@@ -1,0 +1,146 @@
+=== OPERACIÓN 18-SEPT COMPLETA · 20260918_200357 UTC ===
+
+== 1. Estado actual del semanal (real_semanal.json) ==
+{
+    "saldo": 227.98,
+    "paso": 1,
+    "activa": null,
+    "abierta": null,
+    "historial": [
+        {
+            "id": "reconc",
+            "fecha": "2026-09-13T18:29:23.205419",
+            "mercado": "elon-musk-of-tweets-september-8-september-15-2026",
+            "bin": "",
+            "lado": "YES",
+            "precio": 0.0495,
+            "cuota": 20.2020202020202,
+            "p_modelo": 0,
+            "paso": 1,
+            "stake": 3.3,
+            "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+            "resultado": "G",
+            "beneficio": 63.37,
+            "saldo": 249.86
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-09-13T19:00:30.420521",
+            "mercado": "elon-musk-of-tweets-september-8-september-15-2026",
+            "bin": "",
+            "lado": "YES",
+            "precio": 0.0615,
+            "cuota": 16.260162601626018,
+            "p_modelo": 0,
+            "paso": 1,
+            "stake": 3.3,
+            "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+            "resultado": "G",
+            "beneficio": 50.36,
+            "saldo": 300.22
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-09-13T19:47:07.567781",
+            "mercado": "elon-musk-of-tweets-september-8-september-15-2026",
+            "bin": "",
+            "lado": "YES",
+            "precio": 0.061,
+            "cuota": 16.39344262295082,
+            "p_modelo": 0,
+            "paso": 1,
+            "stake": 3.3,
+            "real": "vendido por el gestor en positivo (+3.62 a nivel cuenta)",
+
+== 2. ¿Está activa la operación de las 06:32? ==
+<stdin>:4: SyntaxWarning: invalid escape sequence '\$'
+saldo: \$227.98
+paso: 1
+activa: None
+
+== 3. ¿Está en resultados_real_semanal.csv? ==
+reconc,2026-08-30,elon-musk-of-tweets-august-25-september-1-2026,120-139,YES,0.0015,666.67,0.2908,1,6.0,vendido por el gestor,P,-6.0,697.55
+a91bb47465d6,2026-09-01,elon-musk-of-tweets-august-25-september-1-2026,160-179,NO,0.002,500.0,0.0,2,8.4,160-179,P,-8.4,689.15
+reconc,2026-09-02,elon-musk-of-tweets-september-1-september-8-2026,120-139,YES,0.034,29.41,0.1601,3,10.0,vendido por el gestor en positivo (+0.12 a nivel cuenta),G,284.1,973.25
+reconc,2026-09-02,elon-musk-of-tweets-september-1-september-8-2026,120-139,YES,0.0275,36.36,0.163,1,6.0,vendido por el gestor en positivo (+0.12 a nivel cuenta),G,212.16,1185.41
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.007,142.86,0.1725,1,6.0,vendido por el gestor,P,-6.0,1179.41
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.007,142.86,0.1727,2,8.4,vendido por el gestor,P,-8.4,1171.01
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0055,181.82,0.1747,3,4.12,vendido por el gestor,P,-4.12,1166.89
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0035,285.71,0.1765,4,10.0,vendido por el gestor,P,-10.0,1156.89
+reconc,2026-09-03,elon-musk-of-tweets-september-1-september-8-2026,100-119,YES,0.0055,181.82,0.177,5,10.0,vendido por el gestor,P,-10.0,1146.89
+21ec487f1602,2026-09-04,elon-musk-of-tweets-august-28-september-4-2026,220-239,NO,0.002,500.0,0.0,6,10.0,220-239,P,-10.0,1136.89
+
+== 4. ¿Posición en Polymarket (28.70 shares)? ==
+ENCONTRADA:
+{
+  "proxyWallet": "0xb0e1197098e6d427c01720f1631cad24ce740fa0",
+  "asset": "103196645623776706792175768849525614242496571309375494973599048157743625542155",
+  "conditionId": "0x6622e5fc534109b78a3f2a833e1fd97c9e35ba35b8f5b0168f335921a121b0ad",
+  "size": 29.4117,
+  "avgPrice": 0.0679,
+  "initialValue": 1.9999,
+  "grossInitialValue": 2.093176,
+  "entryFeesUsdc": 0.09319,
+  "currentValue": 0,
+  "cashPnl": -1.9999,
+  "percentPnl": -99.9956,
+  "totalBought": 29.4117,
+  "realizedPnl": -0.0932,
+  "percentRealizedPnl": -100,
+  "curPrice": 0,
+  "redeemable": true,
+  "mergeable": false,
+  "title": "Will Elon Musk post 220-239 tweets from June 12 to June 19, 2026?",
+  "slug": "elon-musk-of-tweets-june-12-june-19-220-239",
+  "icon": "https://polymarket-upload.s3.us-east-2.amazonaws.com/elon-musk-of-tweets-nov-22-29-apMPG21-pzx_.jpg",
+  "eventId": "574934",
+  "eventSlug": "elon-musk-of-tweets-june-12-june-19",
+  "outcome": "Yes",
+  "outcomeIndex": 0,
+  "oppositeOutcome": "No",
+  "oppositeAsset": "66002193096232501066682781195582915481965068153063105314042952897300022102271",
+  "endDate": "2026-06-19",
+  "negativeRisk": true
+}
+
+== 5. Logs completos del 18-sept (semanal) ==
+Sep 18 19:28:56 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+Sep 18 19:28:56 bot-poly python3[60471]: [2026-09-18 19:28:56]    bin 140-159 YES EV=+6.496
+Sep 18 19:28:56 bot-poly python3[60471]: [2026-09-18 19:28:56]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 47 → no llega al mínimo (47<140)
+Sep 18 19:28:56 bot-poly python3[60471]: [2026-09-18 19:28:56] ════════════════════════════════════════════
+Sep 18 19:28:56 bot-poly python3[60471]: [2026-09-18 19:28:56] Pasada completada
+Sep 18 19:28:56 bot-poly python3[60471]: [2026-09-18 19:28:56] Próxima pasada en 15 min
+Sep 18 19:43:56 bot-poly python3[60471]: [2026-09-18 19:43:56] ════════════════════════════════════════════
+Sep 18 19:43:56 bot-poly python3[60471]: [2026-09-18 19:43:56] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 18 19:43:56 bot-poly python3[60471]: [2026-09-18 19:43:56] ════════════════════════════════════════════
+Sep 18 19:43:56 bot-poly python3[60471]: [2026-09-18 19:43:56] AVG7=24.86  AVG30=27.87  R=0.892  ajuste=0.957
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19] 2 mercados semanales abiertos
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19] saldo=$227.98  paso=1  activa=no
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19]   bin 140-159 | YES @ 0.037 | EV=+6.496
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19]   bin 160-179 | YES @ 0.170 | EV=+2.213
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19]   bin 140-159 | YES @ 0.086 | EV=+2.269
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19]   bin 160-179 | YES @ 0.155 | EV=+2.523
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19]
+Sep 18 19:44:19 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19]    bin 140-159 YES EV=+6.496
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 47 → no llega al mínimo (47<140)
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19] ════════════════════════════════════════════
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19] Pasada completada
+Sep 18 19:44:19 bot-poly python3[60471]: [2026-09-18 19:44:19] Próxima pasada en 15 min
+Sep 18 19:59:19 bot-poly python3[60471]: [2026-09-18 19:59:19] ════════════════════════════════════════════
+Sep 18 19:59:19 bot-poly python3[60471]: [2026-09-18 19:59:19] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 18 19:59:19 bot-poly python3[60471]: [2026-09-18 19:59:19] ════════════════════════════════════════════
+Sep 18 19:59:19 bot-poly python3[60471]: [2026-09-18 19:59:19] AVG7=24.86  AVG30=27.87  R=0.892  ajuste=0.957
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41] 2 mercados semanales abiertos
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41] saldo=$227.98  paso=1  activa=no
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41]   bin 140-159 | YES @ 0.037 | EV=+6.496
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41]   bin 160-179 | YES @ 0.175 | EV=+2.121
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41]   bin 140-159 | YES @ 0.087 | EV=+2.213
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41]   bin 160-179 | YES @ 0.155 | EV=+2.523
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41]
+Sep 18 19:59:41 bot-poly python3[60471]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41]    bin 140-159 YES EV=+6.496
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41]    🚫 PUERTA DEL GESTOR: no compro 140-159 YES →    bin [140-159] · proyección 47 → no llega al mínimo (47<140)
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41] ════════════════════════════════════════════
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41] Pasada completada
+Sep 18 19:59:41 bot-poly python3[60471]: [2026-09-18 19:59:41] Próxima pasada en 15 min
