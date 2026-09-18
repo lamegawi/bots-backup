@@ -1,0 +1,149 @@
+=== VER BACKUP-GITHUB — 2026-09-18 17:07:10 UTC — bot-poly ===
+### timers de backup activos:
+NEXT                             LEFT LAST                              PASSED UNIT                           ACTIVATES
+Fri 2026-09-18 18:00:00 UTC     52min Fri 2026-09-18 16:00:01 UTC  1h 7min ago poly-backup-2h.timer           poly-backup-github.service
+Sat 2026-09-19 00:00:00 UTC        6h Fri 2026-09-18 00:00:00 UTC      17h ago dpkg-db-backup.timer           dpkg-db-backup.service
+Sat 2026-09-19 02:15:00 UTC        9h Fri 2026-09-18 02:15:01 UTC      14h ago poly-backup.timer              poly-backup.service
+Sat 2026-09-19 02:30:00 UTC        9h Fri 2026-09-18 02:30:01 UTC      14h ago poly-backup-github.timer       poly-backup-github.service
+Sat 2026-09-19 03:15:00 UTC       10h Fri 2026-09-18 03:15:01 UTC      13h ago poly-backup-cruzado.timer      poly-backup-cruzado.service
+
+### /root/backup_github.sh (enmascarado, primeras 100 líneas):
+#!/bin/bash
+# Backup SEMANAL del CÓDIGO de los bots (bot-poly) a GitHub (repo privado).
+# bases de datos, Excel ni estado de trading.
+set -e
+TOKEN_FILE=/root/.gh_backup_token
+REPO_USER=lamegawi
+REPO_NAME=bot-trading-bitget-demo
+BRANCH=main
+WORK=/root/gh_backup
+STAMP=$(date +%Y%m%d_%H%M)
+
+[ -f "$TOKEN_FILE" ] || { echo "falta $TOKEN_FILE"; exit 1; }
+TOKEN=$(cat "$TOKEN_FILE")
+URL="https://x-access-token:${TOKEN}@github.com/${REPO_USER}/${REPO_NAME}.git"
+
+mkdir -p "$WORK"; cd "$WORK"
+if [ -d .git ]; then
+    git remote set-url origin "$URL"
+    git fetch --quiet origin "$BRANCH"
+    git reset --quiet --hard "origin/$BRANCH" 2>/dev/null || true
+else
+    git clone --quiet "$URL" .
+fi
+
+# ---- snapshot bot-poly ----
+SNAP="$WORK/backup-bots/bot-poly"
+rm -rf "$SNAP"; mkdir -p "$SNAP"
+
+# scripts principales de /opt/polymarket
+mkdir -p "$SNAP/polymarket"
+tar -C /opt/polymarket \
+    --exclude='__pycache__' --exclude='*.pyc' \
+    --exclude='bot-polymarket-*' --exclude='*.json' --exclude='*.log' \
+    --exclude='*.db' --exclude='*.xlsx' --exclude='*.csv' \
+    -cf - . | tar -C "$SNAP/polymarket" -xf -
+# motores.json (documentación de versiones) sí interesa
+[ -f /opt/polymarket/motores/motores.json ] && mkdir -p "$SNAP/motores" && cp /opt/polymarket/motores/motores.json "$SNAP/motores/"
+
+mkdir -p "$SNAP/bots"
+for b in bot-polymarket-elon bot-polymarket-elon-semanal bot-polymarket-elon-mensual bot-polymarket-zelenskyy; do
+    mkdir -p "$SNAP/bots/$b"
+    tar -C "/opt/polymarket/$b" \
+        --exclude='__pycache__' --exclude='*.pyc' --exclude='.git' \
+        --exclude='config.json' --exclude='config_real.json' \
+        --exclude='*.db' --exclude='*.csv' --exclude='*.xlsx' --exclude='*.zip' \
+        --exclude='real*.json' --exclude='estado_tweets*.json' --exclude='estado_bot*.json' \
+        --exclude='mercado_activo.json' --exclude='ventanas_vistas.json' \
+        --exclude='apuestas_compartidas.json' --exclude='avisos_cooldown.json' \
+        --exclude='datos_raw' --exclude='debug_ocr' --exclude='*.log' \
+        -cf - . | tar -C "$SNAP/bots/$b" -xf -
+done
+
+# unidades systemd
+mkdir -p "$SNAP/systemd"
+for u in /etc/systemd/system/poly-*.{service,timer}; do
+    [ -f "$u" ] && cp "$u" "$SNAP/systemd/"
+done
+
+# resumen de tareas y horarios
+systemctl list-timers --all --no-pager > "$SNAP/tareas_horarios.txt" 2>/dev/null
+
+# ---- commit y push ----
+cd "$WORK"
+git add -A backup-bots/bot-poly
+if git diff --cached --quiet; then
+    echo "bot-poly: sin cambios"
+else
+    git -c user.name="backup-bot" -c user.email="backup@local" commit --quiet -m "backup bot-poly $STAMP"
+    git push --quiet "$URL" "HEAD:$BRANCH"
+    echo "bot-poly: push OK ($STAMP)"
+fi
+
+### nº de tokens incrustados en el script (cantidad, nunca el valor):
+0
+0
+
+### /var/log/backup-github.log (últimas 40 líneas, enmascarado):
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+To https://github.com/lamegawi/bot-trading-bitget-demo.git
+ ! [rejected]        HEAD -> main (fetch first)
+error: failed to push some refs to 'https://github.com/lamegawi/bot-trading-bitget-demo.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+To https://github.com/lamegawi/bot-trading-bitget-demo.git
+ ! [rejected]        HEAD -> main (fetch first)
+error: failed to push some refs to 'https://github.com/lamegawi/bot-trading-bitget-demo.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+bot-poly: push OK (20260916_2000)
+bot-poly: push OK (20260916_2200)
+bot-poly: push OK (20260917_0230)
+bot-poly: push OK (20260917_0600)
+bot-poly: push OK (20260917_0800)
+bot-poly: push OK (20260917_1000)
+bot-poly: push OK (20260917_1200)
+bot-poly: push OK (20260917_1400)
+bot-poly: push OK (20260917_1600)
+tar: .: file changed as we read it
+bot-poly: push OK (20260917_1800)
+bot-poly: push OK (20260917_2000)
+bot-poly: push OK (20260917_2200)
+bot-poly: push OK (20260918_0230)
+bot-poly: push OK (20260918_0600)
+bot-poly: push OK (20260918_0800)
+bot-poly: push OK (20260918_1000)
+bot-poly: push OK (20260918_1200)
+bot-poly: push OK (20260918_1400)
+bot-poly: push OK (20260918_1600)
+
+### clones/repos de backup en disco:
+/root/backup_completo.py
+/root/backup_cruzado.sh
+/root/backup_github.sh
+/root/backup_poly.log
+/root/backup_poly.sh
+/root/backups
+/root/backups_combos
+/root/backups-remoto
+/root/gh_backup
+/root/verif_backup2.txt
+/root/verif_backup.txt
+
+### últimas 6 líneas del journal de la unidad:
+Sep 18 14:00:38 bot-poly systemd[1]: Finished poly-backup-github.service - Backup semanal del código a GitHub.
+Sep 18 14:00:38 bot-poly systemd[1]: poly-backup-github.service: Consumed 25.484s CPU time.
+Sep 18 16:00:01 bot-poly systemd[1]: Starting poly-backup-github.service - Backup semanal del código a GitHub...
+Sep 18 16:00:39 bot-poly systemd[1]: poly-backup-github.service: Deactivated successfully.
+Sep 18 16:00:39 bot-poly systemd[1]: Finished poly-backup-github.service - Backup semanal del código a GitHub.
+Sep 18 16:00:39 bot-poly systemd[1]: poly-backup-github.service: Consumed 26.208s CPU time.
+=== FIN ver_backup_github_20260918_170710.log ===
