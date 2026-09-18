@@ -1,0 +1,36 @@
+=== ENCONTRAR WALLET REAL DE POLYMARKET · 20260918_191501 UTC ===
+
+== 1. Wallets en /etc/polymarket.env ==
+  POLY_WALLET_ADDRESS: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+  POLY_PRIVATE_KEY: 0x5a140fd5482dd565f6abe8ddd100b63fe451bff399be5609e56a0cfafc888af3
+    → address: 0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6
+  POLY_RELAYER_API_KEY: 019fe5ab-ea44-7450-8e9c-103a516cd37e
+  POLY_RELAYER_API_KEY_ADDRESS: 0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6
+
+== 2. Buscar en JSONs de bots qué wallet usan ==
+--- /opt/polymarket/bot-polymarket-elon/real.json ---
+
+--- /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json ---
+
+--- /opt/polymarket/bot-polymarket-elon-mensual/real_mensual.json ---
+
+
+== 3. Verificar proxy_wallet encontrada antes ==
+Proxy wallet descubierta: 0xd56ff23b049331cc25e9857ce053d95d5ecf1fab
+EOA que usamos en data-api: 0xb0E1197098E6d427c01720F1631cAD24CE740FA0
+EOA de la private key:      0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6
+
+== 4. ¿Cuál tiene las posiciones? ==
+  0xb0E1197098E6d427c01720F1631cAD24CE740FA0: $18.5747
+  0xd56ff23b049331cc25e9857ce053d95d5ecf1fab: $0.0000
+  0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6: $0.0000
+
+== 5. Buscar la magic_link key en otros lugares ==
+/usr/include/linux/magic.h
+/usr/lib/file/magic.mgc
+/usr/share/man/man5/magic.5.gz
+/usr/share/mime/magic
+/etc/magic
+/etc/magic.mime
+/sys/module/kgdb_nmi/parameters/magic
+
