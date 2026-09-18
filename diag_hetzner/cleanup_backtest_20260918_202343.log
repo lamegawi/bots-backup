@@ -1,0 +1,105 @@
+=== LIMPIEZA + BACKTEST 3 BOTS · 20260918_202343 UTC ===
+
+== ANTES ==
+        )
+        if precio < 0.001 or precio > 0.999:
+            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+            return
+
+        if precio < 0.001 or precio > 0.999:
+            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+            return
+
+        log(f"   enviando orden BUY {stake/precio:.2f} shares @ ${precio}")
+
+== DESPUÉS ==
+        )
+        if precio < 0.001 or precio > 0.999:
+            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+            return
+
+        if precio < 0.001 or precio > 0.999:
+
+        resp = client.create_and_post_order(order)
+
+Sorry: IndentationError: expected an indented block after 'if' statement on line 238 (bot_semanal.py, line 240)Servicio reiniciado:
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: activating (auto-restart) (Result: exit-code) since Fri 2026-09-18 20:23:43 UTC; 2s ago
+    Process: 602152 ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real (code=exited, status=1/FAILURE)
+   Main PID: 602152 (code=exited, status=1/FAILURE)
+
+============================================
+== BACKTEST BOT 48H ==
+============================================
+Comando: python3 senal.py --backtest --dias 30
+usage: senal.py [-h] --csv CSV [--bin A B] [--precio PRECIO]
+                [--ya-publicados YA_PUBLICADOS] [--horas HORAS] [--paso PASO]
+                [--backtest]
+senal.py: error: the following arguments are required: --csv
+
+============================================
+== BACKTEST BOT SEMANAL ==
+============================================
+Comando: python3 senal.py --backtest --dias 30
+AVG7=24.86  AVG30=27.87  R=0.892  ajuste=0.957
+días en CSV: 51
+Stakes: [3.3, 4.62, 6.47, 9.06, 12.68, 17.75]
+
+============================================
+== BACKTEST BOT MENSUAL ==
+============================================
+Comando: python3 senal.py --backtest --dias 30
+usage: senal.py [-h] --csv CSV [--bin A B] [--precio PRECIO]
+                [--ya-publicados YA_PUBLICADOS] [--horas HORAS] [--paso PASO]
+                [--backtest]
+senal.py: error: the following arguments are required: --csv
+
+============================================
+== ESTADO ACTUAL DE OPERACIONES ==
+============================================
+
+Bot 48h:
+  líneas: 8
+  última: 7fabd7fc2966,2026-09-02,elon-musk-of-tweets-august-31-september-2-2026
+
+Bot Semanal:
+  líneas: 25
+  última: 21ec487f1602,2026-09-04,elon-musk-of-tweets-august-28-september-4-2026
+
+Bot Mensual:
+
+============================================
+== ¿CUÁNTOS MERCADOS SIGUE CADA BOT? ==
+============================================
+
+elon:
+  Total: 6, abiertos: 4
+    · Elon Musk # tweets September 17 - September 19, 2026? (48h)
+    · Elon Musk # tweets September 15 - September 22, 2026? (semanal)
+    · Elon Musk # tweets September 18 - September 25, 2026? (semanal)
+    · Elon Musk # tweets in October 2026? (mensual)
+
+elon-semanal:
+  Total: 6, abiertos: 4
+    · Elon Musk # tweets September 10 - September 12, 2026? (48h)
+    · Elon Musk # tweets September 8 - September 15, 2026? (semanal)
+    · Elon Musk # tweets September 11 - September 18, 2026? (semanal)
+    · Elon Musk # tweets in October 2026? (mensual)
+
+elon-mensual:
+  Total: 6, abiertos: 4
+    · Elon Musk # tweets September 17 - September 19, 2026? (48h)
+    · Elon Musk # tweets September 15 - September 22, 2026? (semanal)
+    · Elon Musk # tweets September 18 - September 25, 2026? (semanal)
+    · Elon Musk # tweets in October 2026? (mensual)
+
+============================================
+== ¿QUÉ MODO TIENE CADA BOT? ==
+============================================
+poly-elon:
+ExecStart=/usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+poly-elon-semanal:
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+poly-mensual:
+ExecStart=/usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
