@@ -1,0 +1,118 @@
+=== ESTADISTICAS BOT ELON · 20260918_194513 UTC ===
+
+== 1. Procesos ==
+root      599122     782 17 19:45 ?        00:00:00 curl -s --max-time 40 https://gamma-api.polymarket.com/events?slug=elon-musk-of-tweets-october-3-october-5
+root      599123   56815 21 19:45 ?        00:00:00 curl -s --max-time 40 https://gamma-api.polymarket.com/events?slug=elon-musk-of-tweets-october-2026
+
+== 2. Servicio ==
+active
+
+== 3. Ultimas 30 lineas log ==
+Sep 13 07:08:53 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 13 19:54:24 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+Sep 13 19:54:24 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Consumed 9min 1.812s CPU time, 55.8M memory peak, 0B memory swap peak.
+Sep 13 19:54:24 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+
+== 4. Mercado activo ==
+{
+ "actualizado": "2026-09-18T19:39:27.887230+00:00",
+ "mercados": [
+  {
+   "id": "1023487",
+   "titulo": "Elon Musk # tweets September 17 - September 19, 2026?",
+   "slug": "elon-musk-of-tweets-september-17-september-19-2026",
+   "cerrado": false,
+   "volumen": 216011.89309800003,
+   "endDate": "2026-09-19T16:00:00Z",
+   "inicio_iso": "2026-09-17T12:00:00-04:00",
+   "fin_iso": "2026-09-19T12:00:00-04:00",
+   "duracion_h": 48.0,
+   "tipo": "48h",
+   "bins": [
+    {
+     "titulo": "<40",
+     "lo": 0,
+     "hi": 39,
+     "precio_yes": 0.0175,
+     "precio_no": 0.9825,
+     "cuota_yes": 57.14285714285714,
+     "cuota_no": 1.0178117048346056,
+     "volumen": 85888.27715499999
+    },
+    {
+     "titulo": "40-64",
+     "lo": 40,
+     "hi": 64,
+     "precio_yes": 0.745,
+     "precio_no": 0.255,
+     "cuota_yes": 1.342281879194631,
+     "cuota_no": 3.9215686274509802,
+     "volumen": 18566.834832999997
+    },
+    {
+     "titulo": "65-89",
+     "lo": 65,
+     "hi": 89,
+     "precio_yes": 0.245,
+     "precio_no": 0.755,
+     "cuota_yes": 4.081632653061225,
+     "cuota_no": 1.3245033112582782,
+     "volumen": 36786.33065100001
+    },
+    {
+     "titulo": "90-114",
+     "lo": 90,
+     "hi": 114,
+     "precio_yes": 0.0135,
+     "precio_no": 0.9865,
+     "cuota_yes": 74.07407407407408,
+     "cuota_no": 1.0136847440446022,
+     "volumen": 32781.116572
+    },
+    {
+     "titulo": "115-139",
+     "lo": 115,
+     "hi": 139,
+     "precio_yes": 0.0015,
+     "precio_no": 0.9985,
+     "cuota_yes": 666.6666666666666,
+     "cuota_no": 1.0015022533800702,
+     "volumen": 19539.832025
+    },
+    {
+     "titulo": "140-164",
+     "lo": 140,
+     "hi": 164,
+     "precio_yes": 0.0005,
+     "precio_no": 0.9995,
+     "cuota_yes": 2000.0,
+     "cuota_no": 1.0005002501250624,
+     "volumen": 9187.237000000001
+    },
+    {
+     "titulo": "165-189",
+     "lo": 165,
+     "hi": 189,
+     "precio_yes": 0.0005,
+     "precio_no": 0.9995,
+     "cuota_yes": 2000.0,
+     "cuota_no": 1.0005002501250624,
+     "volumen": 8479.016112
+    },
+    {
+     "titulo": "190-214",
+     "lo": 190,
+     "hi": 214,
+     "precio_yes": 0.0005,
+     "precio_no": 0.9995,
+     "cuota_yes": 2000.0,
+     "cuota_no": 1.0005002501250624,
+     "volumen": 2319.9929999999995
+    },
+    {
+     "titulo": "215-239",
+     "lo": 215,
+     "hi": 239,
+     "precio_yes": 0.0005,
