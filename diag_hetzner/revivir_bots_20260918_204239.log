@@ -1,0 +1,66 @@
+=== REVIVIR BOTS ZOMBIES · 20260918_204239 UTC ===
+
+== 1. ¿Por qué hay 3 PIDs del semanal? ==
+root         788       1  0 Sep13 ?        00:03:12 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+root         790       1  0 Sep13 ?        00:06:39 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root      602900       1  0 20:29 ?        00:00:00 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+Los zombies:
+root         782       1  0 Sep13 ?        00:04:14 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+root       56815       1  0 Sep13 ?        00:07:00 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+root       59766       1  0 Sep13 ?        00:01:24 /usr/bin/python3 /opt/polymarket/poly_telegram_bot.py
+root      589870       1  0 17:35 ?        00:00:07 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+
+
+== 2. ¿Qué hacen los zombies AHORA? ==
+PID 56815 (48h):
+lrwxrwxrwx 1 root root 0 Sep 17 06:46 /proc/56815/cwd -> /opt/polymarket/bot-polymarket-elon
+Estado de tareas:
+State:	S (sleeping)
+VmRSS:	   53500 kB
+Threads:	2
+
+PID 782 (mensual):
+lrwxrwxrwx 1 root root 0 Sep 17 06:46 /proc/782/cwd -> /opt/polymarket/bot-polymarket-elon-mensual
+State:	S (sleeping)
+VmRSS:	   75024 kB
+Threads:	2
+
+== 3. ¿Qué llamadas al sistema están haciendo? ==
+48h:
+230 0x1 0x1 0x7fff0d5098a0 0x0 0x0 0x0 0x7fff0d509810 0x7cde016ecbdf
+
+Mensual:
+230 0x1 0x1 0x7ffd5906fd20 0x0 0x0 0x0 0x7ffd5906fc90 0x7c40494ecbdf
+
+== 4. REINICIARLOS ==
+
+== 5. Verificar que están corriendo ==
+● poly-elon.service - Bot Polymarket Elon 48h (v1)
+     Loaded: loaded (/etc/systemd/system/poly-elon.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-18 20:42:39 UTC; 7s ago
+   Main PID: 603966 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 15.1M (peak: 18.2M)
+        CPU: 406ms
+     CGroup: /system.slice/poly-elon.service
+
+● poly-mensual.service - Bot Polymarket Elon MENSUAL (v1)
+     Loaded: loaded (/etc/systemd/system/poly-mensual.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-18 20:42:41 UTC; 5s ago
+   Main PID: 603971 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 9.9M (peak: 13.1M)
+        CPU: 230ms
+     CGroup: /system.slice/poly-mensual.service
+
+== 6. Esperar 30s y ver si generan pasadas ==
+Pasadas del 48h en últimos 60s:
+0
+Pasadas del mensual en últimos 60s:
+0
+
+== 7. CPU después de reiniciar ==
+    PID %CPU %MEM     ELAPSED CMD
+ 603966  0.7  0.7       00:37 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+ 603971  0.2  0.4       00:35 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
