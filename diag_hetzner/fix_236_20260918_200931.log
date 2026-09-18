@@ -1,0 +1,51 @@
+=== FIX ERROR LÍNEA 236 · 20260918_200931 UTC ===
+== ANTES (líneas 230-240) ==
+            log(f"   [aviso] no se pudieron derivar API creds: {e}")
+
+        # crear orden
+        order = OrderArgs(
+            token_id=str(token_id),
+            price=float(precio),
+            side="BUY",
+            size=float(stake / precio),
+        )
+        log(f"   enviando orden BUY {stake/precio:.2f} shares @ ${precio}")
+
+        resp = client.create_and_post_order(order)
+        order_id = resp.get("orderID") or resp.get("order_id") or "?"
+        log(f"   ✅ ORDEN ENVIADA: {order_id}")
+
+        estado['activa'] = {
+
+== DESPUÉS ==
+            log(f"   [aviso] no se pudieron derivar API creds: {e}")
+
+        # crear orden
+        order = OrderArgs(
+            token_id=str(token_id),
+            price=float(precio),
+            side="BUY",
+            size=float(stake / precio),
+        )
+        if precio < 0.001 or precio > 0.999:
+            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+            return
+
+        log(f"   enviando orden BUY {stake/precio:.2f} shares @ ${precio}")
+
+        resp = client.create_and_post_order(order)
+        order_id = resp.get("orderID") or resp.get("order_id") or "?"
+        log(f"   ✅ ORDEN ENVIADA: {order_id}")
+
+        estado['activa'] = {
+            'slug': slug,
+
+== Verificar sintaxis ==
+  ✅ compila
+
+== Reiniciar servicio ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-18 20:09:31 UTC; 3s ago
+   Main PID: 601061 (python3)
+      Tasks: 2 (limit: 4538)
