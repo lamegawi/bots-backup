@@ -1,0 +1,36 @@
+======================================================================
+BACKUP COMPLETO · 2026-09-18 20:11:22
+======================================================================
+
+Fecha: 2026-09-18
+Tag ts: 20260918_201113
+Ruta: backups_completos/2026-09-18_20260918_201113/
+
+ARCHIVOS RESPALDADOS:
+  - jsons subidos: 3 de 3
+    - Elon 48h (elon)
+    - Zelenskyy sem (zelenskyy)
+    - Trump mens (trump)
+
+INSTRUCCIONES PARA RESTAURAR:
+  1) Ir a https://github.com/lamegawi/bots-backup
+  2) Carpeta: backups_completos/2026-09-18_20260918_201113/
+  3) Bajar el JSON deseado
+  4) En Hetzner: cp backup.json /opt/polymarket/bot-X/real.json
+  5) Reiniciar el servicio: systemctl restart poly-X
+
+--- LOG COMPLETO ---
+======================================================================
+BACKUP COMPLETO · 2026-09-18T20:11:13.466876
+======================================================================
+
+[1/3] Copiando JSONs de los bots...
+  ✓ Elon 48h: 3749 bytes → backups_completos/2026-09-18_20260918_201113/json_elon_20260918_201113.json
+  ✓ Zelenskyy sem: 5876 bytes → backups_completos/2026-09-18_20260918_201113/json_zelenskyy_20260918_201113.json
+  ✓ Trump mens: 242 bytes → backups_completos/2026-09-18_20260918_201113/json_trump_20260918_201113.json
+
+[2/3] Snapshot de codigo...
+  ✓ git HEAD: 04652fc7
+
+[3/3] Generando informe...
+======================================================================
