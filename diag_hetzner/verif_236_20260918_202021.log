@@ -1,0 +1,46 @@
+=== VERIFICAR FIX ERROR 236 · 20260918_202021 UTC ===
+
+== 1. ¿Se aplicó el fix? ==
+Líneas 230-245:
+            price=float(precio),
+            side="BUY",
+            size=float(stake / precio),
+        )
+        if precio < 0.001 or precio > 0.999:
+            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+            return
+
+        if precio < 0.001 or precio > 0.999:
+            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+            return
+
+        log(f"   enviando orden BUY {stake/precio:.2f} shares @ ${precio}")
+
+        resp = client.create_and_post_order(order)
+        order_id = resp.get("orderID") or resp.get("order_id") or "?"
+
+Buscar 'precio fuera de rango':
+154:        log(f"   sin token_id para {lado}, saltamos")
+235:            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+239:            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+
+== 2. ¿El servicio está corriendo? ==
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-18 20:11:10 UTC; 9min ago
+   Main PID: 601314 (python3)
+      Tasks: 1 (limit: 4538)
+     Memory: 11.7M (peak: 12.2M)
+        CPU: 3.805s
+     CGroup: /system.slice/poly-elon-semanal.service
+             └─601314 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+
+== 3. ¿Ha habido errores desde el fix? ==
+-- No entries --
+
+== 4. ¿Hay nuevas señales generadas? ==
+Sep 18 20:09:53 bot-poly python3[601061]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+Sep 18 20:11:32 bot-poly python3[601314]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+
+== 5. ¿Alguna vez se ha llamado 'saltamos' o 'precio fuera de rango'? ==
