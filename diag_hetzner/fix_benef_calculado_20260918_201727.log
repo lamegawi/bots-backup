@@ -1,0 +1,42 @@
+=== FIX BENEFICIO CALCULADO · 20260918_201727 UTC ===
+  ✅ backup real.json
+  ✅ backup real_semanal.json
+  ✅ backup real_mensual.json
+<stdin>:71: SyntaxWarning: invalid escape sequence '\$'
+<stdin>:72: SyntaxWarning: invalid escape sequence '\$'
+<stdin>:73: SyntaxWarning: invalid escape sequence '\$'
+  ✅ real.json:
+     recalculados: 1/7
+     benef REAL total:   \$2.70
+     benef REPORTADO:    \$-22.16
+     DIFERENCIA:         \$+24.86
+  ✅ real_semanal.json:
+     recalculados: 28/29
+     benef REAL total:   \$101.36
+     benef REPORTADO:    \$11106.66
+     DIFERENCIA:         \$-11005.30
+  ✅ real_mensual.json:
+     recalculados: 0/2
+     benef REAL total:   \$0.00
+     benef REPORTADO:    \$-4.70
+     DIFERENCIA:         \$+4.70
+
+== Verificación ==
+<stdin>:10: SyntaxWarning: invalid escape sequence '\$'
+<stdin>:11: SyntaxWarning: invalid escape sequence '\$'
+<stdin>:17: SyntaxWarning: invalid escape sequence '\$'
+<stdin>:17: SyntaxWarning: invalid escape sequence '\$'
+<stdin>:17: SyntaxWarning: invalid escape sequence '\$'
+
+--- real.json ---
+benef_real_total_calculado: \$2.70
+benef_reportado_total:      \$-22.16
+Ejemplos:
+  • fecha=2026-08-20 stake=\$7.43 benef_reportado=\$27.64 benef_REAL=\$2.70
+
+--- real_semanal.json ---
+benef_real_total_calculado: \$101.36
+benef_reportado_total:      \$11106.66
+Ejemplos:
+  • fecha=2026-09-13T18:29:23 stake=\$3.30 benef_reportado=\$63.37 benef_REAL=\$3.62
+  • fecha=2026-09-13T19:00:30 stake=\$3.30 benef_reportado=\$50.36 benef_REAL=\$3.62
