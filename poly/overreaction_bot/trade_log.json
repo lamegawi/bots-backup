@@ -27,9 +27,12 @@
       "edge": 0.0833,
       "spike_change": 0.1538,
       "end_date": "2026-09-17T19:00:00Z",
-      "status": "open",
+      "status": "won",
       "timestamp": "2026-09-12 00:36:27 UTC",
-      "dry_run": true
+      "dry_run": true,
+      "pnl": 1.74,
+      "payout": 26.74,
+      "resolved_at": "2026-09-17 23:02:43 UTC"
     },
     {
       "trade_id": "or_1789175232",
@@ -165,9 +168,12 @@
       "edge": 0.3636,
       "spike_change": -0.5274,
       "end_date": "2026-09-16T12:00:00Z",
-      "status": "open",
+      "status": "lost",
       "timestamp": "2026-09-16 22:49:52 UTC",
-      "dry_run": true
+      "dry_run": true,
+      "pnl": -25.0,
+      "payout": 0,
+      "resolved_at": "2026-09-17 08:30:26 UTC"
     },
     {
       "trade_id": "or_1789601822",
@@ -182,15 +188,29 @@
       "status": "open",
       "timestamp": "2026-09-16 23:37:02 UTC",
       "dry_run": true
+    },
+    {
+      "trade_id": "or_1789643821",
+      "market_id": "0xd962ca2dbbbe9b13cc14b1fe2ad86f8e48429f22ea01605706d7d51dea3da290",
+      "question": "Eintracht Frankfurt vs. SC Freiburg: O/U 11.5 Total Corners",
+      "side": "NO",
+      "entry_price": 0.74,
+      "size": 25.0,
+      "edge": 0.2464,
+      "spike_change": 0.349,
+      "end_date": "2026-09-19T13:30:00Z",
+      "status": "open",
+      "timestamp": "2026-09-17 11:17:01 UTC",
+      "dry_run": true
     }
   ],
   "summary": {
-    "total": 12,
-    "open": 5,
-    "wins": 2,
-    "losses": 3,
-    "win_rate": 0.4,
-    "total_pnl": -358.52,
-    "total_invested": 656.58
+    "total": 13,
+    "open": 4,
+    "wins": 3,
+    "losses": 4,
+    "win_rate": 0.42857142857142855,
+    "total_pnl": -381.78,
+    "total_invested": 681.58
   }
 }
