@@ -1,0 +1,53 @@
+=== VERIFICAR CRON · 20260918_203412 UTC ===
+
+== 1. Cron actual ==
+0 */2 * * * cd /opt/polymarket/bot-polymarket-elon && /usr/bin/python3 recoger_tweets.py --dias 30 >> /var/log/poly/recoger_tweets_$(date +\%Y\%m\%d).log 2>&1
+# twitterapi.io: tweets para Elon + Trump + Zelenskyy cada 2h
+5 */2 * * * cd /opt/polymarket && sleep 6 && /usr/bin/python3 recoger_tweets_rapidapi.py --bot elon >> /var/log/poly/twitterapi_elon_$(date +\%Y\%m\%d).log 2>&1
+15 */2 * * * cd /opt/polymarket && sleep 12 && /usr/bin/python3 recoger_tweets_rapidapi.py --bot trump >> /var/log/poly/twitterapi_trump_$(date +\%Y\%m\%d).log 2>&1
+25 */2 * * * cd /opt/polymarket && sleep 18 && /usr/bin/python3 recoger_tweets_rapidapi.py --bot zelenskyy >> /var/log/poly/twitterapi_zelen_$(date +\%Y\%m\%d).log 2>&1
+
+== 2. Logs del cron ==
+-rw-r--r-- 1 root root 704 Sep 18 20:05 /var/log/poly/twitterapi_elon_20260918.log
+-rw-r--r-- 1 root root 192 Sep 17 22:15 /var/log/poly/twitterapi_trump_20260917.log
+-rw-r--r-- 1 root root 704 Sep 18 20:15 /var/log/poly/twitterapi_trump_20260918.log
+-rw-r--r-- 1 root root 192 Sep 17 22:25 /var/log/poly/twitterapi_zelen_20260917.log
+-rw-r--r-- 1 root root 704 Sep 18 20:25 /var/log/poly/twitterapi_zelen_20260918.log
+
+== 3. Última ejecución por bot ==
+Elon (esperado 17-sept, ya está):
+-rw-r--r-- 1 root root 771 Sep 17 17:37 /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+
+Semanal (esperado 17-sept, está en 13-sept):
+-rw-r--r-- 1 root root 756 Sep 17 15:38 /opt/polymarket/bot-polymarket-elon-semanal/datos_elon.csv
+
+Mensual (esperado 17-sept, está en 13-sept):
+-rw-r--r-- 1 root root 756 Sep 17 15:38 /opt/polymarket/bot-polymarket-elon-mensual/datos_elon.csv
+
+== 4. Forzar actualización de los 3 AHORA ==
+--- ELON ---
+📡 @elonmusk → /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+  recibidos: 20 tweets
+  ✅ 1 días actualizados
+  📊 últimos 7 días: {'2026-09-18': 20}
+  💬 último: [Fri Sep 18 20:27:33 +0000 2026] 🧐
+--- TRUMP ---
+📡 @realDonaldTrump → /opt/polymarket/bot-polymarket-trump/datos_trump.csv
+  recibidos: 20 tweets
+  ✅ 3 días actualizados
+  📊 últimos 7 días: {'2026-09-11': 1, '2026-09-12': 3, '2026-09-18': 16}
+  💬 último: [Fri Sep 18 20:10:17 +0000 2026] Ken Paxton has my Complete and Total Endorsement to be the next U.S. Senator fro
+--- ZELENSKYY ---
+📡 @ZelenskyyUa → /opt/polymarket/bot-polymarket-zelenskyy/datos_zelen.csv
+  recibidos: 20 tweets
+  ✅ 2 días actualizados
+  📊 últimos 7 días: {'2026-09-17': 4, '2026-09-18': 16}
+  💬 último: [Fri Sep 18 20:33:02 +0000 2026] President of Romania @NicusorDanRO and I took part in the first Carpathian Econo
+
+== 5. Sincronizar CSVs entre bots ==
+✅ CSVs sincronizados
+
+Última fecha en los 3:
+  /opt/polymarket/bot-polymarket-elon/datos_elon.csv: 2026-09-18,20
+  /opt/polymarket/bot-polymarket-elon-semanal/datos_elon.csv: 2026-09-18,20
+  /opt/polymarket/bot-polymarket-elon-mensual/datos_elon.csv: 2026-09-18,20
