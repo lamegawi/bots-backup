@@ -1,0 +1,80 @@
+=== INSPECCIÓN ZOMBIES · 20260918_205139 UTC ===
+
+== 1. ¿Qué escriben los procesos? ==
+--- 48h (PID 603966) ---
+lr-x------ 1 root root 64 Sep 18 20:42 /proc/603966/fd/0 -> /dev/null
+l-wx------ 1 root root 64 Sep 18 20:42 /proc/603966/fd/1 -> /var/log/poly-elon.log
+l-wx------ 1 root root 64 Sep 18 20:42 /proc/603966/fd/2 -> /var/log/poly-elon.log
+
+--- Mensual (PID 603971) ---
+lr-x------ 1 root root 64 Sep 18 20:42 /proc/603971/fd/0 -> /dev/null
+l-wx------ 1 root root 64 Sep 18 20:42 /proc/603971/fd/1 -> /var/log/poly-mensual.log
+l-wx------ 1 root root 64 Sep 18 20:42 /proc/603971/fd/2 -> /var/log/poly-mensual.log
+
+== 2. ¿Hay algo en /proc/*/wchan? (esperando qué) ==
+48h wchan:
+hrtimer_nanosleep
+Mensual wchan:
+hrtimer_nanosleep
+
+== 3. Estado actual ==
+    PID STAT %CPU %MEM     ELAPSED CMD
+ 603966 Ssl   0.2  1.2       09:00 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+ 603971 Ssl   0.1  1.1       08:58 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+
+== 4. ¿Logs en stdout/stderr? ==
+48h últimos 30 chars de stdout:
+)
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-18 16:49:40 EDT] Pasada completada en 59.1 s
+[2026-09-18 16:49:40 EDT] Próxima pasada en 5 min…
+
+Mensual últimos 30 chars:
+)
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-18 16:49:40 EDT] Pasada completada en 58.9 s
+[2026-09-18 16:49:40 EDT] Próxima pasada en 5 min…
+
+== 5. ¿Está colgado en jina/curl/scraper? ==
+48h:
+Mensual:
+
+== 6. Ver el código del loop principal ==
+48h (bot.py):
+24:  python3 bot.py --loop                # modo continuo (RECOMENDADO)
+25:  python3 bot.py --loop --intervalo 15 # cada 15 minutos
+26:  python3 bot.py --loop --excel        # + Excel en cada cambio
+93:    Solo se ejecuta si el bot está en modo loop (cron) — en una pasada
+177:    dias = rt.conteo_diario(vistos, sin_reposts=opts.sin_reposts, modo_loop=opts.loop)
+
+Mensual (bot_mensual.py):
+24:  python3 bot.py --loop                # modo continuo (RECOMENDADO)
+25:  python3 bot.py --loop --intervalo 15 # cada 15 minutos
+26:  python3 bot.py --loop --excel        # + Excel en cada cambio
+112:    dias = rt.conteo_diario(vistos, sin_reposts=opts.sin_reposts, modo_loop=opts.loop)
+299:    ap.add_argument("--loop", action="store_true", help="modo continuo (recomendado)")
+
+== 7. ¿Hay errores en stderr reciente? ==
+Sep 13 07:08:53 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 13 19:54:24 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+Sep 13 19:54:24 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 13 19:54:24 bot-poly systemd[1]: poly-elon.service: Consumed 9min 1.812s CPU time, 55.8M memory peak, 0B memory swap peak.
+Sep 13 19:54:24 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 18 20:42:39 bot-poly systemd[1]: Stopping poly-elon.service - Bot Polymarket Elon 48h (v1)...
+Sep 18 20:42:39 bot-poly systemd[1]: poly-elon.service: Deactivated successfully.
+Sep 18 20:42:39 bot-poly systemd[1]: Stopped poly-elon.service - Bot Polymarket Elon 48h (v1).
+Sep 18 20:42:39 bot-poly systemd[1]: poly-elon.service: Consumed 1h 18min 27.384s CPU time, 55.2M memory peak, 0B memory swap peak.
+Sep 18 20:42:39 bot-poly systemd[1]: Started poly-elon.service - Bot Polymarket Elon 48h (v1).
+
+Mensual:
+Sep 13 07:08:53 bot-poly systemd[1]: Started poly-mensual.service - Bot Polymarket Elon MENSUAL (v1).
+Sep 18 20:42:41 bot-poly systemd[1]: Stopping poly-mensual.service - Bot Polymarket Elon MENSUAL (v1)...
+Sep 18 20:42:41 bot-poly systemd[1]: poly-mensual.service: Deactivated successfully.
+Sep 18 20:42:41 bot-poly systemd[1]: Stopped poly-mensual.service - Bot Polymarket Elon MENSUAL (v1).
+Sep 18 20:42:41 bot-poly systemd[1]: poly-mensual.service: Consumed 1h 23min 45.786s CPU time, 85.4M memory peak, 0B memory swap peak.
+Sep 18 20:42:41 bot-poly systemd[1]: Started poly-mensual.service - Bot Polymarket Elon MENSUAL (v1).
