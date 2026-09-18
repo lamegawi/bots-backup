@@ -1,0 +1,32 @@
+=== ANÁLISIS CASI SEÑAL · 20260918_210822 UTC ===
+
+== Logs de las últimas 4 min tras espera ==
+-- No entries --
+
+== ¿Pasada completada? ==
+[2026-09-18 16:43:40 EDT] Pasada completada en 61.7 s
+[2026-09-18 16:43:40 EDT] Próxima pasada en 5 min…
+[2026-09-18 16:49:40 EDT] Pasada completada en 59.1 s
+[2026-09-18 16:49:40 EDT] Próxima pasada en 5 min…
+[2026-09-18 16:55:45 EDT] Pasada completada en 65.4 s
+[2026-09-18 16:55:45 EDT] Próxima pasada en 5 min…
+[2026-09-18 17:01:43 EDT] Pasada completada en 58.4 s
+[2026-09-18 17:01:43 EDT] Próxima pasada en 5 min…
+[2026-09-18 17:06:34 EDT] Pasada completada en 126.4 s
+[2026-09-18 17:06:34 EDT] Próxima pasada en 5 min…
+
+== Contenido actual del cooldown (¿se ha reescrito tras pasada?) ==
+{
+ "error_general": 1789765576.4736087
+}
+== ¿El servicio está vivo? ==
+
+== Última actividad de Telegram (¿se mandó mensaje?) ==
+-- No entries --
+
+== ss -tlnp puerto telegram ==
+
+== ¿poly_telegram_bot.py está vivo? ==
+root         786       1  0 Sep13 ?        00:01:34 /usr/bin/python3 /opt/polymarket/poly_telegram_zelen.py
+root         789       1  0 Sep13 ?        00:01:26 /usr/bin/python3 /opt/polymarket/poly_telegram_trump.py
+root       59766       1  0 Sep13 ?        00:01:25 /usr/bin/python3 /opt/polymarket/poly_telegram_bot.py
