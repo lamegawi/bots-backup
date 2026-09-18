@@ -1,0 +1,81 @@
+=== ESTADISTICAS BOT ELON PARTE 2 · 20260918_194807 UTC ===
+
+== 5. Estado (real.json) ==
+{
+    "saldo": 227.98,
+    "paso": 6,
+    "activa": null,
+    "historial": [
+        {
+            "id": "9545c5c1841c",
+            "fecha": "2026-08-18",
+            "mercado": "elon-musk-of-tweets-august-17-august-19",
+            "bin": "<40",
+            "lado": "YES",
+            "precio": 0.23,
+            "cuota": 4.35,
+            "p_modelo": 0.9171,
+            "paso": 1,
+            "stake": 3.3,
+            "real": ">40 (gestor vendi\u00f3 18/08)",
+            "resultado": "P",
+            "beneficio": -3.3,
+            "saldo": 496.7
+        },
+        {
+            "id": "reconc",
+            "fecha": "2026-08-20",
+            "mercado": "elon-musk-of-tweets-august-20-august-22",
+            "bin": "90-114",
+            "lado": "YES",
+            "precio": 0.212,
+            "cuota": 4.72,
+            "p_modelo": 0.6359,
+
+== 6. Ultimas operaciones ==
+id,fecha,mercado,bin,lado,precio,cuota,p_modelo,paso,stake,real,resultado,beneficio,saldo
+9545c5c1841c,2026-08-18,elon-musk-of-tweets-august-17-august-19,<40,YES,0.23,4.35,0.9171,1,3.3,>40 (gestor vendió 18/08),P,-3.3,496.7
+reconc,2026-08-20,elon-musk-of-tweets-august-20-august-22,90-114,YES,0.212,4.72,0.6359,2,7.43,vendido por el gestor en positivo (+2.70 a nivel cuenta),G,27.64,524.34
+8c677c997237,2026-08-22,elon-musk-of-tweets-august-22-august-24-2026,90-114,YES,0.115,8.7,0.776,1,6.6,40-64,P,-6.6,517.74
+reconc,2026-08-30,elon-musk-of-tweets-august-29-august-31-2026,<40,YES,0.056,17.86,0.7143,2,9.9,vendido por el gestor,P,-9.9,507.84
+reconc,2026-08-30,elon-musk-of-tweets-august-29-august-31-2026,40-64,NO,0.28,3.57,0.1429,3,10.0,vendido/desaparecido (sin registro del gestor),P,-10.0,497.84
+reconc,2026-09-01,elon-musk-of-tweets-august-31-september-2-2026,40-64,NO,0.325,3.08,0.0,4,10.0,vendido/desaparecido (sin registro del gestor),P,-10.0,487.84
+7fabd7fc2966,2026-09-02,elon-musk-of-tweets-august-31-september-2-2026,40-64,NO,0.22,4.55,0.0,5,10.0,40-64,P,-10.0,477.84
+
+== 7. Total operaciones y beneficio ==
+Total ops: 7
+Columnas: ['id', 'fecha', 'mercado', 'bin', 'lado', 'precio', 'cuota', 'p_modelo', 'paso', 'stake', 'real', 'resultado', 'beneficio', 'saldo']
+Beneficio total: $-22.16
+  positivas: 1
+  negativas: 6
+
+== 8. Configuracion senal.py ==
+64:def clamp(x, lo, hi):
+68:def poisson_cdf(k, lam):
+77:    kmax = max(0, int(k))
+78:    for i in range(0, kmax + 1):
+84:def p_bin(lo, hi, lam):
+91:def tabla_apuestas(stake_inicial=STAKE_INICIAL, factor=FACTOR, pasos=PASOS_MAX):
+96:        stake = math.ceil(stake_inicial * factor ** (i - 1) * 100) / 100  # redondeo al alza
+105:def cargar_csv(path):
+119:def metricas(datos):
+132:def decision(m, lo, hi, precio_yes, ya_publicados=0, horas=0):
+179:def formatear_senal(m, lo, hi, precio_yes, ya_publicados, horas, paso=None):
+204:def backtest(datos, lo, hi, precio_yes):
+270:def main():
+324:def _emp_dist(k, frac, dias):
+360:def metricas(datos):
+
+== 9. CSV tweets Elon ==
+-rw-r--r-- 1 root root 771 Sep 17 17:37 /opt/polymarket/bot-polymarket-elon/datos_elon.csv
+Ultimas 5 lineas:
+2026-09-10,22
+2026-09-11,30
+2026-09-12,16
+2026-09-13,39
+2026-09-17,20
+
+== 10. Posiciones activas en Polymarket ==
+Total: 43, activas: 2
+  · Will Romeu Zema win the 2026 Brazilian presidentia: size=36.2 cur=$0.05 pnl=$-2.95
+  · 2026 Balance of Power: D Senate, D House: size=30.6 cur=$18.52 pnl=$+3.52
