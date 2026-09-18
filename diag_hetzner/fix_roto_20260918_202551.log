@@ -1,0 +1,47 @@
+=== ARREGLAR SCRIPT ROTO · 20260918_202551 UTC ===
+Restaurado desde backup
+✅ compila tras restaurar
+
+== Líneas 230-242 ANTES ==
+            price=float(precio),
+            side="BUY",
+            size=float(stake / precio),
+        )
+        if precio < 0.001 or precio > 0.999:
+            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+            return
+
+        if precio < 0.001 or precio > 0.999:
+            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+            return
+
+        log(f"   enviando orden BUY {stake/precio:.2f} shares @ ${precio}")
+
+== Líneas DESPUÉS ==
+            price=float(precio),
+            side="BUY",
+            size=float(stake / precio),
+        )
+        if precio < 0.001 or precio > 0.999:
+            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+            return
+
+        if precio < 0.001 or precio > 0.999:
+            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+            return
+
+        if precio < 0.001 or precio > 0.999:
+
+✅ compila tras fix
+
+Servicio:
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-18 20:25:51 UTC; 3s ago
+   Main PID: 602612 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 9.6M (peak: 10.1M)
+        CPU: 439ms
+     CGroup: /system.slice/poly-elon-semanal.service
+             ├─602612 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+             └─602620 curl -s --max-time 40 "https://gamma-api.polymarket.com/events?slug=elon-musk-of-tweets-september-15-september-22-2026"
