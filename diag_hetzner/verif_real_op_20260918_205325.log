@@ -1,0 +1,62 @@
+=== VERIFICAR OPERACIONES REALES · 20260918_205325 UTC ===
+
+== 1. ¿Cuántas órdenes se han enviado en total? ==
+48h:
+0
+Semanal:
+30
+Mensual:
+0
+
+== 2. Posiciones ABIERTAS ahora mismo ==
+48h activa:
+  activa: None
+  saldo: $227.98
+Semanal activa:
+  activa: None
+  abierta: None
+  saldo: $227.98
+Mensual activa:
+  activa: None
+  abierta: None
+  saldo: $227.98
+
+== 3. Posiciones en Polymarket (data-api) ==
+<stdin>:15: SyntaxWarning: invalid escape sequence '\$'
+Total Elon: 28
+  · Will Elon Musk post 120-139 tweets from September : 5060.8 shares (cur=\$0.00)
+  · Will Elon Musk post 140-159 tweets from September : 806.3 shares (cur=\$0.00)
+  · Will Elon Musk post 180-199 tweets from September : 91.7 shares (cur=\$0.00)
+  · Will Elon Musk post 180-199 tweets from May 19 to : 33.7 shares (cur=\$0.00)
+  · Will Elon Musk post 180-199 tweets from May 12 to : 33.3 shares (cur=\$0.00)
+  · Will Elon Musk post 40-64 tweets from July 30 to A: 33.3 shares (cur=\$0.00)
+  · Will Elon Musk post 180-199 tweets from July 28 to: 33.3 shares (cur=\$0.00)
+  · Will Elon Musk post 200-219 tweets from July 31 to: 31.2 shares (cur=\$0.00)
+  · Will Elon Musk post 220-239 tweets from June 16 to: 31.2 shares (cur=\$0.00)
+  · Will Elon Musk post 40-64 tweets from July 2 to Ju: 31.2 shares (cur=\$0.00)
+  · Will Elon Musk post 280-299 tweets from July 24 to: 30.3 shares (cur=\$0.00)
+  · Will Elon Musk post 220-239 tweets from June 12 to: 29.4 shares (cur=\$0.00)
+  · Will Elon Musk post 180-199 tweets from April 28 t: 29.4 shares (cur=\$0.00)
+  · Will Elon Musk post 120-139 tweets from May 12 to : 27.8 shares (cur=\$0.00)
+  · Will Elon Musk post 100-119 tweets from May 8 to M: 27.1 shares (cur=\$0.00)
+  · Will Elon Musk post 180-199 tweets from July 17 to: 26.3 shares (cur=\$0.00)
+  · Will Elon Musk post 200-219 tweets from July 28 to: 26.3 shares (cur=\$0.00)
+  · Will Elon Musk post 65-89 tweets from June 18 to J: 26.3 shares (cur=\$0.00)
+  · Will Elon Musk post 40-64 tweets from July 27 to J: 25.4 shares (cur=\$0.00)
+  · Will Elon Musk post 40-64 tweets from June 15 to J: 25.0 shares (cur=\$0.00)
+  · Will Elon Musk post 120-139 tweets from May 5 to M: 23.2 shares (cur=\$0.00)
+  · Will Elon Musk post 100-119 tweets from May 15 to : 20.8 shares (cur=\$0.00)
+  · Will Elon Musk post 200-219 tweets from June 12 to: 18.3 shares (cur=\$0.00)
+  · Will Elon Musk post <40 tweets from June 15 to Jun: 18.3 shares (cur=\$0.00)
+  · Will Elon Musk post 200-219 tweets from June 19 to: 8.9 shares (cur=\$0.00)
+  · Will Elon Musk post 840-879 tweets in August 2026?: 8.3 shares (cur=\$0.00)
+  · Will Elon Musk post 90-114 tweets from July 30 to : 6.2 shares (cur=\$0.00)
+  · Will Elon Musk post 120-139 tweets from August 7 t: 5.0 shares (cur=\$0.00)
+
+== 4. Últimas señales generadas (qué mercado, qué bin) ==
+48h:
+Semanal:
+Sep 18 20:45:06 bot-poly python3[602900]: [2026-09-18 20:45:06]   bin 160-179 | YES @ 0.155 | EV=+2.003
+Sep 18 20:45:06 bot-poly python3[602900]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+Sep 18 20:45:06 bot-poly python3[602900]: [2026-09-18 20:45:06]    bin 140-159 YES EV=+10.149
+Mensual:
