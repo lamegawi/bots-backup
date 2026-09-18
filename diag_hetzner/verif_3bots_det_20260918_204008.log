@@ -1,0 +1,26 @@
+=== DIAGNÓSTICO DETALLADO 3 BOTS · 20260918_204008 UTC ===
+
+== 1. Logs del 48h (último 1h) ==
+-- No entries --
+
+== 2. Logs del mensual (último 1h) ==
+-- No entries --
+
+== 3. ¿El 48h y mensual están generando SEÑALES? ==
+48h señales:
+0
+Mensual señales:
+0
+
+== 4. ¿Hay errores silenciosos? ==
+48h ERROR:
+Mensual ERROR:
+
+== 5. ¿Los procesos están usando CPU? ==
+    PID %CPU %MEM CMD
+    782  0.0  1.9 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+  56815  0.0  1.3 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+
+== 6. Cuándo fue la ÚLTIMA pasada del 48h ==
+
+== 7. Cuándo fue la ÚLTIMA pasada del mensual ==
