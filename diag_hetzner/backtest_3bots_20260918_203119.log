@@ -1,0 +1,65 @@
+=== BACKTEST 3 BOTS · 20260918_203119 UTC ===
+
+============================================
+== BACKTEST BOT 48H ==
+============================================
+Comando: python3 senal.py --backtest --csv datos_elon.csv
+========================================================================
+BACKTEST (datos históricos)  ·  bin [1, ∞]  ·  precio YES fijo 0.33
+========================================================================
+  Apuestas totales      : 0   (ganadas 0, perdidas 0)
+  Win rate: n/d
+  Beneficio neto        : $+0.00
+  Racha máx de pérdidas : 0
+  Exposición máx. ciclo : $0.00  (máx. teórica paso 7: $106.18)
+  Peor saldo            : $0.00
+
+  Paso a paso (fecha | paso | stake | tweets reales | resultado | saldo):
+
+============================================
+== BACKTEST BOT SEMANAL ==
+============================================
+Comando: python3 senal.py --backtest --csv datos_elon.csv
+AVG7=24.86  AVG30=27.87  R=0.892  ajuste=0.957
+días en CSV: 51
+Stakes: [3.3, 4.62, 6.47, 9.06, 12.68, 17.75]
+
+============================================
+== BACKTEST BOT MENSUAL ==
+============================================
+Comando: python3 senal.py --backtest --csv datos_elon.csv
+========================================================================
+BACKTEST (datos históricos)  ·  bin [1, 9999]  ·  precio YES fijo 0.33
+========================================================================
+  Apuestas totales      : 13   (ganadas 13, perdidas 0)
+  Win rate              : 100.0%
+  Beneficio neto        : $+52.79
+  Racha máx de pérdidas : 0
+  Exposición máx. ciclo : $2.00  (máx. teórica paso 5: $19.93)
+  Peor saldo            : $0.00
+
+  Paso a paso (fecha | paso | stake | tweets reales | resultado | saldo):
+    2026-07-31  paso 1  $   2.00  real=  57  G  saldo $     4.06
+    2026-08-03  paso 1  $   2.00  real=  51  G  saldo $     8.12
+    2026-08-06  paso 1  $   2.00  real=  52  G  saldo $    12.18
+    2026-08-09  paso 1  $   2.00  real=  46  G  saldo $    16.24
+    2026-08-12  paso 1  $   2.00  real=  72  G  saldo $    20.30
+    2026-08-15  paso 1  $   2.00  real=  30  G  saldo $    24.36
+    2026-08-18  paso 1  $   2.00  real= 171  G  saldo $    28.42
+    2026-08-21  paso 1  $   2.00  real=  48  G  saldo $    32.48
+    2026-08-24  paso 1  $   2.00  real=  40  G  saldo $    36.55
+    2026-08-27  paso 1  $   2.00  real=  23  G  saldo $    40.61
+    2026-08-30  paso 1  $   2.00  real=   6  G  saldo $    44.67
+    2026-09-06  paso 1  $   2.00  real=  46  G  saldo $    48.73
+    2026-09-09  paso 1  $   2.00  real=  52  G  saldo $    52.79
+
+== Resumen archivos CSV ==
+elon:
+  datos_elon.csv: 52 líneas
+  última fecha: 2026-09-17,20
+elon-semanal:
+  datos_elon.csv: 51 líneas
+  última fecha: 2026-09-13,39
+elon-mensual:
+  datos_elon.csv: 51 líneas
+  última fecha: 2026-09-13,39
