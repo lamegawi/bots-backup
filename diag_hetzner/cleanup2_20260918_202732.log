@@ -1,0 +1,24 @@
+=== LIMPIEZA CORRECTA · 20260918_202732 UTC ===
+== ANTES (todas las líneas relevantes) ==
+154:        log(f"   sin token_id para {lado}, saltamos")
+235:            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+239:            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+243:            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+246:        log(f"   enviando orden BUY {stake/precio:.2f} shares @ ${precio}")
+
+Primera ocurrencia (mantener): línea 234
+Segunda ocurrencia (borrar): línea 238
+
+== DESPUÉS ==
+154:        log(f"   sin token_id para {lado}, saltamos")
+235:            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+238:            log(f"   [aviso] precio fuera de rango ({precio}), saltamos")
+241:        log(f"   enviando orden BUY {stake/precio:.2f} shares @ ${precio}")
+✅ compila
+
+Servicio:
+● poly-elon-semanal.service - Bot Polymarket Elon SEMANAL (ventanas semanales, paralelo al 48h)
+     Loaded: loaded (/etc/systemd/system/poly-elon-semanal.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-09-18 20:27:32 UTC; 3s ago
+   Main PID: 602704 (python3)
+      Tasks: 2 (limit: 4538)
