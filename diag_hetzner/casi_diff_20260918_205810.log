@@ -1,0 +1,136 @@
+=== DIFERENCIA casi_senal · 20260918_205810 UTC ===
+
+== 1. casi_senal en TRUMP (notificar.py) ==
+    """Anti-spam: cada clave (p. ej. un mercado) solo avisa 1 vez cada X horas."""
+    d = _leer_cooldown()
+    ahora = time.time()
+    if ahora - d.get(clave, 0) < horas * 3600:
+        return False
+    d[clave] = ahora
+    _guardar_cooldown(d)
+    return True
+
+
+def casi_senal(evaluados, horas=6):
+    """Avisa cuando un mercado tiene un bin CERCA de cumplir las reglas de
+    esta ventana (ver senal.py: REGLA absoluta o de ventaja) pero NO se
+    apuesta. Informativo. Máx. 1 aviso por mercado cada `horas` horas."""
+    import senal
+    ventana = getattr(senal, "VENTANA", None)
+    regla = getattr(senal, "REGLA", "absoluta")
+    edge = getattr(senal, "EDGE_MIN", 0.10)
+    p_floor = getattr(senal, "P_FLOOR", 0.15)
+    cmin = getattr(senal, "CUOTA_MINIMA", 3.0)
+    pmin = getattr(senal, "P_MIN_YES", 0.60)
+    pmax = getattr(senal, "P_MAX_NO", 0.30)
+    for ev in evaluados:
+        if ventana is not None:
+            if ev.get("tipo") != ventana:
+                continue
+        elif ev.get("tipo") != "48h":
+            continue
+        mejor = None      # (distancia, lado, bin, p, cuota_lado)
+        for b in ev["bins"]:
+            p = b["p_modelo"]
+            precio = b["precio_yes"]
+            cy = b["cuota_yes"] or 0
+            cn = b["cuota_no"] or 0
+            if regla == "ventaja":
+                vy = p - precio
+                vn = (1 - p) - (1 - precio)
+                if p >= p_floor and (vy >= edge * 0.5 or cy >= cmin):
+                    d = max(0.0, edge - vy) + max(0.0, cmin - cy) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "YES", b, p, cy, cn, vy)
+                if (1 - p) >= p_floor and (vn >= edge * 0.5 or cn >= cmin):
+                    d = max(0.0, edge - vn) + max(0.0, cmin - cn) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "NO", b, p, cy, cn, vn)
+            else:
+                # regla absoluta (48 h): cerca en p_modelo o ya tiene cuota
+                if p >= 0.50 or cy >= 3.0:
+                    d = max(0.0, pmin - p) + max(0.0, cmin - cy) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "YES", b, p, cy, cn, p - precio)
+
+== 2. casi_senal en TRUMP (notificar_semanal.py) ==
+    if ahora - d.get(clave, 0) < horas * 3600:
+        return False
+    d[clave] = ahora
+    _guardar_cooldown(d)
+    return True
+
+
+def casi_senal(evaluados, horas=6):
+    """Avisa cuando un mercado de 48 h tiene un bin CERCA de cumplir las
+    reglas (p_modelo alto o cuota ≥ 3) pero NO se apuesta. Informativo.
+    Máx. 1 aviso por mercado cada `horas` horas."""
+    import senal
+    for ev in evaluados:
+        if ev.get("tipo") != "48h":
+            continue
+        mejor = None      # (distancia, lado, bin, p, cuota_lado)
+        for b in ev["bins"]:
+            p = b["p_modelo"]
+            cy = b["cuota_yes"] or 0
+            cn = b["cuota_no"] or 0
+            # candidato a YES: cerca en p_modelo o ya tiene cuota
+            if p >= 0.50 or cy >= 3.0:
+                d = max(0.0, senal.P_MIN_YES - p) + max(0.0, senal.CUOTA_MINIMA - cy) * 0.3
+                if mejor is None or d < mejor[0]:
+                    mejor = (d, "YES", b, p, cy, cn)
+            # candidato a NO
+            if p <= 0.35 or cn >= 3.0:
+                d = max(0.0, p - senal.P_MAX_NO) + max(0.0, senal.CUOTA_MINIMA - cn) * 0.3
+                if mejor is None or d < mejor[0]:
+                    mejor = (d, "NO", b, p, cy, cn)
+        if mejor is None or mejor[0] > 0.15:
+            continue
+        d, lado, b, p, cy, cn = mejor
+        clave = f"casi_{ev['titulo'][:40]}"
+        if not _puede_avisar(clave, horas=horas):
+            continue
+        cuota_lado = cy if lado == "YES" else cn
+        if cuota_lado < senal.CUOTA_MINIMA:
+            falta = f"cuota {cuota_lado:.2f} < {senal.CUOTA_MINIMA:.2f} (falta precio más barato)"
+        else:
+            falta = f"p_modelo {p:.0%} fuera de zona (necesita ≥60% o ≤30%)"
+        # enlace directo al mercado (para operar manualmente)
+        slug = ev.get('slug') or ''
+        enlace = f"https://polymarket.com/event/{slug}" if slug else ""
+        mensaje = (
+            f"🟡 CASI SEÑAL — NO se apuesta (informativo)\n"
+            f"{ev['titulo']}\n"
+            f"Bin {b['titulo']} · lado {lado} · p_modelo {p:.0%}\n"
+            f"Cuota YES {cy:.2f} · NO {cn:.2f}\n"
+            f"Falta: {falta}\n"
+            f"🔗 {enlace}"
+
+== 3. ¿Elon tiene casi_senal? ==
+190:def casi_senal(evaluados, horas=6):
+
+== 4. ¿Dónde llama Elon a casi_senal? ==
+        evaluados, _ = senal_vivo.evaluar(m["avg7"], m["v2"], m["ajuste"],
+                                          m["lam48"], mercados, 1)
+        notificar.casi_senal(evaluados)
+    except Exception as e:
+        log(f"      · aviso casi-señal: {e}")
+
+== 5. ¿Qué tiene notificar.py de Elon? ==
+435 /opt/polymarket/bot-polymarket-elon/notificar.py
+44:def cargar_config():
+62:def guardar_config(cfg):
+67:def enviar(mensaje, titulo=None, etiqueta=None, prioridad="default"):
+112:def apuesta_abierta(act, saldo, prefijo=""):
+127:def apuesta_cerrada(reg, saldo, prefijo=""):
+145:def estado_texto():
+164:def _leer_cooldown():
+171:def _guardar_cooldown(d):
+179:def _puede_avisar(clave, horas=6):
+190:def casi_senal(evaluados, horas=6):
+269:def alerta_error(texto, horas=1):
+283:def tweets_activa(act):
+296:def _tweets_en_ventana(inicio_iso, fin_iso):
+314:def _balance_activa(ventana, act):
+331:def resumen_diario(saldo, paso, historial, apuesta_activa=None,
+395:def ventana_nueva(mk, prefijo=""):
