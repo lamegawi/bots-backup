@@ -1,0 +1,89 @@
+=== ¿OPERAN LOS 3 BOTS? · 20260918_203748 UTC ===
+
+== 1. Estado de los 3 servicios ==
+poly-elon:
+active
+poly-elon-semanal:
+active
+poly-mensual:
+active
+
+== 2. PIDs y procesos ==
+root         782       1  0 Sep13 ?        00:04:14 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+root         788       1  0 Sep13 ?        00:03:12 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+root         790       1  0 Sep13 ?        00:06:39 /usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+root       56815       1  0 Sep13 ?        00:07:00 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+root       59766       1  0 Sep13 ?        00:01:24 /usr/bin/python3 /opt/polymarket/poly_telegram_bot.py
+root      589870       1  0 17:35 ?        00:00:07 /usr/bin/python3 -u /opt/polymarket/poly_combos_bot.py
+root      602900       1  0 20:29 ?        00:00:00 /usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+
+== 3. Última señal generada por cada bot ==
+--- 48h ---
+
+--- Semanal ---
+Sep 18 20:27:32 bot-poly python3[602704]: [2026-09-18 20:27:32] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 18 20:27:54 bot-poly python3[602704]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+Sep 18 20:29:21 bot-poly python3[602900]: [2026-09-18 20:29:21] PASADA COMPLETA (ELON SEMANAL) · MODO: REAL
+Sep 18 20:29:43 bot-poly python3[602900]: Mejor señal: Elon Musk # tweets September 15 - September 22, 20
+
+--- Mensual ---
+
+== 4. ¿Cuántas veces ha pasado cada bot en los últimos 30 min? ==
+48h (espera 6 por 30min, intervalo 5min):
+0
+Semanal (espera 2 por 30min, intervalo 15min):
+5
+Mensual (espera 6 por 30min, intervalo 5min):
+0
+
+== 5. ¿Han enviado órdenes recientemente? ==
+48h:
+0
+Semanal:
+0
+Mensual:
+0
+
+== 6. ¿Qué mercados sigue CADA bot? (mercado_activo.json) ==
+--- elon ---
+  Total: 6 | abiertos: 4 | cerrados: 2
+
+  VENTANAS ACTIVAS:
+    · tipo=48h      | Elon Musk # tweets September 17 - September 19, 2026?
+    · tipo=semanal  | Elon Musk # tweets September 15 - September 22, 2026?
+    · tipo=semanal  | Elon Musk # tweets September 18 - September 25, 2026?
+    · tipo=mensual  | Elon Musk # tweets in October 2026?
+--- elon-semanal ---
+  Total: 6 | abiertos: 4 | cerrados: 2
+
+  VENTANAS ACTIVAS:
+    · tipo=48h      | Elon Musk # tweets September 10 - September 12, 2026?
+    · tipo=semanal  | Elon Musk # tweets September 8 - September 15, 2026?
+    · tipo=semanal  | Elon Musk # tweets September 11 - September 18, 2026?
+    · tipo=mensual  | Elon Musk # tweets in October 2026?
+--- elon-mensual ---
+  Total: 6 | abiertos: 4 | cerrados: 2
+
+  VENTANAS ACTIVAS:
+    · tipo=48h      | Elon Musk # tweets September 17 - September 19, 2026?
+    · tipo=semanal  | Elon Musk # tweets September 15 - September 22, 2026?
+    · tipo=semanal  | Elon Musk # tweets September 18 - September 25, 2026?
+    · tipo=mensual  | Elon Musk # tweets in October 2026?
+
+== 7. ¿Cuántas ventanas SIGUE CADA BOT en su estado actual? ==
+<stdin>:14: SyntaxWarning: invalid escape sequence '\$'
+Resumen:
+  48h: saldo=\$227.98 paso=6 activa=False
+  Semanal: saldo=\$227.98 paso=1 activa=False
+  Mensual: saldo=\$227.98 paso=3 activa=False
+
+== 8. Últimas operaciones del MES ==
+No hay resultados mensual
+
+== 9. Configuración de cada bot (¿modo real?) ==
+poly-elon:
+ExecStart=/usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+poly-elon-semanal:
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+poly-mensual:
+ExecStart=/usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
