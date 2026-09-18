@@ -1,0 +1,30 @@
+=== FIX 236 + AUDITORÍA BENEFICIOS · 20260918_201110 UTC ===
+✅ script compila
+
+== AUDITORÍA: operaciones con beneficio sospechoso ==
+Total operaciones: 29
+Sospechosas (benef > 2x stake): 29
+
+Primeras 5 sospechosas:
+  2026-09-13T18:29:23.205419 | bin=         | stake=$  3.30 | benef=$  +63.37
+    real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+  2026-09-13T19:00:30.420521 | bin=         | stake=$  3.30 | benef=$  +50.36
+    real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+  2026-09-13T19:47:07.567781 | bin=         | stake=$  3.30 | benef=$  +50.80
+    real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+  2026-09-13T20:31:24.132888 | bin=         | stake=$  3.30 | benef=$  +23.10
+    real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+  2026-09-13T21:11:34.320913 | bin=         | stake=$  3.30 | benef=$  +23.10
+    real: vendido por el gestor en positivo (+3.62 a nivel cuenta)
+
+Lista guardada en /tmp/ops_infladas.json
+
+[2/3] Snapshot de codigo...
+  ✓ git HEAD: 04652fc7
+
+[3/3] Generando informe...
+  ✓ informe: backups_completos/2026-09-18_20260918_201113/informe_20260918_201113.txt
+
+======================================================================
+BACKUP COMPLETO TERMINADO · 3 JSONs respaldados
+======================================================================
