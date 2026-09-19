@@ -1,0 +1,40 @@
+=== ESTADO CASI SEÑAL MENSUAL · 20260919_162834 UTC ===
+
+== Cooldown ==
+{
+ "casi_Elon Musk # tweets in August 2026?": 1788223378.5287044,
+ "error_general": 1789814994.0612895
+}
+== Última pasada ==
+[2026-09-19 12:23 EDT] Trading REAL MENSUAL  · saldo $227.98 · paso 3
+  (sin señal mensual → no se abre apuesta real · paso 3)
+  Historial REAL: 2 apuestas · 0G/2P · beneficio $-4.70
+[2026-09-19 12:23:15 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+[2026-09-19 12:23:16 EDT] 4/4 · Estado:
+fecha        tweets
+2026-09-07       32
+2026-09-08       40
+2026-09-09       33
+2026-09-10       41
+2026-09-11       50
+2026-09-12       24
+2026-09-13       63
+2026-09-14       28
+2026-09-15       39
+2026-09-16       20
+2026-09-17       25
+2026-09-18       31
+
+AVG7 = 32.86  V2 = 56  R = 0.852  ajuste = 0.926  λ48 = 60.9
+Días completos en CSV: 325
+[2026-09-19 12:23:16 EDT] Pasada completada en 129.5 s
+[2026-09-19 12:23:16 EDT] Próxima pasada en 5 min…
+[2026-09-19 12:28:16 EDT] ==============================================================
+[2026-09-19 12:28:16 EDT] PASADA COMPLETA (MENSUAL)  ·  MODO: REAL
+[2026-09-19 12:28:16 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-19 12:28:19 EDT]       · xtracker: 12484 items
+[2026-09-19 12:28:19 EDT]       · twitterapi: ERROR HTTP Error 402: Payment Required
+[2026-09-19 12:28:19 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-19 12:28:19 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+
+== ¿Casi señal mencionada en logs? ==
