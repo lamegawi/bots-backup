@@ -1,0 +1,69 @@
+=== CHECK XTRACKER · 20260919_114203 UTC ===
+
+== ¿Cómo usa xtracker Trump? ==
+/opt/polymarket/bot-polymarket-trump/bot_semanal.py:91:    for nombre, fn in (("xtracker", rt.descargar_xtracker), ("jina-tw", rt.descargar_jina_tw), ("jina-x", rt.descargar_jina_x), ("nitter", rt.descargar_nitter)):
+/opt/polymarket/bot-polymarket-trump/bot_semanal.py:97:                if nombre == "xtracker":
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py:155:def descargar_xtracker():
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py:156:    """Posts del tracker OFICIAL de Polymarket (xtracker.polymarket.com),
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py:160:        raw = curl(f"https://xtracker.polymarket.com/api/users/{SCREEN}/posts",
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py:164:        raise RuntimeError(f"xtracker no disponible: {e}")
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py:454:            for nombre, fn in (("xtracker", descargar_xtracker),
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py:463:                        if nombre == "xtracker":
+
+== ¿Existe código de xtracker compartido? ==
+/opt/polymarket/poly_mention_bot/venv/lib/python3.12/site-packages/pip/_internal/operations/build/build_tracker.py
+
+== ¿xtracker en scripts_despliegue? ==
+/opt/polymarket/scripts_despliegue/monitorear_bots.sh
+
+== ¿Cómo se invoca xtracker? ==
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py:def descargar_xtracker():
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-    """Posts del tracker OFICIAL de Polymarket (xtracker.polymarket.com),
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-    que es la fuente de resolución del mercado. Timestamps exactos (UTC).
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-    Devuelve {status_id: item}."""
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-    try:
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py:        raw = curl(f"https://xtracker.polymarket.com/api/users/{SCREEN}/posts",
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-                   timeout=60)
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-        d = json.loads(raw)
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-    except Exception as e:
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-        raise RuntimeError(f"xtracker no disponible: {e}")
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-    posts = d.get("data") or []
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-    ahora = ahora_utc()
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-    vistos = {}
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-    for p in posts:
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-        sid = str(p.get("platformId") or p.get("id") or "").strip()
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py-        created = (p.get("createdAt") or "").strip()
+
+== ¿Está xtracker en /opt/polymarket/comun? ==
+-rw-r--r-- 1 root root   2818 Aug 18 14:17 /opt/polymarket/check_abiertas2.py
+-rw-r--r-- 1 root root   2337 Aug 18 14:16 /opt/polymarket/check_abiertas.py
+-rw-r--r-- 1 root root   2598 Aug 18 14:03 /opt/polymarket/check_estado.py
+-rw-r--r-- 1 root root   2765 Aug 18 14:18 /opt/polymarket/check_final.py
+-rw-r--r-- 1 root root   1384 Aug 18 16:56 /opt/polymarket/check_ganadoras.py
+-rw-r--r-- 1 root root  24040 Aug 30 18:21 /opt/polymarket/check_integral.py
+-rw-r--r-- 1 root root   2118 Aug 18 14:05 /opt/polymarket/check_ordenes.py
+-rw-r--r-- 1 root root   2476 Aug 18 14:16 /opt/polymarket/check_posiciones.py
+-rw-r--r-- 1 root root   6071 Sep 13 20:30 /opt/polymarket/check_salud.py
+-rw-r--r-- 1 root root   1294 Aug 18 14:04 /opt/polymarket/check_ventanas2.py
+-rw-r--r-- 1 root root   1518 Aug 18 17:37 /opt/polymarket/check_ventanas_ahora.py
+-rw-r--r-- 1 root root   1235 Aug 18 14:04 /opt/polymarket/check_ventanas.py
+-rw-r--r-- 1 root root  12371 Sep 13 19:54 /opt/polymarket/gestionar_posiciones.py
+-rw-r--r-- 1 1000 1000   2022 Aug 19 18:12 /opt/polymarket/motores.py
+-rw-r--r-- 1 root root 187570 Sep 11 17:47 /opt/polymarket/poly_combos_bot.pre_v1281_20260911_180512.py
+-rwxr-xr-x 1 root root 170495 Sep 11 17:36 /opt/polymarket/poly_combos_bot.pre_v128_20260911_174722.py
+-rw-r--r-- 1 root root 194249 Sep 11 18:05 /opt/polymarket/poly_combos_bot.pre_v1282_20260911_201116.py
+-rw-r--r-- 1 root root 200001 Sep 11 20:11 /opt/polymarket/poly_combos_bot.pre_v1283_20260911_211948.py
+-rw-r--r-- 1 root root 230926 Sep 11 21:19 /opt/polymarket/poly_combos_bot.pre_v1284_20260911_220408.py
+-rw-r--r-- 1 root root 247793 Sep 11 22:04 /opt/polymarket/poly_combos_bot.pre_v1290_20260912_061634.py
+
+== ¿Hay algún módulo compartido para Twitter? ==
+/opt/polymarket/backup_trump_20260831_201030/recoger_tweets.py
+/opt/polymarket/backup_trump_20260831_201030/bot_semanal.py
+/opt/polymarket/bot-polymarket-elon/scraper_tweets_pm.py
+/opt/polymarket/bot-polymarket-elon/verificar_tweets_ventana.py
+/opt/polymarket/bot-polymarket-zelenskyy/recoger_tweets.py
+/opt/polymarket/bot-polymarket-zelenskyy/bot_semanal.py
+/opt/polymarket/bot-polymarket-trump/recoger_tweets.py
+/opt/polymarket/bot-polymarket-trump/bot_semanal.py
