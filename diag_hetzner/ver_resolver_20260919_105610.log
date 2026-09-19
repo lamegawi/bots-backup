@@ -1,0 +1,153 @@
+=== VER RESOLVER · 20260919_105610 UTC ===
+
+== Función resolver() del 48h ==
+def resolver(estado, fee_pct=0.0):
+    """Cierra la apuesta real activa si su mercado ya se resolvió.
+    (Polymarket canjea automáticamente las shares ganadoras → el USDC
+    vuelve solo al wallet; aquí solo anotamos el resultado.)"""
+    act = estado.get("activa")
+    if not act:
+        return False
+    resuelto, winner_titulo = evento_resuelto(act["slug"])
+    if not resuelto or not winner_titulo:
+        return False
+    win = mp.parse_bin(winner_titulo)
+    if not win:
+        return False
+    w_lo, w_hi = win
+    w_hi = None if w_hi == float("inf") else w_hi
+    if act["lado"] == "YES":
+        ok = (w_lo == act["lo"] and w_hi == act["hi"])
+    else:
+        ok = not (w_lo == act["lo"] and w_hi == act["hi"])
+    fee = round(act["stake"] * fee_pct, 2)
+    if ok:
+        benef = round(act["stake"] * (act["cuota"] - 1) - fee, 2)
+        estado["saldo"] += benef
+        res = "G"
+        estado["paso"] = 1
+    else:
+        benef = -round(act["stake"] + fee, 2)
+        estado["saldo"] += benef
+        res = "P"
+        estado["paso"] = 1 if act["paso"] >= 7 else act["paso"] + 1
+    registro = {"id": uuid.uuid4().hex[:12], "fecha": act["fecha"],
+                "mercado": act.get("slug", "—"), "bin": act["bin_titulo"],
+                "lado": act["lado"], "precio": act["precio"], "cuota": act["cuota"],
+                "p_modelo": act["p_modelo"], "paso": act["paso"],
+                "stake": round(act["stake"], 2), "real": winner_titulo,
+                "motor": act.get("motor", "motor_v1_martingala_fijo"),
+                "ev": act.get("ev"),
+                "resultado": res, "beneficio": benef,
+                "saldo": round(estado["saldo"], 2)}
+    estado["historial"].append(registro)
+    estado["activa"] = None
+    escribir_historial(estado["historial"])
+    liberar_ventana(act.get("slug", ""), act.get("bin_titulo", ""))
+    guardar_estado(estado)
+    print(f"  ✔ RESUELTA apuesta REAL del {act['fecha']}: {act['bin_titulo']} "
+          f"{act['lado']} → ganador {winner_titulo} → {res} ${benef:+.2f} "
+          f"(saldo ${estado['saldo']:.2f})")
+    try:
+        notificar.enviar(
+            f"{'✅ GANADA' if res == 'G' else '❌ PERDIDA'}  ${benef:+.2f} (REAL)\n"
+            f"Bin {act['bin_titulo']} · {act['lado']} · ganador real {winner_titulo}\n"
+            f"Stake ${act['stake']:.2f} · saldo de la operación ${benef:+.2f}\n"
+            f"{saldo_ntfy.saldo_real_texto()}",
+            titulo="💰 Apuesta REAL cerrada",
+            etiqueta="white_check_mark" if res == "G" else "x")
+    except Exception:
+        pass
+    return True
+
+
+
+== ¿Dónde se llama resolver() en el 48h? ==
+/opt/polymarket/bot-polymarket-elon/construir_serie.py:58:def resolver(alpha=0.5, beta=0.15):
+/opt/polymarket/bot-polymarket-elon/construir_serie.py:85:    x = resolver(alpha)
+/opt/polymarket/bot-polymarket-elon/construir_serie.py:92:    x = resolver(0.3)
+/opt/polymarket/bot-polymarket-elon/operar_real.py:360:def resolver(estado, fee_pct=0.0):
+/opt/polymarket/bot-polymarket-elon/operar_real.py:737:        resolver(estado, fee_pct=cfg.get("fee_pct", 0.0))
+/opt/polymarket/bot-polymarket-elon/papel.py:109:def resolver(estado):
+/opt/polymarket/bot-polymarket-elon/papel.py:215:        resolver(estado)
+
+== pasada_real() de Trump ==
+def pasada_real(dry=False, actualizar=False, excel=False):
+    """Una pasada completa de trading real."""
+    cfg = cargar_config()
+    estado = cargar_estado()
+    print(f"[{datetime.now(ET).strftime('%Y-%m-%d %H:%M %Z')}] Trading REAL SEMANAL "
+          f"{'(SECO)' if dry else ''} · saldo ${estado['saldo']:.2f} · "
+          f"paso {estado['paso']}")
+    if estado.get("activa"):
+        act = estado["activa"]
+        # registrar la ventana en el lock compartido (evita duplicados entre bots)
+        marcar_ventana(act.get("slug", ""), act.get("bin_titulo", ""),
+                       act.get("ventana_fin", ""))
+        resolver(estado, fee_pct=cfg.get("fee_pct", 0.0))
+        # FIXZEL_ARENA: vigilar la orden pendiente en cada pasada
+        if estado.get("activa"):
+            vigilar_orden_pendiente(estado, cfg)
+        # FIXWIN_ARENA: reposicionamiento si el bin activo pierde probabilidad
+        if estado.get("activa"):
+            fixwin_check(estado, cfg, dry=dry)
+    if not estado.get("activa"):
+        abrir(estado, dry=dry, actualizar=actualizar)
+    n = len(estado["historial"])
+    if n:
+        g = sum(1 for h in estado["historial"] if h["resultado"] == "G")
+        print(f"  Historial REAL: {n} apuestas · {g}G/{n-g}P · "
+              f"beneficio ${sum(h['beneficio'] for h in estado['historial']):+.2f}")
+    if excel and os.path.exists(HISTORIAL):
+        try:
+            from excel_historial import generar as gen_hist
+            ruta, anadidas, total = gen_hist(HISTORIAL,
+                                             salida="Historial_Operaciones.xlsx",
+                                             bankroll=cfg.get("bankroll", BANKROLL),
+                                             titulo_extra="trading REAL")
+            print(f"Excel historial: {ruta} (añadidas {anadidas}, total {total})")
+        except Exception as e:
+            print(f"  (no se pudo generar Excel: {e})")
+    return estado
+
+
+def probar_orden():
+
+== Flujo del bot.py 48h - parte de trading ==
+
+# ------------------------------------------------------------------- 3) trading
+def trading(opts):
+    excel_al_cambio = opts.excel
+    if opts.modo == "real":
+        log("3/5 · Trading REAL" + (" (MODO SECO)" if opts.simular else "") + "…")
+        try:
+            import operar_real
+            estado = operar_real.pasada_real(dry=opts.simular, actualizar=False,
+                                             excel=False)
+            if excel_al_cambio:
+                try:
+                    from excel_historial import generar as gen_hist
+                    ruta, anadidas, total = gen_hist(operar_real.HISTORIAL,
+                                                     salida=EXCEL_HIST,
+                                                     bankroll=operar_real.BANKROLL,
+                                                     titulo_extra="trading REAL")
+                    log(f"      · Excel historial actualizado: {ruta} "
+                        f"(añadidas {anadidas}, total {total})")
+                except Exception as e:
+                    log(f"      · no se pudo generar Excel: {e}")
+            return estado
+        except Exception as e:
+            log(f"      · ERROR REAL: {e}\n{traceback.format_exc()}")
+--
+            return
+        # construir el resumen con el estado real (trading REAL)
+        import operar_real
+        est = operar_real.cargar_estado()
+        metricas = None
+        ventanas = None
+        try:
+            datos = senal.cargar_csv("datos_elon.csv")
+            m = senal.metricas(datos)
+            metricas = {"avg7": m["avg7"], "v2": m["v2"], "r": m["r"],
+                        "lam48": m["lam48"]}
+        except Exception:
