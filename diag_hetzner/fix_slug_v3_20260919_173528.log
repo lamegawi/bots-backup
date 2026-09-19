@@ -1,0 +1,174 @@
+=== FIX SLUG MENSUAL V3 · 20260919_173528 UTC ===
+Backup: mercado_polymarket.py.bak_v3_20260919_173528
+
+== ANTES línea exacta ==
+119:        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}-{d2.year}")
+123:        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}-{d2.year}")
+126:        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.year}")
+
+== Aplicando fix con sed ==
+
+== DESPUÉS ==
+119:        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}-{d2.year}")
+123:        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}-{d2.year}")
+126:        slugs.add(f"elon-musk-of-tweets-in-{MESES_NOMBRE[d1.month]}-{d1.year}")
+
+== Validar sintaxis ==
+OK
+
+== Probar carga ==
+[
+ {
+  "id": "1023487",
+  "titulo": "Elon Musk # tweets September 17 - September 19, 2026?",
+  "slug": "elon-musk-of-tweets-september-17-september-19-2026",
+  "cerrado": false,
+  "volumen": 551870.772033,
+  "endDate": "2026-09-19T16:00:00Z",
+  "inicio_iso": "2026-09-17T12:00:00-04:00",
+  "fin_iso": "2026-09-19T12:00:00-04:00",
+  "duracion_h": 48.0,
+  "tipo": "48h",
+  "bins": [
+   {
+    "titulo": "<40",
+    "lo": 0,
+    "hi": 39,
+    "precio_yes": 0.0,
+    "precio_no": 1.0,
+    "cuota_yes": null,
+    "cuota_no": 1.0,
+    "volumen": 145834.34607100004
+   },
+   {
+    "titulo": "40-64",
+    "lo": 40,
+    "hi": 64,
+    "precio_yes": 0.9995,
+    "precio_no": 0.0005,
+    "cuota_yes": 1.0005002501250624,
+    "cuota_no": 2000.0000000002203,
+    "volumen": 111478.45381599996
+   },
+   {
+    "titulo": "65-89",
+    "lo": 65,
+    "hi": 89,
+    "precio_yes": 0.0005,
+    "precio_no": 0.9995,
+    "cuota_yes": 2000.0,
+    "cuota_no": 1.0005002501250624,
+    "volumen": 156998.42831
+   },
+   {
+    "titulo": "90-114",
+    "lo": 90,
+    "hi": 114,
+    "precio_yes": 0.0005,
+    "precio_no": 0.9995,
+    "cuota_yes": 2000.0,
+    "cuota_no": 1.0005002501250624,
+    "volumen": 84510.71169899999
+   },
+   {
+    "titulo": "115-139",
+    "lo": 115,
+    "hi": 139,
+    "precio_yes": 0.0005,
+    "precio_no": 0.9995,
+    "cuota_yes": 2000.0,
+    "cuota_no": 1.0005002501250624,
+    "volumen": 29313.541025
+   },
+   {
+    "titulo": "140-164",
+    "lo": 140,
+    "hi": 164,
+    "precio_yes": 0.0005,
+    "precio_no": 0.9995,
+    "cuota_yes": 2000.0,
+    "cuota_no": 1.0005002501250624,
+    "volumen": 9222.286999999998
+   },
+   {
+    "titulo": "165-189",
+    "lo": 165,
+    "hi": 189,
+    "precio_yes": 0.0005,
+    "precio_no": 0.9995,
+    "cuota_yes": 2000.0,
+    "cuota_no": 1.0005002501250624,
+    "volumen": 8484.016112
+   },
+   {
+    "titulo": "190-214",
+    "lo": 190,
+    "hi": 214,
+    "precio_yes": 0.0005,
+    "precio_no": 0.9995,
+    "cuota_yes": 2000.0,
+    "cuota_no": 1.0005002501250624,
+    "volumen": 2324.993
+   },
+   {
+    "titulo": "215-239",
+    "lo": 215,
+    "hi": 239,
+    "precio_yes": 0.0005,
+    "precio_no": 0.9995,
+    "cuota_yes": 2000.0,
+
+== ¿Aparece septiembre? ==
+ENCONTRADO: elon-musk-of-tweets-september-17-september-19-2026
+  title: Elon Musk # tweets September 17 - September 19, 2026?
+  tipo: 48h
+  bins: 10
+ENCONTRADO: elon-musk-of-tweets-september-19-september-21-2026
+  title: Elon Musk # tweets September 19 - September 21, 2026?
+  tipo: 48h
+  bins: 10
+ENCONTRADO: elon-musk-of-tweets-september-15-september-22-2026
+  title: Elon Musk # tweets September 15 - September 22, 2026?
+  tipo: semanal
+  bins: 26
+ENCONTRADO: elon-musk-of-tweets-september-21-september-23-2026
+  title: Elon Musk # tweets September 21 - September 23, 2026?
+  tipo: 48h
+  bins: 10
+ENCONTRADO: elon-musk-of-tweets-september-18-september-25-2026
+  title: Elon Musk # tweets September 18 - September 25, 2026?
+  tipo: semanal
+  bins: 26
+ENCONTRADO: elon-musk-of-tweets-september-22-september-29-2026
+  title: Elon Musk # tweets September 22 - September 29, 2026?
+  tipo: semanal
+  bins: 26
+ENCONTRADO: elon-musk-of-tweets-in-september-2026
+  title: Elon Musk # of tweets in September 2026?
+  tipo: mensual
+  bins: 32
+
+== Ver también en JSON local ==
+LOCAL: elon-musk-of-tweets-september-17-september-19-2026
+  tipo: 48h
+  cerrado: False
+LOCAL: elon-musk-of-tweets-september-19-september-21-2026
+  tipo: 48h
+  cerrado: False
+LOCAL: elon-musk-of-tweets-september-15-september-22-2026
+  tipo: semanal
+  cerrado: False
+LOCAL: elon-musk-of-tweets-september-21-september-23-2026
+  tipo: 48h
+  cerrado: False
+LOCAL: elon-musk-of-tweets-september-18-september-25-2026
+  tipo: semanal
+  cerrado: False
+LOCAL: elon-musk-of-tweets-september-22-september-29-2026
+  tipo: semanal
+  cerrado: False
+LOCAL: elon-musk-of-tweets-in-september-2026
+  tipo: mensual
+  cerrado: False
+
+== Reiniciando ==
