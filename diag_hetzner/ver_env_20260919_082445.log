@@ -1,0 +1,45 @@
+=== VER ENV · 20260919_082445 UTC ===
+
+== Formato de /etc/polymarket.env ==
+POLY_PRIVATE_KEY=0x5a140fd5482dd565f6abe8ddd100b63fe451bff399be5609e56a0cfafc888af3$
+POLY_WALLET_ADDRESS=0xb0E1197098E6d427c01720F1631cAD24CE740FA0$
+POLY_RELAYER_API_KEY=019fe5ab-ea44-7450-8e9c-103a516cd37e$
+POLY_RELAYER_API_KEY_ADDRESS=0x8a22F798C20B0f542c38ABD697a29E4BE7C3bae6$
+REAL_CONFIRMADO=1$
+# Proxy del PC (se aM-CM-1ade al confirmar puerto)$
+HTTP_PROXY=http://100.83.57.99:8888$
+HTTPS_PROXY=http://100.83.57.99:8888$
+ALL_PROXY=http://100.83.57.99:8888$
+NO_PROXY=localhost,127.0.0.1,api.telegram.org,ntfy.sh$
+LOCK_APUESTAS=/opt/polymarket/apuestas_compartidas.json$
+TELEGRAM_BOT_TOKEN=8932364064:AAEE1iuyNX0beaVzFVcYMu_A4eNXCpEw8XE$
+TELEGRAM_CHAT_ID=250818720$
+8982773230:AAGfqqMxn3cgxcYDU_WAS2aWlkcl1UlGTxM$
+TRUMP_BOT_TOKEN=8982773230:AAGfqqMxn3cgxcYDU_WAS2aWlkcl1UlGTxM$
+$
+MENTION_TELEGRAM_BOT_TOKEN=8831921552:AAHbBQ7jqhanDC_m8n738lbOQYK4MYbpjJI$
+MENTION_TELEGRAM_CHAT_ID=250818720$
+MENTION_DRY_RUN=true$
+$
+
+== ¿Las claves tienen caracteres raros? ==
+00000000: 5457 4954 5445 5241 5049 5f4b 4559 3d6e  TWITTERAPI_KEY=n
+00000010: 6577 315f 6333 3866 6162 3164 3333 3163  ew1_c38fab1d331c
+00000020: 3463 3161 6161 6438 6139 6530 3334 6435  4c1aaad8a9e034d5
+00000030: 3332 3438 0a                             3248.
+
+== ¿Cuántas líneas tiene? ==
+23 /etc/polymarket.env
+
+== ¿Cómo se cargan las env vars en el bot? ==
+
+== ¿Hay from dotenv import load_dotenv? ==
+
+== ¿Cómo accede el bot a PROXY? (que SÍ funciona) ==
+
+== Probar cargar /etc/polymarket.env desde Python ==
+dotenv OK, TWITTERAPI_KEY: new1_c38fa...
+
+Test 2 (manual):
+Manual OK, TWITTERAPI_KEY: new1_c38fa...
+Manual OK, PROXY: NO
