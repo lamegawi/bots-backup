@@ -1,0 +1,167 @@
+=== VER FUNCIONES COMPLETAS · 20260919_082710 UTC ===
+
+== Función _descargar_jina ==
+def _descargar_jina(url):
+    """Render del perfil vía r.jina.ai. Devuelve {status_id: item}.
+
+    Acepta tanto el render de x.com como el de twitter.com (perfil en x.com,
+    enlaces de estado en twitter.com o x.com). La hora relativa que muestra el
+    perfil se convierte a UTC (exacta)."""
+    # Cloudflare es intermitente: reintentar con distintos UA y pausas
+    uas = [None, UA, "curl/8.0"]
+    ultimo_error = None
+    for intento in range(4):
+        try:
+            hdrs = {"Accept": "text/plain"}
+            if uas[intento % len(uas)]:
+                hdrs["User-Agent"] = uas[intento % len(uas)]
+            md = curl(url, hdrs)
+            if ("Just a moment" in md or "Verifying your browser" in md
+                    or "Rate limit" in md or "[@elonmusk]" not in md):
+                ultimo_error = "desafío o respuesta sin contenido"
+                time.sleep(8 + intento * 5)
+                continue
+            ahora = ahora_utc()
+            vistos = {}
+            # Formato timeline (x.com y twitter.com):
+            #   [@elonmusk](https://x.com/elonmusk)  [17h](https://twitter.com/elonmusk/status/ID)
+            pat = re.compile(
+                r"\[@elonmusk\]\(https://x\.com/elonmusk\)\s+\[([^\]]+)\]"
+                r"\(https://(?:twitter\.com|x\.com)/elonmusk/status/(\d+)\)")
+            posiciones = list(pat.finditer(md))
+            for i, m in enumerate(posiciones):
+                rel, sid = m.group(1).strip(), m.group(2)
+                ts = rel_a_utc(rel, ahora)
+                if not ts:
+                    continue
+                # trozo de la entrada hasta la siguiente entrada
+                fin = posiciones[i + 1].start() if i + 1 < len(posiciones) else len(md)
+                trozo = md[m.end():fin]
+                # es repost si dentro hay un enlace de estado de OTRO usuario
+                es_repost = bool(re.search(
+                    r"\]\(https://(?:twitter\.com|x\.com)/(?!elonmusk/status/)"
+                    r"[A-Za-z0-9_]+/status/\d+\)", trozo))
+                vistos[sid] = {"id": sid,
+                               "kind": "repost" if es_repost else "post",
+                               "autor": SCREEN,
+                               "created_at": ts.strftime(T_FMT),
+                               "primera_vista": ahora.strftime(T_FMT),
+                               "exacto": True}
+            return vistos
+        except RuntimeError as e:
+            ultimo_error = str(e)
+            time.sleep(8 + intento * 5)
+    raise RuntimeError(f"jina no disponible tras reintentos: {ultimo_error}")
+
+
+def descargar_jina_tw():
+def _descargar_jina(url):
+    es_x = "/https://x.com/" in url
+    ahora = _time_t.time()
+    if es_x and ahora < _T_ESTADO["x_hasta"]:
+        raise RuntimeError("x.com en descanso (1h, Cloudflare)")
+    if _tbackoff_activo():
+
+== Función descargar_jina_tw ==
+def descargar_jina_tw():
+    """jina sobre twitter.com (suele esquivar el Cloudflare de x.com)."""
+    return _descargar_jina(JINA_TW)
+
+
+def descargar_jina_x():
+
+== Función descargar_nitter ==
+def descargar_nitter():
+    """Prueba varios espejos Nitter (xcancel primero) hasta conseguir items."""
+    for _intento in range(2):
+        for instancia in NITTER_ESPEJOS:
+            try:
+                vistos = _descargar_nitter_instancia(instancia)
+                if vistos:
+                    return vistos
+                print(f"  nitter {instancia}: sin items")
+            except RuntimeError as e:
+                print(f"  nitter {instancia}: {e}")
+            time.sleep(3)
+    return {}
+
+
+
+def descargar_api_v2(max_paginas=50):
+
+== ¿Hay función que devuelva dict con id → datos? ==
+                               "exacto": True}
+            return vistos
+        except RuntimeError as e:
+            ultimo_error = str(e)
+            time.sleep(8 + intento * 5)
+    raise RuntimeError(f"jina no disponible tras reintentos: {ultimo_error}")
+
+
+def descargar_jina_tw():
+    """jina sobre twitter.com (suele esquivar el Cloudflare de x.com)."""
+    return _descargar_jina(JINA_TW)
+
+
+def descargar_jina_x():
+    """jina sobre x.com (formato original)."""
+    return _descargar_jina(JINA_X)
+
+--
+                                 "primera_vista": ahora.strftime(T_FMT)}
+    return vistos
+
+
+def descargar_nitter():
+    """Prueba varios espejos Nitter (xcancel primero) hasta conseguir items."""
+    for _intento in range(2):
+        for instancia in NITTER_ESPEJOS:
+            try:
+                vistos = _descargar_nitter_instancia(instancia)
+                if vistos:
+                    return vistos
+                print(f"  nitter {instancia}: sin items")
+            except RuntimeError as e:
+                print(f"  nitter {instancia}: {e}")
+            time.sleep(3)
+    return {}
+
+
+
+def descargar_api_v2(max_paginas=50):
+    """X API v2 oficial (exacta). Requiere X_BEARER_TOKEN."""
+
+== ¿Cómo se llama fusionar? ==
+
+
+def fusionar(vistos_nuevos, sin_reposts=False):
+    """Fusiona con el estado previo: por status id, gana el item nuevo
+    (jina/x.com da el tiempo exacto del repost) pero se CONSERVA la
+    primera_vista más antigua (el repost se atribuye al día en que se
+    vio por PRIMERA vez). Si sin_reposts, elimina los reposts."""
+    estado = cargar_estado()
+    if sin_reposts:
+        estado = {sid: v for sid, v in estado.items() if v.get("kind") != "repost"}
+    for sid, v in vistos_nuevos.items():
+        previo = estado.get(sid)
+        if previo:
+            v["primera_vista"] = min(v["primera_vista"], previo["primera_vista"])
+        estado[sid] = v
+    return estado
+
+
+def resumen(dias=14):
+    if not os.path.exists(CSV):
+        print("Sin datos todavía. Ejecuta primero: recoger_tweets.py")
+        return
+    with open(CSV, newline="", encoding="utf-8") as f:
+        filas = [(r["fecha"], int(r["tweets"])) for r in csv.DictReader(f)]
+    hoy = hoy_et().isoformat()
+    print(f"{'fecha':<12}{'tweets':>7}")
+    for fecha, n in filas[-dias:]:
+        marca = "  ← hoy (incompleto, no entra en la señal)" if fecha == hoy else ""
+        print(f"{fecha:<12}{n:>7}{marca}")
+    if len(filas) >= 9:
+        ult7 = [n for _, n in filas[-7:]]
+        ult2 = [n for _, n in filas[-2:]]
+        avg7 = sum(ult7) / 7
