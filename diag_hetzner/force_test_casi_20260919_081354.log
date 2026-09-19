@@ -1,0 +1,21 @@
+=== TEST FORZADO CASI_SEÑAL · 20260919_081354 UTC ===
+Métricas: avg7=24.14 lam48=44.14 ajuste=0.914
+
+Evaluados: 1
+
+=== Elon Musk # tweets September 18 - September 25, 2026? (tipo: semanal) ===
+  horas_elapsed: ?
+  horas_rest: 151.76807558222222
+  lam_rest: 139.57242665150793
+  bins: 26
+  ventana=None, regla=absoluta, pmin=0.6, pmax=0.3, cmin=5.0, edge=0.1
+    Bin <20             p=0.0000 YES=0.0005 cy=2000.00 cn=1.00 → d=0.600 YES  FUERA
+    Bin 20-39           p=0.0000 YES=0.0005 cy=2000.00 cn=1.00 → d=0.600 YES  FUERA
+    Bin 40-59           p=0.0000 YES=0.0005 cy=2000.00 cn=1.00 → d=0.600 YES  FUERA
+    Bin 60-79           p=0.0000 YES=0.0015 cy=666.67 cn=1.00 → d=0.600 YES  FUERA
+    Bin 80-99           p=0.0000 YES=0.0015 cy=666.67 cn=1.00 → d=0.600 YES  FUERA
+    Bin 100-119         p=0.0000 YES=0.0060 cy=166.67 cn=1.01 → d=0.600 YES  FUERA
+    Bin 120-139         p=0.0000 YES=0.0260 cy=38.46 cn=1.03 → d=0.600 YES  FUERA
+    Bin 140-159         p=0.0679 YES=0.0980 cy=10.20 cn=1.11 → d=0.532 YES  FUERA
+    Bin 160-179         p=0.0087 YES=0.1650 cy=6.06 cn=1.20 → d=0.591 YES  FUERA
+    Bin 180-199         p=0.0005 YES=0.2550 cy=3.92 cn=1.34 → d=0.923 YES  FUERA
