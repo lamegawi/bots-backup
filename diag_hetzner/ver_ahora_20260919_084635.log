@@ -1,0 +1,66 @@
+=== VERIFICAR PASADA AHORA · 20260919_084635 UTC ===
+
+== Esperar 100s ==
+
+== Estado ==
+active
+
+== ÚLTIMAS 40 líneas de /var/log/poly-elon.log ==
+  nitter nitter.tiekoetter.com: sin items
+  nitter xcancel.com: sin items
+  nitter nitter.poast.org: curl falló (56): 
+  nitter nitter.privacyredirect.com: sin items
+  nitter lightbrd.com: sin items
+  nitter nitter.space: sin items
+  nitter nitter.tiekoetter.com: sin items
+  nitter xcancel.com: sin items
+  nitter nitter.poast.org: curl falló (56): 
+  nitter nitter.privacyredirect.com: sin items
+  nitter lightbrd.com: sin items
+  nitter nitter.space: sin items
+[2026-09-19 04:44:10 EDT]       · nitter: sin items
+[2026-09-19 04:44:10 EDT]       · tweets únicos: 842 (reposts 508) · CSV: 52 días (nuevos/mejorados: 0)
+[2026-09-19 04:44:10 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-19 04:44:28 EDT]       · 8 mercados · 2 de 48 h abiertos → mercado_activo.json
+[2026-09-19 04:44:28 EDT] 3/5 · Trading REAL…
+[2026-09-19 04:44 EDT] Trading REAL  · saldo $227.98 · paso 6
+  (sin señal 48 h → no se abre apuesta real · paso 6)
+  Historial REAL: 7 apuestas · 1G/6P · beneficio $-22.16
+[2026-09-19 04:44:28 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-19 04:44:28 EDT] 4/5 · Estado:
+fecha        tweets
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+2026-09-10       22
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+2026-09-17       20
+2026-09-18       20
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-19 04:44:28 EDT] Pasada completada en 131.5 s
+[2026-09-19 04:44:28 EDT] Próxima pasada en 5 min…
+
+== Buscar 'twitterapi' en log ==
+3
+Primeras menciones:
+[2026-09-19 04:30:16 EDT]       · twitterapi: ERROR HTTP Error 429: Too Many Requests
+[2026-09-19 04:36:19 EDT]       · twitterapi: 20 items
+[2026-09-19 04:42:20 EDT]       · twitterapi: 20 items
+
+== ¿Se actualizó el cooldown? ==
+{
+ "error_general": 1789803105.6642423
+}
+== ¿Se actualizó el CSV? ==
+2026-09-11,30
+2026-09-12,16
+2026-09-13,39
+2026-09-17,20
+2026-09-18,20
