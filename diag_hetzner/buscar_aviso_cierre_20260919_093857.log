@@ -1,0 +1,52 @@
+=== BUSCAR AVISO CIERRE EN TRUMP · 20260919_093857 UTC ===
+
+== Buscar 'cerrada' / 'PERDIDA' / 'GANADA' en bot Trump ==
+
+== Buscar string 'Apuesta REAL cerrada' ==
+/opt/polymarket/bot-polymarket-trump/operar_real_semanal.py:413:            titulo="[TRUMP] 💰 Apuesta REAL cerrada",
+
+== ¿Cómo se llama la función que manda este aviso? ==
+    """Notificación cuando se cierra una apuesta de papel con su resultado."""
+    if reg["resultado"] == "G":
+        cabecera = f"✅ GANADA  +${reg['beneficio']:.2f}"
+        etiqueta = "white_check_mark"
+    else:
+        cabecera = f"❌ PERDIDA  ${reg['beneficio']:.2f}"
+        etiqueta = "x"
+    mensaje = (
+        f"{cabecera}\n"
+        f"Bin {reg['bin']} · Lado {reg['lado']}\n"
+        f"Ganador real del mercado: {reg['real']}\n"
+        f"Stake ${reg['stake']:.2f} · Paso {reg['paso']}\n"
+        f"{saldo_ntfy.saldo_real_texto()}"
+    )
+    return enviar(mensaje, titulo=f"{prefijo}🔔 Apuesta cerrada", etiqueta=etiqueta)
+
+
+def estado_texto():
+    """Describe los canales configurados (para el log del bot)."""
+    cfg = cargar_config()
+    partes = []
+
+== Verificar que elon 48h NO tiene ese aviso ==
+/opt/polymarket/bot-polymarket-elon/notificar.py:130:        cabecera = f"✅ GANADA  +${reg['beneficio']:.2f}"
+/opt/polymarket/bot-polymarket-elon/notificar.py:133:        cabecera = f"❌ PERDIDA  ${reg['beneficio']:.2f}"
+/opt/polymarket/bot-polymarket-elon/operar_real.py:409:            f"{'✅ GANADA' if res == 'G' else '❌ PERDIDA'}  ${benef:+.2f} (REAL)\n"
+/opt/polymarket/bot-polymarket-elon/operar_real.py:413:            titulo="💰 Apuesta REAL cerrada",
+
+== ¿Elon 48h tiene 'resultados_real.csv'? ==
+-rw-r--r-- 1 root root 1091 Sep  2 18:16 /opt/polymarket/bot-polymarket-elon/resultados_real.csv
+
+== ¿Dónde se actualizan los resultados del 48h? ==
+/opt/polymarket/bot-polymarket-elon/operar_real.py:16:  · Registra todo en resultados_real.csv y notifica al móvil
+/opt/polymarket/bot-polymarket-elon/operar_real.py:60:HISTORIAL = "resultados_real.csv"
+
+== ¿Hay alguna función de 'cierre' o 'resolver'? ==
+/opt/polymarket/bot-polymarket-elon/construir_serie.py:58:def resolver(alpha=0.5, beta=0.15):
+/opt/polymarket/bot-polymarket-elon/operar_real.py:360:def resolver(estado, fee_pct=0.0):
+/opt/polymarket/bot-polymarket-elon/operar_real.py:842:def cerrar_anticipado(estado, motivo, dry=False):
+/opt/polymarket/bot-polymarket-elon/papel.py:109:def resolver(estado):
+
+== Verificar servicio Telegram bot Elon ==
+root       59766       1  0 Sep13 ?        00:01:33 /usr/bin/python3 /opt/polymarket/poly_telegram_bot.py
+
