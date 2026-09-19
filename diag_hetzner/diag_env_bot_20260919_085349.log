@@ -1,0 +1,21 @@
+=== DIAGNOSTICO ENV EN BOT · 20260919_085349 UTC ===
+
+== ¿El proceso del bot tiene TWITTERAPI_KEY? ==
+PID: 
+
+== Verificar que bot.py:156 llama twitterapi primero ==
+156:    for nombre, fn in (("twitterapi", rt.descargar_twitterapi), ("jina-tw", rt.descargar_jina_tw), ("jina-x", rt.descargar_jina_x), ("nitter", rt.descargar_nitter)):
+
+== ¿La función descargar_twitterapi existe? ==
+573:def descargar_twitterapi():
+
+== Probar desde el directorio del bot con env cargada ==
+TWITTERAPI_KEY en env: new1_c38fab1d33...
+Items: 20
+
+== Última línea de /var/log/poly-elon.log ==
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-19 04:50:32 EDT] Pasada completada en 63.3 s
+[2026-09-19 04:50:32 EDT] Próxima pasada en 5 min…
