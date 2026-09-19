@@ -1,0 +1,140 @@
+=== APLICAR FIX MENSUAL (igual que 48h) · 20260919_111842 UTC ===
+✅ Backups creados
+✅ Función descargar_twitterapi añadida
+
+== ANTES bot_mensual.py ==
+def recoger(opts):
+    log("1/4 · Recogiendo tweets de @elonmusk…")
+    vistos_n = {}
+    for nombre, fn in (("jina-tw", rt.descargar_jina_tw), ("jina-x", rt.descargar_jina_x), ("nitter", rt.descargar_nitter)):
+        try:
+            p = fn()
+            if p:
+                vistos_n.update(p)
+                log(f"      · {nombre}: {len(p)} items")
+            else:
+
+== DESPUÉS bot_mensual.py ==
+def recoger(opts):
+    log("1/4 · Recogiendo tweets de @elonmusk…")
+    vistos_n = {}
+    for nombre, fn in (("twitterapi", rt.descargar_twitterapi), ("jina-tw", rt.descargar_jina_tw), ("jina-x", rt.descargar_jina_x), ("nitter", rt.descargar_nitter)):
+        try:
+            p = fn()
+            if p:
+                vistos_n.update(p)
+                log(f"      · {nombre}: {len(p)} items")
+            else:
+⚠️ Patrón no encontrado en senal_vivo.py (puede que ya tenga otro filtro)
+
+== ¿bot_mensual.py tiene casi_senal? ==
+195:def avisar_casi_senal():
+204:        notificar.casi_senal(evaluados)
+262:    avisar_casi_senal()
+
+== ¿notificar.py del mensual tiene casi_senal? ==
+190:def casi_senal(evaluados, horas=6):
+
+== Validar sintaxis ==
+OK recoger_tweets
+OK bot_mensual.py
+OK senal_vivo.py
+
+== Test directo scrapers ==
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "/opt/polymarket/bot-polymarket-elon-mensual/recoger_tweets.py", line 585, in descargar_twitterapi
+    with urllib.request.urlopen(req, timeout=30) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 521, in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 630, in http_response
+    response = self.parent.error(
+               ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 559, in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 639, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 402: Payment Required
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 114, in apport_excepthook
+    report["ExecutableTimestamp"] = str(int(os.stat(binary).st_mtime))
+                                            ^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/polymarket/bot-polymarket-elon-mensual/-c'
+
+Original exception was:
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "/opt/polymarket/bot-polymarket-elon-mensual/recoger_tweets.py", line 585, in descargar_twitterapi
+    with urllib.request.urlopen(req, timeout=30) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 521, in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 630, in http_response
+    response = self.parent.error(
+               ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 559, in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 639, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 402: Payment Required
+
+== Reiniciando poly-mensual ==
+
+== Estado ==
+active
+root      669165       1  1 11:18 ?        00:00:00 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+
+== Esperar 80s ==
+
+== Logs tras reinicio ==
+  nitter lightbrd.com: sin items
+  nitter nitter.space: sin items
+[2026-09-19 07:19:24 EDT]       · nitter: sin items
+[2026-09-19 07:19:24 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-19 07:19:24 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-19 07:19:41 EDT]       · 8 mercados · 1 mensuales abiertos → mercado_activo.json
+[2026-09-19 07:19:41 EDT] 3/4 · Trading REAL…
+[2026-09-19 07:19 EDT] Trading REAL MENSUAL  · saldo $227.98 · paso 3
+  (sin señal mensual → no se abre apuesta real · paso 3)
+  Historial REAL: 2 apuestas · 0G/2P · beneficio $-4.70
+[2026-09-19 07:19:41 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+[2026-09-19 07:19:42 EDT] 4/4 · Estado:
+fecha        tweets
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+2026-09-10       22
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+2026-09-17       20
+2026-09-18       20
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-19 07:19:42 EDT] Pasada completada en 58.6 s
+[2026-09-19 07:19:42 EDT] Próxima pasada en 5 min…
