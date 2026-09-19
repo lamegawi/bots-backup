@@ -1,0 +1,57 @@
+=== FIX SLUG MENSUAL V2 · 20260919_173110 UTC ===
+Backup: mercado_polymarket.py.bak_20260919_173110
+
+== ANTES: cómo se genera el slug mensual ==
+        d1 = hoy + timedelta(days=i)
+        d2 = d1 + timedelta(days=2)
+        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}-{d2.year}")
+    for i in range(-7, 22):            # semanales: desde hace 7 días hasta +21 (día a día)
+        d1 = hoy + timedelta(days=i)
+        d2 = d1 + timedelta(days=7)
+        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.day}-{MESES_NOMBRE[d2.month]}-{d2.day}-{d2.year}")
+    for delta in (-2, -1, 0, 1, 2, 3):  # mensuales: 2 atrás, actual y 3 futuros
+        d1 = hoy + timedelta(days=31 * delta)
+        slugs.add(f"elon-musk-of-tweets-{MESES_NOMBRE[d1.month]}-{d1.year}")
+
+    for s in sorted(slugs):
+        if s in vistos_slugs:          # ya lo trae la búsqueda pública
+            continue
+        info = conocidas.get(s)
+        if info and info.get("cerrada"):
+            continue                   # resuelta: no volverá a abrirse
+        try:
+            data = curl(f"https://gamma-api.polymarket.com/events?slug={s}")
+            if isinstance(data, list) and data and not data[0].get("closed"):
+                vistos.setdefault(data[0].get("id"), data[0])
+        except Exception:
+            pass
+    return list(vistos.values())
+
+
+== Aplicando fix: añadir 'in-' al slug ==
+No se encontraron patrones
+
+== DESPUÉS ==
+OK sintaxis
+
+== Probar carga septiembre ==
+Traceback (most recent call last):
+  File "<string>", line 4, in <module>
+AttributeError: 'list' object has no attribute 'get'
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 228, in partial_apport_excepthook
+    return apport_excepthook(binary, exc_type, exc_obj, exc_tb)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 114, in apport_excepthook
+    report["ExecutableTimestamp"] = str(int(os.stat(binary).st_mtime))
+                                            ^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/polymarket/bot-polymarket-elon-mensual/-c'
+
+Original exception was:
+Traceback (most recent call last):
+  File "<string>", line 4, in <module>
+AttributeError: 'list' object has no attribute 'get'
+
+== Reiniciando poly-mensual ==
+active
