@@ -1,0 +1,71 @@
+=== DIAGNOSTICO CIERRE 48H · 20260919_094156 UTC ===
+
+== ¿Cómo se llama notificar_cierre desde operar_real.py? ==
+            f"Stake ${act['stake']:.2f} · saldo de la operación ${benef:+.2f}\n"
+            f"{saldo_ntfy.saldo_real_texto()}",
+            titulo="💰 Apuesta REAL cerrada",
+            etiqueta="white_check_mark" if res == "G" else "x")
+    except Exception:
+        pass
+    return True
+
+
+# ------------------------------------------------------------------ abrir
+def abrir(estado, dry=False, actualizar=False):
+
+== ¿Hay lógica de cierre en bot.py? ==
+
+== Comparar con Trump: ¿cómo detecta Trump el cierre? ==
+    try:
+        mks = mp.actualizar_mercado()
+        abiertos = [m for m in mks if not m["cerrado"] and m["tipo"] == "semanal"]
+        log(f"      · {len(mks)} mercados · {len(abiertos)} semanales abiertas "
+            f"→ mercado_activo.json")
+        return mks
+    except Exception as e:
+        log(f"      · ERROR {e}")
+        try:
+            notificar.alerta_error(
+                f"⚠️ No se pudo actualizar el mercado de Polymarket: {e}")
+        except Exception:
+            pass
+
+== ¿real.json tiene activa? ==
+activa: {'slug': 'elon-musk-of-tweets-september-17-september-19-2026', 'fecha': '2026-09-19', 'bin_titulo': '40-64', 'lo': 40, 'hi': 64, 'lado': 'NO', 'precio': 0.075, 'cuota': 13.33, 'p_modelo': 0.0714, 'paso': 6, 'stake': 10.0, 'motor': 'motor_v2_ev_escalones_tope10', 'ev': 12.381, 'order_id': '0x5187335784179bb8e1966b99486ae40e860d37223f8185e60557b2912b866c55', 'token_id': '80632947896814314763768315264512985191479460484092277362769061513344138455578', 'pendiente': True, 'fecha_orden_ts': 1789809808.2003744, 'ventana_fin': '2026-09-19T16:00:00+00:00'}
+slug: elon-musk-of-tweets-september-17-september-19-2026
+bin: ?
+paso: 6
+
+== ¿poly_telegram_bot.py maneja mensajes de cierre? ==
+Botones (teclado fijo):
+  1. 🟢 Abiertas     -> operaciones abiertas, por ventana (tweets, P&L, tiempo)
+  2. 📅 Finalizadas  -> operaciones cerradas del mes en curso (con saldo)
+  3. 💰 Saldo        -> saldo real de la cuenta + P&L total acumulado
+  4. 🪟 Ventanas     -> todas las ventanas activas (48h, semanal, mensual)
+
+Fuentes de datos (lectura en vivo):
+  - mercado_activo.json (gamma API de Polymarket, refrescado por los bots)
+
+== Buscar logs de cierre en /var/log/poly-elon.log ==
+
+== ¿Qué hay en el log reciente (última pasada)? ==
+  Historial REAL: 7 apuestas · 1G/6P · beneficio $-22.16
+[2026-09-19 05:35:32 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-19 05:35:32 EDT] 4/5 · Estado:
+fecha        tweets
+2026-09-03        1
+--
+[2026-09-19 05:40:32 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-19 05:40:32 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-19 05:40:32 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-19 05:40:33 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-19 05:40:33 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-19 05:40:36 EDT]       · twitterapi: 20 items
+--
+[2026-09-19 05:41:31 EDT] 3/5 · Trading REAL…
+[2026-09-19 05:41 EDT] Trading REAL  · saldo $227.98 · paso 6
+  Historial REAL: 7 apuestas · 1G/6P · beneficio $-22.16
+[2026-09-19 05:41:32 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-19 05:41:32 EDT] 4/5 · Estado:
+fecha        tweets
+2026-09-03        1
