@@ -1,0 +1,65 @@
+=== CHECK ESTADO TWEETS · 20260919_090041 UTC ===
+
+== ¿Cuántos tweets hay en estado_tweets.json? ==
+Total tweets en estado: 842
+Último tweet:
+  id=2100959396603801728: {'id': '2100959396603801728', 'kind': 'post', 'autor': 'elonmusk', 'created_at': 'Fri Sep 18 14:45:28 +0000 2026', 'primera_vista': 'Sat Sep 19 08:36:19 +0000 2026', 'exacto': True}
+
+== Distribución por día de los tweets en estado ==
+  2026-09-07: 26 tweets
+  2026-09-08: 26 tweets
+  2026-09-09: 20 tweets
+  2026-09-10: 27 tweets
+  2026-09-11: 24 tweets
+  2026-09-12: 11 tweets
+  2026-09-13: 30 tweets
+  2026-09-14: 9 tweets
+  2026-09-18: 9 tweets
+  2026-09-19: 11 tweets
+
+== ¿Hay tweets del 19-sept (hoy)? ==
+Tweets de hoy (2026-09-19): 0
+
+== ¿Qué dice conteo_ventana para el mercado 48h Sept 17-19? ==
+Ahora: 2026-09-19 09:00:41.682728+00:00
+Inicio mercado: 2026-09-17 00:00:00+00:00
+T0 = 0 (total estado = 0)
+
+== Esperar 250s para 1 pasada más ==
+
+== Logs de las últimas 5 min ==
+  nitter lightbrd.com: sin items
+  nitter nitter.space: sin items
+[2026-09-19 05:03:50 EDT]       · nitter: sin items
+[2026-09-19 05:03:50 EDT]       · tweets únicos: 842 (reposts 508) · CSV: 52 días (nuevos/mejorados: 0)
+[2026-09-19 05:03:50 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-19 05:04:05 EDT]       · 8 mercados · 2 de 48 h abiertos → mercado_activo.json
+[2026-09-19 05:04:05 EDT] 3/5 · Trading REAL…
+[2026-09-19 05:04 EDT] Trading REAL  · saldo $227.98 · paso 6
+  (sin señal 48 h → no se abre apuesta real · paso 6)
+  Historial REAL: 7 apuestas · 1G/6P · beneficio $-22.16
+[2026-09-19 05:04:06 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-19 05:04:06 EDT] 4/5 · Estado:
+fecha        tweets
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+2026-09-10       22
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+2026-09-17       20
+2026-09-18       20
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-19 05:04:06 EDT] Pasada completada en 60.0 s
+[2026-09-19 05:04:06 EDT] Próxima pasada en 5 min…
+
+== ¿Se actualizó el cooldown? ==
+{
+ "error_general": 1789803105.6642423
+}
