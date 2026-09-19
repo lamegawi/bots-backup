@@ -1,0 +1,36 @@
+=== VERIFICAR POST-FIX · 20260919_080337 UTC ===
+
+== Estado servicio ==
+active
+
+== Esperar 200s para asegurar al menos 1 pasada completa ==
+
+== Logs de los últimos 5 min ==
+-- No entries --
+
+== ¿Ha cambiado el cooldown? (señal de que casi_senal se ejecutó) ==
+{
+ "error_general": 1789803105.6642423
+}
+== Buscar mensajes CASI SEÑAL en logs ==
+
+== Verificar que la línea 153 sigue con 24.0 (no se ha sobreescrito) ==
+75:ENTRADA_MAX_H = {"48h": 12.0, "semanal": 24.0, "mensual": 72.0}
+153:        if horas_elapsed > ENTRADA_MAX_H.get(mk["tipo"], 24.0):
+
+== Última línea del log principal del bot ==
+[2026-09-19 04:01:05 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-19 04:01:05 EDT] 4/5 · Estado:
+[2026-09-19 04:01:05 EDT] Pasada completada en 59.9 s
+[2026-09-19 04:01:05 EDT] Próxima pasada en 5 min…
+[2026-09-19 04:06:05 EDT] ==============================================================
+[2026-09-19 04:06:05 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-19 04:06:06 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-19 04:06:06 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-19 04:06:07 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-19 04:06:07 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-19 04:06:07 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-19 04:06:07 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-19 04:06:48 EDT]       · nitter: sin items
+[2026-09-19 04:06:48 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-19 04:06:48 EDT] 2/5 · Actualizando mercados de Polymarket…
