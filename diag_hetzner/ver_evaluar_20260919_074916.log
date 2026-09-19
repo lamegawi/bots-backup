@@ -1,0 +1,109 @@
+=== VER FUNCIÓN EVALUAR · 20260919_074916 UTC ===
+
+== ¿Qué mercados hay realmente en mercado_activo.json? ==
+Total mercados: 8
+actualizado: 2026-09-19T07:44:14.743379+00:00
+  [48h] Elon Musk # tweets September 17 - September 19, 20  slug=elon-musk-of-tweets-september-17-september-19-2026
+  [48h] Elon Musk # tweets September 19 - September 21, 20  slug=elon-musk-of-tweets-september-19-september-21-2026
+  [semanal] Elon Musk # tweets September 15 - September 22, 20  slug=elon-musk-of-tweets-september-15-september-22-2026
+  [semanal] Elon Musk # tweets September 18 - September 25, 20  slug=elon-musk-of-tweets-september-18-september-25-2026
+  [semanal] Elon Musk # tweets September 22 - September 29, 20  slug=elon-musk-of-tweets-september-22-september-29-2026
+  [mensual] Elon Musk # tweets in October 2026?  slug=elon-musk-of-tweets-october-2026
+  [48h] Elon Musk # tweets February 21 - February 23, 2026  slug=elon-musk-of-tweets-february-21-february-23
+  [semanal] Elon Musk # tweets September 11 - September 18, 20  slug=elon-musk-of-tweets-september-11-september-18-2026
+
+== Código de senal_vivo.evaluar() ==
+def evaluar(avg7, v2, ajuste, lam48, mercados, paso, t0_override=-1, ahora=None):
+    """Evalúa todos los mercados abiertos y devuelve (evaluados, candidatas).
+    - evaluados: lista de dicts {titulo, tipo, inicio, fin, horas_rest,
+      lam_rest, t0, bins:[{titulo, lo, hi, precio_yes, cuota_yes, cuota_no,
+      p_modelo, veredicto}]}
+    - candidatas: lista de dicts {mercado, bin, lado, precio, cuota, p_modelo}
+      que cumplen las reglas R3+R4 (para abrir apuesta de papel)."""
+    ahora = ahora or datetime.now(timezone.utc)
+    tabla = senal.tabla_apuestas()
+    _, stake_base, _, _ = tabla[paso - 1] if 1 <= paso <= len(tabla) else tabla[0]
+    evaluados, candidatas = [], []
+    for mk in mercados:
+        if mk["cerrado"] or not mk.get("inicio_iso"):
+            continue
+        inicio = datetime.fromisoformat(mk["inicio_iso"]).astimezone(timezone.utc)
+        fin = datetime.fromisoformat(mk["fin_iso"]).astimezone(timezone.utc)
+        if ahora < inicio or ahora > fin:
+            continue
+        horas_rest = (fin - ahora).total_seconds() / 3600
+        horas_elapsed = (ahora - inicio).total_seconds() / 3600
+        if horas_elapsed > ENTRADA_MAX_H.get(mk["tipo"], 12.0):
+            continue  # entrada solo al inicio de la ventana
+        if mk["tipo"] == "48h":
+            lam_rest = lam48 * max(0.0, horas_rest) / 48.0
+        elif mk["tipo"] == "semanal":
+            lam_rest = 7 * avg7 * ajuste * max(0.0, horas_rest) / 168.0
+        else:
+            lam_rest = lam48 * max(0.0, horas_rest) / 48.0
+        t0_auto, total_estado = conteo_ventana(inicio, ahora)
+        t0 = t0_override if t0_override >= 0 else t0_auto
+        bins = []
+        for b in mk["bins"]:
+            hi = b["hi"] if b["hi"] != float("inf") else math.inf
+            # Guarda: bin ya decidido por los tweets publicados (t0).
+            #   hi finito y t0 > hi  -> [lo,hi] superado: YES imposible, NO ya decidido
+            #   hi = inf  y t0 >= lo -> "≥ lo" ya cumplido: YES ya decidido
+            decidido = (t0 > hi) if hi != math.inf else (t0 >= b["lo"])
+            if decidido:
+                p = 1.0 if hi == math.inf else 0.0
+                bins.append({"titulo": b["titulo"], "lo": b["lo"], "hi": b["hi"],
+                             "precio_yes": b["precio_yes"], "cuota_yes": b["cuota_yes"],
+                             "cuota_no": b["cuota_no"], "p_modelo": p,
+                             "veredicto": "PASAR"})
+                continue
+            # ====== ANTI-LONG-SHOT (10/09) ======
+            # Si t0 + lam_rest ya supera hi, este bin está matemáticamente
+            # perdido. Lo saltamos sin evaluar (p_modelo ≈ 0, pero
+            # p_modelo × cuota podría aún dar EV alta en long shots).
+            if hi != math.inf and t0 + lam_rest > hi:
+                bins.append({"titulo": b["titulo"], "lo": b["lo"], "hi": b["hi"],
+                             "precio_yes": b["precio_yes"], "cuota_yes": b["cuota_yes"],
+                             "cuota_no": b["cuota_no"], "p_modelo": 0.0,
+                             "veredicto": "PASAR"})
+                continue
+            if hi == math.inf and t0 + lam_rest < b["lo"] * 0.5:
+                # bin "≥ lo" donde los tweets esperados restantes son
+                # menos de la mitad del umbral: NO se llegará
+                bins.append({"titulo": b["titulo"], "lo": b["lo"], "hi": b["hi"],
+                             "precio_yes": b["precio_yes"], "cuota_yes": b["cuota_yes"],
+                             "cuota_no": b["cuota_no"], "p_modelo": 0.0,
+                             "veredicto": "PASAR"})
+                continue
+            p = senal.p_bin(b["lo"] - t0, (hi - t0) if hi != math.inf else math.inf, lam_rest)
+            cy, cn = b["cuota_yes"], b["cuota_no"]
+            veredicto, lado = "PASAR", None
+            # ====== FILTRO PRECIO MÁXIMO (10/09) ======
+            # No comprar long shots (precio < 0.20)
+            if p >= senal.P_MIN_YES and cy and cy >= senal.CUOTA_MINIMA \
+                    and b["precio_yes"] <= senal.PRECIO_MAX:
+                veredicto, lado = "APOSTAR YES", "YES"
+            elif p <= senal.P_MAX_NO and cn and cn >= senal.CUOTA_MINIMA \
+                    and (1.0 - b["precio_yes"]) <= senal.PRECIO_MAX:
+                veredicto, lado = "APOSTAR NO", "NO"
+            bins.append({"titulo": b["titulo"], "lo": b["lo"], "hi": b["hi"],
+                         "precio_yes": b["precio_yes"], "cuota_yes": cy,
+                         "cuota_no": cn, "p_modelo": p, "veredicto": veredicto})
+            if lado:
+                cuota_lado = (cy if lado == "YES" else cn)
+                p_lado = p if lado == "YES" else (1.0 - p)
+                ev = round(p_lado * (cuota_lado or 0), 3)
+
+== Buscar filtros de tipo/ventana en senal_vivo.py ==
+37:EV_MIN_ENTRADA = 1.8   # EV mínimo para entrar (filtro extra en semanal/mensual)
+75:ENTRADA_MAX_H = {"48h": 12.0, "semanal": 24.0, "mensual": 72.0}
+117:    # ---- día de inicio y día actual (parciales), contando TODOS los tipos ----
+135:    - evaluados: lista de dicts {titulo, tipo, inicio, fin, horas_rest,
+153:        if horas_elapsed > ENTRADA_MAX_H.get(mk["tipo"], 12.0):
+155:        if mk["tipo"] == "48h":
+157:        elif mk["tipo"] == "semanal":
+217:                                   "ventana": (inicio, fin), "tipo": mk["tipo"],
+222:        evaluados.append({"titulo": mk["titulo"], "slug": mk.get("slug", ""), "tipo": mk["tipo"],
+259:            print("  mercado semanal resuelto) o espera a tener ≥ 9 días de datos.")
+290:        print(f"■ {ev['titulo']}  [{ev['tipo']}]")
+294:        etiq = f"λ48={lam48:.1f}" if ev['tipo'] == "48h" else f"λ7={7*avg7*ajuste:.1f}"
