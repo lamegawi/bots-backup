@@ -1,0 +1,35 @@
+=== COMMIT V3 (manual) · 20260919_180422 UTC ===
+== Probar /root/bots-repo ==
+On branch main
+Your branch and 'origin/main' have diverged,
+and have 29 and 26 different commits each, respectively.
+  (use "git pull" if you want to integrate the remote branch with yours)
+
+Last command done (1 command done):
+   pick bde8b82 backup poly 2026-08-28 14:59
+Next command to do (1 remaining command):
+   pick 07a507a backup poly 2026-08-28 15:03
+  (use "git rebase --edit-todo" to view and edit)
+
+== Ver cambios ==
+
+== Add y commit ==
+Author identity unknown
+
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+
+== Push (puede pedirte credenciales si HTTPS) ==
+error: src refspec arena/01a058fe-bots-backup does not match any
+error: failed to push some refs to 'https://github.com/lamegawi/bots-backup.git'
+
+== HEAD final ==
+014312a backup poly 2026-09-19
+bca86ee backup poly 2026-09-18
+73a38f1 backup poly 2026-09-17
