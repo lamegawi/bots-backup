@@ -1,0 +1,74 @@
+=== VER CONTEO_VENTANA · 20260919_090722 UTC ===
+
+== Código completo de conteo_ventana ==
+def conteo_ventana(inicio_utc, ahora_utc):
+    """T0 = tweets dentro de la ventana del mercado (posts + reposts + quotes).
+
+    Estrategia robusta:
+      · días COMPLETOS estrictamente dentro de la ventana → datos_elon.csv
+        (el CSV solo guarda días terminados)
+      · día de inicio y día actual (parciales) → estado_tweets.json con
+        timestamps exactos, SIN saltar reposts (la regla del mercado cuenta
+        posts + quote posts + reposts).
+    Devuelve (n, total_estado)."""
+    try:
+        estado = json.load(open("estado_tweets.json", encoding="utf-8")).get("tweets", {})
+    except Exception:
+        estado = {}
+    total = len(estado)
+    ahora_et = ahora_utc.astimezone(ET)
+    inicio_et = inicio_utc.astimezone(ET)
+    hoy = ahora_et.date()
+    d_inicio = inicio_et.date()
+    incluye_dia_inicio = (inicio_et.hour == 0 and inicio_et.minute == 0)
+    n = 0
+    # ---- días completos dentro de la ventana (datos_elon.csv) ----
+    try:
+        import csv as _csv
+        with open("datos_elon.csv", newline="", encoding="utf-8") as f:
+            for fila in _csv.DictReader(f):
+                try:
+                    d = datetime.strptime(fila["fecha"].strip(), "%Y-%m-%d").date()
+                except Exception:
+                    continue
+                if d >= hoy:
+                    continue
+                if d > d_inicio or (incluye_dia_inicio and d == d_inicio):
+                    try:
+                        n += int(float(fila["tweets"]))
+                    except Exception:
+                        pass
+    except Exception:
+        pass
+    # ---- día de inicio y día actual (parciales), contando TODOS los tipos ----
+    for v in estado.values():
+        try:
+            ts = datetime.strptime(v["created_at"], T_FMT).replace(tzinfo=timezone.utc)
+        except Exception:
+            continue
+        d_ts = ts.astimezone(ET).date()
+        if d_ts not in (d_inicio, hoy):
+            continue
+        if d_ts == d_inicio and incluye_dia_inicio:
+            continue  # ese día ya se contó completo vía CSV
+        if inicio_utc <= ts <= ahora_utc:
+            n += 1
+    return n, total
+
+
+def evaluar(avg7, v2, ajuste, lam48, mercados, paso, t0_override=-1, ahora=None):
+
+== Probar conteo_ventana con print verbose ==
+Total tweets en estado: 842
+
+Mercado 48h Sept 17-19
+inicio UTC: 2026-09-17 00:00:00+00:00
+ahora UTC: 2026-09-19 09:00:00+00:00
+  Match: id=2101207701954974205 created_at=Sat Sep 19 07:12:09 +0000 2026
+  Match: id=2101206965632258423 created_at=Sat Sep 19 07:09:13 +0000 2026
+  Match: id=2101198367711719729 created_at=Sat Sep 19 06:35:03 +0000 2026
+
+Total tweets en ventana (manual): 20
+
+Llamando a conteo_ventana...
+Resultado: n=0, total_estado=0
