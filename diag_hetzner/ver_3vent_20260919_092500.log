@@ -1,0 +1,52 @@
+=== VER 3 VENTANAS POST-FIX · 20260919_092500 UTC ===
+
+== Esperar 200s ==
+
+== Últimas 40 líneas de /var/log/poly-elon.log ==
+  nitter nitter.space: sin items
+[2026-09-19 05:22:38 EDT]       · nitter: sin items
+[2026-09-19 05:22:39 EDT]       · tweets únicos: 842 (reposts 508) · CSV: 52 días (nuevos/mejorados: 0)
+[2026-09-19 05:22:39 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-19 05:22:54 EDT]       · 8 mercados · 2 de 48 h abiertos → mercado_activo.json
+[2026-09-19 05:22:54 EDT] 3/5 · Trading REAL…
+[2026-09-19 05:22 EDT] Trading REAL  · saldo $227.98 · paso 6
+  · 1 ventana(s) con señal · elegida la de mayor EV libre: 40-64 NO · EV 12.38
+  · puerta del gestor: OK (proyección 40.0 dentro de [40,64])
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+  Saldo CLOB: $221.72 pUSD
+  → Orden REAL: Elon Musk # tweets September 17 - September 19, 2026? · 40-64 NO @0.075 (cuota 13.33) · size 10.00 USDC · token 806329478968…
+  (stake $10.00 → 133.33 shares a 0.075)
+  · canceladas 1 órdenes previas sin cerrar
+  Orden enviada: 0x5187335784179bb8e1966b99486ae40e860d37223f8185e60557b2912b866c55  (respuesta: {'errorMsg': '', 'orderID': '0x5187335784179bb8e1966b99486ae40e860d37223f8185e60557b2912b866c55', 'takingAmount': '', 'm)
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+  ⏳ Orden 0x518733578417… pendiente de llenado (se vigilará cada pasada, máx 60 min)
+  ✔ ABIERTA apuesta REAL (o simulada): 40-64 NO a 0.075 · paso 6 · stake $10.00
+  Historial REAL: 7 apuestas · 1G/6P · beneficio $-22.16
+[2026-09-19 05:23:28 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+[2026-09-19 05:23:29 EDT] 4/5 · Estado:
+fecha        tweets
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+2026-09-10       22
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+2026-09-17       20
+2026-09-18       20
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-19 05:23:29 EDT] Pasada completada en 94.7 s
+[2026-09-19 05:23:29 EDT] Próxima pasada en 5 min…
+
+== Cooldown ==
+{
+ "error_general": 1789803105.6642423,
+ "casi_Elon Musk # tweets September 17 - Septem": 1789809808.4447396
+}
+== ¿Algún CASI SEÑAL en log? ==
