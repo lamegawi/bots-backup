@@ -1,0 +1,82 @@
+=== COMPARAR CSVs · 20260919_074407 UTC ===
+
+== 48h ==
+fecha,tweets
+2025-01-24,1
+2026-02-26,1
+...
+2026-09-17,20
+2026-09-18,20
+Columnas: fecha,tweets
+
+== Semanal ==
+fecha,tweets
+2025-01-24,1
+2026-02-26,1
+...
+2026-09-17,20
+2026-09-18,20
+Columnas: fecha,tweets
+
+== ¿Cómo se genera el CSV? ==
+10:     datos_elon.csv (guard monótono: solo sube, nunca degrada).
+264:        datos = senal.cargar_csv("datos_elon.csv")
+297:            datos = senal.cargar_csv("datos_elon.csv")
+360:    print("\nArchivos clave: datos_elon.csv · estado_tweets.json · mercado_activo.json · "
+
+267:        evaluados, _ = senal_vivo.evaluar(m["avg7"], m["v2"], m["ajuste"],
+268:                                          m["lam48"], mercados, 1)
+299:            metricas = {"avg7": m["avg7"], "v2": m["v2"], "r": m["r"],
+300:                        "lam48": m["lam48"]}
+
+== Función cargar_csv del senal.py ==
+def cargar_csv(path):
+    """Devuelve lista ordenada de (fecha, tweets)."""
+    datos = []
+    with open(path, newline="", encoding="utf-8") as f:
+        for fila in csv.DictReader(f):
+            fecha = datetime.strptime(fila["fecha"].strip(), "%Y-%m-%d").date()
+            tweets = int(float(fila["tweets"].strip()))
+            datos.append((fecha, tweets))
+    datos.sort(key=lambda x: x[0])
+    if len(datos) < 9:
+        sys.exit("ERROR: se necesitan al menos 9 días de datos completos (7 para AVG7 + 2 para V2).")
+    return datos
+
+
+def metricas(datos):
+    """AVG7, V2, R, ajuste, λ48 a partir de los 7/2 últimos días COMPLETOS."""
+    ult7 = [t for _, t in datos[-7:]]
+    ult2 = [t for _, t in datos[-2:]]
+    avg7 = sum(ult7) / 7.0
+    v2 = sum(ult2)
+    r = v2 / (2.0 * avg7) if avg7 > 0 else float("nan")
+
+== ¿Qué hay en el bot_semanal.py que sí tiene métricas? ==
+44:    avg7 = metricas['avg7']
+45:    ajuste = metricas['ajuste']
+46:    lam = 7 * avg7 * ajuste
+70:            log(f"AVG7={m['avg7']:.2f}  AVG30={m['avg30']:.2f}  R={m['R']:.3f}  ajuste={m['ajuste']:.3f}")
+124:            from py_clob_client_v2.http_helpers import helpers as _hh
+157:    # ---- PUERTA DEL GESTOR (parche semanal v2, 13-sep): no comprar un cajón
+194:            from py_clob_client_v2.client import ClobClient
+195:            from py_clob_client_v2.clob_types import OrderArgs
+
+== ¿Cómo carga CSV el semanal? ==
+
+        datos = senal.cargar_csv()
+        m = senal.metricas(datos)
+        if m:
+            log(f"AVG7={m['avg7']:.2f}  AVG30={m['avg30']:.2f}  R={m['R']:.3f}  ajuste={m['ajuste']:.3f}")
+        semanales = mp.actualizar_mercado()
+        log(f"{len(semanales)} mercados semanales abiertos")
+        estado = cargar_estado()
+        log(f"saldo=${estado['saldo']}  paso={estado['paso']}  activa={'sí' if estado.get('activa') else 'no'}")
+
+        if estado.get('activa'):
+            log(f"Ya hay posición activa en {estado['activa'].get('slug','?')[:50]}")
+            return
+
+        mejor = None
+        for mkt in semanales:
+            titulo = mkt.get('titulo', '?')[:50]
