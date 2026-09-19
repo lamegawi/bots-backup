@@ -1,0 +1,17 @@
+=== TEST RAPIDAPI · 20260919_113807 UTC ===
+
+== ¿RapidAPI key en env? ==
+
+
+== Probar RapidAPI directamente ==
+Key: ...
+Host: 
+
+HTTP: 000 · Tamaño: 0
+
+Respuesta:
+head: cannot open '/tmp/rapidapi_test.json' for reading: No such file or directory
+
+
+== Test también con el código recoger_tweets_rapidapi.py ==
+❌ ERROR: configura TWITTERAPI_KEY (export TWITTERAPI_KEY=xxx)
