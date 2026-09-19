@@ -1,0 +1,31 @@
+=== BUSCAR REPO GIT · 20260919_175136 UTC ===
+
+== Buscar repos git ==
+/opt/polymarket/bot-polymarket-elon-mensual-v2/.git
+/opt/polymarket/bot-polymarket-elon-mensual/.git
+/opt/polymarket/bot-polymarket-elon-v2/.git
+/opt/polymarket/bot-polymarket-elon/.git
+/opt/polymarket/bot-polymarket-elon-semanal/.git
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/.git
+/root/gh_backup/.git
+/root/bots-repo/.git
+/tmp/diag-upload/.git
+
+== ¿Dónde está el repo lamegawi/bots-backup? ==
+
+== Buscar específicamente ==
+/root/gh_backup/.git
+/root/bots-repo/.git
+/opt/polymarket/bot-polymarket-elon-mensual-v2/.git
+/opt/polymarket/bot-polymarket-elon-mensual/.git
+/opt/polymarket/bot-polymarket-elon-v2/.git
+/opt/polymarket/bot-polymarket-elon/.git
+/opt/polymarket/bot-polymarket-elon-semanal/.git
+/opt/polymarket/_archivado/bot-polymarket-elon-semanal-v2/.git
+
+== Buscar clone del repo ==
+ls: cannot access '/home/user/bots-backup': No such file or directory
+ls: cannot access '/home/user/': No such file or directory
+
+== Verificar config git remote ==
+cat: /home/user/bots-backup/.git/config: No such file or directory
