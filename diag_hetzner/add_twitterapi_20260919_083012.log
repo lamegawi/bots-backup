@@ -1,0 +1,25 @@
+=== AÑADIR TWITTERAPI AL BOT · 20260919_083012 UTC ===
+Backups creados
+✅ Función descargar_twitterapi añadida a recoger_tweets.py
+✅ bot.py modificado para usar twitterapi primero
+
+== Validar sintaxis ==
+OK recoger_tweets
+OK bot.py sintaxis
+
+== Probar descargar_twitterapi() ==
+Items: 20
+Primer item id=2101207701954974205: {'id': '2101207701954974205', 'kind': 'post', 'autor': 'elonmusk', 'created_at': 'Sat Sep 19 07:12:09 +0000 2026', 'primera_vista': 'Sat Sep 19 08:30:14 +0000 2026', 'exacto': True}
+
+== Reiniciando poly-elon ==
+
+== Logs de la primera pasada con twitterapi ==
+
+Esperando 80s para ver una pasada completa con twitterapi...
+
+== Logs tras 80s ==
+
+== ¿Se actualizó el cooldown? ==
+{
+ "error_general": 1789803105.6642423
+}
