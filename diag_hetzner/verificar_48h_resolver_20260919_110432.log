@@ -1,0 +1,104 @@
+=== VERIFICAR LLAMADA RESOLVER EN 48H · 20260919_110432 UTC ===
+
+== Ver pasada_real() del 48h ==
+        print(f"  [aviso] vigilar orden: {e}")
+
+def pasada_real(dry=False, actualizar=False, excel=False):
+    """Una pasada completa de trading real."""
+    cfg = cargar_config()
+    estado = cargar_estado()
+    print(f"[{datetime.now(ET).strftime('%Y-%m-%d %H:%M %Z')}] Trading REAL "
+          f"{'(SECO)' if dry else ''} · saldo ${estado['saldo']:.2f} · "
+          f"paso {estado['paso']}")
+    if estado.get("activa"):
+        act = estado["activa"]
+        # registrar la ventana en el lock compartido (evita duplicados entre bots)
+        marcar_ventana(act.get("slug", ""), act.get("bin_titulo", ""),
+                       act.get("ventana_fin", ""))
+        resolver(estado, fee_pct=cfg.get("fee_pct", 0.0))
+        # FIXWIN_ARENA: reposicionamiento si el bin activo pierde probabilidad
+        if estado.get("activa"):
+            fixwin_check(estado, cfg, dry=dry)
+    if not estado.get("activa"):
+        abrir(estado, dry=dry, actualizar=actualizar)
+    n = len(estado["historial"])
+    if n:
+        g = sum(1 for h in estado["historial"] if h["resultado"] == "G")
+        print(f"  Historial REAL: {n} apuestas · {g}G/{n-g}P · "
+              f"beneficio ${sum(h['beneficio'] for h in estado['historial']):+.2f}")
+    if excel and os.path.exists(HISTORIAL):
+        try:
+            from excel_historial import generar as gen_hist
+            ruta, anadidas, total = gen_hist(HISTORIAL,
+                                             salida="Historial_Operaciones.xlsx",
+                                             bankroll=cfg.get("bankroll", BANKROLL),
+                                             titulo_extra="trading REAL")
+            print(f"Excel historial: {ruta} (añadidas {anadidas}, total {total})")
+
+== ¿Se llama resolver en cada pasada? ==
+
+def resolver(estado, fee_pct=0.0):
+    """Cierra la apuesta real activa si su mercado ya se resolvió.
+    (Polymarket canjea automáticamente las shares ganadoras → el USDC
+    vuelve solo al wallet; aquí solo anotamos el resultado.)"""
+--
+                       act.get("ventana_fin", ""))
+        resolver(estado, fee_pct=cfg.get("fee_pct", 0.0))
+        # FIXWIN_ARENA: reposicionamiento si el bin activo pierde probabilidad
+        if estado.get("activa"):
+            fixwin_check(estado, cfg, dry=dry)
+
+== ¿Qué hace evento_resuelto? ==
+
+# ------------------------------------------------------------------ resolver
+def evento_resuelto(slug):
+    r = subprocess.run(["curl", "-s", "--max-time", "40",
+                        f"https://gamma-api.polymarket.com/events?slug={slug}"],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+    try:
+        evs = json.loads(r.stdout)
+        ev = evs[0]
+        if not ev.get("closed"):
+            return False, None
+        for m in ev.get("markets", []):
+            try:
+                p = json.loads(m.get("outcomePrices") or "[]")
+            except Exception:
+                continue
+            if p and p[0] == "1":
+                return True, m.get("groupItemTitle")
+    except Exception:
+        pass
+    return False, None
+
+
+
+== Logs recientes del 48h ==
+  ✔ RESUELTA apuesta REAL del 2026-08-22: 90-114 YES → ganador 40-64 → P $-6.60 (saldo $517.74)
+  ✔ RESUELTA apuesta REAL del 2026-09-02: 40-64 NO → ganador 40-64 → P $-10.00 (saldo $477.84)
+
+== Probar evento_resuelto con el mercado activo ==
+Probando evento_resuelto('elon-musk-of-tweets-september-17-september-19-2026')...
+Resultado: resuelto=False, winner=None
+
+== Última línea del log ==
+[2026-09-19 07:02:47 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-19 07:02:47 EDT] 4/5 · Estado:
+fecha        tweets
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+2026-09-10       22
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+2026-09-17       20
+2026-09-18       20
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-19 07:02:47 EDT] Pasada completada en 59.4 s
+[2026-09-19 07:02:47 EDT] Próxima pasada en 5 min…
