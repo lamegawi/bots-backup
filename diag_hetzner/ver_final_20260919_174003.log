@@ -1,0 +1,70 @@
+=== VERIFICAR ESTADO FINAL · 20260919_174003 UTC ===
+
+== Servicio mensual ==
+active
+root      696358       1  1 17:35 ?        00:00:02 /usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+
+== Esperar 100s para una pasada ==
+
+== Logs tras reinicio ==
+[2026-09-19 13:37:47 EDT]       · 8 mercados · 1 mensuales abiertos → mercado_activo.json
+[2026-09-19 13:37:47 EDT] 3/4 · Trading REAL…
+[py_clob_client_v2] request error status=503 url=https://clob.polymarket.com/order body={"error":"cancels are disabled"}
+[py_clob_client_v2] request error status=503 url=https://clob.polymarket.com/order body={"error":"cancels are disabled"}
+[py_clob_client_v2] request error status=503 url=https://clob.polymarket.com/order body={"error":"cancels are disabled"}
+[py_clob_client_v2] request error status=503 url=https://clob.polymarket.com/order body={"error":"cancels are disabled"}
+[py_clob_client_v2] request error status=503 url=https://clob.polymarket.com/order body={"error":"cancels are disabled"}
+[py_clob_client_v2] request error status=503 url=https://clob.polymarket.com/order body={"error":"cancels are disabled"}
+[py_clob_client_v2] request error status=503 url=https://clob.polymarket.com/order body={"error":"cancels are disabled"}
+[py_clob_client_v2] request error status=503 url=https://clob.polymarket.com/order body={"error":"trading is disabled"}
+[2026-09-19 13:37 EDT] Trading REAL MENSUAL  · saldo $227.98 · paso 3
+  · 3 ventana(s) con señal · elegida la de mayor EV libre: 1000-1039 YES · EV 8.09
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+  Saldo CLOB: $210.73 pUSD
+  → Orden REAL: Elon Musk # of tweets in September 2026? · 1000-1039 YES @0.051 (cuota 19.61) · size 7.30 USDC · token 744746786504…
+  (stake $7.30 → 143.14 shares a 0.051)
+  · canceladas 7 órdenes previas sin cerrar
+  [ERROR] no se pudo enviar la orden: PolyApiException[status_code=503, error_message={'error': 'trading is disabled'}]
+  Historial REAL: 2 apuestas · 0G/2P · beneficio $-4.70
+[2026-09-19 13:37:51 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+[2026-09-19 13:37:53 EDT] 4/4 · Estado:
+fecha        tweets
+2026-09-07       32
+2026-09-08       40
+2026-09-09       33
+2026-09-10       41
+2026-09-11       50
+2026-09-12       24
+2026-09-13       63
+2026-09-14       28
+2026-09-15       39
+2026-09-16       20
+2026-09-17       25
+2026-09-18       31
+
+AVG7 = 32.86  V2 = 56  R = 0.852  ajuste = 0.926  λ48 = 60.9
+Días completos en CSV: 325
+[2026-09-19 13:37:53 EDT] Pasada completada en 134.1 s
+[2026-09-19 13:37:53 EDT] Próxima pasada en 5 min…
+
+== ¿Hay casi-señal en logs? ==
+
+== ¿Cooldown actualizado? ==
+{
+ "casi_Elon Musk # tweets in August 2026?": 1788223378.5287044,
+ "error_general": 1789814994.0612895,
+ "casi_Elon Musk # of tweets in September 2026?": 1789839472.4336858
+}
+== ¿Estado del bot 48h (también debería tener el fix)? ==
+active
+2026-09-14       28
+2026-09-15       39
+2026-09-16       20
+2026-09-17       25
+2026-09-18       31
+
+AVG7 = 32.86  V2 = 56  R = 0.852  ajuste = 0.926  λ48 = 60.9
+Días completos en CSV: 325
+[2026-09-19 13:41:37 EDT] Pasada completada en 92.6 s
+[2026-09-19 13:41:37 EDT] Próxima pasada en 5 min…
