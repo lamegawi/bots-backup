@@ -1,0 +1,265 @@
+=== INV SCRAPER IN-PROCESS · 20260919_081855 UTC ===
+
+== ¿Cómo se llama el scraper desde bot.py? ==
+    log("1/5 · Recogiendo tweets de @elonmusk…")
+    vistos_n = {}
+    for nombre, fn in (("jina-tw", rt.descargar_jina_tw), ("jina-x", rt.descargar_jina_x), ("nitter", rt.descargar_nitter)):
+        try:
+            p = fn()
+            if p:
+                vistos_n.update(p)
+                log(f"      · {nombre}: {len(p)} items")
+            else:
+                log(f"      · {nombre}: sin items")
+        except Exception as e:
+            log(f"      · {nombre}: ERROR {e}")
+    if not vistos_n:
+        log("      ⚠ sin datos de ninguna fuente (se conserva el estado anterior)")
+        try:
+            notificar.alerta_error(
+                "⚠️ No se pudieron recoger tweets de @elonmusk (todas las fuentes "
+                "fallaron). Se conserva el estado anterior. Revisa bot.log.")
+        except Exception:
+            pass
+        return
+    vistos = rt.fusionar(vistos_n, sin_reposts=opts.sin_reposts)
+    rt.guardar_estado(vistos)
+    dias = rt.conteo_diario(vistos, sin_reposts=opts.sin_reposts, modo_loop=opts.loop)
+    nuevos, total = rt.actualizar_csv(dias)
+    n_rep = sum(1 for v in vistos.values() if v["kind"] == "repost")
+    log(f"      · tweets únicos: {len(vistos)} (reposts {n_rep}) · "
+        f"CSV: {total} días (nuevos/mejorados: {nuevos})")
+
+
+# ------------------------------------------------------------------- 2) mercado
+def actualizar_mercado():
+    log("2/5 · Actualizando mercados de Polymarket…")
+
+== Código completo del scraper in-process ==
+Orquestador único que lo hace TODO en cada pasada:
+
+  1) Recoge tweets de @elonmusk (jina/x.com con tiempos exactos +
+     xcancel de respaldo), fusiona con el estado y actualiza
+     datos_elon.csv (guard monótono: solo sube, nunca degrada).
+  2) Actualiza los mercados de Polymarket (bins, precios, cuotas)
+     → mercado_activo.json.
+  3) Ejecuta el paper trading: resuelve apuestas de papel ya
+     decididas por el mercado real y abre nuevas cuando la señal
+     cumple las reglas (cuota ≥ 3.00, p_modelo ≥ 60% / ≤ 30%,
+     una sola apuesta activa, progresión 3.30 × 1.5^n).
+  4) Regenera automáticamente el Excel de resultados cuando hay
+     cambios (Resultados_Papel.xlsx) y muestra el estado.
+
+Todo queda registrado en bot.log y en los archivos de estado.
+
+USO:
+  python3 bot.py                       # una pasada completa
+  python3 bot.py --loop                # modo continuo (RECOMENDADO)
+  python3 bot.py --loop --intervalo 15 # cada 15 minutos
+  python3 bot.py --loop --excel        # + Excel en cada cambio
+  python3 bot.py --estado              # solo ver el estado actual
+"""
+import argparse
+import json
+import os
+import sys
+import time
+import traceback
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+try:
+    import recoger_tweets as rt
+    import mercado_polymarket as mp
+    import papel
+    import senal
+    import senal_vivo
+    import notificar
+except ImportError as e:
+    print(f"ERROR de importación: {e}")
+    print("Ejecuta el bot desde la carpeta estrategia_elon_tweets")
+    sys.exit(1)
+
+try:
+    ET = ZoneInfo("America/New_York")
+except Exception:
+    # Windows sin tzdata: fallback a hora fija de verano (UTC-4)
+    from datetime import timedelta
+    from datetime import timezone as _tz
+    ET = _tz(timedelta(hours=-4), name="EDT")
+LOG = "bot.log"
+EXCEL_HIST = "Historial_Operaciones.xlsx"
+ESTADO_BOT = "estado_bot.json"
+
+
+def cargar_estado_bot():
+    try:
+        return json.load(open(ESTADO_BOT, encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def guardar_estado_bot(d):
+--
+    """Paso 0: actualiza el CSV con el TWEET_COUNT oficial de Polymarket
+    (scraper_tweets_pm.py). Es el ancla de verdad porque el scrapeo de
+    jina+nitter falla o llega tarde.
+
+    Solo se ejecuta si el bot está en modo loop (cron) — en una pasada
+    única el usuario puede ejecutarlo manualmente antes.
+    """
+    # test: ¿urllib llega a polymarket.com desde el proceso del bot?
+    try:
+        import ssl
+        import urllib.request
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        req = urllib.request.Request("https://polymarket.com/event/elon-musk-of-tweets-september-4-september-11-2026", headers={"User-Agent": "Mozilla/5.0"})
+
+== Código del recoger_tweets_rapidapi.py (el que sí funciona) ==
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+recoger_tweets_rapidapi.py — tweets para 3 bots (Elon, Trump, Zelenskyy)
+========================================================================
+USA: twitterapi.io (endpoint /user/last_tweets — /user/tweets marca a Elon como 'suspended' falsamente)
+
+USO:
+  export TWITTERAPI_KEY=xxx
+  python3 recoger_tweets_rapidapi.py --bot elon
+  python3 recoger_tweets_rapidapi.py --bot all
+"""
+import os, sys, json, csv, argparse, urllib.request, urllib.error
+from datetime import datetime, timedelta, timezone
+from collections import defaultdict
+
+API_HOST = "api.twitterapi.io"
+API_KEY = os.environ.get("TWITTERAPI_KEY", "").strip()
+
+if not API_KEY:
+    sys.exit("❌ ERROR: configura TWITTERAPI_KEY (export TWITTERAPI_KEY=xxx)")
+
+BOTS = {
+    "elon": ("elonmusk", "/opt/polymarket/bot-polymarket-elon", "datos_elon.csv"),
+    "trump": ("realDonaldTrump", "/opt/polymarket/bot-polymarket-trump", "datos_trump.csv"),
+    "zelenskyy": ("ZelenskyyUa", "/opt/polymarket/bot-polymarket-zelenskyy", "datos_zelen.csv"),
+}
+
+# Endpoint correcto (no usar /user/tweets, marca Elon como suspended)
+def fetch_user_last_tweets(username):
+    url = f"https://{API_HOST}/twitter/user/last_tweets?userName={username}"
+    headers = {
+        "X-API-Key": API_KEY,
+        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0"
+    }
+    req = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(req, timeout=30) as r:
+        data = json.loads(r.read())
+        return data.get("data", data)
+
+def parse_count(data):
+    """Cuenta tweets por día (UTC)."""
+    counts = defaultdict(int)
+    tweets = data.get("tweets", [])
+    if not isinstance(tweets, list):
+        return {}
+    
+    for t in tweets:
+        created = t.get("createdAt") or t.get("created_at") or t.get("created")
+        if not created:
+            continue
+        try:
+            dt = None
+            for fmt in ["%a %b %d %H:%M:%S %z %Y", "%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%SZ",
+                       "%Y-%m-%dT%H:%M:%S.%f+00:00", "%Y-%m-%dT%H:%M:%S+00:00"]:
+                try:
+                    dt = datetime.strptime(created, fmt)
+                    if dt.tzinfo is None:
+                        dt = dt.replace(tzinfo=timezone.utc)
+                    break
+                except:
+                    continue
+            if dt is None:
+                continue
+            # Solo últimos 30 días
+            cutoff = datetime.now(timezone.utc) - timedelta(days=30)
+            if dt < cutoff:
+                continue
+            fecha = dt.strftime("%Y-%m-%d")
+            counts[fecha] += 1
+        except:
+            continue
+    return dict(sorted(counts.items()))
+
+def update_csv(csv_path, counts):
+    rows = {}
+    if os.path.exists(csv_path):
+        with open(csv_path, encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                try: rows[r["fecha"]] = int(r["tweets"])
+                except: pass
+    rows.update(counts)
+    with open(csv_path, "w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["fecha", "tweets"])
+        for fecha in sorted(rows):
+            w.writerow([fecha, rows[fecha]])
+    return len(counts)
+
+def process_bot(bot_name):
+    if bot_name not in BOTS:
+        sys.exit(f"❌ bot '{bot_name}' no existe. Opciones: {list(BOTS.keys())}")
+    user, bot_dir, csv_name = BOTS[bot_name]
+    csv_path = os.path.join(bot_dir, csv_name)
+    
+    print(f"📡 @{user} → {csv_path}")
+    try:
+        data = fetch_user_last_tweets(user)
+    except urllib.error.HTTPError as e:
+
+== ¿Cómo cuenta t0 el bot? ==
+
+# Entrada solo al INICIO de cada ventana (evita bins ya casi decididos y
+# minimiza el error de t0 cuando ya hay muchos tweets publicados).
+ENTRADA_MAX_H = {"48h": 12.0, "semanal": 24.0, "mensual": 72.0}
+
+
+def conteo_ventana(inicio_utc, ahora_utc):
+    """T0 = tweets dentro de la ventana del mercado (posts + reposts + quotes).
+
+    Estrategia robusta:
+      · días COMPLETOS estrictamente dentro de la ventana → datos_elon.csv
+        (el CSV solo guarda días terminados)
+      · día de inicio y día actual (parciales) → estado_tweets.json con
+        timestamps exactos, SIN saltar reposts (la regla del mercado cuenta
+        posts + quote posts + reposts).
+    Devuelve (n, total_estado)."""
+    try:
+        estado = json.load(open("estado_tweets.json", encoding="utf-8")).get("tweets", {})
+    except Exception:
+        estado = {}
+    total = len(estado)
+    ahora_et = ahora_utc.astimezone(ET)
+--
+
+
+def evaluar(avg7, v2, ajuste, lam48, mercados, paso, t0_override=-1, ahora=None):
+    """Evalúa todos los mercados abiertos y devuelve (evaluados, candidatas).
+    - evaluados: lista de dicts {titulo, tipo, inicio, fin, horas_rest,
+      lam_rest, t0, bins:[{titulo, lo, hi, precio_yes, cuota_yes, cuota_no,
+      p_modelo, veredicto}]}
+    - candidatas: lista de dicts {mercado, bin, lado, precio, cuota, p_modelo}
+      que cumplen las reglas R3+R4 (para abrir apuesta de papel)."""
+    ahora = ahora or datetime.now(timezone.utc)
+    tabla = senal.tabla_apuestas()
+    _, stake_base, _, _ = tabla[paso - 1] if 1 <= paso <= len(tabla) else tabla[0]
+    evaluados, candidatas = [], []
+    for mk in mercados:
+        if mk["cerrado"] or not mk.get("inicio_iso"):
+            continue
+        inicio = datetime.fromisoformat(mk["inicio_iso"]).astimezone(timezone.utc)
+
+== ¿Hay wrapper Python para TwitterAPI? ==
+/opt/polymarket/recoger_tweets_rapidapi.py
