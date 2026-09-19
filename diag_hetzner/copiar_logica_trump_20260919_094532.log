@@ -1,0 +1,128 @@
+=== COPIAR LÓGICA DETECCIÓN CIERRE DE TRUMP · 20260919_094532 UTC ===
+
+== Ver la función trading de Trump ==
+def trading(opts):
+    excel_al_cambio = opts.excel
+    if opts.modo == "real":
+        log("3/4 · Trading REAL" + (" (MODO SECO)" if opts.simular else "") + "…")
+        try:
+            import operar_real_semanal as operar_real
+            estado = operar_real.pasada_real(dry=opts.simular, actualizar=False,
+                                             excel=False)
+            if excel_al_cambio:
+                try:
+                    from excel_historial import generar as gen_hist
+                    ruta, anadidas, total = gen_hist(operar_real.HISTORIAL,
+                                                     salida=EXCEL_HIST,
+                                                     bankroll=operar_real.BANKROLL,
+                                                     titulo_extra="trading REAL")
+                    log(f"      · Excel historial actualizado: {ruta} "
+                        f"(añadidas {anadidas}, total {total})")
+                except Exception as e:
+                    log(f"      · no se pudo generar Excel: {e}")
+            return estado
+        except Exception as e:
+            log(f"      · ERROR REAL: {e}\n{traceback.format_exc()}")
+            return None
+    log("3/4 · Paper trading TRUMP…")
+    try:
+        prev = len(papel.cargar_estado().get("historial", []))
+        estado = papel.pasada(actualizar=False, excel=False)
+        nuevo = len(estado.get("historial", []))
+        if excel_al_cambio and nuevo > prev:
+            try:
+                from excel_historial import generar as gen_hist
+                ruta, anadidas, total = gen_hist(papel.HISTORIAL,
+                                                 salida=EXCEL_HIST,
+                                                 bankroll=papel.BANKROLL,
+                                                 titulo_extra="paper trading en vivo")
+                log(f"      · Excel historial actualizado: {ruta} "
+                    f"(añadidas {anadidas}, total {total})")
+            except ImportError:
+                log("      · openpyxl no instalado: ejecuta  pip install openpyxl")
+            except Exception as e:
+                log(f"      · no se pudo generar Excel: {e}")
+        return estado
+    except Exception as e:
+        log(f"      · ERROR {e}\n{traceback.format_exc()}")
+        return None
+
+
+# ------------------------------------------------------------------- 4) estado
+def mostrar_estado():
+
+== ¿Trump tiene 'cerrar_anticipado' o cerrar_posicion? ==
+
+== Ver si Trump llama 'resolver' cuando mercado cierra ==
+
+== diff poly_telegram_trump.py vs poly_telegram_bot.py ==
+3,4c3
+< """
+< Bot de Telegram de Polymarket Trump (Lamegawi_trump_bot).
+---
+> """Bot de Telegram de Polymarket (Elon_polymarket_bot).
+6,11c5,15
+< Botones (teclado fijo), igual que el bot de Zelenskyy:
+<   1. 🟢 Abiertas     -> apuesta abierta del bot de Trump
+<   2. 📅 Finalizadas  -> historial del bot de Trump (con saldo)
+<   3. 💰 Saldo        -> saldo real de la cuenta + balance del bot Trump
+<   4. 🪟 Ventanas     -> ventanas activas de «Trump Truth Social posts» (con margen)
+<   5. 🩺 Salud        -> estado de los servicios de Polymarket + IP de salida
+---
+> Botones (teclado fijo):
+>   1. 🟢 Abiertas     -> operaciones abiertas, por ventana (tweets, P&L, tiempo)
+>   2. 📅 Finalizadas  -> operaciones cerradas del mes en curso (con saldo)
+>   3. 💰 Saldo        -> saldo real de la cuenta + P&L total acumulado
+>   4. 🪟 Ventanas     -> todas las ventanas activas (48h, semanal, mensual)
+> 
+> Fuentes de datos (lectura en vivo):
+>   - mercado_activo.json (gamma API de Polymarket, refrescado por los bots)
+>   - datos_elon.csv (tweets diarios)
+>   - real*.json (estado REAL de los 6 bots)
+>   - CLOB (saldo real de la cuenta)
+25,27c29
+< TRUMP = f"{BASE}/bot-polymarket-trump"
+< TOKEN = os.environ.get("TRUMP_BOT_TOKEN", "").strip() or \
+<         os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+---
+> TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+29c31
+< OFFSET_FILE = "/opt/polymarket/trump_tg_offset.txt"
+---
+> OFFSET_FILE = "/opt/polymarket/poly_tg_offset.txt"
+35c37,47
+< sys.path.insert(0, f"{BASE}/bot-polymarket-elon")  # para saldo_ntfy
+---
+> import posiciones_reales as PR
+> 
+> # Los 6 bots -> fichero de estado real
+> BOTS = [
+>     ("48h",        f"{BASE}/bot-polymarket-elon/real.json"),
+>     ("48h-V2",     f"{BASE}/bot-polymarket-elon-v2/real.json"),
+>     ("Semanal",    f"{BASE}/bot-polymarket-elon-semanal/real_semanal.json"),
+>     ("Semanal-V2", f"{BASE}/bot-polymarket-elon-semanal-v2/real_semanal.json"),
+>     ("Mensual",    f"{BASE}/bot-polymarket-elon-mensual/real_mensual.json"),
+>     ("Mensual-V2", f"{BASE}/bot-polymarket-elon-mensual-v2/real_mensual.json"),
+> ]
+64a77
+>     p = f"{BASE}/bot-polymarket-elon/mercado_activo.json"
+66,67c79
+<         return json.load(open(f"{TRUMP}/mercado_activo.json",
+<                               encoding="utf-8")).get("mercados", [])
+---
+>         return json.load(open(p, encoding="utf-8")).get("mercados", [])
+73c85
+<     """Carga los datos de Truth Social del bot de Trump."""
+---
+>     p = f"{BASE}/bot-polymarket-elon/datos_elon.csv"
+76c88
+
+== ¿poly_telegram_trump.py maneja 'Apuesta REAL cerrada'? ==
+    h = estado.get("historial", [])
+    if not h:
+        return "  (sin operaciones cerradas todavía)"
+    out = []
+    # Ordenar por fecha desc
+    for op in sorted(h, key=lambda x: x.get("fecha", ""), reverse=True)[:15]:
+        fecha = op.get("fecha", "?")
+        mercado = op.get("mercado", "?")[:50]
