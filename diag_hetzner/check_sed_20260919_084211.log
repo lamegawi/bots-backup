@@ -1,0 +1,62 @@
+=== CHECK SI SED APLICÓ CAMBIO · 20260919_084211 UTC ===
+
+== Verificar cambio en bot.py ==
+91:    jina+nitter falla o llega tarde.
+156:    for nombre, fn in (("twitterapi", rt.descargar_twitterapi), ("jina-tw", rt.descargar_jina_tw), ("jina-x", rt.descargar_jina_x), ("nitter", rt.descargar_nitter)):
+326:    recoger(opts)                         # paso 1: jina + nitter
+
+== Líneas exactas donde se hace el scraping en bot.py ==
+    log("1/5 · Recogiendo tweets de @elonmusk…")
+    vistos_n = {}
+    for nombre, fn in (("twitterapi", rt.descargar_twitterapi), ("jina-tw", rt.descargar_jina_tw), ("jina-x", rt.descargar_jina_x), ("nitter", rt.descargar_nitter)):
+        try:
+            p = fn()
+            if p:
+                vistos_n.update(p)
+                log(f"      · {nombre}: {len(p)} items")
+            else:
+                log(f"      · {nombre}: sin items")
+        except Exception as e:
+            log(f"      · {nombre}: ERROR {e}")
+    if not vistos_n:
+        log("      ⚠ sin datos de ninguna fuente (se conserva el estado anterior)")
+        try:
+            notificar.alerta_error(
+                "⚠️ No se pudieron recoger tweets de @elonmusk (todas las fuentes "
+                "fallaron). Se conserva el estado anterior. Revisa bot.log.")
+        except Exception:
+            pass
+        return
+    vistos = rt.fusionar(vistos_n, sin_reposts=opts.sin_reposts)
+    rt.guardar_estado(vistos)
+    dias = rt.conteo_diario(vistos, sin_reposts=opts.sin_reposts, modo_loop=opts.loop)
+    nuevos, total = rt.actualizar_csv(dias)
+    n_rep = sum(1 for v in vistos.values() if v["kind"] == "repost")
+    log(f"      · tweets únicos: {len(vistos)} (reposts {n_rep}) · "
+        f"CSV: {total} días (nuevos/mejorados: {nuevos})")
+
+
+
+== ¿Se reinició correctamente? ==
+● poly-elon.service - Bot Polymarket Elon 48h (v1)
+     Loaded: loaded (/etc/systemd/system/poly-elon.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-09-19 08:30:14 UTC; 11min ago
+   Main PID: 656844 (python3)
+      Tasks: 2 (limit: 4538)
+     Memory: 31.7M (peak: 34.8M)
+        CPU: 8.876s
+     CGroup: /system.slice/poly-elon.service
+             └─656844 /usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+
+
+== Probar la función directamente con la misma lógica del bot ==
+<stdin>:2: SyntaxWarning: invalid escape sequence '\$'
+Probando cadena de scrapers (igual que bot.py):
+  · twitterapi: 20 items OK
+  · jina-tw: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+
+Total: 20
+
+== ¿Hay múltiples versiones de bot.py? ==
+-rwxr-xr-x 1 root root 16903 Sep 19 08:30 /opt/polymarket/bot-polymarket-elon/bot.py
+-rwxr-xr-x 1 root root 16862 Sep 19 08:30 /opt/polymarket/bot-polymarket-elon/bot.py.bak_twapi_20260919_083012
