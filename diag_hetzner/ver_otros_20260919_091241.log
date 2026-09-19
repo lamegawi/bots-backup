@@ -1,0 +1,94 @@
+=== COMPARAR CON OTROS BOTS · 20260919_091241 UTC ===
+
+== ¿Cómo cargan tweets los bots Trump y Zelenskyy? ==
+--- bot-polymarket-trump ---
+avisos_cooldown.json
+bot_semanal.py
+bot_trump.log
+chequear_cuenta.py
+config.json
+config_real.json
+config_real.json.example
+datos_raw_trump
+datos_trump.csv
+diagnostico.py
+--- bot-polymarket-zelenskyy ---
+avisos_cooldown.json
+bot_semanal.py
+bot_zelen.log
+chequear_cuenta.py
+config.json
+config.json.bak_20260822_043610
+config_real.json
+config_real.json.example
+datos_raw
+datos_raw_zelen
+
+== ¿Trump tiene casi_senal? ==
+/opt/polymarket/bot-polymarket-trump/bot_semanal.py
+/opt/polymarket/bot-polymarket-trump/notificar.py
+/opt/polymarket/bot-polymarket-trump/notificar_semanal.py
+== ¿Zelenskyy tiene casi_senal? ==
+/opt/polymarket/bot-polymarket-zelenskyy/bot_semanal.py
+/opt/polymarket/bot-polymarket-zelenskyy/notificar.py
+/opt/polymarket/bot-polymarket-zelenskyy/notificar_semanal.py
+
+== ¿Tienen estado_tweets.json? ==
+ls: cannot access '/opt/polymarket/bot-polymarket-trump/estado_tweets.json': No such file or directory
+ls: cannot access '/opt/polymarket/bot-polymarket-zelenskyy/estado_tweets.json': No such file or directory
+
+== ¿Tienen senal_vivo.py propio? ==
+/opt/polymarket/bot-polymarket-trump/senal_vivo.py
+/opt/polymarket/bot-polymarket-zelenskyy/senal_vivo.py
+
+== ¿Cómo llaman casi_senal los otros bots? ==
+--- bot-polymarket-trump/bot.py ---
+--- bot-polymarket-zelenskyy/bot.py ---
+
+== Servicios activos Trump/Zelenskyy ==
+
+Logs Trump:
+
+Logs Zelenskyy:
+
+== Su servicio systemd ==
+[Unit]
+Description=Bot Polymarket Trump Truth Social posts
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=/etc/polymarket.env
+EnvironmentFile=-/etc/default/poly-trump
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-trump
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 15 --modo real
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description=Bot Polymarket Zelenskyy SEMANAL
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-zelenskyy
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 bot_semanal.py --loop --intervalo 5 --excel --modo real
+Restart=always
+TimeoutStartSec=300
+RestartSec=30
+StandardOutput=append:/var/log/poly-zelenskyy.log
+StandardError=append:/var/log/poly-zelenskyy.log
+
+[Install]
+WantedBy=multi-user.target
