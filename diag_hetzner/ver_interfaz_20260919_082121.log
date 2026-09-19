@@ -1,0 +1,57 @@
+=== VER INTERFAZ RECOGER_TWEETS · 20260919_082121 UTC ===
+
+== Firma de las funciones descargar_* ==
+153:def descargar_jina_tw():
+158:def descargar_jina_x():
+186:def descargar_nitter():
+202:def descargar_api_v2(max_paginas=50):
+
+== Código de descargar_jina_tw (como referencia) ==
+def descargar_jina_tw():
+    """jina sobre twitter.com (suele esquivar el Cloudflare de x.com)."""
+    return _descargar_jina(JINA_TW)
+
+
+def descargar_jina_x():
+
+== ¿TwitterAPI key disponible en entorno? ==
+TWITTERAPI_KEY=new1_c38fab1d33
+
+== ¿El bot tiene acceso a TWITTERAPI_KEY? ==
+Key en env: NO
+Todas las vars que empiezan con TW: []
+
+== ¿Se importa recoger_tweets_rapidapi en algún sitio? ==
+/opt/polymarket/recoger_tweets_rapidapi.py:4:recoger_tweets_rapidapi.py — tweets para 3 bots (Elon, Trump, Zelenskyy)
+/opt/polymarket/recoger_tweets_rapidapi.py:10:  python3 recoger_tweets_rapidapi.py --bot elon
+/opt/polymarket/recoger_tweets_rapidapi.py:11:  python3 recoger_tweets_rapidapi.py --bot all
+
+== ¿El servicio poly-elon carga /etc/polymarket.env? ==
+[Unit]
+Description=Bot Polymarket Elon 48h (v1)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+Restart=always
+TimeoutStartSec=300
+RestartSec=30
+StandardOutput=append:/var/log/poly-elon.log
+StandardError=append:/var/log/poly-elon.log
+
+[Install]
+WantedBy=multi-user.target
+
+== ¿Cómo accede el bot a las credenciales? ==
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 bot.py --loop --intervalo 5 --excel --modo real
+Restart=always
+TimeoutStartSec=300
+RestartSec=30
+StandardOutput=append:/var/log/poly-elon.log
