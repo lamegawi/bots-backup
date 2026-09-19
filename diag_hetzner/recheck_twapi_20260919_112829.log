@@ -1,0 +1,59 @@
+=== RECHECK TWITTERAPI · 20260919_112829 UTC ===
+
+== Test directo twitterapi ahora ==
+--- Intento 1 ---
+HTTP: 402
+Tamaño: 74 bytes
+{"error":"Unauthorized","message":"Credits is not enough.Please recharge"}
+--- Intento 2 ---
+HTTP: 402
+Tamaño: 74 bytes
+{"error":"Unauthorized","message":"Credits is not enough.Please recharge"}
+--- Intento 3 ---
+HTTP: 402
+Tamaño: 74 bytes
+{"error":"Unauthorized","message":"Credits is not enough.Please recharge"}
+
+== ¿Bot mensual ha recuperado? ==
+  nitter lightbrd.com: sin items
+  nitter nitter.space: sin items
+[2026-09-19 07:25:23 EDT]       · nitter: sin items
+[2026-09-19 07:25:23 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-19 07:25:23 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-19 07:25:40 EDT]       · 8 mercados · 1 mensuales abiertos → mercado_activo.json
+[2026-09-19 07:25:40 EDT] 3/4 · Trading REAL…
+[2026-09-19 07:25 EDT] Trading REAL MENSUAL  · saldo $227.98 · paso 3
+  (sin señal mensual → no se abre apuesta real · paso 3)
+  Historial REAL: 2 apuestas · 0G/2P · beneficio $-4.70
+[2026-09-19 07:25:40 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+[2026-09-19 07:25:40 EDT] 4/4 · Estado:
+fecha        tweets
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+2026-09-10       22
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+2026-09-17       20
+2026-09-18       20
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-19 07:25:40 EDT] Pasada completada en 58.4 s
+[2026-09-19 07:25:40 EDT] Próxima pasada en 5 min…
+
+== ¿Bot 48h sigue bien? ==
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+2026-09-17       20
+2026-09-18       20
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-19 07:27:52 EDT] Pasada completada en 60.3 s
+[2026-09-19 07:27:52 EDT] Próxima pasada en 5 min…
