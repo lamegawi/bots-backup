@@ -1,0 +1,98 @@
+=== BUSCAR MERCADO SEPTIEMBRE 2026 · 20260919_165821 UTC ===
+
+== ¿Cómo busca mercados mensuales el bot? ==
+=====================================================================
+Descarga TODOS los mercados de Polymarket sobre el nº de tweets de
+@elonmusk (48h, semanales y mensuales), parsea los bins (rangos) y
+precios YES, calcula las cuotas (=1/precio), identifica la ventana
+(48 h, semanal, mensual) y guarda todo en mercado_activo.json.
+
+DETECCIÓN AUTOMÁTICA DE VENTANAS NUEVAS
+----------------------------------------
+Siempre que una ventana termina, Polymarket crea la siguiente. Este
+módulo enumera día a día TODOS los slugs posibles de ventanas
+recientes y futuras (48h día a día, semanales día a día, mensuales
+mes a mes), así que cualquier ventana nueva se detecta en la misma
+pasada en que se crea, se añade a mercado_activo.json y se avisa por
+ntfy (🆕 Nueva ventana). Las ventanas ya vistas se guardan en
+ventanas_vistas.json para no repetir avisos y para no re-sondear las
+que ya se resolvieron.
+
+USO:
+  python3 mercado_polymarket.py            # tabla en pantalla + guardar JSON
+  python3 mercado_polymarket.py --json     # solo salida JSON (para scripting)
+"""
+import argparse
+import json
+import re
+import subprocess
+import sys
+--
+         "December": 12}
+MESES_NOMBRE = {1: "january", 2: "february", 3: "march", 4: "april", 5: "may",
+                6: "june", 7: "july", 8: "august", 9: "september", 10: "october",
+                11: "november", 12: "december"}
+
+
+def curl(url):
+    r = subprocess.run(["curl", "-s", "--max-time", "40", url],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if r.returncode != 0 or not r.stdout.strip():
+        raise RuntimeError("curl falló o respuesta vacía")
+    return json.loads(r.stdout)
+
+
+def _cargar_vistas():
+    try:
+        d = json.load(open(VISTAS, encoding="utf-8"))
+        return d.get("vistas", {})
+--
+def fetch_events():
+    """Búsqueda pública + enumeración de slugs de TODAS las ventanas
+    posibles (48h día a día, semanales día a día, mensuales mes a mes).
+    Así, cuando una ventana termina y Polymarket crea la siguiente, esta
+    se detecta en la misma pasada (sin importar el día en que la creen).
+
+    Solo se sondean los slugs que la búsqueda pública no devuelve y que
+    no están registrados como resueltos (eficiencia: ~0-3 requests/pasada
+    en condiciones normales)."""
+    d = curl(GAMMA)
+    eventos = [e for e in d.get("events", []) if "tweets" in (e.get("title") or "").lower()]
+    vistos = {e.get("id"): e for e in eventos if e.get("id")}
+    vistos_slugs = {e.get("slug"): e for e in eventos if e.get("slug")}
+    conocidas = _cargar_vistas()
+
+== Búsqueda directa en gamma-api con varios slugs posibles ==
+--- slug: elon-musk-of-tweets-september-2026 ---
+HTTP: 200 bytes:3
+--- slug: elon-musk-tweets-september-2026 ---
+HTTP: 200 bytes:3
+--- slug: elon-musk-september-2026 ---
+HTTP: 200 bytes:3
+--- slug: september-2026-elon-musk-tweets ---
+HTTP: 200 bytes:3
+
+== Buscar TODOS los eventos de Elon Musk activos ==
+HTTP: 200 bytes:4697934
+
+== Búsqueda alternativa: 'monthly' Elon ==
+HTTP: 200 bytes:620278
+
+== ¿El bot tiene mercado de septiembre en su JSON? ==
+Mercados totales: 8
+  [48h] Elon Musk # tweets September 17 - September 19, 20
+        slug: elon-musk-of-tweets-september-17-september-19-2026
+  [48h] Elon Musk # tweets September 19 - September 21, 20
+        slug: elon-musk-of-tweets-september-19-september-21-2026
+  [semanal] Elon Musk # tweets September 15 - September 22, 20
+        slug: elon-musk-of-tweets-september-15-september-22-2026
+  [48h] Elon Musk # tweets September 21 - September 23, 20
+        slug: elon-musk-of-tweets-september-21-september-23-2026
+  [semanal] Elon Musk # tweets September 18 - September 25, 20
+        slug: elon-musk-of-tweets-september-18-september-25-2026
+  [semanal] Elon Musk # tweets September 22 - September 29, 20
+        slug: elon-musk-of-tweets-september-22-september-29-2026
+  [mensual] Elon Musk # tweets in October 2026?
+        slug: elon-musk-of-tweets-october-2026
+  [48h] Elon Musk # tweets February 21 - February 23, 2026
+        slug: elon-musk-of-tweets-february-21-february-23
