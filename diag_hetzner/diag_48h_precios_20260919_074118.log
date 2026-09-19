@@ -1,0 +1,36 @@
+=== DIAGNÓSTICO PRECIOS 48H · 20260919_074118 UTC ===
+
+== Predicción del modelo (CSV 18-sept) ==
+2026-09-13,39
+2026-09-17,20
+2026-09-18,20
+
+== ¿Qué predice el modelo para los bins? ==
+Último: {'fecha': '2026-09-18', 'tweets': '20'}
+avg7: None
+lam48: None
+
+== Precios reales de los 2 mercados 48h (Sept 17-19 y Sept 19-21) ==
+
+=== elon-musk-of-tweets-september-17-september-19-2026 ===
+No se pudo obtener: 404
+
+=== elon-musk-of-tweets-september-19-september-21-2026 ===
+No se pudo obtener: 404
+
+== ¿Qué ve el bot en mercado_activo.json? ==
+Última actualización: 2026-09-19T07:38:14.525500+00:00
+---
+Titulo: Elon Musk # tweets September 17 - September 19, 2026?
+Tipo: 48h
+Slug: elon-musk-of-tweets-september-17-september-19-2026
+  Bin <40                  p_modelo=0.0000  YES=0.0000  NO=1.0000
+  Bin 40-64                p_modelo=0.0000  YES=0.9100  NO=0.0900
+  Bin 65-89                p_modelo=0.0000  YES=0.0790  NO=0.9210
+  Bin 90-114               p_modelo=0.0000  YES=0.0030  NO=0.9970
+  Bin 115-139              p_modelo=0.0000  YES=0.0005  NO=0.9995
+  Bin 140-164              p_modelo=0.0000  YES=0.0005  NO=0.9995
+  Bin 165-189              p_modelo=0.0000  YES=0.0005  NO=0.9995
+  Bin 190-214              p_modelo=0.0000  YES=0.0005  NO=0.9995
+  Bin 215-239              p_modelo=0.0000  YES=0.0005  NO=0.9995
+  Bin 240+                 p_modelo=0.0000  YES=0.0005  NO=0.9995
