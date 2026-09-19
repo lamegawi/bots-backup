@@ -1,0 +1,123 @@
+=== DIAGNOSTICO TWITTERAPI 402 · 20260919_112320 UTC ===
+
+== Test directo twitterapi ==
+Key: new1_c38fab1d33...
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host api.twitterapi.io:443 was resolved.
+* IPv6: 2a06:98c1:3121::9, 2a06:98c1:3120::9
+* IPv4: 188.114.97.9, 188.114.96.9
+*   Trying [2a06:98c1:3121::9]:443...
+* Connected to api.twitterapi.io (2a06:98c1:3121::9) port 443
+* ALPN: curl offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+{ [19 bytes data]
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+{ [2493 bytes data]
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+{ [79 bytes data]
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+{ [52 bytes data]
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+} [52 bytes data]
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / X25519 / id-ecPublicKey
+* ALPN: server accepted h2
+
+== Ver patrón real de senal_vivo.py del mensual ==
+78:ENTRADA_MAX_H = {"48h": 12.0, "semanal": 24.0, "mensual": 72.0}
+112:                    continue
+114:                    continue
+127:            continue
+130:            continue
+132:            continue  # ese día ya se contó completo vía CSV
+151:            continue
+155:            continue
+157:        horas_elapsed = (ahora - inicio).total_seconds() / 3600
+160:        _MAX=ENTRADA_MAX_H.get(mk["tipo"],24.0)
+
+== Ver el código alrededor de la línea del filtro ==
+    ahora = ahora or datetime.now(timezone.utc)
+    tabla = senal.tabla_apuestas()
+    _, stake_base, _, _ = tabla[paso - 1] if 1 <= paso <= len(tabla) else tabla[0]
+    evaluados, candidatas = [], []
+    for mk in mercados:
+        if mk["cerrado"] or not mk.get("inicio_iso"):
+            continue
+        inicio = datetime.fromisoformat(mk["inicio_iso"]).astimezone(timezone.utc)
+        fin = datetime.fromisoformat(mk["fin_iso"]).astimezone(timezone.utc)
+        if ahora < inicio or ahora > fin:
+            continue
+        horas_rest = (fin - ahora).total_seconds() / 3600
+        horas_elapsed = (ahora - inicio).total_seconds() / 3600
+        # FIXWIN-VENTANAS_ARENA (30/08): tres ventanas de entrada
+        _CIERRES={"48h":6.0,"semanal":12.0,"mensual":24.0}
+        _MAX=ENTRADA_MAX_H.get(mk["tipo"],24.0)
+        _en_inicio=horas_elapsed<=_MAX
+        _en_cierre=horas_rest<=_CIERRES.get(mk["tipo"],6.0)
+        _en_reentrada=(not _en_inicio and not _en_cierre and horas_rest>_MAX*0.30)
+        if not(_en_inicio or _en_cierre or _en_reentrada):
+            continue
+        _p_min_extra=(0.70 if _en_cierre else 0.68 if _en_reentrada else None)
+        # λ restante = tasa diaria × horas restantes / 24 (igual para 48h,
+        # semanal y mensual: solo cambia la etiqueta informativa)
+        lam_rest = avg7 * ajuste * max(0.0, horas_rest) / 24.0
+        t0_auto, total_estado = conteo_ventana(inicio, ahora)
+
+== Verificar que el bot_mensual.py quedó bien con twitterapi ==
+91:    for nombre, fn in (("twitterapi", rt.descargar_twitterapi), ("jina-tw", rt.descargar_jina_tw), ("jina-x", rt.descargar_jina_x), ("nitter", rt.descargar_nitter)):
+
+== ¿Hay avisos_cooldown.json en el mensual? ==
+-rw-r--r-- 1 root root 104 Sep 19 10:49 /opt/polymarket/bot-polymarket-elon-mensual/avisos_cooldown.json
+
+== ¿Qué tiene el bot_mensual.py en la sección trading/casi_senal? ==
+    excel_al_cambio = opts.excel
+    if opts.modo == "real":
+        log("3/4 · Trading REAL" + (" (MODO SECO)" if opts.simular else "") + "…")
+        try:
+            import operar_real_mensual as operar_real
+            estado = operar_real.pasada_real(dry=opts.simular, actualizar=False,
+                                             excel=False)
+            if excel_al_cambio:
+                try:
+                    from excel_historial import generar as gen_hist
+                    ruta, anadidas, total = gen_hist(operar_real.HISTORIAL,
+                                                     salida=EXCEL_HIST,
+                                                     bankroll=operar_real.BANKROLL,
+--
+
+
+def avisar_casi_senal():
+    """Avisa al móvil si hay un mercado de la ventana cerca de cumplir las reglas
+    pero que no llega a apostarse (informativo, con cooldown)."""
+    try:
+        datos = senal.cargar_csv("datos_elon.csv")
+        m = senal.metricas(datos)
+        mercados = json.load(open(mp.SALIDA, encoding="utf-8"))["mercados"]
+        evaluados, _ = senal_vivo.evaluar(m["avg7"], m["v2"], m["ajuste"],
+                                          m["lam48"], mercados, 1)
+        notificar.casi_senal(evaluados)
+    except Exception as e:
+        log(f"      · aviso casi-señal: {e}")
+
+
+def avisar_resumen_diario():
+    """Envía el resumen diario una vez al día, a la hora configurada
+    (config.json → "resumen": {"hora": H}; -1 = desactivado)."""
+    try:
+        cfg = notificar.cargar_config()
+        hora = int((cfg.get("resumen") or {}).get("hora", 20))
+--
+    actualizar_mercado()
+    trading(opts)
+    avisar_casi_senal()
