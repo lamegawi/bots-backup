@@ -1,0 +1,59 @@
+=== VER ERROR CASI SEÑAL · 20260919_073329 UTC ===
+
+== Buscar errores recientes en stderr del servicio ==
+
+== Buscar stderr en /tmp ==
+-rw-r--r-- 1 root root    126 Sep 17 17:26 /tmp/elon_again.json
+-rw-r--r-- 1 root root    126 Sep 17 17:26 /tmp/elon_by_id.json
+-rw-r--r-- 1 root root   7467 Sep 18 21:00 /tmp/elon_casi_full_20260918_210033.log
+-rw-r--r-- 1 root root 163290 Sep 17 17:26 /tmp/elon_last.json
+-rw-r--r-- 1 root root    126 Sep 17 17:26 /tmp/elon_noreplies.json
+-rw-r--r-- 1 root root 7935013 Sep 19 07:32 /opt/polymarket/bot-polymarket-elon/bot.log
+
+== ¿Dónde escribe logs el bot? ==
+-rw-r--r-- 1 root root 7935013 Sep 19 07:32 /opt/polymarket/bot-polymarket-elon/bot.log
+
+== Ver últimas líneas del log principal (sin filtro) ==
+[2026-09-19 03:19:01 EDT]       · 8 mercados · 2 de 48 h abiertos → mercado_activo.json
+[2026-09-19 03:19:01 EDT] 3/5 · Trading REAL…
+[2026-09-19 03:19:01 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-19 03:19:01 EDT] 4/5 · Estado:
+[2026-09-19 03:19:01 EDT] Pasada completada en 57.8 s
+[2026-09-19 03:19:01 EDT] Próxima pasada en 5 min…
+[2026-09-19 03:24:01 EDT] ==============================================================
+[2026-09-19 03:24:01 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-19 03:24:01 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-19 03:24:01 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-19 03:24:02 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-19 03:24:02 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-19 03:24:02 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-19 03:24:02 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-19 03:24:43 EDT]       · nitter: sin items
+[2026-09-19 03:24:43 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-19 03:24:43 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-19 03:24:59 EDT]       · 8 mercados · 2 de 48 h abiertos → mercado_activo.json
+[2026-09-19 03:24:59 EDT] 3/5 · Trading REAL…
+[2026-09-19 03:24:59 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-19 03:24:59 EDT] 4/5 · Estado:
+[2026-09-19 03:24:59 EDT] Pasada completada en 58.5 s
+[2026-09-19 03:24:59 EDT] Próxima pasada en 5 min…
+[2026-09-19 03:29:59 EDT] ==============================================================
+[2026-09-19 03:29:59 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-19 03:30:00 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-19 03:30:00 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-19 03:30:01 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-19 03:30:01 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-19 03:31:05 EDT]       · jina-tw: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-09-19 03:31:05 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+[2026-09-19 03:31:45 EDT]       · nitter: sin items
+[2026-09-19 03:31:45 EDT]       ⚠ sin datos de ninguna fuente (se conserva el estado anterior)
+[2026-09-19 03:31:46 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-19 03:32:06 EDT]       · 8 mercados · 2 de 48 h abiertos → mercado_activo.json
+[2026-09-19 03:32:06 EDT] 3/5 · Trading REAL…
+[2026-09-19 03:32:06 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-19 03:32:06 EDT] 4/5 · Estado:
+[2026-09-19 03:32:06 EDT] Pasada completada en 126.3 s
+[2026-09-19 03:32:06 EDT] Próxima pasada en 5 min…
+
+== Ver también log del diario systemd ==
+-- No entries --
