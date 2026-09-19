@@ -1,0 +1,315 @@
+=== DIFERENCIA 48h vs SEMANAL TRUMP · 20260919_091723 UTC ===
+
+== ¿Cómo se llama casi_senal en bot_semanal.py del TRUMP? ==
+
+
+def avisar_casi_senal():
+    """Avisa al móvil si hay un mercado 48 h cerca de cumplir las reglas
+    pero que no llega a apostarse (informativo, con cooldown)."""
+    try:
+        datos = senal.cargar_csv("datos_trump.csv")
+        m = senal.metricas(datos)
+        mercados = json.load(open(mp.SALIDA, encoding="utf-8"))["mercados"]
+        evaluados, _ = senal_vivo.evaluar(m["avg7"], m["v2"], m["ajuste"],
+                                          m["lam48"], mercados, 1)
+        notificar.casi_senal(evaluados)
+    except Exception as e:
+        log(f"      · aviso casi-señal: {e}")
+
+
+def avisar_resumen_diario():
+    """Envía el resumen diario una vez al día, a la hora configurada
+--
+    actualizar_mercado()
+    trading(opts)
+    avisar_casi_senal()
+    avisar_resumen_diario()
+    mostrar_estado()
+    log(f"Pasada completada en {time.time() - t0:.1f} s")
+
+
+def ver_estado():
+
+== ¿Cómo se calcula t0 en senal_vivo del TRUMP? ==
+
+# Entrada solo al INICIO de cada ventana (evita bins ya casi decididos y
+# minimiza el error de t0 cuando ya hay muchos tweets publicados).
+ENTRADA_MAX_H = {"48h": 12.0, "semanal": 24.0, "mensual": 72.0}
+
+
+def conteo_ventana(inicio_utc, ahora_utc):
+    """T0 = tweets dentro de la ventana del mercado.
+
+    Estrategia robusta (especialmente para la ventana MENSUAL):
+      · días COMPLETOS estrictamente dentro de la ventana → datos_trump.csv
+        (el CSV solo guarda días terminados: fecha < hoy)
+      · día de inicio y día actual (parciales) → estado_tweets_zelen.json
+        (timestamps exactos), SIN duplicar el día de inicio si la ventana
+        empieza a las 00:00 ET (caso mensual, ya cubierto por el CSV).
+    Así un bot que arranca a mitad de mes cuenta bien el mes desde el día 1.
+    Devuelve (n, total_estado)."""
+    try:
+        estado = json.load(open("estado_tweets_zelen.json", encoding="utf-8")).get("tweets", {})
+    except Exception:
+        estado = {}
+    total = len(estado)
+--
+
+
+def evaluar(avg7, v2, ajuste, lam48, mercados, paso, t0_override=-1, ahora=None):
+    """Evalúa todos los mercados abiertos y devuelve (evaluados, candidatas).
+    - evaluados: lista de dicts {titulo, tipo, inicio, fin, horas_rest,
+      lam_rest, t0, bins:[{titulo, lo, hi, precio_yes, cuota_yes, cuota_no,
+      p_modelo, veredicto}]}
+    - candidatas: lista de dicts {mercado, bin, lado, precio, cuota, p_modelo}
+      que cumplen las reglas de senal.decidir_bin (para abrir apuesta)."""
+    ahora = ahora or datetime.now(timezone.utc)
+    tabla = senal.tabla_apuestas()
+    _, stake_base, _, _ = tabla[paso - 1] if 1 <= paso <= len(tabla) else tabla[0]
+    evaluados, candidatas = [], []
+    for mk in mercados:
+        if mk["cerrado"] or not mk.get("inicio_iso"):
+            continue
+        inicio = datetime.fromisoformat(mk["inicio_iso"]).astimezone(timezone.utc)
+        fin = datetime.fromisoformat(mk["fin_iso"]).astimezone(timezone.utc)
+        if ahora < inicio or ahora > fin:
+            continue
+        horas_rest = (fin - ahora).total_seconds() / 3600
+--
+        # semanal y mensual: solo cambia la etiqueta informativa)
+        lam_rest = avg7 * ajuste * max(0.0, horas_rest) / 24.0
+        t0_auto, total_estado = conteo_ventana(inicio, ahora)
+        t0 = t0_override if t0_override >= 0 else t0_auto
+        bins = []
+
+== Evaluar del TRUMP ==
+def evaluar(avg7, v2, ajuste, lam48, mercados, paso, t0_override=-1, ahora=None):
+    """Evalúa todos los mercados abiertos y devuelve (evaluados, candidatas).
+    - evaluados: lista de dicts {titulo, tipo, inicio, fin, horas_rest,
+      lam_rest, t0, bins:[{titulo, lo, hi, precio_yes, cuota_yes, cuota_no,
+      p_modelo, veredicto}]}
+    - candidatas: lista de dicts {mercado, bin, lado, precio, cuota, p_modelo}
+      que cumplen las reglas de senal.decidir_bin (para abrir apuesta)."""
+    ahora = ahora or datetime.now(timezone.utc)
+    tabla = senal.tabla_apuestas()
+    _, stake_base, _, _ = tabla[paso - 1] if 1 <= paso <= len(tabla) else tabla[0]
+    evaluados, candidatas = [], []
+    for mk in mercados:
+        if mk["cerrado"] or not mk.get("inicio_iso"):
+            continue
+        inicio = datetime.fromisoformat(mk["inicio_iso"]).astimezone(timezone.utc)
+        fin = datetime.fromisoformat(mk["fin_iso"]).astimezone(timezone.utc)
+        if ahora < inicio or ahora > fin:
+            continue
+        horas_rest = (fin - ahora).total_seconds() / 3600
+        horas_elapsed = (ahora - inicio).total_seconds() / 3600
+        # FIXWIN-VENTANAS_ARENA (30/08): tres ventanas de entrada
+        _CIERRES={"48h":6.0,"semanal":12.0,"mensual":24.0}
+        _MAX=ENTRADA_MAX_H.get(mk["tipo"],24.0)
+        _en_inicio=horas_elapsed<=_MAX
+        _en_cierre=horas_rest<=_CIERRES.get(mk["tipo"],6.0)
+        _en_reentrada=(not _en_inicio and not _en_cierre and horas_rest>_MAX*0.30)
+        if not(_en_inicio or _en_cierre or _en_reentrada):
+            continue
+        _p_min_extra=(0.70 if _en_cierre else 0.68 if _en_reentrada else None)
+        # λ restante = tasa diaria × horas restantes / 24 (igual para 48h,
+        # semanal y mensual: solo cambia la etiqueta informativa)
+        lam_rest = avg7 * ajuste * max(0.0, horas_rest) / 24.0
+        t0_auto, total_estado = conteo_ventana(inicio, ahora)
+        t0 = t0_override if t0_override >= 0 else t0_auto
+        bins = []
+        for b in mk["bins"]:
+            hi = b["hi"] if b["hi"] != float("inf") else math.inf
+            if hi != math.inf and t0 > hi:
+                p = 0.0  # bin ya superado: apuesta YES imposible
+            else:
+                p = senal.p_bin(b["lo"] - t0, (hi - t0) if hi != math.inf else math.inf, lam_rest)
+            cy, cn = b["cuota_yes"], b["cuota_no"]
+            veredicto, lado, _ = senal.decidir_bin(p, b["precio_yes"], cy, cn)
+            bins.append({"titulo": b["titulo"], "lo": b["lo"], "hi": b["hi"],
+                         "precio_yes": b["precio_yes"], "cuota_yes": cy,
+                         "cuota_no": cn, "p_modelo": p, "veredicto": veredicto})
+            if lado:
+                cuota_lado = (cy if lado == "YES" else cn)
+                p_lado = p if lado == "YES" else (1.0 - p)
+                ev = round(p_lado * (cuota_lado or 0), 3)
+
+== ¿Trump tiene ENTRADA_MAX_H? ==
+# Entrada solo al INICIO de cada ventana (evita bins ya casi decididos y
+# minimiza el error de t0 cuando ya hay muchos tweets publicados).
+ENTRADA_MAX_H = {"48h": 12.0, "semanal": 24.0, "mensual": 72.0}
+
+
+def conteo_ventana(inicio_utc, ahora_utc):
+--
+        # FIXWIN-VENTANAS_ARENA (30/08): tres ventanas de entrada
+        _CIERRES={"48h":6.0,"semanal":12.0,"mensual":24.0}
+        _MAX=ENTRADA_MAX_H.get(mk["tipo"],24.0)
+        _en_inicio=horas_elapsed<=_MAX
+        _en_cierre=horas_rest<=_CIERRES.get(mk["tipo"],6.0)
+        _en_reentrada=(not _en_inicio and not _en_cierre and horas_rest>_MAX*0.30)
+
+== ¿Trump tiene casi_senal() y cómo se ve? ==
+def casi_senal(evaluados, horas=6):
+    """Avisa cuando un mercado tiene un bin CERCA de cumplir las reglas de
+    esta ventana (ver senal.py: REGLA absoluta o de ventaja) pero NO se
+    apuesta. Informativo. Máx. 1 aviso por mercado cada `horas` horas."""
+    import senal
+    ventana = getattr(senal, "VENTANA", None)
+    regla = getattr(senal, "REGLA", "absoluta")
+    edge = getattr(senal, "EDGE_MIN", 0.10)
+    p_floor = getattr(senal, "P_FLOOR", 0.15)
+    cmin = getattr(senal, "CUOTA_MINIMA", 3.0)
+    pmin = getattr(senal, "P_MIN_YES", 0.60)
+    pmax = getattr(senal, "P_MAX_NO", 0.30)
+    for ev in evaluados:
+        if ventana is not None:
+            if ev.get("tipo") != ventana:
+                continue
+        elif ev.get("tipo") != "48h":
+            continue
+        mejor = None      # (distancia, lado, bin, p, cuota_lado)
+        for b in ev["bins"]:
+            p = b["p_modelo"]
+            precio = b["precio_yes"]
+            cy = b["cuota_yes"] or 0
+            cn = b["cuota_no"] or 0
+            if regla == "ventaja":
+                vy = p - precio
+                vn = (1 - p) - (1 - precio)
+                if p >= p_floor and (vy >= edge * 0.5 or cy >= cmin):
+                    d = max(0.0, edge - vy) + max(0.0, cmin - cy) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "YES", b, p, cy, cn, vy)
+                if (1 - p) >= p_floor and (vn >= edge * 0.5 or cn >= cmin):
+                    d = max(0.0, edge - vn) + max(0.0, cmin - cn) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "NO", b, p, cy, cn, vn)
+            else:
+                # regla absoluta (48 h): cerca en p_modelo o ya tiene cuota
+                if p >= 0.50 or cy >= 3.0:
+                    d = max(0.0, pmin - p) + max(0.0, cmin - cy) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "YES", b, p, cy, cn, p - precio)
+                if p <= 0.35 or cn >= 3.0:
+                    d = max(0.0, p - pmax) + max(0.0, cmin - cn) * 0.3
+                    if mejor is None or d < mejor[0]:
+                        mejor = (d, "NO", b, p, cy, cn, p - precio)
+        if mejor is None or mejor[0] > 0.15:
+            continue
+        d, lado, b, p, cy, cn, ventaja = mejor
+        clave = f"casi_{ev['titulo'][:40]}"
+        if not _puede_avisar(clave, horas=horas):
+
+== 🆕 ¿TRUMP USA RAPIDAPI / TWITTERAPI? ==
+--- Buscar rapidapi en Trump ---
+
+--- Buscar rapidapi en Zelenskyy ---
+
+--- Buscar rapidapi en Elon 48h ---
+/opt/polymarket/bot-polymarket-elon/bot.py
+/opt/polymarket/bot-polymarket-elon/recoger_tweets.py
+
+--- Código de importación/uso en Trump ---
+
+--- Código de importación/uso en Zelenskyy ---
+
+== Bot Trump: log actual ==
+ls: cannot access '/var/log/poly-trump.log': No such file or directory
+-rw-r--r-- 1 root root 1407012 Sep 19 09:16 /opt/polymarket/bot-polymarket-trump/bot_trump.log
+
+--- Últimas 30 líneas ---
+[2026-09-19 04:45:25 EDT]       · xtracker: 5075 items
+[2026-09-19 04:45:25 EDT]       · tweets únicos: 5075 (reposts 0) · CSV: 231 días (nuevos/mejorados: 0)
+[2026-09-19 04:45:25 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-19 04:45:43 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-19 04:45:43 EDT] 3/4 · Trading REAL…
+[2026-09-19 04:45:44 EDT] 4/4 · Estado:
+[2026-09-19 04:45:44 EDT] Pasada completada en 20.6 s
+[2026-09-19 04:45:44 EDT] Próxima pasada en 15 min…
+[2026-09-19 05:00:44 EDT] ==============================================================
+[2026-09-19 05:00:44 EDT] PASADA COMPLETA (TRUMP)  ·  MODO: REAL
+[2026-09-19 05:00:44 EDT] 1/4 · Recogiendo posts de @realDonaldTrump…
+[2026-09-19 05:00:47 EDT]       · xtracker: 5075 items
+[2026-09-19 05:00:47 EDT]       · tweets únicos: 5075 (reposts 0) · CSV: 231 días (nuevos/mejorados: 0)
+[2026-09-19 05:00:47 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-19 05:01:05 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-19 05:01:05 EDT] 3/4 · Trading REAL…
+[2026-09-19 05:01:05 EDT] 4/4 · Estado:
+[2026-09-19 05:01:05 EDT] Pasada completada en 21.3 s
+[2026-09-19 05:01:05 EDT] Próxima pasada en 15 min…
+[2026-09-19 05:16:05 EDT] ==============================================================
+[2026-09-19 05:16:05 EDT] PASADA COMPLETA (TRUMP)  ·  MODO: REAL
+[2026-09-19 05:16:05 EDT] 1/4 · Recogiendo posts de @realDonaldTrump…
+[2026-09-19 05:16:07 EDT]       · xtracker: 5075 items
+[2026-09-19 05:16:07 EDT]       · tweets únicos: 5075 (reposts 0) · CSV: 231 días (nuevos/mejorados: 0)
+[2026-09-19 05:16:07 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-19 05:16:25 EDT]       · 5 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-19 05:16:25 EDT] 3/4 · Trading REAL…
+[2026-09-19 05:16:26 EDT] 4/4 · Estado:
+[2026-09-19 05:16:26 EDT] Pasada completada en 20.9 s
+[2026-09-19 05:16:26 EDT] Próxima pasada en 15 min…
+
+== Bot Trump: ¿está vivo? ==
+
+Logs journalctl recientes:
+Sep 19 09:16:26 bot-poly python3[788]: 2026-09-08       17
+Sep 19 09:16:26 bot-poly python3[788]: 2026-09-09        7
+Sep 19 09:16:26 bot-poly python3[788]: 2026-09-10       25
+Sep 19 09:16:26 bot-poly python3[788]: 2026-09-11       11
+Sep 19 09:16:26 bot-poly python3[788]: 2026-09-12        3
+Sep 19 09:16:26 bot-poly python3[788]: 2026-09-13       12
+Sep 19 09:16:26 bot-poly python3[788]: 2026-09-14       28
+Sep 19 09:16:26 bot-poly python3[788]: 2026-09-15        8
+Sep 19 09:16:26 bot-poly python3[788]: 2026-09-16       10
+Sep 19 09:16:26 bot-poly python3[788]: 2026-09-17       20
+Sep 19 09:16:26 bot-poly python3[788]: 2026-09-18       25
+Sep 19 09:16:26 bot-poly python3[788]: AVG7 = 15.14  V2 = 45  R = 1.486  ajuste = 1.243  λ48 = 37.6
+Sep 19 09:16:26 bot-poly python3[788]: Días completos en CSV: 231
+Sep 19 09:16:26 bot-poly python3[788]: [2026-09-19 05:16:26 EDT] Pasada completada en 20.9 s
+Sep 19 09:16:26 bot-poly python3[788]: [2026-09-19 05:16:26 EDT] Próxima pasada en 15 min…
+
+== Bot Zelenskyy: ¿está vivo y log? ==
+
+-rw-r--r-- 1 root root  6801944 Sep 19 09:16 /opt/polymarket/bot-polymarket-zelenskyy/bot_zelen.log
+-rw-r--r-- 1 root root 10891477 Sep 19 09:16 /var/log/poly-zelenskyy.log
+
+--- Últimas 30 líneas ---
+[2026-09-19 05:05:22 EDT]       · 4 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-19 05:05:22 EDT] 3/4 · Trading REAL…
+[2026-09-19 05:05:23 EDT]       · Excel historial actualizado: Historial_Operaciones_Zelenskyy.xlsx (añadidas 0, total 6)
+[2026-09-19 05:05:23 EDT] 4/4 · Estado:
+[2026-09-19 05:05:23 EDT] Pasada completada en 21.4 s
+[2026-09-19 05:05:23 EDT] Próxima pasada en 5 min…
+[2026-09-19 05:10:23 EDT] ==============================================================
+[2026-09-19 05:10:23 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+[2026-09-19 05:10:23 EDT] 1/4 · Recogiendo posts de @ZelenskyyUa…
+[2026-09-19 05:10:24 EDT]       · xtracker: 2195 items
+[2026-09-19 05:10:24 EDT]       · tweets únicos: 2195 (reposts 0) · CSV: 183 días (nuevos/mejorados: 0)
+[2026-09-19 05:10:24 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-19 05:10:43 EDT]       · 4 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-19 05:10:43 EDT] 3/4 · Trading REAL…
+[2026-09-19 05:10:44 EDT]       · Excel historial actualizado: Historial_Operaciones_Zelenskyy.xlsx (añadidas 0, total 6)
+[2026-09-19 05:10:44 EDT] 4/4 · Estado:
+[2026-09-19 05:10:44 EDT] Pasada completada en 21.5 s
+[2026-09-19 05:10:44 EDT] Próxima pasada en 5 min…
+[2026-09-19 05:15:44 EDT] ==============================================================
+[2026-09-19 05:15:44 EDT] PASADA COMPLETA (SEMANAL)  ·  MODO: REAL
+[2026-09-19 05:15:44 EDT] 1/4 · Recogiendo posts de @ZelenskyyUa…
+[2026-09-19 05:15:46 EDT]       · xtracker: 2195 items
+[2026-09-19 05:15:46 EDT]       · tweets únicos: 2195 (reposts 0) · CSV: 183 días (nuevos/mejorados: 0)
+[2026-09-19 05:15:46 EDT] 2/4 · Actualizando mercados de Polymarket…
+[2026-09-19 05:16:05 EDT]       · 4 mercados · 3 semanales abiertas → mercado_activo.json
+[2026-09-19 05:16:05 EDT] 3/4 · Trading REAL…
+[2026-09-19 05:16:06 EDT]       · Excel historial actualizado: Historial_Operaciones_Zelenskyy.xlsx (añadidas 0, total 6)
+[2026-09-19 05:16:06 EDT] 4/4 · Estado:
+[2026-09-19 05:16:06 EDT] Pasada completada en 21.1 s
+[2026-09-19 05:16:06 EDT] Próxima pasada en 5 min…
+
+== ¿Los 3 bots usan el mismo recoger_tweets_rapidapi.py? ==
+-rwxr-xr-x 1 root root 4802 Sep 17 17:29 /opt/polymarket/recoger_tweets_rapidapi.py
+
+Cron asociado:
+5 */2 * * * cd /opt/polymarket && sleep 6 && /usr/bin/python3 recoger_tweets_rapidapi.py --bot elon >> /var/log/poly/twitterapi_elon_$(date +\%Y\%m\%d).log 2>&1
+15 */2 * * * cd /opt/polymarket && sleep 12 && /usr/bin/python3 recoger_tweets_rapidapi.py --bot trump >> /var/log/poly/twitterapi_trump_$(date +\%Y\%m\%d).log 2>&1
+25 */2 * * * cd /opt/polymarket && sleep 18 && /usr/bin/python3 recoger_tweets_rapidapi.py --bot zelenskyy >> /var/log/poly/twitterapi_zelen_$(date +\%Y\%m\%d).log 2>&1
