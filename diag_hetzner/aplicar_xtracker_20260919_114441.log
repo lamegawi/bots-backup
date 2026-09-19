@@ -1,0 +1,84 @@
+=== APLICAR XTRACKER A 48H Y MENSUAL · 20260919_114441 UTC ===
+
+== Test xtracker ==
+HTTP: 200 · Tamaño: 4187539
+{"success":true,"data":[{"id":"cmu81z5qv0000l504pumq6y6g","userId":"c4e2a911-36ec-4453-8a39-1edb5e6b2969","platformId":"2101207701954974205","content":"SpaceX","createdAt":"2026-09-19T07:12:09.000Z","importedAt":"2026-09-19T07:15:29.623Z","metrics":null},{"id":"cmu81spn70000l504l2rc49kr","userId":"c4e2a911-36ec-4453-8a39-1edb5e6b2969","platformId":"2101206965632258423","content":"Worth reading abo
+
+=== APLICANDO A 48H ===
+Backup 48h: recoger_tweets.py.bak_20260919_114441
+Función añadida (1259 chars)
+
+== Verificar bot.py 48h ==
+    for nombre, fn in (("xtracker", rt.descargar_xtracker), ("twitterapi", rt.descargar_twitterapi), ("jina-tw", rt.descargar_jina_tw), ("jina-x", rt.descargar_jina_x), ("nitter", rt.descargar_nitter)):
+        try:
+OK recoger_tweets 48h
+OK bot.py 48h
+
+== Test descargar_xtracker() 48h ==
+xtracker 48h: 12474 items
+Primer item id=2101207701954974205: Sat Sep 19 07:12:09 +0000 2026
+
+== Estado 48h ==
+active
+
+=== APLICANDO A MENSUAL ===
+Backup mensual: recoger_tweets.py.bak_20260919_114441
+Función añadida (1259 chars)
+
+== Verificar bot_mensual.py ==
+    for nombre, fn in (("xtracker", rt.descargar_xtracker), ("twitterapi", rt.descargar_twitterapi), ("jina-tw", rt.descargar_jina_tw), ("jina-x", rt.descargar_jina_x), ("nitter", rt.descargar_nitter)):
+        try:
+OK recoger_tweets mensual
+OK bot_mensual.py
+
+== Test descargar_xtracker() mensual ==
+xtracker mensual: 12474 items
+
+== Estado mensual ==
+active
+
+=== ESPERAR 80S Y VERIFICAR ===
+
+== Logs 48h tras reinicio ==
+[2026-09-19 07:45:46 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-19 07:45:46 EDT] 4/5 · Estado:
+fecha        tweets
+2026-09-07       32
+2026-09-08       40
+2026-09-09       33
+2026-09-10       41
+2026-09-11       50
+2026-09-12       24
+2026-09-13       63
+2026-09-14       28
+2026-09-15       39
+2026-09-16       20
+2026-09-17       25
+2026-09-18       31
+
+AVG7 = 32.86  V2 = 56  R = 0.852  ajuste = 0.926  λ48 = 60.9
+Días completos en CSV: 325
+[2026-09-19 07:45:46 EDT] Pasada completada en 63.0 s
+[2026-09-19 07:45:46 EDT] Próxima pasada en 5 min…
+
+== Logs mensual tras reinicio ==
+[2026-09-19 07:45:54 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+[2026-09-19 07:45:55 EDT] 4/4 · Estado:
+fecha        tweets
+2026-09-07       32
+2026-09-08       40
+2026-09-09       33
+2026-09-10       41
+2026-09-11       50
+2026-09-12       24
+2026-09-13       63
+2026-09-14       28
+2026-09-15       39
+2026-09-16       20
+2026-09-17       25
+2026-09-18       31
+
+AVG7 = 32.86  V2 = 56  R = 0.852  ajuste = 0.926  λ48 = 60.9
+Días completos en CSV: 325
+[2026-09-19 07:45:55 EDT] Pasada completada en 60.0 s
+[2026-09-19 07:45:55 EDT] Próxima pasada en 5 min…
