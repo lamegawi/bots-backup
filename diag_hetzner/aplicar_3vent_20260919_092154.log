@@ -1,0 +1,62 @@
+=== APLICAR LÓGICA 3 VENTANAS A 48H · 20260919_092154 UTC ===
+Backup: senal_vivo.py.bak_3vent_20260919_092154
+
+== ANTES (línea 150-160) ==
+            continue
+        horas_rest = (fin - ahora).total_seconds() / 3600
+        horas_elapsed = (ahora - inicio).total_seconds() / 3600
+        if horas_elapsed > ENTRADA_MAX_H.get(mk["tipo"], 24.0):
+            continue  # entrada solo al inicio de la ventana
+        if mk["tipo"] == "48h":
+            lam_rest = lam48 * max(0.0, horas_rest) / 48.0
+        elif mk["tipo"] == "semanal":
+            lam_rest = 7 * avg7 * ajuste * max(0.0, horas_rest) / 168.0
+        else:
+            lam_rest = lam48 * max(0.0, horas_rest) / 48.0
+Reemplazo aplicado
+
+== DESPUÉS (línea 150-175) ==
+            continue
+        horas_rest = (fin - ahora).total_seconds() / 3600
+        horas_elapsed = (ahora - inicio).total_seconds() / 3600
+        # FIXWIN-VENTANAS_ARENA (19-sep): tres ventanas como Trump/Zelenskyy
+        _CIERRES = {"48h": 6.0, "semanal": 12.0, "mensual": 24.0}
+        _MAX = ENTRADA_MAX_H.get(mk["tipo"], 24.0)
+        _en_inicio = horas_elapsed <= _MAX
+        _en_cierre = horas_rest <= _CIERRES.get(mk["tipo"], 6.0)
+        _en_reentrada = (not _en_inicio and not _en_cierre and horas_rest > _MAX * 0.30)
+        if not (_en_inicio or _en_cierre or _en_reentrada):
+            continue  # fuera de las 3 ventanas de entrada
+        if mk["tipo"] == "48h":
+            lam_rest = lam48 * max(0.0, horas_rest) / 48.0
+        elif mk["tipo"] == "semanal":
+            lam_rest = 7 * avg7 * ajuste * max(0.0, horas_rest) / 168.0
+        else:
+            lam_rest = lam48 * max(0.0, horas_rest) / 48.0
+        t0_auto, total_estado = conteo_ventana(inicio, ahora)
+        t0 = t0_override if t0_override >= 0 else t0_auto
+        bins = []
+        for b in mk["bins"]:
+            hi = b["hi"] if b["hi"] != float("inf") else math.inf
+            # Guarda: bin ya decidido por los tweets publicados (t0).
+            #   hi finito y t0 > hi  -> [lo,hi] superado: YES imposible, NO ya decidido
+            #   hi = inf  y t0 >= lo -> "≥ lo" ya cumplido: YES ya decidido
+            decidido = (t0 > hi) if hi != math.inf else (t0 >= b["lo"])
+
+== Validar sintaxis ==
+OK
+
+== Probar evaluación ==
+Metricas: avg7=24.14 lam48=44.14
+Evaluados: 3
+  [48h] Elon Musk # tweets September 17 - September 19, 20
+    horas_elapsed: ?, horas_rest: 6.63486071, t0: 31
+    bins: 10
+Traceback (most recent call last):
+  File "<stdin>", line 22, in <module>
+TypeError: unsupported format string passed to NoneType.__format__
+
+== Reiniciando poly-elon ==
+
+== Estado ==
+active
