@@ -1,0 +1,110 @@
+=== INSPECCIÓN BOT MENSUAL · 20260919_111438 UTC ===
+
+== Estructura de archivos ==
+-rw-r--r-- 1 root root 13725 Aug 20 07:29 bot_mensual.py
+-rw-r--r-- 1 root root  6394 Aug 17 20:24 chequear_cuenta.py
+-rw-r--r-- 1 root root 13000 Aug 17 20:24 excel_historial.py
+-rw-r--r-- 1 root root 12741 Sep 17 15:02 mercado_polymarket.py
+-rw-r--r-- 1 root root 17542 Aug 18 17:05 notificar.py
+-rw-r--r-- 1 1000 1000 36330 Aug 19 17:47 operar_real_mensual.py
+-rw-r--r-- 1 root root 10142 Aug 17 20:24 papel_mensual.py
+-rw-r--r-- 1 root root  4532 Aug 17 20:24 probar_orden_mensual.py
+-rw-r--r-- 1 root root 22061 Aug 27 15:02 recoger_tweets.py
+-rw-r--r-- 1 root root  4217 Aug 17 20:24 saldo_ntfy.py
+-rw-r--r-- 1 root root 20317 Aug 30 13:08 senal.py
+-rw-r--r-- 1 1000 1000 14071 Aug 30 17:35 senal_vivo.py
+
+== ¿Qué scrapers usa? ==
+
+== ¿Cómo llama casi_senal? ==
+
+== Servicio systemd mensual ==
+[Unit]
+Description=Bot Polymarket Elon MENSUAL (v1)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket/bot-polymarket-elon-mensual
+EnvironmentFile=/etc/polymarket.env
+ExecStart=/usr/bin/python3 bot_mensual.py --loop --intervalo 5 --excel --modo real
+Restart=always
+TimeoutStartSec=300
+RestartSec=30
+StandardOutput=append:/var/log/poly-mensual.log
+StandardError=append:/var/log/poly-mensual.log
+
+[Install]
+WantedBy=multi-user.target
+
+== ¿Tiene estado_tweets.json? ==
+-rw-r--r-- 1 root root 150279 Sep 14 09:47 estado_tweets.json
+
+== ¿Tiene senal_vivo.py? ==
+-rw-r--r-- 1 1000 1000 14071 Aug 30 17:35 senal_vivo.py
+
+== ¿Tiene recoger_tweets.py? ==
+-rw-r--r-- 1 root root 22061 Aug 27 15:02 recoger_tweets.py
+
+== Datos del mensual ==
+fecha,tweets
+2025-01-24,1
+2026-02-26,1
+...
+2026-09-13,39
+2026-09-17,20
+2026-09-18,20
+
+== real_mensual.json ==
+activa: None
+paso: 3
+saldo: 227.98
+historial count: 2
+
+== Comparar archivos con el 48h ==
+--- md5sum senal_vivo.py ---
+7b3f463c837430f4f100638f769b5d4d  /opt/polymarket/bot-polymarket-elon/senal_vivo.py
+d9989eb40542631b40701abf4aa65de2  /opt/polymarket/bot-polymarket-elon-mensual/senal_vivo.py
+
+--- md5sum bot.py ---
+c420bd001fee995237e39567dcb86c27  /opt/polymarket/bot-polymarket-elon/bot.py
+md5sum: /opt/polymarket/bot-polymarket-elon-mensual/bot.py: No such file or directory
+
+--- md5sum recoger_tweets.py ---
+e2929b7615e3f97a31f92068610a1f8e  /opt/polymarket/bot-polymarket-elon/recoger_tweets.py
+18dda4573c067844475384da4e2f704f  /opt/polymarket/bot-polymarket-elon-mensual/recoger_tweets.py
+
+== Logs recientes del mensual ==
+[2026-09-19 07:08:16 EDT]       · 8 mercados · 1 mensuales abiertos → mercado_activo.json
+[2026-09-19 07:08:16 EDT] 3/4 · Trading REAL…
+[2026-09-19 07:08 EDT] Trading REAL MENSUAL  · saldo $227.98 · paso 3
+  (sin señal mensual → no se abre apuesta real · paso 3)
+  Historial REAL: 2 apuestas · 0G/2P · beneficio $-4.70
+[2026-09-19 07:08:16 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+[2026-09-19 07:08:16 EDT] 4/4 · Estado:
+fecha        tweets
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+2026-09-10       22
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+2026-09-17       20
+2026-09-18       20
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-19 07:08:16 EDT] Pasada completada en 65.5 s
+[2026-09-19 07:08:16 EDT] Próxima pasada en 5 min…
+[2026-09-19 07:13:16 EDT] ==============================================================
+[2026-09-19 07:13:16 EDT] PASADA COMPLETA (MENSUAL)  ·  MODO: REAL
+[2026-09-19 07:13:16 EDT] 1/4 · Recogiendo tweets de @elonmusk…
+[2026-09-19 07:14:21 EDT]       · jina-tw: ERROR jina no disponible tras reintentos: desafío o respuesta sin contenido
+[2026-09-19 07:14:21 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
