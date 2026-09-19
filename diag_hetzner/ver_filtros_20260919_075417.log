@@ -1,0 +1,37 @@
+=== VER FILTROS REALES · 20260919_075417 UTC ===
+
+== ¿Qué mercados SEMANALES están en operación? ==
+-rw------- 1 root root 18052 Sep 18 20:17 /opt/polymarket/bot-polymarket-elon-semanal/real_semanal.json
+
+activa: None
+paso: 1
+historial count: 29
+
+== ¿Se está llamando evaluar() con ahora? ==
+                  "size": 1.0, "curPrice": float(precio), "avgPrice": float(precio),
+                  "asset": "x", "initialValue": 0.0, "currentValue": 0.0}
+        _acc, _txt = GP.evaluar(_falsa, GP.cargar_tweets(), GP.cargar_ventanas(), True)
+        if _acc == "vender":
+            _raz = _txt.splitlines()[1] if "\n" in _txt else _txt
+            log(f"   🚫 PUERTA DEL GESTOR: no compro {lo}-{hi} {lado} → {_raz}")
+            return
+        log(f"   · puerta del gestor: OK ({_txt})")
+
+== ¿semanal y 48h usan la misma función evaluar() o distinta? ==
+c96c3e00e7654f31216d1bfbd4450578  /opt/polymarket/bot-polymarket-elon/senal_vivo.py
+d9989eb40542631b40701abf4aa65de2  /opt/polymarket/bot-polymarket-elon-semanal/senal_vivo.py
+
+== Última op del semanal (18-sept 06:32) — ¿qué mercado era? ==
+{'id': 'reconc', 'fecha': '2026-09-03', 'mercado': 'elon-musk-of-tweets-september-1-september-8-2026', 'bin': '100-119', 'lado': 'YES', 'precio': '0.0035', 'cuota': '285.71', 'p_modelo': '0.1765', 'paso': '4', 'stake': '10.0', 'real': 'vendido por el gestor', 'resultado': 'P', 'beneficio': '-10.0', 'saldo': '1156.89'}
+{'id': 'reconc', 'fecha': '2026-09-03', 'mercado': 'elon-musk-of-tweets-september-1-september-8-2026', 'bin': '100-119', 'lado': 'YES', 'precio': '0.0055', 'cuota': '181.82', 'p_modelo': '0.177', 'paso': '5', 'stake': '10.0', 'real': 'vendido por el gestor', 'resultado': 'P', 'beneficio': '-10.0', 'saldo': '1146.89'}
+{'id': '21ec487f1602', 'fecha': '2026-09-04', 'mercado': 'elon-musk-of-tweets-august-28-september-4-2026', 'bin': '220-239', 'lado': 'NO', 'precio': '0.002', 'cuota': '500.0', 'p_modelo': '0.0', 'paso': '6', 'stake': '10.0', 'real': '220-239', 'resultado': 'P', 'beneficio': '-10.0', 'saldo': '1136.89'}
+
+== ¿El semanal tiene ENTRADA_MAX_H distinto? ==
+78:ENTRADA_MAX_H = {"48h": 12.0, "semanal": 24.0, "mensual": 72.0}
+160:        _MAX=ENTRADA_MAX_H.get(mk["tipo"],24.0)
+
+vs el del 48h:
+75:ENTRADA_MAX_H = {"48h": 12.0, "semanal": 24.0, "mensual": 72.0}
+153:        if horas_elapsed > ENTRADA_MAX_H.get(mk["tipo"], 12.0):
+
+== ¿Cómo llama el semanal a casi_senal? ==
