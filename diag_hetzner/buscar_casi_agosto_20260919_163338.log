@@ -1,0 +1,68 @@
+=== BUSCAR CASI SEÑAL AGOSTO EN LOGS · 20260919_163338 UTC ===
+
+== Búsqueda en log mensual actual ==
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+  Saldo CLOB: $387.37 pUSD
+  → Orden REAL: Elon Musk # tweets in August 2026? · 660-679 YES @0.027 (cuota 37.04) · size 2.00 USDC · token 785574712069…
+  (stake $2.00 → 74.07 shares a 0.027)
+  Orden enviada: 0xd6645d42ae0dcd55d532e357b807a7502522ae5e9cbce13ecbb89f9018794c8e  (respuesta: {'errorMsg': '', 'orderID': '0xd6645d42ae0dcd55d532e357b807a7502522ae5e9cbce13ecbb89f9018794c8e', 'takingAmount': '', 'm)
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+  ⏳ Orden 0xd6645d42ae0d… pendiente de llenado (se vigilará cada pasada, máx 60 min)
+  ✔ ABIERTA apuesta REAL (o simulada): 660-679 YES a 0.027 · paso 1 · stake $2.00
+[2026-08-17 16:54:42 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+[2026-08-17 16:54:43 EDT] 4/4 · Estado:
+fecha        tweets
+2026-08-05       25
+--
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+  Saldo CLOB: $387.37 pUSD
+  → Orden REAL: Elon Musk # tweets in August 2026? · 660-679 YES @0.029 (cuota 33.90) · size 2.00 USDC · token 785574712069…
+  (stake $2.00 → 67.8 shares a 0.029)
+  · canceladas 2 órdenes previas sin cerrar
+  Orden enviada: 0xeb2491e4bc9520917c550398ed3c0d5a16bce46401046061c1ca80a2a63b3042  (respuesta: {'errorMsg': '', 'orderID': '0xeb2491e4bc9520917c550398ed3c0d5a16bce46401046061c1ca80a2a63b3042', 'takingAmount': '', 'm)
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+  ⏳ Orden 0xeb2491e4bc95… pendiente de llenado (se vigilará cada pasada, máx 60 min)
+  ✔ ABIERTA apuesta REAL (o simulada): 660-679 YES a 0.029 · paso 1 · stake $2.00
+[2026-08-17 17:57:28 EDT]       · Excel historial actualizado: Historial_Operaciones_Mensual.xlsx (añadidas 0, total 0)
+[2026-08-17 17:57:28 EDT] 4/4 · Estado:
+fecha        tweets
+2026-08-05       25
+--
+  · Credenciales CLOB derivadas automáticamente de la clave privada.
+  Saldo CLOB: $387.37 pUSD
+
+== ¿Hay logs antiguos? ==
+-rw-r--r-- 1 root root 13568439 Sep 19 16:29 /var/log/poly-mensual.log
+-rw-r--r-- 1 root root   607854 Aug 19 18:30 /var/log/poly-mensual-v2.log
+
+== Búsqueda en logs mensuales archivados ==
+
+== ¿Hay archivos .log archivados con gzip? ==
+-rw-r--r-- 1 root root 13568439 Sep 19 16:29 /var/log/poly-mensual.log
+
+== Verificar también el log del bot principal ==
+-rw-r--r-- 1 root root 7664488 Sep 19 16:29 /opt/polymarket/bot-polymarket-elon-mensual/bot_mensual.log
+
+== ¿Qué dice la lógica de casi_senal? ==
+def casi_senal(evaluados, horas=6):
+    """Avisa cuando un mercado tiene un bin CERCA de cumplir las reglas de
+    esta ventana (ver senal.py: REGLA absoluta o de ventaja) pero NO se
+    apuesta. Informativo. Máx. 1 aviso por mercado cada `horas` horas."""
+    import senal
+    ventana = getattr(senal, "VENTANA", None)
+    regla = getattr(senal, "REGLA", "absoluta")
+    edge = getattr(senal, "EDGE_MIN", 0.10)
+    p_floor = getattr(senal, "P_FLOOR", 0.15)
+    cmin = getattr(senal, "CUOTA_MINIMA", 3.0)
+    pmin = getattr(senal, "P_MIN_YES", 0.60)
+    pmax = getattr(senal, "P_MAX_NO", 0.30)
+    for ev in evaluados:
+        if ventana is not None:
+            if ev.get("tipo") != ventana:
+                continue
+        elif ev.get("tipo") != "48h":
+            continue
+        mejor = None      # (distancia, lado, bin, p, cuota_lado)
+        for b in ev["bins"]:
+            p = b["p_modelo"]
