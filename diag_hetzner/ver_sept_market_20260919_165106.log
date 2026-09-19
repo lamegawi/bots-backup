@@ -1,0 +1,26 @@
+=== VER MERCADO SEPTIEMBRE 2026 · 20260919_165106 UTC ===
+
+== Todos los mercados mensuales que conoce el bot ==
+Total mercados: 8
+Actualizado: 2026-09-19T16:49:04.380987+00:00
+
+Ahora UTC: 2026-09-19 16:51:06.438182+00:00
+
+Mercado: Elon Musk # tweets in October 2026?
+  slug: elon-musk-of-tweets-october-2026
+  inicio: 2026-10-01T00:00:00-04:00
+  fin: 2026-11-01T00:00:00-04:00
+  cerrado: False
+
+
+== Búsqueda directa en Polymarket gamma-api ==
+-- Mercado 'September 2026' --
+HTTP: 200
+[]
+
+
+-- Mercado 'October 2026' --
+HTTP: 200
+[{"id":"899513","ticker":"elon-musk-of-tweets-october-2026","slug":"elon-musk-of-tweets-october-2026","title":"Elon Musk # tweets in October 2026?","description":"This market will resolve according to the number of times Elon Musk (@elonmusk), posts on X during the month of October 2026.\n\nFor the purposes of this market, only main feed posts, quote posts and reposts will count.\n\nReplies will NOT count towards the total - however, replies on the main feed such as https://x.com/elonmusk/status
+
+== ¿Qué slugs hay en polymarket? ==
