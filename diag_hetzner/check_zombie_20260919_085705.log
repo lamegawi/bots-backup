@@ -1,0 +1,93 @@
+=== CHECK ZOMBIE · 20260919_085705 UTC ===
+
+== ¿Bot zombie? ==
+PID: 
+
+== Última línea de /var/log/poly-elon.log ==
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+2026-09-17       20
+2026-09-18       20
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-19 04:56:34 EDT] Pasada completada en 62.7 s
+[2026-09-19 04:56:34 EDT] Próxima pasada en 5 min…
+
+== ¿Está esperando 5min? ==
+[2026-09-19 04:44:28 EDT] Próxima pasada en 5 min…
+[2026-09-19 04:50:32 EDT] Próxima pasada en 5 min…
+[2026-09-19 04:56:34 EDT] Próxima pasada en 5 min…
+
+== Forzar reinicio ==
+
+== Estado tras reinicio ==
+active
+
+== Esperar 80s para ver una pasada ==
+
+== Logs tras reinicio + 80s ==
+[2026-09-19 04:57:05 EDT] 🤖 BOT DEFINITIVO arrancado (loop=True, intervalo=5 min, excel=True) · notificaciones: ntfy → elon-poly-gg1j0zp6 · telegram ✓
+[2026-09-19 04:57:05 EDT] ==============================================================
+[2026-09-19 04:57:05 EDT] PASADA COMPLETA  ·  MODO: REAL
+[2026-09-19 04:57:05 EDT]       · TEST urllib OK: 128 bytes, TWEET COUNT x0
+[2026-09-19 04:57:05 EDT] 0/5 · Actualizando CSV con TWEET_COUNT de Polymarket (in-process)…
+[2026-09-19 04:57:06 EDT]       · scraper no devolvió tweet_count (sigue con CSV previo)
+[2026-09-19 04:57:06 EDT] 1/5 · Recogiendo tweets de @elonmusk…
+[2026-09-19 04:57:08 EDT]       · twitterapi: 20 items
+[2026-09-19 04:57:08 EDT]       · jina-tw: ERROR jina en pausa (descanso tras fallos)
+[2026-09-19 04:57:08 EDT]       · jina-x: ERROR jina en pausa (descanso tras fallos)
+  nitter nitter.tiekoetter.com: sin items
+  nitter xcancel.com: sin items
+  nitter nitter.poast.org: curl falló (56): 
+  nitter nitter.privacyredirect.com: sin items
+  nitter lightbrd.com: sin items
+  nitter nitter.space: sin items
+  nitter nitter.tiekoetter.com: sin items
+  nitter xcancel.com: sin items
+  nitter nitter.poast.org: curl falló (56): 
+  nitter nitter.privacyredirect.com: sin items
+  nitter lightbrd.com: sin items
+  nitter nitter.space: sin items
+[2026-09-19 04:57:50 EDT]       · nitter: sin items
+[2026-09-19 04:57:50 EDT]       · tweets únicos: 842 (reposts 508) · CSV: 52 días (nuevos/mejorados: 0)
+[2026-09-19 04:57:50 EDT] 2/5 · Actualizando mercados de Polymarket…
+[2026-09-19 04:58:05 EDT]       · 8 mercados · 2 de 48 h abiertos → mercado_activo.json
+[2026-09-19 04:58:05 EDT] 3/5 · Trading REAL…
+[2026-09-19 04:58 EDT] Trading REAL  · saldo $227.98 · paso 6
+  (sin señal 48 h → no se abre apuesta real · paso 6)
+  Historial REAL: 7 apuestas · 1G/6P · beneficio $-22.16
+[2026-09-19 04:58:06 EDT]       · Excel historial actualizado: Historial_Operaciones.xlsx (añadidas 0, total 4)
+[2026-09-19 04:58:06 EDT] 4/5 · Estado:
+fecha        tweets
+2026-09-03        1
+2026-09-05        5
+2026-09-06       21
+2026-09-07       21
+2026-09-08       25
+2026-09-09       22
+2026-09-10       22
+2026-09-11       30
+2026-09-12       16
+2026-09-13       39
+2026-09-17       20
+2026-09-18       20
+
+AVG7 = 24.14  V2 = 40  R = 0.828  ajuste = 0.914  λ48 = 44.1
+Días completos en CSV: 52
+[2026-09-19 04:58:06 EDT] Pasada completada en 60.9 s
+[2026-09-19 04:58:06 EDT] Próxima pasada en 5 min…
+
+== Cooldown actualizado? ==
+{
+ "error_general": 1789803105.6642423
+}
+== ¿twitterapi aparece? ==
+6
+Últimas menciones:
+[2026-09-19 04:36:19 EDT]       · twitterapi: 20 items
+[2026-09-19 04:42:20 EDT]       · twitterapi: 20 items
+[2026-09-19 04:49:33 EDT]       · twitterapi: 20 items
+[2026-09-19 04:55:35 EDT]       · twitterapi: 20 items
+[2026-09-19 04:57:08 EDT]       · twitterapi: 20 items
