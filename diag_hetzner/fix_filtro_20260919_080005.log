@@ -1,0 +1,20 @@
+=== FIX FILTRO HORAS ELAPSED · 20260919_080005 UTC ===
+Backup: senal_vivo.py.bak_fix_20260919_080005
+
+== ANTES (línea 153) ==
+        if horas_elapsed > ENTRADA_MAX_H.get(mk["tipo"], 12.0):
+
+== DESPUÉS (línea 153) ==
+        if horas_elapsed > ENTRADA_MAX_H.get(mk["tipo"], 24.0):
+
+== Validar sintaxis Python ==
+OK módulo importa
+
+== Reiniciando poly-elon ==
+
+== Estado servicio ==
+active
+
+Esperando 70s para ver una pasada...
+
+== Logs de la pasada ==
