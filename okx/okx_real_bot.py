@@ -1104,6 +1104,13 @@ def _journal_resultado(base, desde_ms):
     except Exception:
         return None
 
+# === FIXPNL_ARENA ===
+PNL_REINTENTOS = 30          # pasadas antes de rendirse (una cada ~60 s)
+PNL_REINT_MINUTOS = 120.0    # y como mucho 2 horas desde la apertura
+PNL_SINFILL_MINUTOS = 10.0   # si cerro en menos de esto, no llego a existir
+PNL_SINFILL_INTENTOS = 3     # ...y tras estos intentos sin rastro, se confirma
+
+
 def _journal_check_cierres(pos_actuales):
     try:
         regs = _journal_load()
@@ -1111,13 +1118,41 @@ def _journal_check_cierres(pos_actuales):
         abiertas = set(p.get("base") for p in pos_actuales)
         ahora_ms = time.time() * 1000
         for r in regs:
-            if r.get("estado") != "abierta":
+            # FIXPNL_ARENA: "pendiente_pnl" = cerrada pero todavía sin P&L.
+            _est = r.get("estado")
+            if _est not in ("abierta", "pendiente_pnl"):
                 continue
             if ahora_ms - float(r.get("id", 0) or 0) < 120000:
                 continue
-            if r.get("moneda") in abiertas:
+            # una que ya sabemos cerrada no se confunde con una posición nueva
+            if _est == "abierta" and r.get("moneda") in abiertas:
                 continue
             pnl = _journal_resultado(r.get("moneda"), float(r.get("id", 0) or 0))
+            if pnl is None:
+                # El histórico de OKX tarda unos segundos en reflejar el cierre.
+                # Antes se marcaba "cerrada" con pnl=None y no se volvía a
+                # mirar nunca: un fallo transitorio se volvía permanente.
+                _n = int(r.get("_reint_pnl") or 0) + 1
+                r["_reint_pnl"] = _n
+                _edad = (ahora_ms - float(r.get("id", 0) or 0)) / 60000.0
+                if _edad <= PNL_SINFILL_MINUTOS and _n >= PNL_SINFILL_INTENTOS:
+                    # cerró casi al abrir y tras varios intentos no hay rastro:
+                    # la orden no llegó a ejecutarse. No es una operación.
+                    r["estado"] = "cerrada"
+                    r["ts_cierre"] = datetime.now(MAD).strftime("%Y-%m-%d %H:%M")
+                    r["pnl_usd"] = None
+                    r["motivo"] = "sin fill"
+                    r["nota"] = "apertura sin fill - excluida de stats"
+                    cambio = True
+                    print("[JOURNAL] " + str(r.get("moneda"))
+                          + " apertura sin fill, excluida de stats")
+                    continue
+                if _n < PNL_REINTENTOS and _edad < PNL_REINT_MINUTOS:
+                    r["estado"] = "pendiente_pnl"
+                    cambio = True
+                    print("[JOURNAL] " + str(r.get("moneda")) + " sin P&L, reintento "
+                          + str(_n) + "/" + str(PNL_REINTENTOS))
+                    continue
             r["estado"] = "cerrada"
             r["ts_cierre"] = datetime.now(MAD).strftime("%Y-%m-%d %H:%M")
             if pnl is not None:

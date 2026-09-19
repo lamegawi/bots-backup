@@ -1,96 +1,137 @@
 {
+  "HYPE: LONG": {
+    "symbol": "HYPE",
+    "direction": "LONG",
+    "entry": 92.124,
+    "contratos": 54,
+    "sl_algo_id": "3934829545170432001",
+    "state": "opened",
+    "risk_usd": 10.062289581010724,
+    "opened_at": 1789769459.768855,
+    "dist": 0.02022694,
+    "initial_sl": 90.26061304,
+    "tp_levels": [
+      {
+        "nivel": "1.0R",
+        "precio": 93.36625797,
+        "sz": 11,
+        "algoId": "3934829551847763969"
+      },
+      {
+        "nivel": "1.5R",
+        "precio": 93.98738696,
+        "sz": 11,
+        "algoId": "3934829558424432641"
+      },
+      {
+        "nivel": "2.0R",
+        "precio": 94.60851595,
+        "sz": 11,
+        "algoId": "3934829567047921665"
+      },
+      {
+        "nivel": "2.5R",
+        "precio": 95.22964493,
+        "sz": 11,
+        "algoId": "3934829573389709313"
+      },
+      {
+        "nivel": "3.0R",
+        "precio": 95.85077392,
+        "sz": 10,
+        "algoId": "3934829580134150145"
+      }
+    ],
+    "sw_sl_px": 90.26061304,
+    "sl_v2": true,
+    "qty_vista": 32.0
+  },
+  "DOGE: LONG": {
+    "symbol": "DOGE",
+    "direction": "LONG",
+    "entry": 0.08839,
+    "contratos": 594,
+    "sl_algo_id": "3934859995414818817",
+    "state": "opened",
+    "risk_usd": 9.99523274519595,
+    "opened_at": 1789770367.1675384,
+    "dist": 0.01903721,
+    "initial_sl": 0.0867073,
+    "tp_levels": [
+      {
+        "nivel": "1.0R",
+        "precio": 0.0895118,
+        "sz": 119,
+        "algoId": "3934860001790160897"
+      },
+      {
+        "nivel": "1.5R",
+        "precio": 0.0900727,
+        "sz": 119,
+        "algoId": "3934860008299720705"
+      },
+      {
+        "nivel": "2.0R",
+        "precio": 0.0906336,
+        "sz": 119,
+        "algoId": "3934860014809280513"
+      },
+      {
+        "nivel": "2.5R",
+        "precio": 0.0911945,
+        "sz": 119,
+        "algoId": "3934860021083959297"
+      },
+      {
+        "nivel": "3.0R",
+        "precio": 0.0917554,
+        "sz": 118,
+        "algoId": "3934860027358638081"
+      }
+    ],
+    "sw_sl_px": 0.0867073,
+    "sl_v2": true,
+    "qty_vista": 594.0
+  },
   "ETC: LONG": {
     "symbol": "ETC",
     "direction": "LONG",
-    "entry": 7.825,
-    "contratos": 9,
-    "sl_algo_id": "3932559421986074625",
+    "entry": 8.17,
+    "contratos": 8,
+    "sl_algo_id": "3934981430313512961",
     "state": "opened",
-    "risk_usd": 10.297696654284186,
-    "opened_at": 1789701804.758026,
-    "dist": 0.01462222,
-    "initial_sl": 7.71058115,
+    "risk_usd": 9.572179053528359,
+    "opened_at": 1789773986.047081,
+    "dist": 0.01464532,
+    "initial_sl": 8.05034776,
     "tp_levels": [
       {
         "nivel": "1.0R",
-        "precio": 7.90127923,
+        "precio": 8.24976816,
         "sz": 2,
-        "algoId": "3932559428394971137"
+        "algoId": "3934981436823072769"
       },
       {
         "nivel": "1.5R",
-        "precio": 7.93941885,
+        "precio": 8.28965224,
         "sz": 2,
-        "algoId": "3932559434971639809"
+        "algoId": "3934981443399741441"
       },
       {
         "nivel": "2.0R",
-        "precio": 7.97755847,
+        "precio": 8.32953632,
         "sz": 2,
-        "algoId": "3932559441783189505"
+        "algoId": "3934981449942855681"
       },
       {
         "nivel": "2.5R",
-        "precio": 8.01569809,
+        "precio": 8.3694204,
         "sz": 2,
-        "algoId": "3932559448192086017"
-      },
-      {
-        "nivel": "3.0R",
-        "precio": 8.0538377,
-        "sz": 1,
-        "algoId": "3932559454600982529"
+        "algoId": "3934981456720850945"
       }
     ],
-    "sw_sl_px": 7.71058115,
+    "sw_sl_px": 8.05034776,
     "sl_v2": true,
-    "qty_vista": 9.0
-  },
-  "AVAX: LONG": {
-    "symbol": "AVAX",
-    "direction": "LONG",
-    "entry": 7.952,
-    "contratos": 99,
-    "sl_algo_id": "3932620001291825153",
-    "state": "opened",
-    "risk_usd": 9.974551472073156,
-    "opened_at": 1789703610.1659484,
-    "dist": 0.01267015,
-    "initial_sl": 7.85124695,
-    "tp_levels": [
-      {
-        "nivel": "1.0R",
-        "precio": 8.0191687,
-        "sz": 20,
-        "algoId": "3932620007969157121"
-      },
-      {
-        "nivel": "1.5R",
-        "precio": 8.05275305,
-        "sz": 20,
-        "algoId": "3932620014713597953"
-      },
-      {
-        "nivel": "2.0R",
-        "precio": 8.08633739,
-        "sz": 20,
-        "algoId": "3932620021055385601"
-      },
-      {
-        "nivel": "2.5R",
-        "precio": 8.11992174,
-        "sz": 20,
-        "algoId": "3932620027531390977"
-      },
-      {
-        "nivel": "3.0R",
-        "precio": 8.15350609,
-        "sz": 19,
-        "algoId": "3932620034007396353"
-      }
-    ],
-    "sw_sl_px": 7.85124695,
-    "sl_v2": true,
-    "qty_vista": 99.0
+    "qty_vista": 2.0
   }
 }

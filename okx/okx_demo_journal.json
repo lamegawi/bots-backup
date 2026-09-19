@@ -738,8 +738,10 @@
   "apalancamiento": 4,
   "estado": "cerrada",
   "ts_cierre": "2026-09-13 07:04",
-  "pnl_usd": null,
-  "motivo": "?"
+  "pnl_usd": -11.68,
+  "motivo": "SL",
+  "r_resultado": -1.17,
+  "nota": "P&L rellenado a posteriori desde positions-history"
  },
  {
   "id": 1789285637927,
@@ -814,7 +816,8 @@
   "estado": "cerrada",
   "ts_cierre": "2026-09-15 15:23",
   "pnl_usd": null,
-  "motivo": "?"
+  "motivo": "sin fill",
+  "nota": "apertura sin fill 15/09 - verificada contra account/bills (31 movimientos FUTURES ese dia, 0 de ETH) - excluida de stats"
  },
  {
   "id": 1789511078917,
@@ -850,8 +853,10 @@
   "apalancamiento": 5,
   "estado": "cerrada",
   "ts_cierre": "2026-09-16 08:25",
-  "pnl_usd": null,
-  "motivo": "?"
+  "pnl_usd": -34.04,
+  "motivo": "SL",
+  "r_resultado": -3.4,
+  "nota": "P&L rellenado a posteriori desde positions-history"
  },
  {
   "id": 1789515596093,
@@ -961,7 +966,11 @@
   "atr": 0.07627923447617917,
   "stop_dist_pct": 1.462,
   "apalancamiento": 10,
-  "estado": "abierta"
+  "estado": "cerrada",
+  "ts_cierre": "2026-09-18 16:22",
+  "pnl_usd": 11.77,
+  "r_resultado": 1.14,
+  "motivo": "TP"
  },
  {
   "id": 1789703610168,
@@ -975,6 +984,55 @@
   "score": 3.0393469702177116,
   "atr": 0.06716869678163741,
   "stop_dist_pct": 1.267,
+  "apalancamiento": 10,
+  "estado": "cerrada",
+  "ts_cierre": "2026-09-18 06:32",
+  "pnl_usd": -10.88,
+  "r_resultado": -1.09,
+  "motivo": "SL"
+ },
+ {
+  "id": 1789769459769,
+  "ts_apertura": "2026-09-19 00:10",
+  "bot": "demo",
+  "moneda": "HYPE",
+  "direccion": "LONG",
+  "entrada": 92.124,
+  "contratos": 54,
+  "riesgo_usd": 10.06,
+  "score": 7.781865893784331,
+  "atr": 1.2422579729642869,
+  "stop_dist_pct": 2.023,
+  "apalancamiento": 9,
+  "estado": "abierta"
+ },
+ {
+  "id": 1789770367169,
+  "ts_apertura": "2026-09-19 00:26",
+  "bot": "demo",
+  "moneda": "DOGE",
+  "direccion": "LONG",
+  "entrada": 0.08839,
+  "contratos": 594,
+  "riesgo_usd": 10.0,
+  "score": 5.242212793419537,
+  "atr": 0.0011217994102352357,
+  "stop_dist_pct": 1.904,
+  "apalancamiento": 10,
+  "estado": "abierta"
+ },
+ {
+  "id": 1789773986049,
+  "ts_apertura": "2026-09-19 01:26",
+  "bot": "demo",
+  "moneda": "ETC",
+  "direccion": "LONG",
+  "entrada": 8.17,
+  "contratos": 8,
+  "riesgo_usd": 9.57,
+  "score": 6.38999840688073,
+  "atr": 0.07976815877940298,
+  "stop_dist_pct": 1.465,
   "apalancamiento": 10,
   "estado": "abierta"
  }
