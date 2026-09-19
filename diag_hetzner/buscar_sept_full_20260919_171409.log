@@ -1,0 +1,11 @@
+=== BUSCAR SEPTIEMBRE FULL · 20260919_171409 UTC ===
+
+== Búsqueda masiva en gamma-api (todos los eventos) ==
+HTTP: 200 bytes:4698023
+Total eventos activos: 100
+
+== También buscar mercados CERRADOS de septiembre ==
+HTTP: 200 bytes:620286
+Total eventos cerrados: 100
+
+== Búsqueda final: TODOS los mercados con 'elon' y '2026' ==
